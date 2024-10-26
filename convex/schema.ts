@@ -1,6 +1,6 @@
-import { authTables } from "@convex-dev/auth/server";
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server"
+import { defineSchema, defineTable } from "convex/server"
+import { v } from "convex/values"
 
 // The schema is normally optional, but Convex Auth
 // requires indexes defined on `authTables`.
@@ -27,5 +27,11 @@ export default defineSchema({
       ),
     ),
   }).index("email", ["email"]),
-  // TODO: Companies Schema
-});
+  companies: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    phone: v.string(),
+    logo: v.optional(v.string()),
+    location: v.string(),
+  }),
+})
