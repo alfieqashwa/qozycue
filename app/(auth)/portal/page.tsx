@@ -1,4 +1,5 @@
 import { CONTACT } from "@/app/constants/contact"
+import { SignOutButton } from "@/components/sign-button"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { FaceSmileIcon } from "@heroicons/react/24/solid"
@@ -18,10 +19,10 @@ export default async function Page() {
     { token: convexAuthNextjsToken() },
   )
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-2 p-2">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 font-semibold">
       <FaceSmileIcon className="w-10 text-primary" />
       <h2 className="text-xl font-semibold">Welcome to Qozy Cue App.</h2>
-      <p className="max-w-4xl pt-4 text-center font-semibold">
+      <p className="max-w-4xl pt-4 text-center">
         Tekan
         <TriggerTrialButton userRole={viewer.role === "USER"} />
         untuk mencoba aplikasi kami
@@ -42,7 +43,10 @@ export default async function Page() {
         untuk mengirim pesan kepada kami apabila Anda mengalami kendala atau
         memerlukan bantuan.
       </p>
-      <p className="text-center font-semibold">Terimakasih.</p>
+      <p>
+        Tekan <SignOutButton size="sm" /> untuk keluar.
+      </p>
+      <p className="text-center">Terimakasih.</p>
     </main>
   )
 }
