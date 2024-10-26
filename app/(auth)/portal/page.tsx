@@ -1,7 +1,48 @@
-export default function PortalPage() {
+import { CONTACT } from "@/app/constants/contact"
+import { api } from "@/convex/_generated/api"
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
+import { FaceSmileIcon } from "@heroicons/react/24/solid"
+import { fetchQuery } from "convex/nextjs"
+import { type Metadata } from "next"
+import Image from "next/image"
+import { TriggerTrialButton } from "./trigger-trial-button"
+
+export const metadata: Metadata = {
+  title: "Portal",
+}
+
+export default async function Page() {
+  const viewer = await fetchQuery(
+    api.users.viewer,
+    {},
+    { token: convexAuthNextjsToken() },
+  )
   return (
-    <div>
-      <h2>Portal Page</h2>
-    </div>
-  );
+    <main className="flex min-h-screen flex-col items-center justify-center gap-2 p-2">
+      <FaceSmileIcon className="w-10 text-primary" />
+      <h2 className="text-xl font-semibold">Welcome to Qozy Cue App.</h2>
+      <p className="max-w-4xl pt-4 text-center font-semibold">
+        Tekan
+        <TriggerTrialButton userRole={viewer.role === "USER"} />
+        untuk mencoba aplikasi kami
+        <span className="pl-1 text-primary">secara gratis</span>. Tekan ikon
+        <a
+          href={CONTACT}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mx-2 inline-block"
+        >
+          <Image
+            src="/images/icon-whatsapp.svg"
+            alt="whatsapp-logo"
+            width={25}
+            height={25}
+          />
+        </a>
+        untuk mengirim pesan kepada kami apabila Anda mengalami kendala atau
+        memerlukan bantuan.
+      </p>
+      <p className="text-center font-semibold">Terimakasih.</p>
+    </main>
+  )
 }
