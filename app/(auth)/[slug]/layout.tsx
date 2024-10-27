@@ -1,11 +1,13 @@
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
-import { redirect } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
 export default async function SlugLayout({
+  params,
   children,
 }: Readonly<{
+  params: { slug: string }
   children: React.ReactNode
 }>) {
   const viewer = await fetchQuery(
@@ -15,7 +17,16 @@ export default async function SlugLayout({
   )
 
   if (!viewer) redirect("/signin")
-  if (viewer && viewer.role === "USER") redirect("/portal")
+  if (viewer.role === "USER") redirect("/portal")
+
+  const companySlug = await fetchQuery(
+    api.companies.slug,
+    {},
+    { token: convexAuthNextjsToken() },
+  )
+  const { slug } = params
+  if (companySlug && slug !== companySlug) notFound()
+
   return <>{children}</>
 }
 

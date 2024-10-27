@@ -3,5 +3,5 @@ export default function DewaPage() {
     <div>
       <h2>Dewa Page</h2>
     </div>
-  );
+  )
 }
