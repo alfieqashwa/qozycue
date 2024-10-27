@@ -9,3 +9,10 @@ export const viewer = query({
     return userId !== null ? ctx.db.get(userId) : null
   },
 })
+
+export const findAll = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("users").collect()
+  },
+})

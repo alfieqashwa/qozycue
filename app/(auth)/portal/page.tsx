@@ -9,6 +9,7 @@ import { type Metadata } from "next"
 import Image from "next/image"
 import { redirect } from "next/navigation"
 import { TriggerTrialButton } from "./trigger-trial-button"
+import UserList from "./user-list"
 
 export const metadata: Metadata = {
   title: "Portal",
@@ -57,6 +58,7 @@ export default async function Page() {
         Tekan <SignOutButton size="sm" /> untuk keluar.
       </p>
       <p className="text-center">Terimakasih.</p>
+      <UserList />
     </main>
   )
 }

@@ -3,7 +3,7 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import { redirect } from "next/navigation"
 
-export default async function AuthLayout({
+export default async function SlugLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
