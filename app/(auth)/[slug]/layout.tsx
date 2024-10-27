@@ -14,7 +14,8 @@ export default async function AuthLayout({
     { token: convexAuthNextjsToken() },
   )
 
-  if (!!viewer.companyId) {
+  if (!viewer) redirect("/signin")
+  if (!!viewer?.companyId) {
     const company = await fetchQuery(api.companies.find, {
       companyId: viewer.companyId,
     })

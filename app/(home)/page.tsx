@@ -5,18 +5,17 @@ import { AuthButtons } from "./auth-buttons"
 import { ConvexLogo } from "./convex-logo"
 
 export default async function HomePage() {
-  const viewer = await fetchQuery(
-    api.users.viewer,
+  // const viewer = await fetchQuery(
+  //   api.users.viewer,
+  //   {},
+  //   { token: convexAuthNextjsToken() },
+  // )
+
+  const company = await fetchQuery(
+    api.companies.company,
     {},
     { token: convexAuthNextjsToken() },
   )
-
-  if (!viewer) return null
-  const company = await fetchQuery(api.companies.find, {
-    companyId: viewer.companyId,
-  })
-
-  const isUser = Boolean(viewer)
   const slug = company?.slug
 
   return (
@@ -31,7 +30,7 @@ export default async function HomePage() {
         <div className="flex justify-center">
           <ConvexLogo width={377} height={44} />
         </div>
-        <AuthButtons isUser={isUser} slug={slug} />
+        <AuthButtons slug={slug} />
       </div>
     </div>
   )

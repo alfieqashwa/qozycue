@@ -1,5 +1,3 @@
-"use client"
-
 import { SignInButton } from "@/components/sign-button"
 import { GitHubLogoIcon } from "@radix-ui/react-icons"
 
@@ -10,7 +8,7 @@ export default function SignInPage() {
         <h2 className="text-2xl font-semibold tracking-tight">
           Sign in with Google
         </h2>
-        <SignInButton variant="outline" redirectTo="/product">
+        <SignInButton variant="outline" redirectTo="/portal">
           <GitHubLogoIcon className="mr-2 h-4 w-4" /> Google
         </SignInButton>
       </div>
