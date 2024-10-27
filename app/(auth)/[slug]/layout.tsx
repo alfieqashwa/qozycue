@@ -15,24 +15,7 @@ export default async function SlugLayout({
   )
 
   if (!viewer) redirect("/signin")
-  if (!!viewer?.companyId) {
-    const company = await fetchQuery(api.companies.find, {
-      companyId: viewer.companyId,
-    })
-
-    if (!!company) {
-      if (viewer.role === "DEWA") redirect("/dewa/")
-      if (viewer.role === "ADMIN" || viewer.role === "OWNER")
-        redirect(`/${encodeURIComponent(company.slug)}/dashboard/`)
-      if (viewer.role === "MANAGER")
-        redirect(`/${encodeURIComponent(company.slug)}/transactions/`)
-      if (viewer.role === "CASHIER")
-        redirect(`${encodeURIComponent(company.slug)}/tables/`)
-
-      if (viewer.role === "USER")
-        redirect(`${encodeURIComponent(company.slug)}/portal/`)
-    }
-  }
+  if (viewer && viewer.role === "USER") redirect("/portal")
   return <>{children}</>
 }
 

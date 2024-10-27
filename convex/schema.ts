@@ -11,7 +11,6 @@ export default defineSchema({
     body: v.string(),
   }),
   users: defineTable({
-    companyId: v.optional(v.id("companies")),
     email: v.optional(v.string()),
     emailVerificationTime: v.optional(v.float64()),
     image: v.optional(v.string()),
@@ -33,5 +32,13 @@ export default defineSchema({
     phone: v.string(),
     logo: v.optional(v.string()),
     location: v.string(),
-  }),
+    isPublished: v.boolean(),
+    subscriptions: v.union(
+      v.literal("TRIAL"),
+      v.literal("BASIC"),
+      v.literal("PRO"),
+      v.literal("ENTERPRISE"),
+    ),
+    userId: v.id("users"),
+  }).index("userId", ["userId"]),
 })

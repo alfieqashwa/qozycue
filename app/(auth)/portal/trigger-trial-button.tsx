@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { useMediaQuery } from "@/app/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,6 +18,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { useState } from "react"
 import { CreateTrialCompanyForm } from "./create-trial-company-form"
 
 export function TriggerTrialButton({ userRole }: { userRole: boolean }) {
@@ -48,7 +48,7 @@ export function TriggerTrialButton({ userRole }: { userRole: boolean }) {
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
-          {/* <CreateTrialCompanyForm setOpen={setOpen} /> */}
+          <CreateTrialCompanyForm setOpen={setOpen} />
         </DialogContent>
       </Dialog>
     )

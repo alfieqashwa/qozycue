@@ -1,22 +1,15 @@
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
-import { fetchQuery } from "convex/nextjs"
+import { preloadQuery } from "convex/nextjs"
 import { AuthButtons } from "./auth-buttons"
 import { ConvexLogo } from "./convex-logo"
 
 export default async function HomePage() {
-  // const viewer = await fetchQuery(
-  //   api.users.viewer,
-  //   {},
-  //   { token: convexAuthNextjsToken() },
-  // )
-
-  const company = await fetchQuery(
-    api.companies.company,
+  const preloadSlug = await preloadQuery(
+    api.companies.slug,
     {},
     { token: convexAuthNextjsToken() },
   )
-  const slug = company?.slug
 
   return (
     <div className="flex grow flex-col">
@@ -30,7 +23,7 @@ export default async function HomePage() {
         <div className="flex justify-center">
           <ConvexLogo width={377} height={44} />
         </div>
-        <AuthButtons slug={slug} />
+        <AuthButtons preloadSlug={preloadSlug} />
       </div>
     </div>
   )

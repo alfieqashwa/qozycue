@@ -1,7 +1,6 @@
 import { CONTACT } from "@/app/constants/contact"
 import { SignOutButton } from "@/components/sign-button"
 import { api } from "@/convex/_generated/api"
-import { Id } from "@/convex/_generated/dataModel"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { FaceSmileIcon } from "@heroicons/react/24/solid"
 import { fetchQuery } from "convex/nextjs"
@@ -22,12 +21,24 @@ export default async function Page() {
     { token: convexAuthNextjsToken() },
   )
 
-  const company = await fetchQuery(api.companies.find, {
-    companyId: viewer?.companyId as Id<"companies">,
+  if (!viewer) redirect("/")
+
+  const company = await fetchQuery(api.companies.findCompanyByUserId, {
+    userId: viewer._id,
   })
 
-  // if user already has company, then it redirect to SlugLayout
-  if (!!company) redirect(`/${company.slug}/`)
+  // if user already has company, then it redirect to [slug] pages
+  if (!!viewer && !!company) {
+    const slug = company.find((c) => c.userId === viewer._id)?.slug!
+
+    if (viewer.role === "DEWA") redirect("/dewa/")
+    if (viewer.role === "ADMIN" || viewer.role === "OWNER")
+      redirect(`/${encodeURIComponent(slug)}/dashboard/`)
+    if (viewer.role === "MANAGER")
+      redirect(`/${encodeURIComponent(slug)}/transactions/`)
+    if (viewer.role === "CASHIER")
+      redirect(`${encodeURIComponent(slug)}/tables/`)
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 font-semibold">
