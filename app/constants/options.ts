@@ -1,10 +1,4 @@
-import {
-  PaymentMethod,
-  Rate,
-  Role,
-  Status,
-  StatusPayment,
-} from "@prisma/client"
+import { PaymentMethod, Rate, Role, Status, StatusPayment } from "@/types/enum"
 import {
   Banknote,
   Coffee,
@@ -51,7 +45,7 @@ export const packetRates = [
     label: "MINUTE",
     icon: Timer,
   },
-] as Options[]
+] as unknown as Options[]
 
 export const statusPayments = [
   { value: StatusPayment.OPEN, label: "Open", icon: Disc2 },
