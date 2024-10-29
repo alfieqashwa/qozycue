@@ -77,7 +77,7 @@ export default defineSchema({
     status: v.union(v.literal("disabled"), v.literal("enabled")),
     startTime: v.optional(v.float64()),
     endTime: v.optional(v.float64()),
-    gapDuration: v.int64(),
+    gapDuration: v.number(),
     companyId: v.id("companies"),
   }).index("companyId", ["companyId"]),
 

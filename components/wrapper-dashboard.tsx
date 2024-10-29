@@ -1,0 +1,177 @@
+"use client"
+
+// import { type Session } from "next-auth"
+import { type TLinkList } from "@/app/constants/link-list"
+import { buttonVariants } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
+import { useToggleStore } from "@/store/toggle-store"
+import dynamic from "next/dynamic"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
+import { GiFrozenOrb } from "react-icons/gi"
+// import { type RouterOutputs } from "~/trpc/react"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery } from "@tanstack/react-query"
+import { CompanyInfo } from "./company-info"
+import { ConnectionStatus } from "./connection-status"
+import { MenuOnMobile } from "./menu-on-mobile"
+import { Nav } from "./nav"
+import { ToggleGrip } from "./toggle-grip"
+import { UserAvatar } from "./user-avatar"
+
+//? https://nextjs.org/docs/messages/react-hydration-error
+const ToggleThemes = dynamic(() => import("./toggle-themes"), {
+  ssr: false,
+})
+
+type WrapperDashboardProps = {
+  linkList: TLinkList[]
+  className?: string
+  children: React.ReactNode
+}
+
+export function WrapperDashboard({
+  linkList,
+  className,
+  children,
+}: WrapperDashboardProps) {
+  const me = useQuery(convexQuery(api.users.me, {}))
+  const { data: poolTableList } = useQuery(
+    convexQuery(api.pooltables.findAllByCompanyId, {
+      companyId: me.data?.companyId!,
+    }),
+  )
+  const { data: company } = useQuery(
+    convexQuery(api.companies.find, { id: me.data?.companyId! }),
+  )
+
+  const store = useToggleStore()
+  const pathname = usePathname()
+
+  /*
+   * source: https://github.com/pmndrs/zustand/issues/938#issuecomment-1812606279
+   */
+  const [hasHydrated, setHasHydrated] = useState(false)
+  useEffect(() => {
+    void useToggleStore.persist.rehydrate()
+    setHasHydrated(true)
+  }, [])
+
+  // Remove "/" from pathname & substring from the last index of "/"
+  const lastIndex = pathname.lastIndexOf("/")
+  const displayPathname = pathname.substring(lastIndex + 1)
+
+  if (!hasHydrated) return null
+
+  const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(
+    me.data?.role ?? "",
+  )
+  // userSession?.user.role === "DEWA" ||
+  //   userSession?.user.role === "ADMIN" ||
+  //   userSession?.user.role === "OWNER"
+
+  const hasPoolTableId = poolTableList?.some((t) => t._id === displayPathname)
+  const poolTableName = `Table ${
+    poolTableList?.find((t) => t._id === displayPathname)?.name
+  }`
+
+  return (
+    <div className="relative pb-12 sm:pb-4">
+      <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
+        <CompanyInfo
+          company={company}
+          displayPathname={hasPoolTableId ? poolTableName : displayPathname}
+        />
+        <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
+          <ConnectionStatus />
+          <ToggleThemes />
+          {me.status === "success" && (
+            <UserAvatar user={me.data} slug={company?.slug as string} />
+          )}
+        </div>
+      </div>
+
+      {/* //? STARTS SIDEBAR */}
+      <div
+        className={cn(
+          "fixed z-20 hidden min-h-[calc(100vh_-_5rem)] min-w-[50px] border-r-4 bg-background py-2 transition-all duration-150 ease-in-out sm:block",
+          store.toggle ? "w-0 sm:w-20" : "w-0 sm:w-56",
+        )}
+      >
+        <ToggleGrip />
+        <ScrollArea className="h-svh">
+          <Nav
+            isOwner={ownerAccessLevel}
+            slug={company?.slug as string}
+            links={linkList.filter((l) => l.isGeneral)}
+          />
+          <Separator className="py-[1px]" />
+          <Nav
+            isOwner={ownerAccessLevel}
+            slug={company?.slug as string}
+            links={linkList.filter((l) => !l.isGeneral)}
+          />
+          {/* //? set padding-bottom so the sidebar can be fully-scrolled on mobile-view's landscape */}
+          <nav className={cn("pb-24", store.toggle ? "pl-3.5" : "pl-2")}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href={
+                    pathname.includes("dewa")
+                      ? `/${encodeURIComponent(company?.slug as string)}/dashboard`
+                      : `/dewa`
+                  }
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "icon" }),
+                    "relative size-12",
+                    me.data?.role === "DEWA" ? "block" : "hidden",
+                  )}
+                >
+                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <GiFrozenOrb className={cn(className)} />
+                  </span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent
+                side="right"
+                className="flex items-center gap-4 bg-muted"
+              >
+                <span className="text-sm capitalize tracking-wider text-primary">
+                  {pathname.includes("dewa") ? company?.name : "dewa"}
+                </span>
+              </TooltipContent>
+            </Tooltip>
+          </nav>
+        </ScrollArea>
+      </div>
+      {/* //? ENDS SIDEBAR */}
+
+      <main
+        className={cn(
+          "min-h-[calc(100vh_-_5rem)] bg-background p-1 transition-all duration-150 ease-in-out sm:p-4",
+          store.toggle ? "ml-0 sm:ml-20" : "ml-0 sm:ml-56",
+        )}
+      >
+        {children}
+      </main>
+      <footer className="fixed bottom-2 left-1/2 -translate-x-1/2 sm:hidden">
+        <MenuOnMobile
+          isOwner={ownerAccessLevel}
+          slug={company?.slug as string}
+          links={linkList}
+          dewaRole={me.data?.role === "DEWA"}
+          className={className}
+        />
+      </footer>
+    </div>
+  )
+}

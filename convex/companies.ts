@@ -1,9 +1,8 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { NoOp } from "convex-helpers/server/customFunctions"
-import { zCustomMutation, zCustomQuery } from "convex-helpers/server/zod"
 import { v } from "convex/values"
 import { createTrialCompanySchema } from "../types/schema/company-schema"
-import { mutation, query } from "./_generated/server"
+import { Id } from "./_generated/dataModel"
+import { query } from "./_generated/server"
 import { zMutation } from "./helpers"
 
 // Make this once, to use anywhere you would have used "query"
@@ -42,7 +41,7 @@ export const createTrial = zMutation({
       throw new Error("Not signed in")
     }
 
-    const createCompany = await ctx.db.insert("companies", {
+    const companyId = await ctx.db.insert("companies", {
       name,
       slug: name.replace(/ /g, "-"),
       phone,
@@ -51,13 +50,39 @@ export const createTrial = zMutation({
       subscription: "TRIAL",
     })
 
-    if (!createCompany) throw new Error("No companyId")
+    if (!companyId) throw new Error("No companyId")
 
     const updateUserRole = await ctx.db.patch(userId, {
       role: "ADMIN",
-      companyId: createCompany,
+      companyId,
     })
 
-    return { createCompany, updateUserRole }
+    type TData = {
+      companyId: Id<"companies">
+      name: string
+      description: string
+      isActive: boolean
+      gapDuration: number
+      status: "enabled" | "disabled"
+    }
+
+    const data: TData[] = Array.from({ length: 10 }, (_, i) => ({
+      companyId,
+      name: `${i + 1}`,
+      description: `table-${i + 1}`,
+      isActive: false,
+      gapDuration: 10,
+      status: "enabled",
+    }))
+    let insertedIds: Id<"poolTables">[] = [] // array to store the inserted IDs
+
+    await Promise.all(
+      data.map(async (table) => {
+        const result = await ctx.db.insert("poolTables", table)
+        insertedIds.push(result)
+      }),
+    )
+
+    return { companyId, updateUserRole, insertedIds }
   },
 })
