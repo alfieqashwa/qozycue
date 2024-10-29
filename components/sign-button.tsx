@@ -28,9 +28,8 @@ export function SignOutButton({
   const { signOut } = useAuthActions()
   const router = useRouter()
 
-  const handleSignOut = () => {
-    void signOut()
-    router.push("/")
+  const handleSignOut = async () => {
+    await signOut().then(() => router.push("/"))
   }
   return (
     <>
