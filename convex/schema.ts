@@ -44,7 +44,7 @@ export default defineSchema({
       v.literal("PRO"),
       v.literal("ENTERPRISE"),
     ),
-  }),
+  }).index("by_slug", ["slug"]),
 
   taxes: defineTable({
     name: v.string(),
