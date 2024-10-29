@@ -15,29 +15,28 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-  const viewer = await fetchQuery(
+  const me = await fetchQuery(
     api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  if (!viewer) redirect("/")
+  if (!me) redirect("/")
 
   const company = await fetchQuery(api.companies.findCompanyByUserId, {
-    userId: viewer._id,
+    userId: me._id,
   })
 
   // if user already has company, then it redirect to [slug] pages
-  if (!!viewer && !!company) {
-    const slug = company.find((c) => c.userId === viewer._id)?.slug!
+  if (!!me && !!company) {
+    const slug = company.find((c) => c.userId === me._id)?.slug!
 
-    if (viewer.role === "DEWA") redirect("/dewa/")
-    if (viewer.role === "ADMIN" || viewer.role === "OWNER")
+    if (me.role === "DEWA") redirect("/dewa/")
+    if (me.role === "ADMIN" || me.role === "OWNER")
       redirect(`/${encodeURIComponent(slug)}/dashboard/`)
-    if (viewer.role === "MANAGER")
+    if (me.role === "MANAGER")
       redirect(`/${encodeURIComponent(slug)}/transactions/`)
-    if (viewer.role === "CASHIER")
-      redirect(`${encodeURIComponent(slug)}/tables/`)
+    if (me.role === "CASHIER") redirect(`${encodeURIComponent(slug)}/tables/`)
   }
 
   return (
@@ -46,7 +45,7 @@ export default async function Page() {
       <h2 className="text-xl font-semibold">Welcome to Qozy Cue App.</h2>
       <p className="max-w-4xl pt-4 text-center">
         Tekan
-        <TriggerTrialButton userRole={viewer?.role === "USER"} />
+        <TriggerTrialButton userRole={me?.role === "USER"} />
         untuk mencoba aplikasi kami
         <span className="pl-1 text-primary">secara gratis</span>. Tekan ikon
         <a

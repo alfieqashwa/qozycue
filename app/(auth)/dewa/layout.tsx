@@ -10,14 +10,14 @@ export default async function DewaLayout({
   children: React.ReactNode
 }) {
   noStore()
-  const viewer = await fetchQuery(
+  const me = await fetchQuery(
     api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  if (!viewer) redirect("/signin")
-  if (viewer.role !== "DEWA") redirect("/portal")
+  if (!me) redirect("/signin")
+  if (me.role !== "DEWA") redirect("/portal")
 
   return <>{children}</>
 }

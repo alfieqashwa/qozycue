@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 export default async function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const viewer = await fetchQuery(
+  const me = await fetchQuery(
     api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  if (!viewer) redirect("/signin")
-  if (["USER", "MANAGER", "CASHIER"].includes(viewer.role ?? "")) {
+  if (!me) redirect("/signin")
+  if (["USER", "MANAGER", "CASHIER"].includes(me.role ?? "")) {
     redirect("/portal")
   }
 

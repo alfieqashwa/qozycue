@@ -10,14 +10,14 @@ export default async function SlugLayout({
   params: { slug: string }
   children: React.ReactNode
 }>) {
-  const viewer = await fetchQuery(
+  const me = await fetchQuery(
     api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  if (!viewer) redirect("/signin")
-  if (viewer.role === "USER") redirect("/portal")
+  if (!me) redirect("/signin")
+  if (me.role === "USER") redirect("/portal")
 
   const companySlug = await fetchQuery(
     api.companies.slug,
