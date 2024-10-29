@@ -11,7 +11,7 @@ export default async function SlugLayout({
   children: React.ReactNode
 }>) {
   const viewer = await fetchQuery(
-    api.users.viewer,
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )

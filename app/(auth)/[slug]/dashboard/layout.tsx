@@ -12,7 +12,7 @@ export default async function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const viewer = await fetchQuery(
-    api.users.viewer,
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )

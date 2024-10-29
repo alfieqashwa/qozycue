@@ -11,7 +11,7 @@ export default async function DewaLayout({
 }) {
   noStore()
   const viewer = await fetchQuery(
-    api.users.viewer,
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )

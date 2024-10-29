@@ -22,13 +22,7 @@ import { useMutation } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-// import { api } from "~/trpc/react"
-// import {
-//   createTrialCompanySchema,
-//   type TCreateTrialCompany,
-// } from "~/types/schema/company-schema"
 
-// TODOS
 export function CreateTrialCompanyForm({
   setOpen,
 }: {
@@ -46,7 +40,6 @@ export function CreateTrialCompanyForm({
         description: "Your new company/tenant has been created.",
       })
       setOpen(false)
-      // router.push(`/${variables?.name.replace(/ /g, "-")}/dashboard/`)
       router.push(
         `/${variables?.createTrialCompanySchema.name.replace(/ /g, "-")}/dashboard/`,
       )

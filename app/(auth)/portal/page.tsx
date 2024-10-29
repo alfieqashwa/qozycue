@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const viewer = await fetchQuery(
-    api.users.viewer,
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
@@ -62,8 +62,7 @@ export default async function Page() {
             height={25}
           />
         </a>
-        untuk mengirim pesan kepada kami apabila Anda mengalami kendala atau
-        memerlukan bantuan.
+        untuk informasi lebih lanjut.
       </p>
       <p>
         Tekan <SignOutButton size="sm" /> untuk keluar.
