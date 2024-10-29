@@ -25,7 +25,12 @@ export default defineSchema({
         v.literal("USER"),
       ),
     ),
-  }).index("email", ["email"]),
+    pinCode: v.optional(v.int64()),
+    companyId: v.optional(v.id("companies")), // exception set this to optional
+  })
+    .index("email", ["email"])
+    .index("companyId", ["companyId"]),
+
   companies: defineTable({
     name: v.string(),
     slug: v.string(),
@@ -33,12 +38,143 @@ export default defineSchema({
     logo: v.optional(v.string()),
     location: v.string(),
     isPublished: v.boolean(),
-    subscriptions: v.union(
+    subscription: v.union(
       v.literal("TRIAL"),
       v.literal("BASIC"),
       v.literal("PRO"),
       v.literal("ENTERPRISE"),
     ),
-    userId: v.id("users"),
-  }).index("userId", ["userId"]),
+  }),
+
+  taxes: defineTable({
+    name: v.string(),
+    value: v.float64(),
+    isDefaultValue: v.boolean(),
+    companyId: v.id("companies"),
+  }).index("companyId", ["companyId"]),
+
+  discounts: defineTable({
+    name: v.string(),
+    value: v.float64(),
+    isDefaultValue: v.boolean(),
+    companyId: v.id("companies"),
+  }).index("companyId", ["companyId"]),
+
+  customers: defineTable({
+    name: v.string(),
+    phone: v.optional(v.string()),
+    email: v.optional(v.string()),
+    gender: v.optional(v.union(v.literal("FEMALE"), v.literal("MALE"))),
+    companyId: v.id("companies"),
+  })
+    .index("companyId", ["companyId"])
+    .index("by_name", ["name"]),
+
+  poolTables: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    isActive: v.boolean(),
+    status: v.union(v.literal("disabled"), v.literal("enabled")),
+    startTime: v.optional(v.float64()),
+    endTime: v.optional(v.float64()),
+    gapDuration: v.int64(),
+    companyId: v.id("companies"),
+  }).index("companyId", ["companyId"]),
+
+  // packets is similar to products
+  packets: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    cost: v.float64(),
+    status: v.union(v.literal("disabled"), v.literal("enabled")),
+    companyId: v.id("companies"),
+  }).index("companyId", ["companyId"]),
+
+  orders: defineTable({
+    paymentMethod: v.union(
+      v.literal("CASH"),
+      v.literal("DEBIT"),
+      v.literal("CREDIT"),
+    ),
+    statusPayment: v.union(
+      v.literal("OPEN"),
+      v.literal("PENDING"),
+      v.literal("PAID"),
+      v.literal("CANCELLED"), // new enum
+      v.literal("ARCHIVE"),
+    ),
+    isBooking: v.boolean(),
+    // Todos: totalAmount, revenue, tax, disc, note, dueDate, should be on Model Payments (note: createdBy has both in Model Orders & Payments)
+    totalAmount: v.optional(v.float64()),
+    revenue: v.optional(v.float64()),
+    tax: v.optional(v.float64()),
+    discount: v.optional(v.float64()),
+    note: v.optional(v.string()),
+    customerId: v.optional(v.id("customers")),
+    dueDate: v.optional(v.float64()), // new field
+    createdBy: v.id("users"),
+    companyId: v.id("companies"),
+  })
+    .index("customerId", ["customerId"])
+    .index("createdBy", ["createdBy"])
+    .index("companyId", ["companyId"]),
+
+  // poolRentals is similar to orderlines
+  poolRentals: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    timeStart: v.float64(), // required
+    timeEnd: v.optional(v.float64()), // not required
+    duration: v.optional(v.int64()),
+    totalCost: v.optional(v.float64()),
+    poolTableId: v.id("poolTables"),
+    packetId: v.id("packets"),
+    orderId: v.id("orders"),
+  })
+    .index("packetId", ["packetId"])
+    .index("poolTableId", ["poolTableId"])
+    .index("orderId", ["orderId"]),
+
+  products: defineTable({
+    name: v.string(),
+    costPrice: v.float64(),
+    salePrice: v.float64(),
+    status: v.union(v.literal("disabled"), v.literal("enabled")),
+    countInStock: v.optional(v.float64()), // Todos: next feature: create Model Invetories
+    unitOfMeasureId: v.id("unitOfMeasures"),
+    categoryId: v.id("categories"),
+    companyId: v.id("companies"),
+  })
+    .index("unitOfMeasureId", ["unitOfMeasureId"])
+    .index("categoryId", ["categoryId"])
+    .index("companyId", ["companyId"]),
+
+  orderlines: defineTable({
+    description: v.optional(v.string()),
+    orderlineStatus: v.union(v.literal("unordered"), v.literal("ordered")),
+    quantity: v.int64(),
+    amount: v.float64(),
+    productId: v.id("products"),
+    orderId: v.id("orders"),
+  })
+    .index("productId", ["productId"])
+    .index("orderId", ["orderId"]),
+
+  categories: defineTable({
+    name: v.string(),
+    description: v.string(), // required b'coz it's global model
+  }),
+
+  // Todos: set the fields to default and global as like as Categories
+  unitOfMeasures: defineTable({
+    name: v.string(),
+    description: v.string(), // requires b'coz it's global model
+    companyId: v.id("companies"),
+  }).index("companyId", ["companyId"]),
+
+  memberships: defineTable({
+    level: v.string(),
+    discountRate: v.float64(),
+    customerId: v.optional(v.id("customers")), // Todos: not required (yet) b'coz have not config the Membership's feature
+  }).index("customerId", ["customerId"]),
 })
