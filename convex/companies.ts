@@ -4,21 +4,15 @@ import { zCustomMutation, zCustomQuery } from "convex-helpers/server/zod"
 import { v } from "convex/values"
 import { createTrialCompanySchema } from "../types/schema/company-schema"
 import { mutation, query } from "./_generated/server"
+import { zMutation } from "./helpers"
 
 // Make this once, to use anywhere you would have used "query"
-const zQuery = zCustomQuery(query, NoOp)
-const zMutation = zCustomMutation(mutation, NoOp)
 
 // === QUERIES ===
-export const findCompanyByUserId = query({
-  args: { userId: v.id("users") || null },
-  handler: async (ctx, { userId }) => {
-    if (!userId) return null
-
-    const company = await ctx.db
-      .query("companies")
-      .withIndex("userId", (q) => q.eq("userId", userId))
-      .collect()
+export const find = query({
+  args: { id: v.id("companies") },
+  handler: async (ctx, { id }) => {
+    const company = await ctx.db.get(id)
     return company
   },
 })
@@ -27,13 +21,12 @@ export const slug = query({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
-    if (!userId) return null
+    const user = userId !== null ? await ctx.db.get(userId) : null
 
-    const company = await ctx.db
-      .query("companies")
-      .withIndex("userId", (q) => q.eq("userId", userId))
-      .first()
-    return company?.slug
+    const company =
+      !user || !user.companyId ? null : await ctx.db.get(user.companyId)
+
+    return company?.slug // slug type -> string | undefined is as expected
   },
 })
 
@@ -55,10 +48,15 @@ export const createTrial = zMutation({
       phone,
       location,
       isPublished: true,
-      subscriptions: "TRIAL",
-      userId,
+      subscription: "TRIAL",
     })
-    const updateUserRole = await ctx.db.patch(userId, { role: "ADMIN" })
+
+    if (!createCompany) throw new Error("No companyId")
+
+    const updateUserRole = await ctx.db.patch(userId, {
+      role: "ADMIN",
+      companyId: createCompany,
+    })
 
     return { createCompany, updateUserRole }
   },

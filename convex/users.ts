@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { query } from "./_generated/server"
+import { zMutation } from "./helpers"
 
 // source -> https://stack.convex.dev/convex-auth
 export const me = query({
