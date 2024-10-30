@@ -49,7 +49,7 @@ export function WrapperDashboard({
       companyId: me.data?.companyId!,
     }),
   )
-  const { data: company } = useQuery(
+  const company = useQuery(
     convexQuery(api.companies.find, { id: me.data?.companyId! }),
   )
 
@@ -83,15 +83,17 @@ export function WrapperDashboard({
   return (
     <div className="relative pb-12 sm:pb-4">
       <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
-        <CompanyInfo
-          company={company}
-          displayPathname={hasPoolTableId ? poolTableName : displayPathname}
-        />
+        {company.status === "success" && (
+          <CompanyInfo
+            company={company.data}
+            displayPathname={hasPoolTableId ? poolTableName : displayPathname}
+          />
+        )}
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
           <ConnectionStatus />
           <ToggleThemes />
-          {me.status === "success" && (
-            <UserAvatar user={me.data} slug={company?.slug as string} />
+          {me.status === "success" && company.status === "success" && (
+            <UserAvatar user={me.data} slug={company.data?.slug as string} />
           )}
         </div>
       </div>
@@ -107,13 +109,13 @@ export function WrapperDashboard({
         <ScrollArea className="h-svh">
           <Nav
             isOwner={ownerAccessLevel}
-            slug={company?.slug as string}
+            slug={company.data?.slug!}
             links={linkList.filter((l) => l.isGeneral)}
           />
           <Separator className="py-[1px]" />
           <Nav
             isOwner={ownerAccessLevel}
-            slug={company?.slug as string}
+            slug={company.data?.slug!}
             links={linkList.filter((l) => !l.isGeneral)}
           />
           {/* //? set padding-bottom so the sidebar can be fully-scrolled on mobile-view's landscape */}
@@ -123,7 +125,7 @@ export function WrapperDashboard({
                 <Link
                   href={
                     pathname.includes("dewa")
-                      ? `/${encodeURIComponent(company?.slug as string)}/dashboard`
+                      ? `/${encodeURIComponent(company.data?.slug!)}/dashboard`
                       : `/dewa`
                   }
                   className={cn(
@@ -142,7 +144,7 @@ export function WrapperDashboard({
                 className="flex items-center gap-4 bg-muted"
               >
                 <span className="text-sm capitalize tracking-wider text-primary">
-                  {pathname.includes("dewa") ? company?.name : "dewa"}
+                  {pathname.includes("dewa") ? company.data?.name : "dewa"}
                 </span>
               </TooltipContent>
             </Tooltip>
@@ -162,7 +164,7 @@ export function WrapperDashboard({
       <footer className="fixed bottom-2 left-1/2 -translate-x-1/2 sm:hidden">
         <MenuOnMobile
           isOwner={ownerAccessLevel}
-          slug={company?.slug as string}
+          slug={company.data?.slug as string}
           links={linkList}
           dewaRole={me.data?.role === "DEWA"}
           className={className}
