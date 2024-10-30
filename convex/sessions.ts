@@ -8,8 +8,12 @@ export const find = query({
     const sessionId = await getAuthSessionId(ctx)
     const session = sessionId !== null ? await ctx.db.get(sessionId) : null
 
-    const currentUser = await ctx.db.get(session?.userId as Id<"users">)
-    const company = await ctx.db.get(currentUser?.companyId as Id<"companies">)
+    const currentUser =
+      session !== null ? await ctx.db.get(session?.userId as Id<"users">) : null
+    const company =
+      currentUser !== null
+        ? await ctx.db.get(currentUser?.companyId as Id<"companies">)
+        : null
     return {
       ...session,
       companyId: company?._id,
