@@ -18,11 +18,11 @@ import { SignOutDialog } from "./sign-out-dialog"
 import { UserInfo } from "./user-info"
 
 type UserAvatarProps = {
-  user: FunctionReturnType<typeof api.users.me>
+  session: FunctionReturnType<typeof api.sessions.find>
   slug: string
 }
 
-export function UserAvatar({ user, slug }: UserAvatarProps) {
+export function UserAvatar({ session, slug }: UserAvatarProps) {
   const pathname = usePathname()
 
   return (
@@ -30,7 +30,7 @@ export function UserAvatar({ user, slug }: UserAvatarProps) {
       <MenubarMenu>
         <MenubarTrigger className="relative h-10 w-10 rounded-full px-0 py-0 hover:cursor-pointer">
           <Image
-            src={user?.image as string}
+            src={session.user.image!}
             alt="User Avatar"
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" //? https://nextjs.org/docs/pages/api-reference/components/image#sizes
@@ -40,8 +40,8 @@ export function UserAvatar({ user, slug }: UserAvatarProps) {
         {/* // Mobile View */}
         <MenubarContent className="mr-2 mt-3.5 w-52">
           <UserInfo
-            userAccount={user?.name ?? user?.email}
-            userRole={user?.role}
+            userAccount={session.user?.name ?? session.user?.email}
+            userRole={session.user?.role}
             pathname={pathname}
             href={`/${encodeURIComponent(slug)}/profile`}
           />

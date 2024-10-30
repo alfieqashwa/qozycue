@@ -1,11 +1,11 @@
-export enum Role {
-  DEWA,
-  ADMIN,
-  OWNER,
-  MANAGER,
-  CASHIER,
-  USER,
-}
+export type Role =
+  | "DEWA"
+  | "ADMIN"
+  | "OWNER"
+  | "MANAGER"
+  | "CASHIER"
+  | "USER"
+  | undefined
 
 export enum PaymentMethod {
   CASH,

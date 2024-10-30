@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils"
 import { useToggleStore } from "@/store/toggle-store"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
+import { Preloaded, usePreloadedQuery } from "convex/react"
+import { FunctionReturnType } from "convex/server"
 import dynamic from "next/dynamic"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -34,24 +36,22 @@ const ToggleThemes = dynamic(() => import("./toggle-themes"), {
 
 type WrapperDashboardProps = {
   linkList: TLinkList[]
+  session: FunctionReturnType<typeof api.sessions.find>
+  preloadCompany: Preloaded<typeof api.companies.find>
+  poolTableList?: FunctionReturnType<typeof api.pooltables.findAllByCompanyId>
   className?: string
   children: React.ReactNode
 }
 
 export function WrapperDashboard({
   linkList,
+  session,
+  preloadCompany,
+  poolTableList,
   className,
   children,
 }: WrapperDashboardProps) {
-  const me = useQuery(convexQuery(api.users.me, {}))
-  const { data: poolTableList } = useQuery(
-    convexQuery(api.pooltables.findAllByCompanyId, {
-      companyId: me.data?.companyId!,
-    }),
-  )
-  const company = useQuery(
-    convexQuery(api.companies.find, { id: me.data?.companyId! }),
-  )
+  const company = usePreloadedQuery(preloadCompany)
 
   const store = useToggleStore()
   const pathname = usePathname()
@@ -72,7 +72,7 @@ export function WrapperDashboard({
   if (!hasHydrated) return null
 
   const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(
-    me.data?.role ?? "",
+    session.user.role ?? "",
   )
 
   const hasPoolTableId = poolTableList?.some((t) => t._id === displayPathname)
@@ -83,18 +83,14 @@ export function WrapperDashboard({
   return (
     <div className="relative pb-12 sm:pb-4">
       <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
-        {company.status === "success" && (
-          <CompanyInfo
-            company={company.data}
-            displayPathname={hasPoolTableId ? poolTableName : displayPathname}
-          />
-        )}
+        <CompanyInfo
+          company={company}
+          displayPathname={hasPoolTableId ? poolTableName : displayPathname}
+        />
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
           <ConnectionStatus />
           <ToggleThemes />
-          {me.status === "success" && company.status === "success" && (
-            <UserAvatar user={me.data} slug={company.data?.slug as string} />
-          )}
+          <UserAvatar session={session} slug={company?.slug!} />
         </div>
       </div>
 
@@ -109,13 +105,13 @@ export function WrapperDashboard({
         <ScrollArea className="h-svh">
           <Nav
             isOwner={ownerAccessLevel}
-            slug={company.data?.slug!}
+            slug={session.companySlug!}
             links={linkList.filter((l) => l.isGeneral)}
           />
           <Separator className="py-[1px]" />
           <Nav
             isOwner={ownerAccessLevel}
-            slug={company.data?.slug!}
+            slug={session.companySlug!}
             links={linkList.filter((l) => !l.isGeneral)}
           />
           {/* //? set padding-bottom so the sidebar can be fully-scrolled on mobile-view's landscape */}
@@ -125,13 +121,13 @@ export function WrapperDashboard({
                 <Link
                   href={
                     pathname.includes("dewa")
-                      ? `/${encodeURIComponent(company.data?.slug!)}/dashboard`
+                      ? `/${encodeURIComponent(company?.slug!)}/dashboard`
                       : `/dewa`
                   }
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
                     "relative size-12",
-                    me.data?.role === "DEWA" ? "block" : "hidden",
+                    session.user.role === "DEWA" ? "block" : "hidden",
                   )}
                 >
                   <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -144,7 +140,7 @@ export function WrapperDashboard({
                 className="flex items-center gap-4 bg-muted"
               >
                 <span className="text-sm capitalize tracking-wider text-primary">
-                  {pathname.includes("dewa") ? company.data?.name : "dewa"}
+                  {pathname.includes("dewa") ? company?.name : "dewa"}
                 </span>
               </TooltipContent>
             </Tooltip>
@@ -164,9 +160,9 @@ export function WrapperDashboard({
       <footer className="fixed bottom-2 left-1/2 -translate-x-1/2 sm:hidden">
         <MenuOnMobile
           isOwner={ownerAccessLevel}
-          slug={company.data?.slug as string}
+          slug={company?.slug as string}
           links={linkList}
-          dewaRole={me.data?.role === "DEWA"}
+          dewaRole={session.user.role === "DEWA"}
           className={className}
         />
       </footer>

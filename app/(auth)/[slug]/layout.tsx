@@ -2,7 +2,7 @@ import { DASHBOARD_LINK_LIST } from "@/app/constants/link-list"
 import { WrapperDashboard } from "@/components/wrapper-dashboard"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
-import { fetchQuery } from "convex/nextjs"
+import { fetchQuery, preloadQuery } from "convex/nextjs"
 import { notFound, redirect } from "next/navigation"
 
 export default async function SlugLayout({
@@ -18,15 +18,28 @@ export default async function SlugLayout({
     { token: convexAuthNextjsToken() },
   )
 
+  const { slug } = params
+
   if (!session) redirect("/signin")
+
   if (session.user.role === "USER") redirect("/portal")
 
-  const { slug } = params
   if (session.companySlug && slug !== session.companySlug) notFound()
+
+  const preloadCompany = await preloadQuery(api.companies.find, {
+    id: session.companyId,
+  })
+
+  const poolTableList = await fetchQuery(api.pooltables.findAllByCompanyId, {
+    companyId: session.companyId!,
+  })
 
   return (
     <WrapperDashboard
       linkList={DASHBOARD_LINK_LIST}
+      session={session}
+      preloadCompany={preloadCompany}
+      poolTableList={poolTableList}
       className="size-9 shrink-0 animate-spin text-primary"
     >
       {children}

@@ -17,6 +17,7 @@ export const findAllByCompanyId = query({
       },
     }))
 
+    if (!poolTableList) return []
     return poolTableList
   },
 })

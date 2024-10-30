@@ -19,7 +19,7 @@ export const find = query({
       companyId: company?._id,
       companySlug: company?.slug,
       user: {
-        role: currentUser?.role,
+        ...currentUser,
       },
     }
   },

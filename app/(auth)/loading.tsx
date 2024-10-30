@@ -1,12 +1,11 @@
-import { Loader2 } from "lucide-react"
+import { GiPoolTriangle } from "react-icons/gi"
 
 export default function Loading() {
   return (
-    <div className="grid h-[calc(100vh_-_30vh)] w-full place-items-center">
-      <Loader2
-        size={50}
+    <div className="grid min-h-screen w-full place-items-center">
+      <GiPoolTriangle
         //   color="rgb(148 163 184)"
-        className="animate-spin text-primary"
+        className="size-14 animate-ping text-primary md:size-16"
       />
     </div>
   )
