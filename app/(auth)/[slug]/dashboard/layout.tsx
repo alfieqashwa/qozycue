@@ -28,11 +28,12 @@ export default async function DashboardLayout({
   if (slug !== session.companySlug) notFound()
 
   return (
-    <WrapperDashboard
-      linkList={DASHBOARD_LINK_LIST}
-      className="size-9 shrink-0 animate-spin text-primary"
-    >
-      {children}
-    </WrapperDashboard>
+    // <WrapperDashboard
+    //   linkList={DASHBOARD_LINK_LIST}
+    //   className="size-9 shrink-0 animate-spin text-primary"
+    // >
+    //   {children}
+    // </WrapperDashboard>
+    <>{children}</>
   )
 }

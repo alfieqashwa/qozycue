@@ -1,3 +1,5 @@
+import { DASHBOARD_LINK_LIST } from "@/app/constants/link-list"
+import { WrapperDashboard } from "@/components/wrapper-dashboard"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
@@ -10,24 +12,26 @@ export default async function SlugLayout({
   params: { slug: string }
   children: React.ReactNode
 }>) {
-  const me = await fetchQuery(
-    api.users.me,
+  const session = await fetchQuery(
+    api.sessions.find,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  if (!me) redirect("/signin")
-  if (me.role === "USER") redirect("/portal")
+  if (!session) redirect("/signin")
+  if (session.user.role === "USER") redirect("/portal")
 
-  const companySlug = await fetchQuery(
-    api.companies.slug,
-    {},
-    { token: convexAuthNextjsToken() },
-  )
   const { slug } = params
-  if (companySlug && slug !== companySlug) notFound()
+  if (session.companySlug && slug !== session.companySlug) notFound()
 
-  return <>{children}</>
+  return (
+    <WrapperDashboard
+      linkList={DASHBOARD_LINK_LIST}
+      className="size-9 shrink-0 animate-spin text-primary"
+    >
+      {children}
+    </WrapperDashboard>
+  )
 }
 
 /**

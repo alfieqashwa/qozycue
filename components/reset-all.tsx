@@ -20,9 +20,7 @@ export function ResetAll() {
   })
 
   const handleResetAll = () => {
-    mutate({
-      forReal: "reset-batman",
-    })
+    mutate({ forReal: process.env.NEXT_PUBLIC_RESET_ALL! })
   }
 
   return (
