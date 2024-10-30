@@ -4,7 +4,7 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery, preloadQuery } from "convex/nextjs"
 import { unstable_noStore as noStore } from "next/cache"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 
 export default async function DewaLayout({
   children,
