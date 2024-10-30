@@ -1,4 +1,4 @@
-import { PaymentMethod, Rate, Role, Status, StatusPayment } from "@/types/enum"
+import { PaymentMethod, Rate, Status, StatusPayment } from "@/types/enum"
 import {
   Banknote,
   Coffee,
@@ -14,6 +14,13 @@ import {
   Wallet2,
   type LucideIcon,
 } from "lucide-react"
+
+enum Role {
+  ADMIN,
+  OWNER,
+  MANAGER,
+  CASHIER,
+}
 
 export type Options = {
   value: string
