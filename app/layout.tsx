@@ -1,15 +1,18 @@
+import "@/styles/globals.css"
+export const dynamic = "force-dynamic"
+
+import { Poppins as FontSans } from "next/font/google"
+
 import ConvexClientProvider from "@/components/ConvexClientProvider"
 import { ThemeProvider } from "@/components/providers"
 import { cn } from "@/lib/utils"
-import "@/styles/globals.css"
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server"
 import type { Metadata } from "next"
-import { Poppins as FontSans } from "next/font/google"
 import { Toaster } from "sonner"
 
-export const dynamic = "force-dynamic"
-
 const fontSans = FontSans({
+  // subsets: ["latin"],
+  // variable: "--font-sans",
   subsets: ["latin-ext"],
   variable: "--font-sans",
   style: "normal",
