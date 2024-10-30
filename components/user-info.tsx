@@ -5,7 +5,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
-import { Role } from "@/types/enum"
+import { Role } from "@/types"
 import { Key } from "lucide-react"
 import Link from "next/link"
 

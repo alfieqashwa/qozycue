@@ -1,11 +1,14 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { type Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Companies",
 }
 
-export default function CompanyPage({}: {
+export default function CompanyLayout({
+  companyTab,
+  userTab,
+}: {
   companyTab: React.ReactNode
   userTab: React.ReactNode
 }) {
@@ -15,8 +18,8 @@ export default function CompanyPage({}: {
         <TabsTrigger value="company">Companies</TabsTrigger>
         <TabsTrigger value="user">Users</TabsTrigger>
       </TabsList>
-      {/* <TabsContent value="company">{companyTab}</TabsContent>
-      <TabsContent value="user">{userTab}</TabsContent> */}
+      <TabsContent value="company">{companyTab}</TabsContent>
+      <TabsContent value="user">{userTab}</TabsContent>
     </Tabs>
   )
 }

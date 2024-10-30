@@ -1,6 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { query } from "./_generated/server"
-import { zMutation } from "./helpers"
+import { v } from "convex/values"
 
 // source -> https://stack.convex.dev/convex-auth
 export const me = query({
@@ -15,5 +15,15 @@ export const findAll = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.db.query("users").collect()
+  },
+})
+
+export const findAllByCompanyId = query({
+  args: { companyId: v.id("companies") },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("companyId", (q) => q.eq("companyId", args.companyId))
+      .collect()
   },
 })

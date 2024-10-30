@@ -7,6 +7,14 @@ export type Role =
   | "USER"
   | undefined
 
+export type Subscription = "TRIAL" | "BASIC" | "PRO" | "ENTERPRISE" | undefined
+// export enum Subscription {
+//   TRIAL,
+//   BASIC,
+//   PRO,
+//   ENTERPRISE,
+// }
+
 export enum PaymentMethod {
   CASH,
   DEBIT,

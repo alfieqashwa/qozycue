@@ -1,6 +1,10 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { v } from "convex/values"
-import { createTrialCompanySchema } from "../types/schema/company-schema"
+import {
+  createCompanySchema,
+  createTrialCompanySchema,
+  updateCompanyDewaSchema,
+} from "../types/schema/company-schema"
 import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
 import { reset, zMutation } from "./helpers"
@@ -8,6 +12,17 @@ import { reset, zMutation } from "./helpers"
 // Make this once, to use anywhere you would have used "query"
 
 // === QUERIES ===
+export const findAll = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    // if (user?.role !== "DEWA") throw new Error("Don't have access!")
+
+    return await ctx.db.query("companies").collect()
+  },
+})
+
 export const find = query({
   args: { id: v.optional(v.id("companies")) },
   handler: async (ctx, { id }) => {
@@ -87,6 +102,66 @@ export const createTrial = zMutation({
     return { companyId, updateUserRole, insertedIds }
   },
 })
+
+export const create = zMutation({
+  args: { createCompanySchema },
+  handler: async (ctx, { createCompanySchema: { name, phone, location } }) => {
+    const userId = await getAuthUserId(ctx)
+    const user = !!userId ? await ctx.db.get(userId) : null
+    if (user?.role !== "DEWA") throw new Error("Don't have access!")
+
+    return await ctx.db.insert("companies", {
+      name,
+      slug: name.replace(/ /g, "-"),
+      phone,
+      location,
+      isPublished: true,
+      subscription: "TRIAL",
+    })
+  },
+})
+
+export const update = zMutation({
+  args: { updateCompanyDewaSchema },
+  handler: async (
+    ctx,
+    {
+      updateCompanyDewaSchema: {
+        id,
+        name,
+        phone,
+        location,
+        isPublished,
+        subscription,
+      },
+    },
+  ) => {
+    const userId = await getAuthUserId(ctx)
+    const user = !!userId ? await ctx.db.get(userId) : null
+    if (user?.role !== "DEWA") throw new Error("Don't have access!")
+
+    return await ctx.db.patch(id, {
+      name,
+      slug: name.replace(/ /g, "-"),
+      phone,
+      location,
+      isPublished,
+      subscription,
+    })
+  },
+})
+
+export const remove = mutation({
+  args: { id: v.id("companies") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    const user = !!userId ? await ctx.db.get(userId) : null
+    if (user?.role !== "DEWA") throw new Error("Don't have access!")
+
+    return await ctx.db.delete(args.id)
+  },
+})
+// === Only for Development ===
 
 export const resetAll = mutation({
   args: { forReal: v.string() },

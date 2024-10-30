@@ -1,4 +1,4 @@
-import { PaymentMethod, Rate, Status, StatusPayment } from "@/types/enum"
+import { PaymentMethod, Rate, Status, StatusPayment } from "@/types"
 import {
   Banknote,
   Coffee,
