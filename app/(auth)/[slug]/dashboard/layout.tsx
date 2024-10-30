@@ -1,5 +1,3 @@
-import { DASHBOARD_LINK_LIST } from "@/app/constants/link-list"
-import { WrapperDashboard } from "@/components/wrapper-dashboard"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
@@ -27,13 +25,5 @@ export default async function DashboardLayout({
   const { slug } = params
   if (slug !== session.companySlug) notFound()
 
-  return (
-    // <WrapperDashboard
-    //   linkList={DASHBOARD_LINK_LIST}
-    //   className="size-9 shrink-0 animate-spin text-primary"
-    // >
-    //   {children}
-    // </WrapperDashboard>
-    <>{children}</>
-  )
+  return <>{children}</>
 }
