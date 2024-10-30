@@ -5,22 +5,21 @@ import { type TLinkList } from "@/app/constants/link-list"
 import { buttonVariants } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { cn } from "@/lib/utils"
-import { useToggleStore } from "@/store/toggle-store"
-import dynamic from "next/dynamic"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
-import { GiFrozenOrb } from "react-icons/gi"
-// import { type RouterOutputs } from "~/trpc/react"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
+import { useToggleStore } from "@/store/toggle-store"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
+import dynamic from "next/dynamic"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
+import { GiFrozenOrb } from "react-icons/gi"
 import { CompanyInfo } from "./company-info"
 import { ConnectionStatus } from "./connection-status"
 import { MenuOnMobile } from "./menu-on-mobile"
@@ -75,9 +74,6 @@ export function WrapperDashboard({
   const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(
     me.data?.role ?? "",
   )
-  // userSession?.user.role === "DEWA" ||
-  //   userSession?.user.role === "ADMIN" ||
-  //   userSession?.user.role === "OWNER"
 
   const hasPoolTableId = poolTableList?.some((t) => t._id === displayPathname)
   const poolTableName = `Table ${

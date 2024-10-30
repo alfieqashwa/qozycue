@@ -10,9 +10,13 @@ export const findAllByCompanyId = query({
       .collect()
     const company = await ctx.db.get(args.companyId)
 
-    return {
-      ...poolTables,
-      company,
-    }
+    const poolTableList = (await poolTables).map((table) => ({
+      ...table,
+      company: {
+        isPublished: company?.isPublished,
+      },
+    }))
+
+    return poolTableList
   },
 })

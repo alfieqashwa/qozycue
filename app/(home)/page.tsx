@@ -1,3 +1,4 @@
+import { ResetAll } from "@/components/reset-all"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { preloadQuery } from "convex/nextjs"
@@ -24,6 +25,7 @@ export default async function HomePage() {
           <ConvexLogo width={377} height={44} />
         </div>
         <AuthButtons preloadSlug={preloadSlug} />
+        <ResetAll />
       </div>
     </div>
   )

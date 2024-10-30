@@ -2,15 +2,16 @@ import { getAuthUserId } from "@convex-dev/auth/server"
 import { v } from "convex/values"
 import { createTrialCompanySchema } from "../types/schema/company-schema"
 import { Id } from "./_generated/dataModel"
-import { query } from "./_generated/server"
-import { zMutation } from "./helpers"
+import { mutation, query } from "./_generated/server"
+import { reset, zMutation } from "./helpers"
 
 // Make this once, to use anywhere you would have used "query"
 
 // === QUERIES ===
 export const find = query({
-  args: { id: v.id("companies") },
+  args: { id: v.optional(v.id("companies")) },
   handler: async (ctx, { id }) => {
+    if (!id) return
     const company = await ctx.db.get(id)
     return company
   },
@@ -84,5 +85,12 @@ export const createTrial = zMutation({
     )
 
     return { companyId, updateUserRole, insertedIds }
+  },
+})
+
+export const resetAll = mutation({
+  args: { forReal: v.string() },
+  handler: async (ctx, args) => {
+    return await reset(ctx, args)
   },
 })

@@ -23,13 +23,12 @@ export default async function Page() {
 
   if (!me) redirect("/")
 
-  const company = await fetchQuery(api.companies.findCompanyByUserId, {
-    userId: me._id,
-  })
+  const company = await fetchQuery(api.companies.find, { id: me.companyId })
 
   // if user already has company, then it redirect to [slug] pages
   if (!!me && !!company) {
-    const slug = company.find((c) => c.userId === me._id)?.slug!
+    // const slug = company.find((c) => c.userId === me._id)?.slug!
+    const slug = company.slug
 
     if (me.role === "DEWA") redirect("/dewa/")
     if (me.role === "ADMIN" || me.role === "OWNER")
