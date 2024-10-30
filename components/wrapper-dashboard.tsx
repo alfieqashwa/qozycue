@@ -1,6 +1,5 @@
 "use client"
 
-// import { type Session } from "next-auth"
 import { type TLinkList } from "@/app/constants/link-list"
 import { buttonVariants } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -13,8 +12,6 @@ import {
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
 import { useToggleStore } from "@/store/toggle-store"
-import { convexQuery } from "@convex-dev/react-query"
-import { useQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
 import { FunctionReturnType } from "convex/server"
 import dynamic from "next/dynamic"
@@ -38,7 +35,6 @@ type WrapperDashboardProps = {
   linkList: TLinkList[]
   session: FunctionReturnType<typeof api.sessions.find>
   preloadCompany: Preloaded<typeof api.companies.find>
-  poolTableList?: FunctionReturnType<typeof api.pooltables.findAllByCompanyId>
   className?: string
   children: React.ReactNode
 }
@@ -47,7 +43,6 @@ export function WrapperDashboard({
   linkList,
   session,
   preloadCompany,
-  poolTableList,
   className,
   children,
 }: WrapperDashboardProps) {
@@ -65,28 +60,16 @@ export function WrapperDashboard({
     setHasHydrated(true)
   }, [])
 
-  // Remove "/" from pathname & substring from the last index of "/"
-  const lastIndex = pathname.lastIndexOf("/")
-  const displayPathname = pathname.substring(lastIndex + 1)
-
   if (!hasHydrated) return null
 
   const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(
     session.user.role ?? "",
   )
 
-  const hasPoolTableId = poolTableList?.some((t) => t._id === displayPathname)
-  const poolTableName = `Table ${
-    poolTableList?.find((t) => t._id === displayPathname)?.name
-  }`
-
   return (
     <div className="relative pb-12 sm:pb-4">
       <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
-        <CompanyInfo
-          company={company}
-          displayPathname={hasPoolTableId ? poolTableName : displayPathname}
-        />
+        <CompanyInfo company={company} pathname={pathname} />
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
           <ConnectionStatus />
           <ToggleThemes />
