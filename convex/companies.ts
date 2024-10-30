@@ -91,6 +91,6 @@ export const createTrial = zMutation({
 export const resetAll = mutation({
   args: { forReal: v.string() },
   handler: async (ctx, args) => {
-    return await reset(ctx, args)
+    return await reset(ctx, { forReal: args.forReal })
   },
 })
