@@ -33,7 +33,6 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
   )
   if (!hasHydrated) return null
 
-  if (status !== "success") return
   const displayPathname = configureDisplayPathname(pathname, data)
 
   return (
@@ -52,7 +51,9 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
           <p className="flex items-center font-semibold capitalize text-muted-foreground">
             <span className="md:text-lg">{company?.name}</span>
             <MdArrowRight className="mx-2 hidden lg:block" />
-            <span className="hidden lg:block">{displayPathname}</span>
+            {status === "success" && (
+              <span className="hidden lg:block">{displayPathname}</span>
+            )}
           </p>
         </div>
       </section>
@@ -61,12 +62,13 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
 
   function configureDisplayPathname(
     pathname: string,
-    poolTableList: FunctionReturnType<typeof api.pooltables.findAllByCompanyId>,
+    poolTableList:
+      | FunctionReturnType<typeof api.pooltables.findAllByCompanyId>
+      | undefined,
   ) {
     // Remove "/" from pathname & substring from the last index of "/"
     const lastIndex = pathname.lastIndexOf("/")
     const displayPathname = pathname.substring(lastIndex + 1)
-    //
     const hasPoolTableId = poolTableList?.some((t) => t._id === displayPathname)
     const poolTableName = `Table ${poolTableList?.find((t) => t._id === displayPathname)?.name}`
 
