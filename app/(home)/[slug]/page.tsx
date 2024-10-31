@@ -1,4 +1,7 @@
+import { api } from "@/convex/_generated/api"
+import { fetchQuery } from "convex/nextjs"
 import { unstable_noStore as noStore } from "next/cache"
+import { redirect } from "next/navigation"
 
 export default async function PublicSlugPage({
   params,
@@ -8,8 +11,8 @@ export default async function PublicSlugPage({
   noStore()
 
   const { slug } = params
-  // const company = await api.company.findPublic({ slug })
-  // if (!company) redirect("/")
+  const company = await fetchQuery(api.companies.findPublic, { slug })
+  if (!company) redirect("/")
 
   // const session = await getServerAuthSession()
 

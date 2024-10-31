@@ -12,12 +12,22 @@ import { reset, zMutation } from "./helpers"
 // Make this once, to use anywhere you would have used "query"
 
 // === QUERIES ===
+export const findPublic = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("companies")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .first()
+  },
+})
+
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    // if (user?.role !== "DEWA") throw new Error("Don't have access!")
+    if (user?.role !== "DEWA") throw new Error("Don't have access!")
 
     return await ctx.db.query("companies").collect()
   },
@@ -27,6 +37,10 @@ export const find = query({
   args: { id: v.optional(v.id("companies")) },
   handler: async (ctx, { id }) => {
     if (!id) return
+
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new Error("Don't have access!")
+
     const company = await ctx.db.get(id)
     return company
   },

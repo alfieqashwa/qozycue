@@ -24,9 +24,13 @@ export default async function SlugLayout({
   if (session.user.role === "USER") redirect("/portal")
   if (session.companySlug && slug !== session.companySlug) notFound()
 
-  const preloadCompany = await preloadQuery(api.companies.find, {
-    id: session.companyId,
-  })
+  const preloadCompany = await preloadQuery(
+    api.companies.find,
+    {
+      id: session.companyId,
+    },
+    { token: convexAuthNextjsToken() },
+  )
 
   return (
     <WrapperDashboard
