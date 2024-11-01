@@ -1,16 +1,14 @@
+"use client"
+
 import { api } from "@/convex/_generated/api"
-import { fetchQuery } from "convex/nextjs"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { columnsCompany } from "./columns-company"
 import { CompanyTable } from "./company-table"
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 
-export default async function Page() {
-  // const companies = await api.company.findAllDewa()
-  const companies = await fetchQuery(
-    api.companies.findAll,
-    {},
-    { token: convexAuthNextjsToken() },
-  )
-  if (!companies) return []
-  return <CompanyTable data={companies} columns={columnsCompany} />
+export default function Page() {
+  const companies = useTanstackQuery(convexQuery(api.companies.findAll, {}))
+
+  if (companies.status !== "success") return <p>loading...</p>
+  return <CompanyTable data={companies.data} columns={columnsCompany} />
 }
