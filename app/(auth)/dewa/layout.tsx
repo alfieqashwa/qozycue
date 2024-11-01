@@ -18,12 +18,15 @@ export default async function DewaLayout({
     { token: convexAuthNextjsToken() },
   )
 
-  if (!session) redirect("/signin")
   if (session.user.role !== "DEWA") redirect("/portal")
 
-  const preloadCompany = await preloadQuery(api.companies.find, {
-    id: session.companyId,
-  })
+  const preloadCompany = await preloadQuery(
+    api.companies.find,
+    {
+      id: session.companyId,
+    },
+    { token: convexAuthNextjsToken() },
+  )
 
   return (
     <WrapperDashboard

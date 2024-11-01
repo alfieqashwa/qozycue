@@ -21,8 +21,9 @@ export function SignOutDialog() {
   const { signOut } = useAuthActions()
   const router = useRouter()
 
-  const handleSignOut = async () => {
-    await signOut().then(() => router.push("/"))
+  const handleSignOut = () => {
+    void signOut()
+    router.push("/")
   }
 
   return (
