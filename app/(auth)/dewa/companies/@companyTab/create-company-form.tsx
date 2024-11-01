@@ -19,7 +19,6 @@ import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -28,8 +27,6 @@ export function CreateCompanyForm({
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const router = useRouter()
-
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.create),
     onSuccess() {
@@ -43,7 +40,6 @@ export function CreateCompanyForm({
       })
     },
     onSettled() {
-      router.refresh()
       setOpen(false)
     },
   })

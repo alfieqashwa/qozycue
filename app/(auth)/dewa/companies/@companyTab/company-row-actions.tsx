@@ -67,14 +67,12 @@ export function CompanyRowActions({
             setOpen={setOpen}
           />
         </UpdateCompany>
-        {status === "success" && (
-          <DropdownMenuItem
-            className="group"
-            onSelect={(e) => e.preventDefault()}
-          >
-            <DeleteCompany id={id} name={name} setOpen={setOpen} />
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem
+          className="group"
+          onSelect={(e) => e.preventDefault()}
+        >
+          <DeleteCompany id={id} name={name} setOpen={setOpen} />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

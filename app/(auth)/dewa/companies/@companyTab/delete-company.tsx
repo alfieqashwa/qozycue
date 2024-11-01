@@ -16,7 +16,6 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { Loader2, Trash } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 type DeleteCompanyProps = {
@@ -26,8 +25,6 @@ type DeleteCompanyProps = {
 }
 
 export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
-  const router = useRouter()
-
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
   const isDewa = me.data?.email === process.env.DEWA_EMAIL
 
@@ -48,7 +45,6 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
       })
     },
     onSettled() {
-      router.refresh()
       setOpen(false)
     },
   })
