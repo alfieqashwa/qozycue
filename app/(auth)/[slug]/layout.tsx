@@ -20,7 +20,6 @@ export default async function SlugLayout({
 
   const { slug } = params
 
-  if (!session) redirect("/signin")
   if (session.user.role === "USER") redirect("/portal")
   if (session.companySlug && slug !== session.companySlug) notFound()
 
