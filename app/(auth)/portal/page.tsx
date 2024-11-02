@@ -21,32 +21,20 @@ export default async function Page() {
     { token: convexAuthNextjsToken() },
   )
 
-  if (!me) redirect("/")
-
   const company = await fetchQuery(
     api.companies.find,
-    { id: me.companyId },
+    { id: me?.companyId },
     { token: convexAuthNextjsToken() },
   )
 
-  // if user already has company, then it redirect to [slug] pages
   if (!!me && !!company) {
-    const slug = company.slug
-
-    switch (me.role) {
-      case "DEWA":
-        redirect("/dewa")
-      case "ADMIN":
-        redirect(`/${encodeURIComponent(slug)}/dashboard/`)
-      case "OWNER":
-        redirect(`/${encodeURIComponent(slug)}/dashboard/`)
-      case "MANAGER":
-        redirect(`/${encodeURIComponent(slug)}/transactions/`)
-      case "CASHIER":
-        redirect(`/${encodeURIComponent(slug)}/tables/`)
-      default:
-        return
-    }
+    if (me.role === "DEWA") redirect("/dewa/")
+    if (me.role === "ADMIN" || me.role === "OWNER")
+      redirect(`/${encodeURIComponent(company.slug)}/dashboard/`)
+    if (me.role === "MANAGER")
+      redirect(`/${encodeURIComponent(company.slug)}/transactions/`)
+    if (me.role === "CASHIER")
+      redirect(`/${encodeURIComponent(company.slug)}/tables/`)
   }
 
   return (
