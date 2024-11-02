@@ -2,16 +2,15 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import { Metadata } from "next"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Dashboard",
 }
 
 export default async function DashboardLayout({
-  params,
   children,
-}: Readonly<{ params: { slug: string }; children: React.ReactNode }>) {
+}: Readonly<{ children: React.ReactNode }>) {
   const session = await fetchQuery(
     api.sessions.find,
     {},
@@ -21,8 +20,6 @@ export default async function DashboardLayout({
   if (["USER", "MANAGER", "CASHIER"].includes(session.user.role ?? "")) {
     redirect("/portal")
   }
-  const { slug } = params
-  if (slug !== session.companySlug) notFound()
 
   return <>{children}</>
 }

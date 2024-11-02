@@ -12,7 +12,6 @@ import {
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
 import { useToggleStore } from "@/store/toggle-store"
-import { Preloaded, usePreloadedQuery } from "convex/react"
 import { FunctionReturnType } from "convex/server"
 import dynamic from "next/dynamic"
 import Link from "next/link"
@@ -34,7 +33,7 @@ const ToggleThemes = dynamic(() => import("./toggle-themes"), {
 type WrapperDashboardProps = {
   linkList: TLinkList[]
   session: FunctionReturnType<typeof api.sessions.find>
-  preloadCompany: Preloaded<typeof api.companies.find>
+  company: FunctionReturnType<typeof api.companies.find>
   className?: string
   children: React.ReactNode
 }
@@ -42,12 +41,10 @@ type WrapperDashboardProps = {
 export function WrapperDashboard({
   linkList,
   session,
-  preloadCompany,
+  company,
   className,
   children,
 }: WrapperDashboardProps) {
-  const company = usePreloadedQuery(preloadCompany)
-
   const store = useToggleStore()
   const pathname = usePathname()
 

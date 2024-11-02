@@ -11,7 +11,6 @@ export default function DashboardPage() {
   const me = useQuery(api.users.me, {})
   const session = useQuery(api.sessions.find, {})
 
-  console.log({ me })
   return (
     <div>
       <h2>Dashboard Page</h2>
