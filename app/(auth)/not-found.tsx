@@ -1,25 +1,23 @@
-import { api } from "@/convex/_generated/api"
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
-import { FaceFrownIcon } from "@heroicons/react/24/outline"
-import { fetchQuery } from "convex/nextjs"
-import { headers } from "next/headers"
-import Link from "next/link"
+"use client"
 
-export default async function NotFound() {
-  const slug = await fetchQuery(
-    api.companies.slug,
-    {},
-    { token: convexAuthNextjsToken() },
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { FaceFrownIcon } from "@heroicons/react/24/outline"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+
+export default function NotFound() {
+  const { data: slug, status } = useTanstackQuery(
+    convexQuery(api.companies.slug, {}),
   )
 
-  const headersList = headers()
-  // read the custom x-url header
-  const fullUrl = headersList.get("referer") ?? ""
+  const pathname = usePathname()
   const href = !!slug
-    ? fullUrl.includes("dewa")
+    ? status === "success" && pathname.includes("dewa")
       ? "/dewa"
       : `/${encodeURIComponent(slug)}/dashboard`
-    : "/portal" // href will be "/portal" for "USER" role.
+    : "/portal"
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-2">
