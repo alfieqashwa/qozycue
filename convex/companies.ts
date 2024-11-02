@@ -3,6 +3,7 @@ import { v } from "convex/values"
 import {
   createCompanySchema,
   createTrialCompanySchema,
+  toggleIsPublishedSchema,
   updateCompanyDewaSchema,
 } from "../types/schema/company-schema"
 import { Id } from "./_generated/dataModel"
@@ -163,6 +164,13 @@ export const remove = mutation({
     if (user?.role !== "DEWA") throw new Error("Don't have access!")
 
     return await ctx.db.delete(args.id)
+  },
+})
+
+export const toggleIsPublished = zMutation({
+  args: { toggleIsPublishedSchema },
+  handler: async (ctx, { toggleIsPublishedSchema: { id, isPublished } }) => {
+    return await ctx.db.patch(id, { isPublished: !isPublished })
   },
 })
 

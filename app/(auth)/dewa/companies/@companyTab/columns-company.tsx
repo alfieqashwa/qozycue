@@ -3,13 +3,13 @@
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Switch } from "@/components/ui/switch"
 import { Doc } from "@/convex/_generated/dataModel"
 import { type ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { Building2, Hash, Layers, Phone } from "lucide-react"
 import { CompanyRowActions } from "./company-row-actions"
+import { ToggleIsPublished } from "./toggle-is-published"
 import { UserList } from "./user-list"
 
 export const columnsCompany: ColumnDef<Doc<"companies">>[] = [
@@ -89,12 +89,10 @@ export const columnsCompany: ColumnDef<Doc<"companies">>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Published ?" />
     ),
-    cell: ({ row }) => (
-      <span className="whitespace-nowrap capitalize">
-        <Switch checked={row.getValue("isPublished")} />
-        {row.getValue("isPublished")}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const { _id, isPublished } = row.original
+      return <ToggleIsPublished id={_id} isPublished={isPublished} />
+    },
   },
   {
     id: "users",
