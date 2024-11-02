@@ -16,7 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { SheetFooter } from "@/components/ui/sheet"
-import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
@@ -29,7 +28,6 @@ import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -38,7 +36,6 @@ export function UpdateCompanyForm({
   name,
   phone,
   location,
-  isPublished,
   subscription,
   setOpen,
 }: {
@@ -46,12 +43,9 @@ export function UpdateCompanyForm({
   name: string
   phone: string
   location: string
-  isPublished: boolean
   subscription: Subscription
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const router = useRouter()
-
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.update),
     onSuccess() {
@@ -66,7 +60,6 @@ export function UpdateCompanyForm({
     },
     onSettled() {
       /* auto-closed the dialog form whether submitting has succeeded or thrown an error  */
-      router.refresh()
       setOpen(false)
     },
   })
@@ -79,14 +72,13 @@ export function UpdateCompanyForm({
       name,
       phone,
       location,
-      isPublished,
       subscription,
     },
   })
 
   // 2. Define a submit handler.
   function onSubmit(values: TUpdateCompanyDewa) {
-    const { name, phone, location, isPublished, subscription } = values
+    const { name, phone, location, subscription } = values
 
     mutate({
       updateCompanyDewaSchema: {
@@ -94,7 +86,6 @@ export function UpdateCompanyForm({
         name: name.toLowerCase(),
         phone,
         location: location.toLowerCase(),
-        isPublished,
         subscription,
       },
     })
@@ -137,24 +128,10 @@ export function UpdateCompanyForm({
             <FormItem>
               <FormLabel>Location</FormLabel>
               <FormControl>
-                <Textarea placeholder="location" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="isPublished"
-          render={({ field }) => (
-            <FormItem className="flex items-end justify-between">
-              <FormLabel>Published?</FormLabel>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  // disabled
-                  // aria-readonly
+                <Textarea
+                  placeholder="location"
+                  className="min-h-20 capitalize"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />

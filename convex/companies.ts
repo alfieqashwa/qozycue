@@ -139,16 +139,7 @@ export const update = zMutation({
   args: { updateCompanyDewaSchema },
   handler: async (
     ctx,
-    {
-      updateCompanyDewaSchema: {
-        id,
-        name,
-        phone,
-        location,
-        isPublished,
-        subscription,
-      },
-    },
+    { updateCompanyDewaSchema: { id, name, phone, location, subscription } },
   ) => {
     const userId = await getAuthUserId(ctx)
     const user = !!userId ? await ctx.db.get(userId) : null
@@ -159,7 +150,6 @@ export const update = zMutation({
       slug: name.replace(/ /g, "-"),
       phone,
       location,
-      isPublished,
       subscription,
     })
   },
@@ -175,6 +165,7 @@ export const remove = mutation({
     return await ctx.db.delete(args.id)
   },
 })
+
 // === Only for Development ===
 
 export const resetAll = mutation({

@@ -22,7 +22,6 @@ type CompanyRowActionProps = {
   name: string
   phone: string
   location: string
-  isPublished: boolean
   subscription: Subscription
 }
 
@@ -31,7 +30,6 @@ export function CompanyRowActions({
   name,
   phone,
   location,
-  isPublished,
   subscription,
 }: CompanyRowActionProps) {
   const [open, setOpen] = useState(false)
@@ -62,7 +60,6 @@ export function CompanyRowActions({
             name={name}
             phone={phone}
             location={location}
-            isPublished={isPublished}
             subscription={subscription}
             setOpen={setOpen}
           />

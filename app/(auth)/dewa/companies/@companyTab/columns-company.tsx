@@ -151,8 +151,7 @@ export const columnsCompany: ColumnDef<Doc<"companies">>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const { _id, name, phone, location, isPublished, subscription } =
-        row.original
+      const { _id, name, phone, location, subscription } = row.original
       return (
         <div className="relative">
           <CompanyRowActions
@@ -160,7 +159,6 @@ export const columnsCompany: ColumnDef<Doc<"companies">>[] = [
             name={name}
             phone={phone}
             location={location}
-            isPublished={isPublished}
             subscription={subscription}
           />
         </div>
