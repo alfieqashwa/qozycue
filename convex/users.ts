@@ -1,6 +1,9 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { query } from "./_generated/server"
+import { zid } from "convex-helpers/server/zod"
 import { v } from "convex/values"
+import { z } from "zod"
+import { mutation, query } from "./_generated/server"
+import { superAdminAuth, zMutation } from "./helpers"
 
 // source -> https://stack.convex.dev/convex-auth
 export const me = query({
@@ -14,7 +17,19 @@ export const me = query({
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("users").collect()
+    await superAdminAuth(ctx, {})
+
+    const users = await ctx.db.query("users").collect()
+    const usersWithCompany = Promise.all(
+      users.map(async (user) => {
+        if (!user.companyId) throw new Error("There's no company")
+        const company = await ctx.db.get(user.companyId)
+
+        return { ...user, companyName: company?.name }
+      }),
+    )
+
+    return usersWithCompany
   },
 })
 
@@ -25,5 +40,33 @@ export const findAllByCompanyId = query({
       .query("users")
       .withIndex("companyId", (q) => q.eq("companyId", args.companyId))
       .collect()
+  },
+})
+
+// === MUTATIONS ===
+
+export const updateRoleAndCompanyId = zMutation({
+  args: {
+    id: zid("users"),
+    role: z
+      .enum(["DEWA", "ADMIN", "OWNER", "MANAGER", "CASHIER", "USER"])
+      .optional(),
+    companyId: zid("companies"),
+  },
+  handler: async (ctx, args) => {
+    await superAdminAuth(ctx, {})
+
+    return await ctx.db.patch(args.id, {
+      role: args.role,
+      companyId: args.companyId,
+    })
+  },
+})
+
+export const remove = mutation({
+  args: { id: v.id("users") },
+  handler: async (ctx, args) => {
+    await superAdminAuth(ctx, {})
+    return await ctx.db.delete(args.id)
   },
 })

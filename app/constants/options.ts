@@ -98,22 +98,22 @@ export const categories = [
 
 export const roles = [
   {
-    value: Role.ADMIN,
+    value: "ADMIN",
     label: "Admin",
     icon: Key,
   },
   {
-    value: Role.OWNER,
+    value: "OWNER",
     label: "Owner",
     icon: Key,
   },
   {
-    value: Role.MANAGER,
+    value: "MANAGER",
     label: "Manager",
     icon: Key,
   },
   {
-    value: Role.CASHIER,
+    value: "CASHIER",
     label: "Cashier",
     icon: Key,
   },

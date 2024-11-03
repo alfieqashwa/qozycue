@@ -13,7 +13,7 @@ export default function CompanyLayout({
   userTab: React.ReactNode
 }) {
   return (
-    <Tabs defaultValue="company" className="mt-2">
+    <Tabs defaultValue="user" className="mt-2">
       <TabsList className="mb-3">
         <TabsTrigger value="company">Companies</TabsTrigger>
         <TabsTrigger value="user">Users</TabsTrigger>

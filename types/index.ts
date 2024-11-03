@@ -1,3 +1,15 @@
+// export enum Role {
+//   DEWA,
+//   ADMIN,
+//   MANAGER,
+//   OWNER,
+//   CASHIER,
+//   USER,
+// }
+
+// const EnumRole = z.nativeEnum(Role)
+// export type TRole = z.infer<typeof EnumRole>
+
 export type Role =
   | "DEWA"
   | "ADMIN"
