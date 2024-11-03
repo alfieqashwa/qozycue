@@ -185,19 +185,20 @@ function SelectRole({
         {isSuperAdmin ? (
           <SelectGroup>
             <SelectLabel>Role</SelectLabel>
-            <SelectItem value="DEWA">DEWA</SelectItem>
-            <SelectItem value="ADMIN">ADMIN</SelectItem>
-            <SelectItem value="MANAGER">MANAGER</SelectItem>
-            <SelectItem value="OWNER">OWNER</SelectItem>
-            <SelectItem value="CASHIER">CASHIER</SelectItem>
+            {["DEWA", "ADMIN", "MANAGER", "OWNER", "CASHIER"].map((role, i) => (
+              <SelectItem value="DEWA" key={`${role}-${i}`}>
+                {role}
+              </SelectItem>
+            ))}
           </SelectGroup>
         ) : (
           <SelectGroup>
             <SelectLabel>Role</SelectLabel>
-            <SelectItem value="ADMIN">ADMIN</SelectItem>
-            <SelectItem value="MANAGER">MANAGER</SelectItem>
-            <SelectItem value="OWNER">OWNER</SelectItem>
-            <SelectItem value="CASHIER">CASHIER</SelectItem>
+            {["ADMIN", "MANAGER", "OWNER", "CASHIER"].map((role, i) => (
+              <SelectItem value="DEWA" key={`${role}-${i}`}>
+                {role}
+              </SelectItem>
+            ))}
           </SelectGroup>
         )}
       </SelectContent>

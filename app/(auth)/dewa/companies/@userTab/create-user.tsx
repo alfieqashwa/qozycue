@@ -8,7 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-// import { CreateUserForm } from "./create-user-form"
+import { CreateUserForm } from "./create-user-form"
 
 export function CreateUser() {
   const [open, setOpen] = useState(false)
@@ -32,7 +32,7 @@ export function CreateUser() {
             Create new user here. Click Create User when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
-        {/* <CreateUserForm setOpen={setOpen} /> */}
+        <CreateUserForm setOpen={setOpen} />
       </SheetContent>
     </Sheet>
   )

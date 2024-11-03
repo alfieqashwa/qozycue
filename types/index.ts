@@ -19,7 +19,7 @@ export type Role =
   | "USER"
   | undefined
 
-export type Subscription = "TRIAL" | "BASIC" | "PRO" | "ENTERPRISE" | undefined
+export type Subscription = "TRIAL" | "BASIC" | "PRO" | "ENTERPRISE"
 // export enum Subscription {
 //   TRIAL,
 //   BASIC,

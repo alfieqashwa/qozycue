@@ -4,6 +4,7 @@ import { v } from "convex/values"
 import { z } from "zod"
 import { mutation, query } from "./_generated/server"
 import { superAdminAuth, zMutation } from "./helpers"
+import { upsertUserSchema } from "../types/schema/user-schema"
 
 // source -> https://stack.convex.dev/convex-auth
 export const me = query({
@@ -60,6 +61,71 @@ export const updateRoleAndCompanyId = zMutation({
       role: args.role,
       companyId: args.companyId,
     })
+  },
+})
+
+// upsertDewa: dewaProcedure
+//   .input(upsertUserSchema)
+//   .mutation(async ({ ctx, input }) => {
+//     function upsertTeam({ email, role, companyId }: TUpsertUser) {
+//       return ctx.db.$transaction(async (tx) => {
+//         const user = await tx.user.findUnique({
+//           where: { email },
+//         })
+
+//         let upsertUser
+
+//         if (!user) {
+//           // if no-user, then createTeam
+//           upsertUser = await tx.user.create({
+//             data: {
+//               email,
+//               role,
+//               companyId,
+//             },
+//           })
+//         } else if (!!user && !user.companyId) {
+//           // this is for user who's already on pending page
+//           upsertUser = await tx.user.update({
+//             where: { email },
+//             data: { role, companyId },
+//           })
+//         } else {
+//           return null
+//         }
+//         return upsertUser
+//       })
+//     }
+//     await upsertTeam(input)
+//   }),
+
+export const upsert = zMutation({
+  args: { upsertUserSchema },
+  handler: async (ctx, { upsertUserSchema: { email, role, companyId } }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", email))
+      .unique()
+
+    let upsert
+
+    if (!user) {
+      // if no-user, then createTeam
+      upsert = await ctx.db.insert("users", {
+        email,
+        role,
+        companyId,
+      })
+    } else if (!!user && !user.companyId) {
+      // this is for user who's already on pending page
+      upsert = await ctx.db.patch(user._id, {
+        role,
+        companyId,
+      })
+    } else {
+      return null
+    }
+    return upsert
   },
 })
 

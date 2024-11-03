@@ -4,12 +4,14 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import { redirect } from "next/navigation"
+import { unstable_noStore as noStore } from "next/cache"
 
 export default async function DewaLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  noStore()
   const session = await fetchQuery(
     api.sessions.find,
     {},

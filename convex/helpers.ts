@@ -35,7 +35,7 @@ export const superAdminAuth = internalQuery({
     const user = userId !== null ? await ctx.db.get(userId) : null
 
     if (user?.email !== process.env.DEWA_EMAIL)
-      throw new Error("Only Super Admin can access!")
+      throw new Error("You do not have access!")
     return
   },
 })

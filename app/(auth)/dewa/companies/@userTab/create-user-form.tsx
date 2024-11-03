@@ -1,9 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-// import { Role, type Subscription } from "@prisma/client"
-import { ToastAction } from "@radix-ui/react-toast"
-import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -20,45 +14,49 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useToast } from "@/components/ui/use-toast"
-// import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
-// import { wait } from "@/lib/wait"
-// import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
+import { Role, Subscription } from "@/types"
 import { upsertUserSchema, type TUpsertUser } from "@/types/schema/user-schema"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function CreateUserForm({
   setOpen,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
+  const { data: profile, status } = useTanstackQuery(
+    convexQuery(api.users.me, {}),
+  )
+  const companies = useTanstackQuery(convexQuery(api.companies.findAll, {}))
 
-  const { data: profile, status } = api.user.me.useQuery()
-  const companies = api.company.findAllDewa.useQuery()
-
-  const upsertUser = api.user.upsertDewa.useMutation({
+  const upsertUser = useMutation({
+    mutationFn: useConvexMutation(api.users.upsert),
     async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast.success("Succeed!", {
         description: "Your new user has been created.",
       })
-      await utils.company.subscriptions.invalidate()
-      router.refresh()
-      await wait().then(() => setOpen(false))
+      setOpen(false)
     },
     onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Uh oh! Something went wrong.", {
         description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
+    },
+    onSettled() {
+      setOpen(false)
     },
   })
 
@@ -67,11 +65,13 @@ export function CreateUserForm({
     resolver: zodResolver(upsertUserSchema),
     defaultValues: {
       email: "",
-      role: Role.USER,
+      role: "USER",
     },
   })
 
-  const subscriptions = api.company.subscriptions.useQuery()
+  const subscriptions = useTanstackQuery(
+    convexQuery(api.companies.subscriptions, { companyId: profile?.companyId }),
+  )
 
   const isValid = validateSubscriptionLimits({
     status: subscriptions.status,
@@ -86,28 +86,24 @@ export function CreateUserForm({
     const { email, role, companyId } = values
 
     if (!isValid) {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      return toast.error("Something went wrong.", {
         description: "Max user limit exceeded",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     }
 
     // avoid user to input his / her own email.
     if (status === "success" && profile?.email === email) {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      return toast.error("Something went wrong.", {
         description: "Please DO NOT input your own email, Dude!",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     }
 
     upsertUser.mutate({
-      email: email.toLowerCase(),
-      role,
-      companyId,
+      upsertUserSchema: {
+        email: email.toLowerCase(),
+        role,
+        companyId,
+      },
     })
   }
 
@@ -144,10 +140,12 @@ export function CreateUserForm({
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value={Role.ADMIN}>{Role.ADMIN}</SelectItem>
-                    <SelectItem value={Role.OWNER}>{Role.OWNER}</SelectItem>
-                    <SelectItem value={Role.MANAGER}>{Role.MANAGER}</SelectItem>
-                    <SelectItem value={Role.CASHIER}>{Role.CASHIER}</SelectItem>
+                    <SelectLabel>Role</SelectLabel>
+                    {["ADMIN", "MANAGER", "OWNER", "CASHIER"].map((role, i) => (
+                      <SelectItem value={role} key={`${role}-${i}`}>
+                        {role}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -178,8 +176,8 @@ export function CreateUserForm({
                     {companies.status === "success" &&
                       companies.data.map((company) => (
                         <SelectItem
-                          value={company.id}
-                          key={company.id}
+                          value={company._id}
+                          key={company._id}
                           className="capitalize"
                         >
                           {company.name}

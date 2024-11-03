@@ -7,7 +7,7 @@ export const userSchema = z.object({
   role: z
     .enum(["DEWA", "ADMIN", "OWNER", "MANAGER", "CASHIER", "USER"])
     .optional(),
-  companyId: z.string().cuid(),
+  companyId: zid("companies"),
 })
 
 export const upsertTeamSchema = userSchema.omit({ id: true, companyId: true })
