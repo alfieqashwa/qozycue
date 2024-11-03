@@ -1,4 +1,14 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -9,14 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
@@ -87,21 +89,20 @@ export function UpdateUser({
     profile?.email !== process.env.DEWA_EMAIL &&
     email === process.env.DEWA_EMAIL
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
         <Button
           disabled={disabled}
-          variant="outline"
+          variant="secondary"
           size="sm"
           className="whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           Edit Role
         </Button>
-      </SheetTrigger>
-      <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
-        <SheetHeader>
-          <SheetTitle>Update User</SheetTitle>
-          <p>
+      </DialogTrigger>
+      <DialogContent className="min-w-full bg-card sm:min-w-[480px]">
+        <DialogHeader>
+          <DialogTitle>
             Edit
             <span
               className={cn("px-1 capitalize text-amber-300", {
@@ -110,10 +111,13 @@ export function UpdateUser({
             >
               {username ?? email}
             </span>
-            user here. Click Update User when you&apos;re done.
-          </p>
-        </SheetHeader>
-        <form className="grid gap-4 py-3" onSubmit={handleSubmit}>
+          </DialogTitle>
+          <DialogDescription>
+            Click <span className="font-semibold">Update User</span> when
+            you&apos;re done.
+          </DialogDescription>
+        </DialogHeader>
+        <form className="grid gap-6 py-4" onSubmit={handleSubmit}>
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="name" className="mb-1">
               Role
@@ -143,29 +147,24 @@ export function UpdateUser({
             {/* // TODO: configure error message */}
             {error?.message}
           </div>
-          <SheetFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setOpen(false)}
+          <DialogFooter className="flex flex-row items-center justify-end space-x-2">
+            <DialogClose
+              className={cn(buttonVariants({ variant: "secondary" }))}
             >
               Cancel
-            </Button>
+            </DialogClose>
             {isPending ? (
-              <Button disabled size="sm">
+              <Button disabled>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
-              <Button type="submit" size="sm">
-                Update User
-              </Button>
+              <Button type="submit">Update User</Button>
             )}
-          </SheetFooter>
+          </DialogFooter>
         </form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -178,7 +177,7 @@ function SelectRole({
 }) {
   return (
     <Select name="role" defaultValue={role as unknown as string}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[200px]">
         <SelectValue placeholder="Select a role" />
       </SelectTrigger>
       <SelectContent>
@@ -186,7 +185,7 @@ function SelectRole({
           <SelectGroup>
             <SelectLabel>Role</SelectLabel>
             {["DEWA", "ADMIN", "MANAGER", "OWNER", "CASHIER"].map((role, i) => (
-              <SelectItem value="DEWA" key={`${role}-${i}`}>
+              <SelectItem value={role} key={`${role}-${i}`}>
                 {role}
               </SelectItem>
             ))}
@@ -195,7 +194,7 @@ function SelectRole({
           <SelectGroup>
             <SelectLabel>Role</SelectLabel>
             {["ADMIN", "MANAGER", "OWNER", "CASHIER"].map((role, i) => (
-              <SelectItem value="DEWA" key={`${role}-${i}`}>
+              <SelectItem value={role} key={`${role}-${i}`}>
                 {role}
               </SelectItem>
             ))}
@@ -213,7 +212,7 @@ function SelectCompany({ companyId }: { companyId: string }) {
 
   return (
     <Select name="companyId" defaultValue={companyId}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[200px]">
         <SelectValue placeholder="Select a role" />
       </SelectTrigger>
       <SelectContent>
