@@ -1,8 +1,13 @@
-import { authTables } from "@convex-dev/auth/server"
-import { internalMutation, mutation, query } from "./_generated/server"
-import { v } from "convex/values"
-import { zCustomMutation, zCustomQuery } from "convex-helpers/server/zod"
+import { authTables, getAuthUserId } from "@convex-dev/auth/server"
 import { NoOp } from "convex-helpers/server/customFunctions"
+import { zCustomMutation, zCustomQuery } from "convex-helpers/server/zod"
+import { v } from "convex/values"
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+} from "./_generated/server"
 
 export const zQuery = zCustomQuery(query, NoOp)
 export const zMutation = zCustomMutation(mutation, NoOp)
@@ -20,5 +25,17 @@ export const reset = internalMutation({
         await ctx.db.delete(_id)
       }
     }
+  },
+})
+
+export const superAdminAuth = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    if (user?.email !== process.env.DEWA_EMAIL)
+      throw new Error("Only Super Admin can access!")
+    return
   },
 })
