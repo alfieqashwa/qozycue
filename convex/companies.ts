@@ -8,7 +8,7 @@ import {
 } from "../types/schema/company-schema"
 import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
-import { reset, zMutation } from "./helpers"
+import { reset, superAdminAuth, zMutation } from "./helpers"
 
 // Make this once, to use anywhere you would have used "query"
 
@@ -26,9 +26,7 @@ export const findPublic = query({
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx)
-    const user = userId !== null ? await ctx.db.get(userId) : null
-    if (user?.role !== "DEWA") throw new Error("Don't have access!")
+    await superAdminAuth(ctx, {})
 
     return await ctx.db.query("companies").collect()
   },
@@ -121,9 +119,7 @@ export const createTrial = zMutation({
 export const create = zMutation({
   args: { createCompanySchema },
   handler: async (ctx, { createCompanySchema: { name, phone, location } }) => {
-    const userId = await getAuthUserId(ctx)
-    const user = !!userId ? await ctx.db.get(userId) : null
-    if (user?.role !== "DEWA") throw new Error("Don't have access!")
+    await superAdminAuth(ctx, {})
 
     return await ctx.db.insert("companies", {
       name,
@@ -142,9 +138,7 @@ export const update = zMutation({
     ctx,
     { updateCompanyDewaSchema: { id, name, phone, location, subscription } },
   ) => {
-    const userId = await getAuthUserId(ctx)
-    const user = !!userId ? await ctx.db.get(userId) : null
-    if (user?.role !== "DEWA") throw new Error("Don't have access!")
+    await superAdminAuth(ctx, {})
 
     return await ctx.db.patch(id, {
       name,
@@ -159,9 +153,7 @@ export const update = zMutation({
 export const remove = mutation({
   args: { id: v.id("companies") },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    const user = !!userId ? await ctx.db.get(userId) : null
-    if (user?.role !== "DEWA") throw new Error("Don't have access!")
+    await superAdminAuth(ctx, {})
 
     return await ctx.db.delete(args.id)
   },
