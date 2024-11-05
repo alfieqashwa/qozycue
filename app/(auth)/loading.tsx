@@ -1,6 +1,6 @@
 import { GiPoolTriangle } from "react-icons/gi"
 
-export default function Loading() {
+export default function LoadingTriangle() {
   return (
     <div className="grid min-h-screen w-full place-items-center">
       <GiPoolTriangle

@@ -13,13 +13,13 @@ export default function CompanyLayout({
   userTab: React.ReactNode
 }) {
   return (
-    <Tabs defaultValue="user" className="mt-2">
+    <Tabs defaultValue="companies" className="mt-2">
       <TabsList className="mb-3">
-        <TabsTrigger value="company">Companies</TabsTrigger>
-        <TabsTrigger value="user">Users</TabsTrigger>
+        <TabsTrigger value="companies">Companies</TabsTrigger>
+        <TabsTrigger value="users">Users</TabsTrigger>
       </TabsList>
-      <TabsContent value="company">{companyTab}</TabsContent>
-      <TabsContent value="user">{userTab}</TabsContent>
+      <TabsContent value="companies">{companyTab}</TabsContent>
+      <TabsContent value="users">{userTab}</TabsContent>
     </Tabs>
   )
 }
