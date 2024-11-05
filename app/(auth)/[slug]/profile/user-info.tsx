@@ -68,8 +68,8 @@ export function UserInfo({
               {userWithCompany.user?.email ===
               process.env.NEXT_PUBLIC_DEWA_EMAIL ? (
                 <UpdateUserRoleForMeOnly
-                  userId={userWithCompany.user?._id}
-                  userRole={userWithCompany.user?.role}
+                  id={userWithCompany.user?._id!}
+                  role={userWithCompany.user?.role}
                 />
               ) : (
                 <p className="text-muted-foreground">

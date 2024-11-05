@@ -1,6 +1,10 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { v } from "convex/values"
-import { updateUserSchema, upsertUserSchema } from "../types/schema/user-schema"
+import {
+  updateRoleByIdOnlyForSuperAminSchema,
+  updateUserSchema,
+  upsertUserSchema,
+} from "../types/schema/user-schema"
 import { mutation, query } from "./_generated/server"
 import { superAdminProcedure, zMutation } from "./helpers"
 
@@ -69,6 +73,16 @@ export const updateRoleAndCompanyId = zMutation({
       role,
       companyId,
     })
+  },
+})
+export const updateRoleByIdOnlyForSuperAmin = zMutation({
+  args: { updateRoleByIdOnlyForSuperAminSchema },
+  handler: async (
+    ctx,
+    { updateRoleByIdOnlyForSuperAminSchema: { id, role } },
+  ) => {
+    await superAdminProcedure(ctx, {})
+    return await ctx.db.patch(id, { role })
   },
 })
 

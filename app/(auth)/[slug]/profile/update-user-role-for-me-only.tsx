@@ -1,5 +1,3 @@
-import { Role } from "@prisma/client"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -10,38 +8,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { Role } from "@/types"
+import { TUpdateRoleByIdOnlyForSuperAmin } from "@/types/schema/user-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 export function UpdateUserRoleForMeOnly({
-  userId,
-  userRole,
-}: {
-  userId?: string
-  userRole?: string
-}) {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-  const router = useRouter()
-
-  const { mutate, isPending } = api.user.updateRoleByIdOnlyForMe.useMutation({
+  id,
+  role,
+}: TUpdateRoleByIdOnlyForSuperAmin) {
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.users.updateRoleByIdOnlyForSuperAmin),
     async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast.success("Succeed!", {
         description: "Role has been updated.",
       })
-      await utils.user.find.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-      router.refresh()
     },
     onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Something went wrong.", {
         description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     },
   })
@@ -53,25 +40,27 @@ export function UpdateUserRoleForMeOnly({
     const role = formData.get("role") as Role
 
     mutate({
-      id: userId as string,
-      role,
+      updateRoleByIdOnlyForSuperAminSchema: {
+        id,
+        role,
+      },
     })
   }
 
   return (
     <form onSubmit={updateRole} className="mt-2 flex items-center space-x-4">
-      <Select name="role" defaultValue={userRole}>
+      <Select name="role" defaultValue={role}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select a role" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Role</SelectLabel>
-            <SelectItem value={Role.DEWA}>{Role.DEWA}</SelectItem>
-            <SelectItem value={Role.ADMIN}>{Role.ADMIN}</SelectItem>
-            <SelectItem value={Role.MANAGER}>{Role.MANAGER}</SelectItem>
-            <SelectItem value={Role.OWNER}>{Role.OWNER}</SelectItem>
-            <SelectItem value={Role.CASHIER}>{Role.CASHIER}</SelectItem>
+            {["DEWA", "ADMIN", "OWNER", "MANAGER", "CASHIER"].map((role, i) => (
+              <SelectItem value={role} key={`${i}-${role}`}>
+                {role}
+              </SelectItem>
+            ))}
           </SelectGroup>
         </SelectContent>
       </Select>
