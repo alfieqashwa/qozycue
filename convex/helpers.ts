@@ -12,7 +12,7 @@ import {
 export const zQuery = zCustomQuery(query, NoOp)
 export const zMutation = zCustomMutation(mutation, NoOp)
 
-export const protectedAuth = internalQuery({
+export const protectedProcedure = internalQuery({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
@@ -22,7 +22,7 @@ export const protectedAuth = internalQuery({
   },
 })
 
-export const superAdminAuth = internalQuery({
+export const superAdminProcedure = internalQuery({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
@@ -34,7 +34,7 @@ export const superAdminAuth = internalQuery({
   },
 })
 
-export const adminAuth = internalQuery({
+export const adminProcedure = internalQuery({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
