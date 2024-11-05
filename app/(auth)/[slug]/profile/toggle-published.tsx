@@ -1,9 +1,12 @@
 "use client"
 
 import { Switch } from "@/components/ui/switch"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-// import { api, type RouterOutputs } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { FunctionReturnType } from "convex/server"
+import { toast } from "sonner"
 
 export const TogglePublished = ({
   companyId,
@@ -11,18 +14,15 @@ export const TogglePublished = ({
   isPublished,
   countAllBooking,
 }: {
-  companyId: string
+  companyId: Id<"companies">
   companyName: string
   isPublished: boolean
-  countAllBooking: RouterOutputs["order"]["countAllBooking"]
+  countAllBooking: FunctionReturnType<typeof api.orders.findAll>
 }) => {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-  const { mutate, isPending } = api.company.toggleIsPublishedAdmin.useMutation({
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.companies.toggleIsPublished),
     async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast.success("Succeed!", {
         description: (
           <p className="capitalize">
             {isPublished ? "unpublished" : "published"}{" "}
@@ -30,14 +30,10 @@ export const TogglePublished = ({
           </p>
         ),
       })
-      await utils.user.find.invalidate()
     },
     onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Something went wrong.", {
         description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     },
   })
@@ -48,8 +44,10 @@ export const TogglePublished = ({
       checked={isPublished}
       onCheckedChange={() =>
         mutate({
-          companyId,
-          isPublished: !isPublished,
+          toggleIsPublishedSchema: {
+            id: companyId,
+            isPublished,
+          },
         })
       }
     />
