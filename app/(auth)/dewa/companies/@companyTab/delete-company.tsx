@@ -26,7 +26,9 @@ type DeleteCompanyProps = {
 
 export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
-  const isDewa = me.data?.email === process.env.DEWA_EMAIL
+  const isSuperAdmin =
+    me.status === "success" &&
+    me.data?.email === process.env.NEXT_PUBLIC_SUPER_ADMIN
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.remove),
@@ -58,7 +60,7 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
   return (
     <Dialog>
       <DialogTrigger
-        disabled={isDewa}
+        disabled={!isSuperAdmin}
         className="flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
       >
         <Trash className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />

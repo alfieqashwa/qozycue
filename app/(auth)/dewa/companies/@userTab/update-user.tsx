@@ -33,17 +33,11 @@ export function UpdateUser({
 }: UpdateUserProps) {
   const [open, setOpen] = useState(false)
 
-  const profile = useTanstackQuery(convexQuery(api.users.me, {}))
-
-  const disabled =
-    profile.status === "success" &&
-    profile.data?.email !== process.env.DEWA_EMAIL &&
-    email === process.env.DEWA_EMAIL
+  const isSuperAdmin = email === process.env.NEXT_PUBLIC_SUPER_ADMIN
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={disabled}
           variant="secondary"
           size="sm"
           className="whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
@@ -73,6 +67,7 @@ export function UpdateUser({
           role={role}
           companyId={companyId}
           setOpen={setOpen}
+          isSuperAdmin={isSuperAdmin}
         />
       </DialogContent>
     </Dialog>

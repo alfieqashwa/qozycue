@@ -34,6 +34,7 @@ import { toast } from "sonner"
 
 type UpdateUserFormProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  isSuperAdmin: boolean
 } & TUpdateUser
 
 export function UpdateUserForm({
@@ -41,6 +42,7 @@ export function UpdateUserForm({
   role,
   companyId,
   setOpen,
+  isSuperAdmin,
 }: UpdateUserFormProps) {
   const companies = useTanstackQuery(convexQuery(api.companies.findAll, {}))
 
@@ -102,14 +104,29 @@ export function UpdateUserForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Role</SelectLabel>
-                    {["ADMIN", "MANAGER", "OWNER", "CASHIER"].map((role, i) => (
-                      <SelectItem value={role} key={`${role}-${i}`}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
+                  {isSuperAdmin ? (
+                    <SelectGroup>
+                      <SelectLabel>Role</SelectLabel>
+                      {["DEWA", "ADMIN", "MANAGER", "OWNER", "CASHIER"].map(
+                        (role, i) => (
+                          <SelectItem value={role} key={`${role}-${i}`}>
+                            {role}
+                          </SelectItem>
+                        ),
+                      )}
+                    </SelectGroup>
+                  ) : (
+                    <SelectGroup>
+                      <SelectLabel>Role</SelectLabel>
+                      {["ADMIN", "MANAGER", "OWNER", "CASHIER"].map(
+                        (role, i) => (
+                          <SelectItem value={role} key={`${role}-${i}`}>
+                            {role}
+                          </SelectItem>
+                        ),
+                      )}
+                    </SelectGroup>
+                  )}
                 </SelectContent>
               </Select>
               <FormDescription className="pt-2">

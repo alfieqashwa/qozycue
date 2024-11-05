@@ -59,7 +59,7 @@ export function DeleteUser({ id, email }: Props) {
   // avoid user (admin) to delete his / her own account
   const disabled =
     (status === "success" && profile?._id === id) ||
-    email === process.env.DEWA_EMAIL
+    email === process.env.NEXT_PUBLIC_SUPER_ADMIN
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
