@@ -71,6 +71,7 @@ export function CreateTeamForm({
     }),
   })
 
+  // TODOS: move this validation logic into internal api
   const isValid = validateSubscriptionLimits({
     status: subscriptions.status,
     subscription: subscriptions.data?.subscription as Subscription,
@@ -100,6 +101,7 @@ export function CreateTeamForm({
       upsertUserSchema: {
         email: email.toLowerCase(),
         role,
+        companyId: profile?.companyId,
       },
     })
   }

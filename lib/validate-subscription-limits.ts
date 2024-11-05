@@ -35,7 +35,7 @@ export function validateSubscriptionLimits({
       PRO: undefined,
       ENTERPRISE: undefined,
     }, // No limits for BASIC and PRO
-    user: { TRIAL: 3, BASIC: 5, PRO: 10, ENTERPRISE: undefined },
+    user: { TRIAL: 4, BASIC: 5, PRO: 10, ENTERPRISE: undefined },
   }
 
   // Validation logic

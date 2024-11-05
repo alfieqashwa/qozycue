@@ -82,6 +82,7 @@ export const slug = query({
 // }),
 
 //? this API will be used to validate the client based on its subscriptions.
+// TODO: Check bug
 export const subscriptions = query({
   args: { companyId: v.optional(v.id("companies")) },
   handler: async (ctx, { companyId }) => {
