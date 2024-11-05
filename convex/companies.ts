@@ -8,8 +8,13 @@ import {
 } from "../types/schema/company-schema"
 import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
-import { reset, superAdminAuth, zMutation } from "./helpers"
-import { useSyncExternalStore } from "react"
+import {
+  adminAuth,
+  protectedAuth,
+  reset,
+  superAdminAuth,
+  zMutation,
+} from "./helpers"
 
 // Make this once, to use anywhere you would have used "query"
 
@@ -36,11 +41,9 @@ export const findAll = query({
 export const find = query({
   args: { id: v.optional(v.id("companies")) },
   handler: async (ctx, { id }) => {
+    await protectedAuth(ctx, {})
+
     if (!id) return
-
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw new Error("Don't have access!")
-
     const company = await ctx.db.get(id)
     return company
   },
@@ -53,7 +56,7 @@ export const slug = query({
     const user = userId !== null ? await ctx.db.get(userId) : null
 
     const company =
-      !user || !user.companyId ? null : await ctx.db.get(user.companyId)
+      !!user && !!user.companyId ? await ctx.db.get(user.companyId) : null
 
     return company?.slug // slug type -> string | undefined is as expected
   },
@@ -77,9 +80,12 @@ export const slug = query({
 //   })
 // }),
 
+//? this API will be used to validate the client based on its subscriptions.
 export const subscriptions = query({
   args: { companyId: v.optional(v.id("companies")) },
   handler: async (ctx, { companyId }) => {
+    await superAdminAuth(ctx, {})
+
     if (!companyId) throw new Error("No company!")
     const company = await ctx.db.get(companyId)
 
@@ -215,6 +221,7 @@ export const remove = mutation({
 export const toggleIsPublished = zMutation({
   args: { toggleIsPublishedSchema },
   handler: async (ctx, { toggleIsPublishedSchema: { id, isPublished } }) => {
+    await adminAuth(ctx, {})
     return await ctx.db.patch(id, { isPublished: !isPublished })
   },
 })
@@ -224,6 +231,7 @@ export const toggleIsPublished = zMutation({
 export const resetAll = mutation({
   args: { forReal: v.string() },
   handler: async (ctx, args) => {
+    await superAdminAuth(ctx, {})
     return await reset(ctx, { forReal: args.forReal })
   },
 })

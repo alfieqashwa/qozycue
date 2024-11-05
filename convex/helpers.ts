@@ -12,6 +12,40 @@ import {
 export const zQuery = zCustomQuery(query, NoOp)
 export const zMutation = zCustomMutation(mutation, NoOp)
 
+export const protectedAuth = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+
+    if (!userId) throw new Error("Please signed in!")
+    return
+  },
+})
+
+export const superAdminAuth = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    if (user?.email !== process.env.DEWA_EMAIL)
+      throw new Error("You do not have access!")
+    return
+  },
+})
+
+export const adminAuth = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    if (user?.role !== "DEWA" && user?.role !== "ADMIN")
+      throw new Error("You do not have access!")
+    return
+  },
+})
+
 // Deletes all auth-related data.
 // Just for demoing purposes, feel free to delete.
 export const reset = internalMutation({
@@ -25,17 +59,5 @@ export const reset = internalMutation({
         await ctx.db.delete(_id)
       }
     }
-  },
-})
-
-export const superAdminAuth = internalQuery({
-  args: {},
-  handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx)
-    const user = userId !== null ? await ctx.db.get(userId) : null
-
-    if (user?.email !== process.env.DEWA_EMAIL)
-      throw new Error("You do not have access!")
-    return
   },
 })
