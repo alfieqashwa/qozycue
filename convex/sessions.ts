@@ -1,12 +1,12 @@
 import { getAuthSessionId } from "@convex-dev/auth/server"
 import { Id } from "./_generated/dataModel"
 import { query } from "./_generated/server"
-import { superAdminAuth } from "./helpers"
+import { superAdminProcedure } from "./helpers"
 
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
     return await ctx.db.query("authSessions").collect()
   },
 })

@@ -9,10 +9,10 @@ import {
 import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
 import {
-  adminAuth,
-  protectedAuth,
+  adminProcedure,
+  protectedProcedure,
   reset,
-  superAdminAuth,
+  superAdminProcedure,
   zMutation,
 } from "./helpers"
 
@@ -32,7 +32,7 @@ export const findPublic = query({
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
 
     return await ctx.db.query("companies").collect()
   },
@@ -41,7 +41,7 @@ export const findAll = query({
 export const find = query({
   args: { id: v.optional(v.id("companies")) },
   handler: async (ctx, { id }) => {
-    await protectedAuth(ctx, {})
+    await protectedProcedure(ctx, {})
 
     if (!id) return
     const company = await ctx.db.get(id)
@@ -84,7 +84,7 @@ export const slug = query({
 export const subscriptions = query({
   args: { companyId: v.optional(v.id("companies")) },
   handler: async (ctx, { companyId }) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
 
     if (!companyId) throw new Error("No company!")
     const company = await ctx.db.get(companyId)
@@ -178,7 +178,7 @@ export const createTrial = zMutation({
 export const create = zMutation({
   args: { createCompanySchema },
   handler: async (ctx, { createCompanySchema: { name, phone, location } }) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
 
     return await ctx.db.insert("companies", {
       name,
@@ -197,7 +197,7 @@ export const update = zMutation({
     ctx,
     { updateCompanyDewaSchema: { id, name, phone, location, subscription } },
   ) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
 
     return await ctx.db.patch(id, {
       name,
@@ -212,7 +212,7 @@ export const update = zMutation({
 export const remove = mutation({
   args: { id: v.id("companies") },
   handler: async (ctx, args) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
 
     return await ctx.db.delete(args.id)
   },
@@ -221,7 +221,7 @@ export const remove = mutation({
 export const toggleIsPublished = zMutation({
   args: { toggleIsPublishedSchema },
   handler: async (ctx, { toggleIsPublishedSchema: { id, isPublished } }) => {
-    await adminAuth(ctx, {})
+    await adminProcedure(ctx, {})
     return await ctx.db.patch(id, { isPublished: !isPublished })
   },
 })
@@ -231,7 +231,7 @@ export const toggleIsPublished = zMutation({
 export const resetAll = mutation({
   args: { forReal: v.string() },
   handler: async (ctx, args) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
     return await reset(ctx, { forReal: args.forReal })
   },
 })

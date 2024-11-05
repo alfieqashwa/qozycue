@@ -2,7 +2,7 @@ import { getAuthUserId } from "@convex-dev/auth/server"
 import { v } from "convex/values"
 import { updateUserSchema, upsertUserSchema } from "../types/schema/user-schema"
 import { mutation, query } from "./_generated/server"
-import { superAdminAuth, zMutation } from "./helpers"
+import { superAdminProcedure, zMutation } from "./helpers"
 
 // source -> https://stack.convex.dev/convex-auth
 export const me = query({
@@ -13,10 +13,26 @@ export const me = query({
   },
 })
 
+export const findUserWithCompany = query({
+  args: {
+    userId: v.optional(v.id("users")),
+    companyId: v.optional(v.id("companies")),
+  },
+  handler: async (ctx, args) => {
+    if (!args.userId || !args.companyId)
+      throw new Error("No User ID nor Company ID was provided!")
+
+    const user = await ctx.db.get(args.userId)
+    const company = await ctx.db.get(args.companyId)
+
+    return { user, company }
+  },
+})
+
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
 
     const users = await ctx.db.query("users").collect()
     const usersWithCompany = Promise.all(
@@ -47,7 +63,7 @@ export const findAllByCompanyId = query({
 export const updateRoleAndCompanyId = zMutation({
   args: { updateUserSchema },
   handler: async (ctx, { updateUserSchema: { id, role, companyId } }) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
 
     return await ctx.db.patch(id, {
       role,
@@ -124,7 +140,7 @@ export const upsert = zMutation({
 export const remove = mutation({
   args: { id: v.id("users") },
   handler: async (ctx, args) => {
-    await superAdminAuth(ctx, {})
+    await superAdminProcedure(ctx, {})
     return await ctx.db.delete(args.id)
   },
 })
