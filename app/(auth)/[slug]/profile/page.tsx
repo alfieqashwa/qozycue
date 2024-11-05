@@ -1,13 +1,12 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { api } from "@/convex/_generated/api"
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
+import { fetchQuery } from "convex/nextjs"
 import { type Metadata } from "next"
 import { unstable_noStore as noStore } from "next/cache"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-// import { getServerAuthSession } from "~/server/auth"
 import { ContactDeveloperWhatsapp } from "./contact-developer-whatsapp"
 import { TeamInfo } from "./team-info"
 import { UserInfo } from "./user-info"
-import { fetchQuery } from "convex/nextjs"
-import { api } from "@/convex/_generated/api"
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 
 export const metadata: Metadata = {
   title: "Profile",

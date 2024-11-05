@@ -1,7 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2, Pencil } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -22,14 +18,20 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ToastAction } from "@/components/ui/toast"
-import { toast } from "@/components/ui/use-toast"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
-import { api } from "@/trpc/react"
 import {
-  type TUpdateCompanyAdmin,
-  updateCompanyAdminSchema,
+  TUpdateCompanyByAdmin,
+  updateCompanyByAdminSchema,
 } from "@/types/schema/company-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { Loader2, Pencil } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function UpdateCompanyInfo({
   isAdmin,
@@ -39,36 +41,32 @@ export function UpdateCompanyInfo({
   className,
 }: {
   isAdmin: boolean
-  companyId: string
+  companyId: Id<"companies">
   phone: string
   location: string
   className?: string
 }) {
   const [open, setOpen] = useState(false)
 
-  const utils = api.useUtils()
-  const { mutate, isPending } = api.company.updateAdmin.useMutation({
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.companies.updateByAdmin),
     async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast("Succeed!", {
         description: "Create new order.",
       })
-      await utils.user.find.invalidate()
-      setOpen(false)
     },
     onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Something went wrong.", {
         description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
+    },
+    onSettled() {
+      setOpen(false)
     },
   })
 
-  const form = useForm<TUpdateCompanyAdmin>({
-    resolver: zodResolver(updateCompanyAdminSchema),
+  const form = useForm<TUpdateCompanyByAdmin>({
+    resolver: zodResolver(updateCompanyByAdminSchema),
     defaultValues: {
       id: companyId,
       phone,
@@ -76,13 +74,15 @@ export function UpdateCompanyInfo({
     },
   })
 
-  function onSubmit(values: TUpdateCompanyAdmin) {
+  function onSubmit(values: TUpdateCompanyByAdmin) {
     const { phone, location } = values
 
     mutate({
-      id: companyId,
-      phone,
-      location: location.toLowerCase(),
+      updateCompanyByAdminSchema: {
+        id: companyId,
+        phone,
+        location: location.toLowerCase(),
+      },
     })
   }
 

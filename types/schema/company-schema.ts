@@ -53,6 +53,13 @@ export const updateCompanyDewaSchema = companySchema.omit({
 })
 export type TUpdateCompanyDewa = z.infer<typeof updateCompanyDewaSchema>
 
+export const updateCompanyByAdminSchema = companySchema.pick({
+  id: true,
+  phone: true,
+  location: true,
+})
+export type TUpdateCompanyByAdmin = z.infer<typeof updateCompanyByAdminSchema>
+
 export const toggleIsPublishedSchema = companySchema.pick({
   id: true,
   isPublished: true,

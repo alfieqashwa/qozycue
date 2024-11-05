@@ -4,6 +4,7 @@ import {
   createCompanySchema,
   createTrialCompanySchema,
   toggleIsPublishedSchema,
+  updateCompanyByAdminSchema,
   updateCompanyDewaSchema,
 } from "../types/schema/company-schema"
 import { Id } from "./_generated/dataModel"
@@ -205,6 +206,21 @@ export const update = zMutation({
       phone,
       location,
       subscription,
+    })
+  },
+})
+
+export const updateByAdmin = zMutation({
+  args: { updateCompanyByAdminSchema },
+  handler: async (
+    ctx,
+    { updateCompanyByAdminSchema: { id, phone, location } },
+  ) => {
+    await adminProcedure(ctx, {})
+
+    return await ctx.db.patch(id, {
+      phone,
+      location,
     })
   },
 })
