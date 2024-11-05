@@ -11,8 +11,12 @@ import { Building2, Hash, Layers, Phone } from "lucide-react"
 import { CompanyRowActions } from "./company-row-actions"
 import { ToggleIsPublished } from "./toggle-is-published"
 import { UserList } from "./user-list"
+import { FunctionReturnType } from "convex/server"
+import { api } from "@/convex/_generated/api"
 
-export const columnsCompany: ColumnDef<Doc<"companies">>[] = [
+export const columnsCompany: ColumnDef<
+  FunctionReturnType<typeof api.companies.findAll>[0]
+>[] = [
   {
     id: "select",
     header: ({ table }) => (
