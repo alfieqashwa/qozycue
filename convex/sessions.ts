@@ -1,7 +1,8 @@
 import { getAuthSessionId } from "@convex-dev/auth/server"
+import { v } from "convex/values"
 import { Id } from "./_generated/dataModel"
-import { query } from "./_generated/server"
-import { superAdminProcedure } from "./helpers"
+import { mutation, query } from "./_generated/server"
+import { adminProcedure, superAdminProcedure } from "./helpers"
 
 export const findAll = query({
   args: {},
@@ -31,5 +32,25 @@ export const find = query({
         ...currentUser,
       },
     }
+  },
+})
+
+export const deleteAllByUserId = mutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    await adminProcedure(ctx, {})
+
+    const sessions = await ctx.db
+      .query("authSessions")
+      .withIndex("userId", (q) => q.eq("userId", args.userId))
+      .collect()
+
+    const removeAllSessions = Promise.all(
+      sessions.map(async (session) => {
+        return await ctx.db.delete(session._id)
+      }),
+    )
+
+    return removeAllSessions
   },
 })

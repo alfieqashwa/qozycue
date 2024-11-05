@@ -113,7 +113,12 @@ export function UpdateCompanyInfo({
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Phone" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Phone"
+                      className="w-[200px]"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,7 +134,7 @@ export function UpdateCompanyInfo({
                     <Textarea
                       placeholder="Location"
                       {...field}
-                      className="capitalize"
+                      className="min-h-32 capitalize"
                     />
                   </FormControl>
                   <FormMessage />

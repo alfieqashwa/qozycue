@@ -1,22 +1,21 @@
 "use client"
 
+import { ActiveUser } from "@/app/(auth)/dewa/companies/@userTab/active-user"
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
+import { Checkbox } from "@/components/ui/checkbox"
+import { api } from "@/convex/_generated/api"
 import type { ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { Building2, Key, Mail, User } from "lucide-react"
 import Image from "next/image"
-import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { cn } from "@/lib/utils"
-import { api } from "@/trpc/react"
-import { type RouterOutputs } from "@/trpc/react"
 import { DeleteTeam } from "./delete-team"
 import { ResetSession } from "./reset-session"
 import { UpdateTeam } from "./update-team"
 
 export const columnsTeam: ColumnDef<
-  RouterOutputs["user"]["findAllByCompanyId"][0]
+  FunctionReturnType<typeof api.users.findAllByCompanyId>[0]
 >[] = [
   {
     id: "select",
@@ -83,28 +82,9 @@ export const columnsTeam: ColumnDef<
     ),
     cell: ({ row }) => {
       const {
-        original: { id, name },
+        original: { _id, name },
       } = row
-
-      const { data: sessions, status } =
-        api.session.findAllByCompanyId.useQuery()
-      const hasActiveUser =
-        status === "success" && sessions?.some((active) => active.userId === id)
-
-      return (
-        <Badge
-          variant="secondary"
-          className={cn(
-            "px-3 py-1.5",
-            hasActiveUser ? "text-amber-300" : "text-muted-foreground",
-          )}
-        >
-          <User className="mr-2 h-4 w-4" />
-          <span className="whitespace-nowrap capitalize">
-            {name ?? "pending"}
-          </span>
-        </Badge>
-      )
+      return <ActiveUser id={_id} name={name} />
     },
   },
   {
@@ -139,72 +119,62 @@ export const columnsTeam: ColumnDef<
     },
   },
   {
-    accessorKey: "company",
+    accessorKey: "companyName",
+    accessorFn: (row) => row.companyName,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Company" />
     ),
     cell: ({ row }) => {
-      const companyName = row.original.company?.name
-      if (!companyName) return null
       return (
         <div className="flex items-center">
           <Building2 className="mr-2 h-4 w-4 text-muted-foreground" />
-          <span className="whitespace-nowrap capitalize">{companyName}</span>
+          <span className="whitespace-nowrap capitalize">
+            {row.getValue("companyName")}
+          </span>
         </div>
       )
     },
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "_creationTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">
-        {format(row.getValue("createdAt"), "PPPPpp", { locale: id })}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
-    ),
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">
-        {format(row.getValue("updatedAt"), "PPPPpp", { locale: id })}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const timestamp = row.getValue("_creationTime")
+      const createdAt = format(new Date(timestamp as Date), "PPPPpp", {
+        locale: id,
+      })
+      return <div className="whitespace-nowrap">{createdAt}</div>
+    },
   },
   {
     id: "reset",
     cell: ({ row }) => {
       const {
-        original: { id, email },
+        original: { _id, email },
       } = row
 
-      return <ResetSession userId={id} email={email} />
+      return <ResetSession userId={_id} email={email} />
     },
   },
   {
     id: "update",
     cell: ({ row }) => {
       const {
-        original: { id, name, email, role },
+        original: { _id, name, email, role },
       } = row
 
-      return (
-        <UpdateTeam id={id} username={name} email={email} currentRole={role} />
-      )
+      return <UpdateTeam id={_id} name={name} email={email} role={role} />
     },
   },
   {
     id: "delete",
     cell: ({ row }) => {
       const {
-        original: { id, email },
+        original: { _id, email },
       } = row
-      return <DeleteTeam id={id} email={email} />
+      return <DeleteTeam id={_id} email={email} />
     },
   },
 ]

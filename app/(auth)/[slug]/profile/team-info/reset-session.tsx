@@ -1,5 +1,3 @@
-import { Loader2 } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,41 +8,41 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { env } from "@/env"
-import { api } from "@/trpc/react"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
+import { useState } from "react"
+
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { toast } from "sonner"
 
 export function ResetSession({
   userId,
   email,
 }: {
-  userId: string
-  email: string | null
+  userId: Id<"users">
+  email: string | undefined
 }) {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
   const [open, setOpen] = useState(false)
 
-  const { mutate, isPending } = api.session.deleteAllByUserId.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.sessions.deleteAllByUserId),
+    onSuccess() {
+      toast.success("Succeed!", {
         description: "Your Team has been resetted.",
       })
-      await utils.session.findAllByCompanyId.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
     },
     onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast.error("Something went wrong!", {
         description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
+    },
+    onSettled() {
+      setOpen(false)
     },
   })
 
@@ -56,8 +54,9 @@ export function ResetSession({
     })
   }
 
-  const me = api.user.me.useQuery()
-  const disabled = email === env.NEXT_PUBLIC_DEWA || email === me.data?.email
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const disabled =
+    email === process.env.NEXT_PUBLIC_SUPER_ADMIN || email === me.data?.email
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

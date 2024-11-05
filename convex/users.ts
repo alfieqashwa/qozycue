@@ -2,11 +2,17 @@ import { getAuthUserId } from "@convex-dev/auth/server"
 import { v } from "convex/values"
 import {
   updateRoleByIdOnlyForSuperAminSchema,
+  updateRoleByIdSchema,
   updateUserSchema,
   upsertUserSchema,
 } from "../types/schema/user-schema"
 import { mutation, query } from "./_generated/server"
-import { superAdminProcedure, zMutation } from "./helpers"
+import {
+  adminProcedure,
+  protectedProcedure,
+  superAdminProcedure,
+  zMutation,
+} from "./helpers"
 
 // source -> https://stack.convex.dev/convex-auth
 export const me = query({
@@ -55,10 +61,22 @@ export const findAll = query({
 export const findAllByCompanyId = query({
   args: { companyId: v.id("companies") },
   handler: async (ctx, args) => {
-    return await ctx.db
+    await protectedProcedure(ctx, {})
+
+    const usersByCompanyId = await ctx.db
       .query("users")
       .withIndex("companyId", (q) => q.eq("companyId", args.companyId))
       .collect()
+    const usersIncludeCompanyName = Promise.all(
+      usersByCompanyId.map(async (user) => {
+        const company = !!user.companyId
+          ? await ctx.db.get(user.companyId)
+          : null
+
+        return { ...user, companyName: company?.name ?? "" }
+      }),
+    )
+    return usersIncludeCompanyName
   },
 })
 
@@ -82,6 +100,14 @@ export const updateRoleByIdOnlyForSuperAmin = zMutation({
     { updateRoleByIdOnlyForSuperAminSchema: { id, role } },
   ) => {
     await superAdminProcedure(ctx, {})
+    return await ctx.db.patch(id, { role })
+  },
+})
+
+export const updateRoleByIdAdminProcedure = zMutation({
+  args: { updateRoleByIdSchema },
+  handler: async (ctx, { updateRoleByIdSchema: { id, role } }) => {
+    await adminProcedure(ctx, {})
     return await ctx.db.patch(id, { role })
   },
 })
@@ -155,6 +181,13 @@ export const remove = mutation({
   args: { id: v.id("users") },
   handler: async (ctx, args) => {
     await superAdminProcedure(ctx, {})
+    return await ctx.db.delete(args.id)
+  },
+})
+export const removeAdminProcedure = mutation({
+  args: { id: v.id("users") },
+  handler: async (ctx, args) => {
+    await adminProcedure(ctx, {})
     return await ctx.db.delete(args.id)
   },
 })

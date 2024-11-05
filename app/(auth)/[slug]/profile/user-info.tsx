@@ -7,15 +7,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Building2, LayoutTemplate, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { TogglePublished } from "./toggle-published"
 import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
-import { convexQuery } from "@convex-dev/react-query"
-import { api } from "@/convex/_generated/api"
-import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { Id } from "@/convex/_generated/dataModel"
 
 export function UserInfo({
   isAdmin,
@@ -53,7 +53,7 @@ export function UserInfo({
             <article>
               <h2 className="text-primary">Email</h2>
               <p className="text-muted-foreground">
-                {userWithCompany.user?.image}
+                {userWithCompany.user?.email}
               </p>
             </article>
             <article>
@@ -120,7 +120,7 @@ export function UserInfo({
                       companyId={userWithCompany.company._id}
                       companyName={userWithCompany.company.name}
                       isPublished={userWithCompany.company.isPublished}
-                      countAllBooking={orders.data}
+                      countAllBooking={!!orders.data.length}
                     />
                   )}
                 </div>

@@ -5,7 +5,6 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
-import { FunctionReturnType } from "convex/server"
 import { toast } from "sonner"
 
 export const TogglePublished = ({
@@ -17,7 +16,7 @@ export const TogglePublished = ({
   companyId: Id<"companies">
   companyName: string
   isPublished: boolean
-  countAllBooking: FunctionReturnType<typeof api.orders.findAll>
+  countAllBooking: boolean
 }) => {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.toggleIsPublished),
@@ -40,7 +39,7 @@ export const TogglePublished = ({
 
   return (
     <Switch
-      disabled={!!countAllBooking || isPending}
+      disabled={countAllBooking || isPending}
       checked={isPublished}
       onCheckedChange={() =>
         mutate({

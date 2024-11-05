@@ -1,5 +1,3 @@
-import { Loader2 } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,42 +8,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { env } from "@/env"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 type Props = {
-  id: string
-  email: string | null
+  id: Id<"users">
+  email: string | undefined
 }
 
 export function DeleteTeam({ id, email }: Props) {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
   const [open, setOpen] = useState(false)
 
-  const { data: profile, status } = api.user.me.useQuery()
-  const { mutate, isPending } = api.user.delete.useMutation({
-    async onSuccess() {
+  const { data: profile, status } = useTanstackQuery(
+    convexQuery(api.users.me, {}),
+  )
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.users.removeAdminProcedure),
+    onSuccess() {
       // delete user from team
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast.success("Succeed!", {
         description: "Your Team has been deleted.",
       })
-      await utils.user.findAllByCompanyId.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
     },
     onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      toast("Something went wrong.", {
         description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
+    },
+    onSettled() {
+      /* auto-closed after succeed submit the dialog form */
+      setOpen(false)
     },
   })
 
@@ -59,8 +60,8 @@ export function DeleteTeam({ id, email }: Props) {
 
   // avoid user (admin) to delete his / her own account
   const disabled =
-    (status === "success" && profile?.id === id) ||
-    email === env.NEXT_PUBLIC_DEWA
+    (status === "success" && profile?._id === id) ||
+    email === process.env.NEXT_PUBLIC_SUPER_ADMIN
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

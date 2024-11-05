@@ -24,6 +24,13 @@ export type TUpdateRoleByIdOnlyForSuperAmin = z.infer<
   typeof updateRoleByIdOnlyForSuperAminSchema
 >
 
+export const updateRoleByIdSchema = userSchema.omit({
+  name: true,
+  email: true,
+  companyId: true,
+})
+export type TUpdateRoleById = z.infer<typeof updateRoleByIdSchema>
+
 export const upsertTeamSchema = userSchema.omit({
   id: true,
   name: true,
