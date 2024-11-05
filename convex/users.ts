@@ -23,10 +23,10 @@ export const findAll = query({
     const users = await ctx.db.query("users").collect()
     const usersWithCompany = Promise.all(
       users.map(async (user) => {
-        if (!user.companyId) throw new Error("There's no company")
-        const company = await ctx.db.get(user.companyId)
+        const company =
+          user.companyId != null ? await ctx.db.get(user.companyId) : null
 
-        return { ...user, companyName: company?.name }
+        return { ...user, companyName: company?.name ?? "" }
       }),
     )
 

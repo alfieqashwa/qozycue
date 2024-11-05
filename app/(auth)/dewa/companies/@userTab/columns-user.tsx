@@ -2,8 +2,10 @@
 
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Doc } from "@/convex/_generated/dataModel"
+import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import type { ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { Building2, Key, Mail, User } from "lucide-react"
@@ -13,7 +15,9 @@ import { DeleteUser } from "./delete-user"
 import { UpdateUser } from "./update-user"
 import { UserRowActions } from "./user-row-actions"
 
-export const columnsUser: ColumnDef<Doc<"users">>[] = [
+export const columnsUser: ColumnDef<
+  FunctionReturnType<typeof api.users.findAll>[0]
+>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -117,14 +121,20 @@ export const columnsUser: ColumnDef<Doc<"users">>[] = [
   },
   {
     accessorKey: "company",
-    accessorFn: (row) => row.companyId,
+    accessorFn: (row) => row.companyName,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Company" />
     ),
     cell: ({ row }) => {
+      const companyName = row.getValue("company")
       return (
         <div className="flex items-center">
-          <Building2 className="mr-2 h-4 w-4 text-primary" />
+          <Building2
+            className={cn(
+              "mr-2 h-4 w-4",
+              companyName ? "text-primary" : "text-muted-foreground",
+            )}
+          />
           <span className="whitespace-nowrap capitalize">
             {row.getValue("company")}
           </span>
