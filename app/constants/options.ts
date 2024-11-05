@@ -98,6 +98,11 @@ export const categories = [
 
 export const roles = [
   {
+    value: "DEWA",
+    label: "Dewa",
+    icon: Key,
+  },
+  {
     value: "ADMIN",
     label: "Admin",
     icon: Key,

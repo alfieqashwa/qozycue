@@ -1,8 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Role, type Subscription } from "@prisma/client"
-import { ToastAction } from "@radix-ui/react-toast"
-import { Loader2 } from "lucide-react"
-import { useForm } from "react-hook-form"
+import { roles } from "@/app/constants/options"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -22,39 +18,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useToast } from "@/components/ui/use-toast"
+import { api } from "@/convex/_generated/api"
 import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
-import { api } from "@/trpc/react"
+import { Role, Subscription } from "@/types"
 import { upsertTeamSchema, type TUpsertTeam } from "@/types/schema/user-schema"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function CreateTeamForm({
   setOpen,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const utils = api.useUtils()
-  const { toast } = useToast()
+  const { data: profile, status } = useTanstackQuery(
+    convexQuery(api.users.me, {}),
+  )
+  useMutation
 
-  const { data: profile, status } = api.user.me.useQuery()
-
-  const upsertTeam = api.user.upsert.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.users.upsert),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "Your new team has been created.",
-      })
-      await utils.user.findAllByCompanyId.invalidate()
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
         description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onSettled: () => setOpen(false),
   })
 
   // 1. Define form.
@@ -66,7 +64,13 @@ export function CreateTeamForm({
     },
   })
 
-  const subscriptions = api.company.subscriptions.useQuery()
+  const subscriptions = useTanstackQuery({
+    enabled: Boolean(profile?.companyId),
+    ...convexQuery(api.companies.subscriptions, {
+      companyId: profile?.companyId,
+    }),
+  })
+
   const isValid = validateSubscriptionLimits({
     status: subscriptions.status,
     subscription: subscriptions.data?.subscription as Subscription,
@@ -81,25 +85,22 @@ export function CreateTeamForm({
 
     // avoid user to input his / her own email.
     if (status === "success" && profile?.email === email) {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      return toast.error("Something went wrong.", {
         description: "Please DO NOT input your own email, Dude!",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     }
 
     if (!isValid) {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+      return toast.error("Something went wrong.", {
         description: "Max user limit exceeded",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     }
-    upsertTeam.mutate({
-      email: email.toLowerCase(),
-      role,
+
+    mutate({
+      upsertUserSchema: {
+        email: email.toLowerCase(),
+        role,
+      },
     })
   }
 
@@ -113,7 +114,7 @@ export function CreateTeamForm({
             <FormItem className="pt-4">
               <FormLabel>User Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="Email" className="w-[200px]" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -129,34 +130,34 @@ export function CreateTeamForm({
                 defaultValue={field.value as Role}
               >
                 <FormLabel>Role</FormLabel>
-                <FormControl>
+                <FormControl className="w-[200px]">
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a role to display" />
+                    <SelectValue placeholder="Select Role" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {/* ADMIN CANNOT create a new team where the role is "ADMIN" */}
                   {profile?.role === "DEWA" ? (
                     <SelectGroup>
-                      <SelectItem value={Role.ADMIN}>{Role.ADMIN}</SelectItem>
-                      <SelectItem value={Role.OWNER}>{Role.OWNER}</SelectItem>
-                      <SelectItem value={Role.MANAGER}>
-                        {Role.MANAGER}
-                      </SelectItem>
-                      <SelectItem value={Role.CASHIER}>
-                        {Role.CASHIER}
-                      </SelectItem>
+                      {roles
+                        .filter((r) => r.value !== "DEWA")
+                        .map((role, i) => (
+                          <SelectItem value={role.value} key={i}>
+                            {role.label}
+                          </SelectItem>
+                        ))}
                     </SelectGroup>
                   ) : (
                     <SelectGroup>
-                      {/* there's no role ADMIN in the list  */}
-                      <SelectItem value={Role.OWNER}>{Role.OWNER}</SelectItem>
-                      <SelectItem value={Role.MANAGER}>
-                        {Role.MANAGER}
-                      </SelectItem>
-                      <SelectItem value={Role.CASHIER}>
-                        {Role.CASHIER}
-                      </SelectItem>
+                      {roles
+                        .filter(
+                          (r) => r.value !== "DEWA" && r.value !== "ADMIN",
+                        )
+                        .map((role, i) => (
+                          <SelectItem value={role.value} key={i}>
+                            {role.label}
+                          </SelectItem>
+                        ))}
                     </SelectGroup>
                   )}
                 </SelectContent>
@@ -168,13 +169,13 @@ export function CreateTeamForm({
             </FormItem>
           )}
         />
-        {upsertTeam.isPending ? (
-          <Button disabled size="sm">
+        {isPending ? (
+          <Button disabled>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Please wait
           </Button>
         ) : (
-          <Button disabled={upsertTeam.isPending} type="submit" size="sm">
+          <Button disabled={isPending} type="submit">
             Create Team
           </Button>
         )}

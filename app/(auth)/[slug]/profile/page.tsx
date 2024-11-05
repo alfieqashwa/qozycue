@@ -38,7 +38,7 @@ export default async function ProfilePage() {
         </TabsContent>
         {adminAccessLevel && (
           <TabsContent value="team">
-            <TeamInfo companyId={session.user.companyId as string} />
+            <TeamInfo companyId={session.user.companyId} />
           </TabsContent>
         )}
       </Tabs>
