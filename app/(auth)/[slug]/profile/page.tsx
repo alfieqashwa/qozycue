@@ -5,14 +5,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ContactDeveloperWhatsapp } from "./contact-developer-whatsapp"
 import { TeamInfo } from "./team-info"
 import { UserInfo } from "./user-info"
+import { fetchQuery } from "convex/nextjs"
+import { api } from "@/convex/_generated/api"
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 
 export const metadata: Metadata = {
   title: "Profile",
 }
 
-export default async function Page() {
+export default async function ProfilePage() {
   noStore()
-  const session = await getServerAuthSession()
+  const session = await fetchQuery(
+    api.sessions.find,
+    {},
+    { token: convexAuthNextjsToken() },
+  )
   const adminAccessLevel =
     session?.user.role === "ADMIN" || session?.user.role === "DEWA"
 
@@ -24,7 +31,11 @@ export default async function Page() {
           {adminAccessLevel && <TabsTrigger value="team">Team</TabsTrigger>}
         </TabsList>
         <TabsContent value="profile">
-          <UserInfo isAdmin={adminAccessLevel} />
+          <UserInfo
+            isAdmin={adminAccessLevel}
+            userId={session.userId}
+            companyId={session.companyId}
+          />
         </TabsContent>
         {adminAccessLevel && (
           <TabsContent value="team">

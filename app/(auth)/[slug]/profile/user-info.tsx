@@ -23,8 +23,8 @@ export function UserInfo({
   companyId,
 }: {
   isAdmin: boolean
-  userId: Id<"users">
-  companyId: Id<"companies">
+  userId: Id<"users"> | undefined
+  companyId: Id<"companies"> | undefined
 }) {
   const { data: userWithCompany, status: StatusUserWithCompany } =
     useTanstackQuery({
@@ -34,7 +34,7 @@ export function UserInfo({
 
   const orders = useTanstackQuery({
     enabled: Boolean(companyId),
-    ...convexQuery(api.orders.findAll, { companyId }),
+    ...convexQuery(api.orders.findAll, { companyId: companyId! }),
   })
 
   return (
