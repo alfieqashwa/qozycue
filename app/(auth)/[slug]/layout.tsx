@@ -29,7 +29,7 @@ export default async function SlugLayout({
   if (session.user?.role === "USER") redirect("/portal/")
 
   const { slug } = params
-  if (company?.slug !== slug) notFound()
+  if (session.companySlug !== slug) notFound()
 
   return (
     <WrapperDashboard

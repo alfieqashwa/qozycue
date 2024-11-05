@@ -8,33 +8,26 @@ import { type Metadata } from "next"
 import Image from "next/image"
 import { redirect } from "next/navigation"
 import { TriggerTrialButton } from "./trigger-trial-button"
-import UserList from "./user-list"
 
 export const metadata: Metadata = {
   title: "Portal",
 }
 
 export default async function Page() {
-  const me = await fetchQuery(
-    api.users.me,
+  const session = await fetchQuery(
+    api.sessions.find,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  const company = await fetchQuery(
-    api.companies.find,
-    { id: me?.companyId },
-    { token: convexAuthNextjsToken() },
-  )
-
-  if (!!me && !!company) {
-    if (me.role === "DEWA") redirect("/dewa/")
-    if (me.role === "ADMIN" || me.role === "OWNER")
-      redirect(`/${encodeURIComponent(company.slug)}/dashboard/`)
-    if (me.role === "MANAGER")
-      redirect(`/${encodeURIComponent(company.slug)}/transactions/`)
-    if (me.role === "CASHIER")
-      redirect(`/${encodeURIComponent(company.slug)}/tables/`)
+  if (!!session._id && session.user.role !== "USER") {
+    if (session.user.role === "DEWA") redirect("/dewa/")
+    if (session.user.role === "ADMIN" || session.user.role === "OWNER")
+      redirect(`/${encodeURIComponent(session.companySlug!)}/dashboard/`)
+    if (session.user.role === "MANAGER")
+      redirect(`/${encodeURIComponent(session.companySlug!)}/transactions/`)
+    if (session.user.role === "CASHIER")
+      redirect(`/${encodeURIComponent(session.companySlug!)}/tables/`)
   }
 
   return (
@@ -43,7 +36,7 @@ export default async function Page() {
       <h2 className="text-xl font-semibold">Welcome to Qozy Cue App.</h2>
       <p className="max-w-4xl pt-4 text-center">
         Tekan
-        <TriggerTrialButton userRole={me?.role === "USER"} />
+        <TriggerTrialButton userRole={session.user.role === "USER"} />
         untuk mencoba aplikasi kami
         <span className="pl-1 text-primary">secara gratis</span>. Tekan ikon
         <a
@@ -65,7 +58,6 @@ export default async function Page() {
         Tekan <SignOutButton size="sm" /> untuk keluar.
       </p>
       <p className="text-center">Terimakasih.</p>
-      <UserList />
     </main>
   )
 }

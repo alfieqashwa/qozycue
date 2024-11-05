@@ -16,10 +16,11 @@ export default async function DashboardLayout({
     {},
     { token: convexAuthNextjsToken() },
   )
-
-  if (["USER", "MANAGER", "CASHIER"].includes(session.user.role ?? "")) {
-    redirect("/portal")
-  }
+  if (!session._id) redirect("/signin")
+  if (session.user.role === "MANAGER")
+    redirect(`/${encodeURIComponent(session.companySlug!)}/transactions/`)
+  if (session.user.role === "CASHIER")
+    redirect(`/${encodeURIComponent(session.companySlug!)}/tables/`)
 
   return <>{children}</>
 }
