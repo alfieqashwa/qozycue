@@ -169,10 +169,10 @@ export const columnsUser: ColumnDef<
       return (
         <UpdateUser
           id={_id}
-          username={name}
+          name={name}
           email={email}
-          currentRole={role}
-          currentCompanyId={companyId}
+          role={role}
+          companyId={companyId}
         />
       )
     },

@@ -8,9 +8,10 @@ import { User } from "lucide-react"
 
 export function ActiveUser({ id, name }: { id: Id<"users">; name?: string }) {
   const { data: sessions, status } = useTanstackQuery(
-    convexQuery(api.sessions.find, {}),
+    convexQuery(api.sessions.findAll, {}),
   )
-  const hasActiveUser = status === "success" && sessions.userId === id
+  const hasActiveUser =
+    status === "success" && sessions.some((session) => session.userId === id)
 
   return (
     <Badge

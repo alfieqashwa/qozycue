@@ -1,10 +1,8 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { zid } from "convex-helpers/server/zod"
 import { v } from "convex/values"
-import { z } from "zod"
+import { updateUserSchema, upsertUserSchema } from "../types/schema/user-schema"
 import { mutation, query } from "./_generated/server"
 import { superAdminAuth, zMutation } from "./helpers"
-import { upsertUserSchema } from "../types/schema/user-schema"
 
 // source -> https://stack.convex.dev/convex-auth
 export const me = query({
@@ -47,19 +45,13 @@ export const findAllByCompanyId = query({
 // === MUTATIONS ===
 
 export const updateRoleAndCompanyId = zMutation({
-  args: {
-    id: zid("users"),
-    role: z
-      .enum(["DEWA", "ADMIN", "OWNER", "MANAGER", "CASHIER", "USER"])
-      .optional(),
-    companyId: zid("companies"),
-  },
-  handler: async (ctx, args) => {
+  args: { updateUserSchema },
+  handler: async (ctx, { updateUserSchema: { id, role, companyId } }) => {
     await superAdminAuth(ctx, {})
 
-    return await ctx.db.patch(args.id, {
-      role: args.role,
-      companyId: args.companyId,
+    return await ctx.db.patch(id, {
+      role,
+      companyId,
     })
   },
 })
