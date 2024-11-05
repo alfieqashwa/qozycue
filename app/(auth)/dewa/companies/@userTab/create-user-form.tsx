@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -18,7 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
 import { Role, Subscription } from "@/types"
 import { upsertUserSchema, type TUpsertUser } from "@/types/schema/user-schema"
@@ -117,7 +119,7 @@ export function CreateUserForm({
             <FormItem className="pt-4">
               <FormLabel>User Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="Email" className="w-[200px]" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -133,9 +135,9 @@ export function CreateUserForm({
                 defaultValue={field.value as Role}
               >
                 <FormLabel>Role</FormLabel>
-                <FormControl>
+                <FormControl className="w-[200px]">
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue placeholder="Select Role" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -150,7 +152,7 @@ export function CreateUserForm({
                 </SelectContent>
               </Select>
               <FormDescription className="pt-2">
-                Select your user&apos;s access level.
+                Select user&apos;s access level.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -166,7 +168,7 @@ export function CreateUserForm({
                 defaultValue={field.value as Role}
               >
                 <FormLabel>Company</FormLabel>
-                <FormControl className="capitalize">
+                <FormControl className="w-[200px] capitalize">
                   <SelectTrigger>
                     <SelectValue placeholder="Select Company" />
                   </SelectTrigger>
@@ -193,16 +195,26 @@ export function CreateUserForm({
             </FormItem>
           )}
         />
-        {upsertUser.isPending ? (
-          <Button disabled size="sm">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Please wait
-          </Button>
-        ) : (
-          <Button disabled={upsertUser.isPending} type="submit" size="sm">
-            Create User
-          </Button>
-        )}
+        <SheetFooter className="pt-8">
+          <SheetClose
+            className={cn(
+              buttonVariants({ variant: "secondary" }),
+              "mt-1 md:mt-0",
+            )}
+          >
+            Cancel
+          </SheetClose>
+          {upsertUser.isPending ? (
+            <Button disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>
+          ) : (
+            <Button disabled={upsertUser.isPending} type="submit">
+              Create User
+            </Button>
+          )}
+        </SheetFooter>
       </form>
     </Form>
   )

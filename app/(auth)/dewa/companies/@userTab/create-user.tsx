@@ -29,7 +29,7 @@ export function CreateUser() {
         <SheetHeader>
           <SheetTitle>Create New User</SheetTitle>
           <SheetDescription>
-            Create new user here. Click Create User when you&apos;re done.
+            Click <b>Create User</b> when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         <CreateUserForm setOpen={setOpen} />
