@@ -20,7 +20,7 @@ import {
 // Make this once, to use anywhere you would have used "query"
 
 // === QUERIES ===
-export const findPublic = query({
+export const findPublicProcedure = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db
@@ -210,7 +210,7 @@ export const update = zMutation({
   },
 })
 
-export const updateByAdmin = zMutation({
+export const updateAdminProcedure = zMutation({
   args: { updateCompanyByAdminSchema },
   handler: async (
     ctx,

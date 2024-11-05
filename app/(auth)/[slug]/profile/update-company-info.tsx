@@ -49,7 +49,7 @@ export function UpdateCompanyInfo({
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.companies.updateByAdmin),
+    mutationFn: useConvexMutation(api.companies.updateAdminProcedure),
     async onSuccess() {
       toast("Succeed!", {
         description: "Create new order.",

@@ -11,7 +11,7 @@ export default async function PublicSlugPage({
   noStore()
 
   const { slug } = params
-  const company = await fetchQuery(api.companies.findPublic, { slug })
+  const company = await fetchQuery(api.companies.findPublicProcedure, { slug })
   if (!company) redirect("/")
 
   // const session = await getServerAuthSession()
