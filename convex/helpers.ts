@@ -89,8 +89,9 @@ export const subscriptions = zInternalQuery({
       .withIndex("companyId", (q) => q.eq("companyId", companyId))
       .collect()
 
+    const excludeSuperAdmin = users.filter((q) => q.role !== "DEWA")
     const _count = {
-      users: users.length,
+      users: excludeSuperAdmin.length,
       poolTables: poolTables.length,
       products: products.length,
       packets: packets.length,
