@@ -33,22 +33,16 @@ export function DeleteUser({ id, email }: Props) {
   )
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.users.remove),
-    async onSuccess() {
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: "User has been deleted.",
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
-    onSettled() {
-      /* auto-closed the dialog form whether submit has been succeeded or an error occured  */
-      setOpen(false)
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

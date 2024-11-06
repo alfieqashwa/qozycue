@@ -9,18 +9,15 @@ import { toast } from "sonner"
 export function ToggleIsPublished(props: TToggleIsPublished) {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.toggleIsPublished),
-    onSuccess() {
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: "The company has been updated.",
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
   return (
     <span className="whitespace-nowrap capitalize">

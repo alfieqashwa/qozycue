@@ -49,22 +49,16 @@ export function UpdateCompanyForm({
 }) {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.update),
-    onSuccess() {
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: "The company has been updated.",
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
-    onSettled() {
-      /* auto-closed the dialog form whether submitting has succeeded or thrown an error  */
-      setOpen(false)
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   // 1. Define form.

@@ -49,19 +49,16 @@ export function UpdateUserForm({
 
   const { mutate, isPending, reset } = useMutation({
     mutationFn: useConvexMutation(api.users.updateRoleAndCompanyId),
-    onSuccess() {
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: "User has been updated.",
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
-    onSettled() {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
       setOpen(false)
       reset()
     },

@@ -104,21 +104,16 @@ type UpdateTeamFormProps = {
 export const UpdateTeamForm = ({ id, role, setOpen }: UpdateTeamFormProps) => {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.users.updateRoleByIdAdminProcedure),
-    onSuccess() {
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: "Your team has been updated.",
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
-    onSettled() {
-      setOpen(false)
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const form = useForm<TUpdateRoleById>({

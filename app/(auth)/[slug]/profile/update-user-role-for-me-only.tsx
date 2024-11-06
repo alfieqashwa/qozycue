@@ -22,18 +22,15 @@ export function UpdateUserRoleForMeOnly({
 }: TUpdateRoleByIdOnlyForSuperAmin) {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.users.updateRoleByIdOnlyForSuperAmin),
-    async onSuccess() {
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: "Role has been updated.",
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
 
   function updateRole(e: React.FormEvent<HTMLFormElement>) {

@@ -30,21 +30,16 @@ export function CreateCompanyForm({
 }) {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.create),
-    onSuccess() {
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: "Your new company has been created.",
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
-    onSettled() {
-      setOpen(false)
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   // 1. Define form.

@@ -31,7 +31,7 @@ export function CreateTrialCompanyForm({
   const router = useRouter()
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.companies.createTrial),
-    onSuccess() {
+    onSuccess: () => {
       toast.success("Succeed!", {
         description: "Your new company/tenant has been created.",
       })
@@ -40,13 +40,11 @@ export function CreateTrialCompanyForm({
         `/${variables?.createTrialCompanySchema.name.replace(/ /g, "-")}/dashboard/`,
       )
     },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
 
   // 1. Define form.

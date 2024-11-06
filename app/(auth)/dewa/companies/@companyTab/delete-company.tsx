@@ -33,25 +33,20 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.remove),
-    onSuccess() {
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: (
           <p>
-            Company <span className="capitalize">{name}</span> has been deleted.
+            Company <b>{name}</b> has been deleted.
           </p>
         ),
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
-    onSettled() {
-      setOpen(false)
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

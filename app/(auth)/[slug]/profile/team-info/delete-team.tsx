@@ -34,23 +34,16 @@ export function DeleteTeam({ id, email }: Props) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.users.removeAdminProcedure),
-    onSuccess() {
-      // delete user from team
+    onSuccess: () =>
       toast.success("Succeed!", {
         description: "Your Team has been deleted.",
-      })
-    },
-    onError(err) {
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      }),
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
-    onSettled() {
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
