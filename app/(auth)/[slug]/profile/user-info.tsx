@@ -11,7 +11,7 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
-import { Building2, LayoutTemplate, MapPin, Phone } from "lucide-react"
+import { Building2, Layers, LayoutTemplate, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { TogglePublished } from "./toggle-published"
 import { UpdateCompanyInfo } from "./update-company-info"
@@ -66,23 +66,26 @@ export function UserInfo({
                 {userWithCompany.user?.name}
               </p>
             </article>
-            <article>
-              {/* // Only me can access this! */}
-              {userWithCompany.user?.email ===
-              process.env.NEXT_PUBLIC_SUPER_ADMIN ? (
+            {/* // Only me can access this! */}
+            {userWithCompany.user?.email !==
+            process.env.NEXT_PUBLIC_SUPER_ADMIN ? (
+              <article>
+                <h2 className="text-primary">Role</h2>
+                <p className="text-muted-foreground">
+                  {userWithCompany.user?.role}
+                </p>
+              </article>
+            ) : (
+              <article>
                 <UpdateUserRoleForMeOnly
                   id={userWithCompany.user?._id!}
                   role={userWithCompany.user?.role}
                 />
-              ) : (
-                <p className="text-muted-foreground">
-                  {userWithCompany.user?.role}
-                </p>
-              )}
-            </article>
+              </article>
+            )}
             <Separator />
           </section>
-          <section className="space-y-4 pt-4">
+          <section className="mt-8 space-y-4">
             <div className="flex space-x-1">
               <Building2 className="mr-2 shrink-0 text-primary" />
               <p className="space-x-1 capitalize text-muted-foreground">
@@ -101,9 +104,15 @@ export function UserInfo({
                 {userWithCompany.company?.location}
               </p>
             </div>
+            <div className="flex space-x-1">
+              <Layers className="mr-2 shrink-0 text-primary" />
+              <p className="space-x-1 text-balance capitalize text-muted-foreground">
+                {userWithCompany.company?.subscription} Subscription
+              </p>
+            </div>
             {adminAccessLevel && !!userWithCompany.company && (
               <section>
-                <div className="flex space-x-1">
+                <div className="flex space-x-1 pb-4">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <LayoutTemplate className="mr-2 shrink-0 animate-pulse text-primary" />
