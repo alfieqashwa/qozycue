@@ -3,19 +3,14 @@
 import { useMediaQuery } from "@/app/hooks/use-media-query"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import {
   Table,
   TableBody,
@@ -32,6 +27,7 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Hash, Key, Mail, User2, Users2 } from "lucide-react"
 import Image from "next/image"
+import { useState } from "react"
 
 export function UserList({
   companyId,
@@ -40,16 +36,33 @@ export function UserList({
   companyId: Id<"companies">
   companyName: string
 }) {
+  const [open, setOpen] = useState(false)
   const { data: users, status } = useTanstackQuery(
     convexQuery(api.users.findAllByCompanyId, { companyId }),
   )
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  if (isDesktop) {
-    return (
-      <UserListDialog companyName={companyName} disabled={!users?.length}>
-        <div>
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger
+        disabled={!users?.length}
+        className={cn(
+          buttonVariants({ size: "sm" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Users2 size={16} />
+      </SheetTrigger>
+
+      <SheetContent side="top" className="px-2 md:px-8">
+        <SheetTitle className="mb-2 mt-4 text-center capitalize">
+          {companyName}
+        </SheetTitle>
+        <SheetDescription className="text-center font-medium">
+          Total {users?.length} {users?.length === 1 ? "user" : "users"}
+        </SheetDescription>
+        <ScrollArea>
           {status === "success" && (
             <Table>
               <TableCaption>A list of users.</TableCaption>
@@ -69,37 +82,10 @@ export function UserList({
               </TableBody>
             </Table>
           )}
-          {/* <ScrollBar orientation="horizontal" /> */}
-        </div>
-      </UserListDialog>
-    )
-  }
-
-  return (
-    <UserListDrawer companyName={companyName} disabled={!users?.length}>
-      <ScrollArea>
-        {status === "success" && (
-          <Table>
-            <TableCaption>A list of users.</TableCaption>
-            <TableHeader>
-              <TableRow className="capitalize">
-                {["image", "ID", "name", "email", "role"].map((title, i) => (
-                  <TableHead className={cn(i === 0 && "sr-only")} key={i}>
-                    {title}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <UserTableRow user={user} key={user._id} />
-              ))}
-            </TableBody>
-          </Table>
-        )}
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-    </UserListDrawer>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }
 
@@ -156,50 +142,4 @@ const UserTableRow = ({ user }: { user: Doc<"users"> }) => (
       </div>
     </TableCell>
   </TableRow>
-)
-
-type Props = {
-  companyName: string
-  disabled: boolean
-  children: React.ReactNode
-}
-
-const UserListDialog = ({ companyName, disabled, children }: Props) => (
-  <Dialog>
-    <DialogTrigger
-      disabled={disabled}
-      className={cn(
-        buttonVariants({ size: "sm" }),
-        "disabled:pointer-events-auto disabled:cursor-not-allowed",
-      )}
-    >
-      <Users2 size={16} />
-    </DialogTrigger>
-
-    <DialogContent className="min-w-fit">
-      <DialogTitle className="capitalize">{companyName}</DialogTitle>
-      {children}
-    </DialogContent>
-  </Dialog>
-)
-
-const UserListDrawer = ({ companyName, disabled, children }: Props) => (
-  <Drawer>
-    <DrawerTrigger
-      disabled={disabled}
-      className={cn(
-        buttonVariants({ size: "sm" }),
-        "disabled:pointer-events-auto disabled:cursor-not-allowed",
-      )}
-    >
-      <Users2 size={16} />
-    </DrawerTrigger>
-
-    <DrawerContent className="px-2">
-      <DrawerTitle className="mb-2 mt-4 text-center capitalize">
-        {companyName}
-      </DrawerTitle>
-      {children}
-    </DrawerContent>
-  </Drawer>
 )
