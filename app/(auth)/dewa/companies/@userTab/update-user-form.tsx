@@ -1,3 +1,4 @@
+import { roles } from "@/app/constants/options"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { DialogClose, DialogFooter } from "@/components/ui/dialog"
 import {
@@ -72,7 +73,6 @@ export function UpdateUserForm({
       companyId,
     },
   })
-
   function onSubmit(values: TUpdateUser) {
     const { role, companyId } = values
     mutate({
@@ -100,29 +100,19 @@ export function UpdateUserForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {isSuperAdmin ? (
-                    <SelectGroup>
-                      <SelectLabel>Role</SelectLabel>
-                      {["DEWA", "ADMIN", "MANAGER", "OWNER", "CASHIER"].map(
-                        (role, i) => (
-                          <SelectItem value={role} key={`${role}-${i}`}>
-                            {role}
-                          </SelectItem>
-                        ),
-                      )}
-                    </SelectGroup>
-                  ) : (
-                    <SelectGroup>
-                      <SelectLabel>Role</SelectLabel>
-                      {["ADMIN", "MANAGER", "OWNER", "CASHIER"].map(
-                        (role, i) => (
-                          <SelectItem value={role} key={`${role}-${i}`}>
-                            {role}
-                          </SelectItem>
-                        ),
-                      )}
-                    </SelectGroup>
-                  )}
+                  <SelectGroup>
+                    <SelectLabel>Role</SelectLabel>
+                    {roles
+                      .filter((role) => isSuperAdmin || role.value !== "DEWA") // short-circuiting || operator
+                      .map((role, i) => (
+                        <SelectItem
+                          value={role.value}
+                          key={`${role.label}-${i}`}
+                        >
+                          {role.value}
+                        </SelectItem>
+                      ))}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
               <FormDescription className="pt-2">

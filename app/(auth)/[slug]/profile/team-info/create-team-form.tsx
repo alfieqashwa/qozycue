@@ -21,7 +21,6 @@ import {
 import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
-import { Role } from "@/types"
 import { upsertTeamSchema, type TUpsertTeam } from "@/types/schema/user-schema"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -40,7 +39,6 @@ export function CreateTeamForm({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   const profile = useTanstackQuery(convexQuery(api.users.me, {}))
-  useMutation
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.users.upsertAdminProcedure),
@@ -48,19 +46,15 @@ export function CreateTeamForm({
       toast.success("Succeed!", {
         description: "Your new team has been created.",
       }),
-
-    onError: (err) => {
-      // source => https://docs.convex.dev/functions/error-handling/application-errors#throwing-application-errors
-      const errrorMesage =
-        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+    // source => https://docs.convex.dev/functions/error-handling/application-errors#throwing-application-errors
+    onError: (err) =>
       toast.error("Something went wrong.", {
-        description: errrorMesage,
-      })
-    },
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
     onSettled: () => setOpen(false),
   })
 
-  // 1. Define form.
   const form = useForm<TUpsertTeam>({
     resolver: zodResolver(upsertTeamSchema),
     defaultValues: {
@@ -68,21 +62,14 @@ export function CreateTeamForm({
       role: undefined,
     },
   })
-
-  // 2. Define a submit handler
   function onSubmit(values: TUpsertTeam) {
-    // Do something with the form values.
-    // This will b type-safe and validated.
-
     const { email, role } = values
-
     // avoid user to input his / her own email.
     if (profile.data?.email === email) {
       return toast.error("Something went wrong.", {
         description: "Please DO NOT input your own email, Dude!",
       })
     }
-
     mutate({
       upsertUserSchema: {
         email: email.toLowerCase(),
@@ -113,10 +100,7 @@ export function CreateTeamForm({
           name="role"
           render={({ field }) => (
             <FormItem className="pt-4">
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value as Role}
-              >
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormLabel>Role</FormLabel>
                 <FormControl className="w-[200px]">
                   <SelectTrigger>

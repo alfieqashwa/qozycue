@@ -26,11 +26,6 @@ type DeleteCompanyProps = {
 }
 
 export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
-  const me = useTanstackQuery(convexQuery(api.users.me, {}))
-  const isSuperAdmin =
-    me.status === "success" &&
-    me.data?.email === process.env.NEXT_PUBLIC_SUPER_ADMIN
-
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.remove),
     onSuccess: () =>
@@ -51,9 +46,13 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     mutate({ id })
   }
+
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const isSuperAdmin =
+    me.status === "success" &&
+    me.data?.email === process.env.NEXT_PUBLIC_SUPER_ADMIN
 
   return (
     <Dialog>
@@ -64,7 +63,6 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
         <Trash className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
         <span>Delete</span>
       </DialogTrigger>
-
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

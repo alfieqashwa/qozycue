@@ -28,9 +28,7 @@ type Props = {
 export function DeleteTeam({ id, email }: Props) {
   const [open, setOpen] = useState(false)
 
-  const { data: profile, status } = useTanstackQuery(
-    convexQuery(api.users.me, {}),
-  )
+  const { data: profile } = useTanstackQuery(convexQuery(api.users.me, {}))
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.users.removeAdminProcedure),
@@ -48,7 +46,6 @@ export function DeleteTeam({ id, email }: Props) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     mutate({
       id,
     })
@@ -56,8 +53,7 @@ export function DeleteTeam({ id, email }: Props) {
 
   // avoid user (admin) to delete his / her own account
   const disabled =
-    (status === "success" && profile?._id === id) ||
-    email === process.env.NEXT_PUBLIC_SUPER_ADMIN
+    profile?._id === id || email === process.env.NEXT_PUBLIC_SUPER_ADMIN
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -70,7 +66,6 @@ export function DeleteTeam({ id, email }: Props) {
           Delete
         </Button>
       </DialogTrigger>
-
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

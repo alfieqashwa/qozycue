@@ -1,3 +1,4 @@
+import { roles } from "@/app/constants/options"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Form,
@@ -27,7 +28,7 @@ import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   useMutation,
-  useQuery as useTanstackQuery,
+  useQueries as useTanstackQueries,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
@@ -39,10 +40,12 @@ export function CreateUserForm({
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const { data: profile, status } = useTanstackQuery(
-    convexQuery(api.users.me, {}),
-  )
-  const companies = useTanstackQuery(convexQuery(api.companies.findAll, {}))
+  const [{ data: profile, status }, companies] = useTanstackQueries({
+    queries: [
+      { ...convexQuery(api.users.me, {}) },
+      { ...convexQuery(api.companies.findAll, {}) },
+    ],
+  })
 
   const upsertUser = useMutation({
     mutationFn: useConvexMutation(api.users.upsertSuperAdminProcedure),
@@ -58,7 +61,6 @@ export function CreateUserForm({
     onSettled: () => setOpen(false),
   })
 
-  // 1. Define form.
   const form = useForm<TUpsertUser>({
     resolver: zodResolver(upsertUserSchema),
     defaultValues: {
@@ -66,18 +68,14 @@ export function CreateUserForm({
       role: "USER",
     },
   })
-
-  // 2. Define a submit handler
   function onSubmit(values: TUpsertUser) {
     const { email, role, companyId } = values
-
     // avoid user to input his / her own email.
     if (status === "success" && profile?.email === email) {
       return toast.error("Something went wrong.", {
         description: "Please DO NOT input your own email, Dude!",
       })
     }
-
     upsertUser.mutate({
       upsertUserSchema: {
         email: email.toLowerCase(),
@@ -121,9 +119,9 @@ export function CreateUserForm({
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Role</SelectLabel>
-                    {["ADMIN", "MANAGER", "OWNER", "CASHIER"].map((role, i) => (
-                      <SelectItem value={role} key={`${role}-${i}`}>
-                        {role}
+                    {roles.map((role, i) => (
+                      <SelectItem value={role.value} key={`${role.label}-${i}`}>
+                        {role.label}
                       </SelectItem>
                     ))}
                   </SelectGroup>

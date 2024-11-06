@@ -8,18 +8,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import {
   useMutation,
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
-
-import { api } from "@/convex/_generated/api"
-import { Id } from "@/convex/_generated/dataModel"
-import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { toast } from "sonner"
-import { ConvexError } from "convex/values"
 
 export function ResetSession({
   userId,
@@ -46,7 +45,6 @@ export function ResetSession({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     mutate({
       userId,
     })
@@ -67,7 +65,6 @@ export function ResetSession({
           Reset
         </Button>
       </DialogTrigger>
-
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

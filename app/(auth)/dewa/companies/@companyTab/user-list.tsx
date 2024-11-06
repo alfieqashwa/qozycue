@@ -1,6 +1,5 @@
 "use client"
 
-import { useMediaQuery } from "@/app/hooks/use-media-query"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
@@ -21,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { api } from "@/convex/_generated/api"
-import { Doc, Id } from "@/convex/_generated/dataModel"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
@@ -38,11 +37,10 @@ export function UserList({
   companyName: string
 }) {
   const [open, setOpen] = useState(false)
-  const { data: users, status } = useTanstackQuery(
-    convexQuery(api.users.findAllByCompanyId, { companyId }),
-  )
-
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+  const { data: users, status } = useTanstackQuery({
+    ...convexQuery(api.users.findAllByCompanyId, { companyId }),
+    enabled: Boolean(companyId),
+  })
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -55,7 +53,6 @@ export function UserList({
       >
         <Users2 size={16} />
       </SheetTrigger>
-
       <SheetContent side="top" className="px-2 md:px-8">
         <SheetTitle className="mb-2 mt-4 text-center capitalize">
           {companyName}
