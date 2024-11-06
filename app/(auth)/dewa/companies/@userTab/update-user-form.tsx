@@ -92,10 +92,7 @@ export function UpdateUserForm({
           name="role"
           render={({ field }) => (
             <FormItem className="pt-4">
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value as Role}
-              >
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormLabel>Role</FormLabel>
                 <FormControl className="w-[200px]">
                   <SelectTrigger>

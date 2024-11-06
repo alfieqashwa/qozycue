@@ -63,10 +63,9 @@ export function UserInfo({
               </p>
             </article>
             <article>
-              <h2 className="text-primary">Role</h2>
               {/* // Only me can access this! */}
               {userWithCompany.user?.email ===
-              process.env.NEXT_PUBLIC_DEWA_EMAIL ? (
+              process.env.NEXT_PUBLIC_SUPER_ADMIN ? (
                 <UpdateUserRoleForMeOnly
                   id={userWithCompany.user?._id!}
                   role={userWithCompany.user?.role}
