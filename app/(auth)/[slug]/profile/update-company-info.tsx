@@ -36,13 +36,13 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 export function UpdateCompanyInfo({
-  isAdmin,
+  adminAccessLevel,
   companyId,
   phone,
   location,
   className,
 }: {
-  isAdmin: boolean
+  adminAccessLevel: boolean
   companyId: Id<"companies">
   phone: string
   location: string
@@ -89,7 +89,7 @@ export function UpdateCompanyInfo({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={isPending || !isAdmin}
+          disabled={isPending || !adminAccessLevel}
           className={cn(
             "disabled:pointer-events-auto disabled:cursor-not-allowed",
             className,

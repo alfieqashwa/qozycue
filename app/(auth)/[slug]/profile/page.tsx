@@ -31,7 +31,7 @@ export default async function ProfilePage() {
         </TabsList>
         <TabsContent value="profile">
           <UserInfo
-            isAdmin={adminAccessLevel}
+            adminAccessLevel={adminAccessLevel}
             userId={session.userId}
             companyId={session.companyId}
           />

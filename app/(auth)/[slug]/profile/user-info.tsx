@@ -18,11 +18,11 @@ import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
 
 export function UserInfo({
-  isAdmin,
+  adminAccessLevel,
   userId,
   companyId,
 }: {
-  isAdmin: boolean
+  adminAccessLevel: boolean
   userId: Id<"users"> | undefined
   companyId: Id<"companies"> | undefined
 }) {
@@ -98,7 +98,7 @@ export function UserInfo({
                 {userWithCompany.company?.location}
               </p>
             </div>
-            {isAdmin && !!userWithCompany.company && (
+            {adminAccessLevel && !!userWithCompany.company && (
               <section>
                 <div className="flex space-x-1">
                   <Tooltip>
@@ -125,7 +125,7 @@ export function UserInfo({
                   )}
                 </div>
                 <UpdateCompanyInfo
-                  isAdmin={isAdmin}
+                  adminAccessLevel={adminAccessLevel}
                   companyId={userWithCompany.company._id}
                   phone={userWithCompany.company.phone}
                   location={userWithCompany.company.location}
