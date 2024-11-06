@@ -36,12 +36,8 @@ export function SignOutDialog() {
         <DialogHeader>
           <DialogTitle>Are You Sure?</DialogTitle>
         </DialogHeader>
-        <DialogDescription asChild>
-          <p>
-            Click
-            <span className="px-1.5 font-medium text-primary">Sign Out</span>
-            button when you&apos;re sure want to sign out
-          </p>
+        <DialogDescription>
+          Click <b>Sign Out</b> button when you&apos;re sure want to sign out.
         </DialogDescription>
         <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
           <Button type="button" variant="ghost" onClick={() => setOpen(!open)}>

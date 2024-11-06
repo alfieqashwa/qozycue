@@ -77,13 +77,11 @@ export function DeleteUser({ id, email }: Props) {
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                You can&apos;t undo this changes. Click Delete User when
-                you&apos;re sure to delete
-                <span className="px-1.5 font-medium text-primary">{email}</span>
-                user.
-              </p>
+            <DialogDescription>
+              You can&apos;t undo this changes. Click <b>Delete User</b> when
+              you&apos;re sure to delete
+              <span className="px-1.5 font-medium text-primary">{email}</span>
+              user.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">

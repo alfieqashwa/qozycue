@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -77,7 +78,7 @@ export function UpdateTeam({ id, name, role, email }: UpdateTeamProps) {
       <DialogContent className="bg-card">
         <DialogHeader>
           <DialogTitle>Update Team</DialogTitle>
-          <p>
+          <DialogDescription>
             Edit
             <span
               className={cn("px-1 capitalize text-amber-300", {
@@ -86,8 +87,9 @@ export function UpdateTeam({ id, name, role, email }: UpdateTeamProps) {
             >
               {name ?? email}
             </span>
-            role of your team here. Click Update Team when you&apos;re done.
-          </p>
+            role of your team here. Click <b>Update Team</b> when you&apos;re
+            done.
+          </DialogDescription>
         </DialogHeader>
         <UpdateTeamForm id={id} role={role} setOpen={setOpen} />
       </DialogContent>

@@ -74,13 +74,11 @@ export function ResetSession({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                You can&apos;t undo this changes. Click Reset Session when
-                you&apos;re sure to reset
-                <span className="px-1.5 font-medium text-primary">{email}</span>
-                session from your Team.
-              </p>
+            <DialogDescription>
+              You can&apos;t undo this changes. Click <b>Reset Session</b> when
+              you&apos;re sure to reset
+              <span className="px-1.5 font-medium text-primary">{email}</span>
+              session from your Team.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">

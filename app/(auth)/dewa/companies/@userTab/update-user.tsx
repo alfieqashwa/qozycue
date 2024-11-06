@@ -58,8 +58,7 @@ export function UpdateUser({
             </span>
           </DialogTitle>
           <DialogDescription>
-            Click <span className="font-semibold">Update User</span> when
-            you&apos;re done.
+            Click <b>Update User</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <UpdateUserForm

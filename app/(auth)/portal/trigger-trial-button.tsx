@@ -70,7 +70,7 @@ export function TriggerTrialButton({ userRole }: { userRole: boolean }) {
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
-        {/* <CreateTrialCompanyForm setOpen={setOpen} /> */}
+        <CreateTrialCompanyForm setOpen={setOpen} />
       </DrawerContent>
     </Drawer>
   )

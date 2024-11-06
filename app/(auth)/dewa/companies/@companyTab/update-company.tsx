@@ -26,14 +26,12 @@ export function UpdateCompany({ name, children }: UpdateCompanyProps) {
       <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
         <SheetHeader>
           <SheetTitle>Update Company</SheetTitle>
-          <SheetDescription asChild>
-            <p>
-              Edit
-              <span className="px-1.5 font-medium uppercase text-primary">
-                {name}
-              </span>
-              here. Click Update Company when you&apos;re done.
-            </p>
+          <SheetDescription>
+            Edit
+            <span className="px-1.5 font-medium uppercase text-primary">
+              {name}
+            </span>
+            here. Click <b>Update Company</b> when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         {children}

@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -103,6 +104,9 @@ export function UpdateCompanyInfo({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Company</DialogTitle>
+          <DialogDescription>
+            Click <b>Update Company</b> when you&apos;re done
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -143,23 +147,18 @@ export function UpdateCompanyInfo({
             />
             <DialogFooter className="flex flex-row items-center justify-end pt-8">
               <DialogClose asChild>
-                <Button variant="secondary" size="sm">
-                  Cancel
-                </Button>
+                <Button variant="secondary">Cancel</Button>
               </DialogClose>
               {isPending ? (
                 <Button
                   disabled
-                  size="sm"
                   className="disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (
-                <Button type="submit" size="sm">
-                  Update Company
-                </Button>
+                <Button type="submit">Update Company</Button>
               )}
             </DialogFooter>
           </form>

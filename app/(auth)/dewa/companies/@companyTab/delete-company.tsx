@@ -71,14 +71,12 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                You can&apos;t undo this changes. Click Delete Company when
-                you&apos;re sure to delete Company
-                <span className="px-1.5 font-medium uppercase text-primary">
-                  {name}.
-                </span>
-              </p>
+            <DialogDescription>
+              You can&apos;t undo this changes. Click <b>Delete Company</b> when
+              you&apos;re sure to delete Company
+              <span className="px-1.5 font-medium uppercase text-primary">
+                {name}.
+              </span>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">

@@ -29,7 +29,8 @@ export function CreateCompany() {
         <SheetHeader>
           <SheetTitle>Create New Company</SheetTitle>
           <SheetDescription>
-            Create new company here. Click Create Company when you&apos;re done.
+            Create new company here. Click <b>Create Company</b> when
+            you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         <CreateCompanyForm setOpen={setOpen} />
