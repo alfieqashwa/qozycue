@@ -13,6 +13,7 @@ import { Role } from "@/types"
 import { TUpdateRoleByIdOnlyForSuperAmin } from "@/types/schema/user-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { toast } from "sonner"
 
 export function UpdateUserRoleForMeOnly({
@@ -27,8 +28,10 @@ export function UpdateUserRoleForMeOnly({
       })
     },
     onError(err) {
+      const errrorMesage =
+        err instanceof ConvexError ? err.data : "Unexpected error occurred"
       toast.error("Something went wrong.", {
-        description: err.message || "There was a problem with your request.",
+        description: errrorMesage,
       })
     },
   })

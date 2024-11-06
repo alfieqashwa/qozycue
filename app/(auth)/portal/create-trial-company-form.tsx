@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
 import { api } from "@/convex/_generated/api"
 import {
   createTrialCompanySchema,
@@ -17,11 +16,12 @@ import {
 } from "@/types/schema/company-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ToastAction } from "@radix-ui/react-toast"
 import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function CreateTrialCompanyForm({
   setOpen,
@@ -29,14 +29,10 @@ export function CreateTrialCompanyForm({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   const router = useRouter()
-  const { toast } = useToast()
-
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.companies.createTrial),
     onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast.success("Succeed!", {
         description: "Your new company/tenant has been created.",
       })
       setOpen(false)
@@ -45,11 +41,10 @@ export function CreateTrialCompanyForm({
       )
     },
     onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      const errrorMesage =
+        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      toast.error("Something went wrong.", {
+        description: errrorMesage,
       })
     },
   })

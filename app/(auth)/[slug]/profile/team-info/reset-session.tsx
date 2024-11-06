@@ -19,6 +19,7 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { toast } from "sonner"
+import { ConvexError } from "convex/values"
 
 export function ResetSession({
   userId,
@@ -37,8 +38,10 @@ export function ResetSession({
       })
     },
     onError(err) {
-      toast.error("Something went wrong!", {
-        description: err.message || "There was a problem with your request.",
+      const errrorMesage =
+        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      toast.error("Something went wrong.", {
+        description: errrorMesage,
       })
     },
     onSettled() {

@@ -32,7 +32,7 @@ export const findUserWithCompany = query({
   },
   handler: async (ctx, args) => {
     if (!args.userId || !args.companyId)
-      throw new Error("No User ID nor Company ID was provided!")
+      throw new ConvexError("No User ID nor Company ID was provided!")
 
     const user = await ctx.db.get(args.userId)
     const company = await ctx.db.get(args.companyId)

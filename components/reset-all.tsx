@@ -5,6 +5,7 @@ import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Button } from "./ui/button"
+import { ConvexError } from "convex/values"
 
 export function ResetAll() {
   const { mutate, isPending } = useMutation({
@@ -13,8 +14,10 @@ export function ResetAll() {
       toast.success("Succeed!")
     },
     onError(err) {
-      toast.error("Something went wrong!", {
-        description: err.message || "There was a problem with your request.",
+      const errrorMesage =
+        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      toast.error("Something went wrong.", {
+        description: errrorMesage,
       })
     },
   })

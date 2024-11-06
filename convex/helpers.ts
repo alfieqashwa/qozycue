@@ -1,7 +1,7 @@
 import { authTables, getAuthUserId } from "@convex-dev/auth/server"
 import { NoOp } from "convex-helpers/server/customFunctions"
 import { zCustomMutation, zCustomQuery, zid } from "convex-helpers/server/zod"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import {
   internalMutation,
   internalQuery,
@@ -18,7 +18,7 @@ export const protectedProcedure = internalQuery({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
 
-    if (!userId) throw new Error("Please signed in!")
+    if (!userId) throw new ConvexError("Please signed in!")
     return
   },
 })
@@ -30,7 +30,7 @@ export const superAdminProcedure = internalQuery({
     const user = userId !== null ? await ctx.db.get(userId) : null
 
     if (user?.email !== process.env.DEWA_EMAIL)
-      throw new Error("You do not have access!")
+      throw new ConvexError("You do not have access!")
     return
   },
 })
@@ -42,7 +42,7 @@ export const adminProcedure = internalQuery({
     const user = userId !== null ? await ctx.db.get(userId) : null
 
     if (user?.role !== "DEWA" && user?.role !== "ADMIN")
-      throw new Error("You do not have access!")
+      throw new ConvexError("You do not have access!")
     return
   },
 })
@@ -53,7 +53,9 @@ export const reset = internalMutation({
   args: { forReal: v.string() },
   handler: async (ctx, args) => {
     if (args.forReal !== "reset-batman") {
-      throw new Error("You must know what you're doing to reset the database.")
+      throw new ConvexError(
+        "You must know what you're doing to reset the database.",
+      )
     }
     for (const table of Object.keys(authTables)) {
       for (const { _id } of await ctx.db.query(table as any).collect()) {
@@ -67,7 +69,7 @@ export const reset = internalMutation({
 export const subscriptions = zInternalQuery({
   args: { companyId: zid("companies").optional() },
   handler: async (ctx, { companyId }) => {
-    if (!companyId) throw new Error("No company provided!")
+    if (!companyId) throw new ConvexError("No company provided!")
     const company = await ctx.db.get(companyId)
 
     const users = await ctx.db

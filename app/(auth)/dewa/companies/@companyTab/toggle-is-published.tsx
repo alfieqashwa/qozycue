@@ -3,6 +3,7 @@ import { api } from "@/convex/_generated/api"
 import { TToggleIsPublished } from "@/types/schema/company-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { toast } from "sonner"
 
 export function ToggleIsPublished(props: TToggleIsPublished) {
@@ -14,8 +15,10 @@ export function ToggleIsPublished(props: TToggleIsPublished) {
       })
     },
     onError(err) {
-      toast.error("Something went wrong!", {
-        description: err.message || "There was a problem with your request.",
+      const errrorMesage =
+        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      toast.error("Something went wrong.", {
+        description: errrorMesage,
       })
     },
   })

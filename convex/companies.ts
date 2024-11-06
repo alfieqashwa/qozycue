@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import {
   createCompanySchema,
   createTrialCompanySchema,
@@ -72,7 +72,7 @@ export const createTrial = zMutation({
   ) => {
     const userId = await getAuthUserId(ctx)
     if (!userId) {
-      throw new Error("Not signed in")
+      throw new ConvexError("Not signed in")
     }
 
     const companyId = await ctx.db.insert("companies", {
@@ -84,7 +84,7 @@ export const createTrial = zMutation({
       subscription: "TRIAL",
     })
 
-    if (!companyId) throw new Error("No companyId")
+    if (!companyId) throw new ConvexError("No companyId")
 
     const updateUserRole = await ctx.db.patch(userId, {
       role: "ADMIN",

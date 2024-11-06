@@ -15,6 +15,7 @@ import {
   useMutation,
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
 import { toast } from "sonner"
 
@@ -42,8 +43,10 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
       })
     },
     onError(err) {
-      toast.error("Something went wrong!", {
-        description: err.message || "There was a problem with your request.",
+      const errrorMesage =
+        err instanceof ConvexError ? err.data : "Unexpected error occurred"
+      toast.error("Something went wrong.", {
+        description: errrorMesage,
       })
     },
     onSettled() {
