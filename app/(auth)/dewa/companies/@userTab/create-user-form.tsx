@@ -21,8 +21,7 @@ import {
 import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
-import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
-import { Role, Subscription } from "@/types"
+import { Role } from "@/types"
 import { upsertUserSchema, type TUpsertUser } from "@/types/schema/user-schema"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -71,27 +70,12 @@ export function CreateUserForm({
     },
   })
 
-  const subscriptions = useTanstackQuery(
-    convexQuery(api.companies.subscriptions, { companyId: profile?.companyId }),
-  )
-
-  const isValid = validateSubscriptionLimits({
-    status: subscriptions.status,
-    subscription: subscriptions.data?.subscription as Subscription,
-    userLen: subscriptions.data?._count.users,
-  })
   // 2. Define a submit handler
   function onSubmit(values: TUpsertUser) {
     // Do something with the form values.
     // This will b type-safe and validated.
 
     const { email, role, companyId } = values
-
-    if (!isValid) {
-      return toast.error("Something went wrong.", {
-        description: "Max user limit exceeded",
-      })
-    }
 
     // avoid user to input his / her own email.
     if (status === "success" && profile?.email === email) {
