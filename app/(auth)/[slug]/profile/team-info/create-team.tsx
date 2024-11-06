@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -8,8 +7,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { CreateTeamForm } from "./create-team-form"
 import { FilePlus2 } from "lucide-react"
+import { useState } from "react"
+import { CreateTeamForm } from "./create-team-form"
 
 export function CreateTeam() {
   const [open, setOpen] = useState(false)
@@ -31,8 +31,7 @@ export function CreateTeam() {
         <SheetHeader>
           <SheetTitle>Create New Team</SheetTitle>
           <SheetDescription>
-            Create new team for your company here. Click Create Team when
-            you&apos;re done.
+            Click <b>Create Team</b> when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         <CreateTeamForm setOpen={setOpen} />
