@@ -29,6 +29,7 @@ export default defineSchema({
     companyId: v.optional(v.id("companies")), // exception set this to optional
   })
     .index("email", ["email"])
+    .index("role", ["role"])
     .index("companyId", ["companyId"]),
 
   companies: defineTable({
