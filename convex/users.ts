@@ -164,14 +164,17 @@ export const upsert = zMutation({
         role,
         companyId,
       })
-    } else if (!!user && !user.companyId) {
-      // this is for user who's already on pending page
+    } else {
+      /*
+       * this is for user who's already on portal page,
+       * which didn't create a company.
+       * And whether user has companyId or not,
+       * retrieve anyway. No impact for this case!
+       */
       upsert = await ctx.db.patch(user._id, {
         role,
         companyId,
       })
-    } else {
-      return null
     }
     return upsert
   },
