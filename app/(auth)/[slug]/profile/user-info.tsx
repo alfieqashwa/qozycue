@@ -10,7 +10,7 @@ import {
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
-import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { Building2, LayoutTemplate, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { TogglePublished } from "./toggle-published"
@@ -26,21 +26,25 @@ export function UserInfo({
   userId: Id<"users"> | undefined
   companyId: Id<"companies"> | undefined
 }) {
-  const { data: userWithCompany, status: StatusUserWithCompany } =
-    useTanstackQuery({
-      enabled: Boolean(userId) && Boolean(companyId),
-      ...convexQuery(api.users.findUserWithCompany, { userId, companyId }),
+  // source -> https://tanstack.com/query/v4/docs/framework/react/reference/useQueries
+  const [{ data: userWithCompany, status: userWithCompanyStatus }, orders] =
+    useTanstackQueries({
+      queries: [
+        {
+          ...convexQuery(api.users.findUserWithCompany, { userId, companyId }),
+          enabled: Boolean(userId) && Boolean(companyId),
+        },
+        {
+          ...convexQuery(api.orders.findAll, { companyId: companyId! }),
+          enabled: Boolean(companyId),
+        },
+      ],
     })
-
-  const orders = useTanstackQuery({
-    enabled: Boolean(companyId),
-    ...convexQuery(api.orders.findAll, { companyId: companyId! }),
-  })
 
   return (
     <div className="flex flex-col">
-      {StatusUserWithCompany === "pending" && <LoadingSpinner />}
-      {StatusUserWithCompany === "success" && (
+      {userWithCompanyStatus === "pending" && <LoadingSpinner />}
+      {userWithCompanyStatus === "success" && (
         <div className="px-4">
           <Image
             src={userWithCompany.user?.image as string}
