@@ -86,7 +86,7 @@ export const slug = query({
 export const subscriptions = query({
   args: { companyId: v.optional(v.id("companies")) },
   handler: async (ctx, { companyId }) => {
-    await superAdminProcedure(ctx, {})
+    await adminProcedure(ctx, {})
 
     if (!companyId) throw new Error("No company!")
     const company = await ctx.db.get(companyId)
