@@ -1,5 +1,5 @@
 import { roles } from "@/app/constants/options"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -18,7 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
 import { Role, Subscription } from "@/types"
 import { upsertTeamSchema, type TUpsertTeam } from "@/types/schema/user-schema"
@@ -170,16 +172,26 @@ export function CreateTeamForm({
             </FormItem>
           )}
         />
-        {isPending ? (
-          <Button disabled>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Please wait
-          </Button>
-        ) : (
-          <Button disabled={isPending} type="submit">
-            Create Team
-          </Button>
-        )}
+        <SheetFooter className="pt-8">
+          <SheetClose
+            className={cn(
+              buttonVariants({ variant: "secondary" }),
+              "mt-1.5 md:mt-0",
+            )}
+          >
+            Cancel
+          </SheetClose>
+          {isPending ? (
+            <Button disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>
+          ) : (
+            <Button disabled={isPending} type="submit">
+              Create Team
+            </Button>
+          )}
+        </SheetFooter>
       </form>
     </Form>
   )
