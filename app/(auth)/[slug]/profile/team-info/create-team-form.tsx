@@ -37,9 +37,7 @@ export function CreateTeamForm({
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const { data: profile, status } = useTanstackQuery(
-    convexQuery(api.users.me, {}),
-  )
+  const profile = useTanstackQuery(convexQuery(api.users.me, {}))
   useMutation
 
   const { mutate, isPending } = useMutation({
@@ -65,9 +63,9 @@ export function CreateTeamForm({
   })
 
   const subscriptions = useTanstackQuery({
-    enabled: Boolean(profile?.companyId),
+    enabled: Boolean(profile.data?.companyId),
     ...convexQuery(api.companies.subscriptions, {
-      companyId: profile?.companyId,
+      companyId: profile.data?.companyId,
     }),
   })
 
@@ -85,7 +83,7 @@ export function CreateTeamForm({
     const { email, role } = values
 
     // avoid user to input his / her own email.
-    if (status === "success" && profile?.email === email) {
+    if (profile.data?.email === email) {
       return toast.error("Something went wrong.", {
         description: "Please DO NOT input your own email, Dude!",
       })
@@ -101,7 +99,7 @@ export function CreateTeamForm({
       upsertUserSchema: {
         email: email.toLowerCase(),
         role,
-        companyId: profile?.companyId,
+        companyId: profile.data?.companyId,
       },
     })
   }
@@ -139,7 +137,8 @@ export function CreateTeamForm({
                 </FormControl>
                 <SelectContent>
                   {/* ADMIN CANNOT create a new team where the role is "ADMIN" */}
-                  {profile?.role === "DEWA" ? (
+                  {profile.status === "success" &&
+                  profile.data?.role === "DEWA" ? (
                     <SelectGroup>
                       {roles
                         .filter((r) => r.value !== "DEWA")

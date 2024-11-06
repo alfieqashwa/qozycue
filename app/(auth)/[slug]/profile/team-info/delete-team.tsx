@@ -79,26 +79,23 @@ export function DeleteTeam({ id, email }: Props) {
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                You can&apos;t undo this changes. Click Delete Team when
-                you&apos;re sure to delete
-                <span className="px-1.5 font-medium text-primary">{email}</span>
-                from your Team.
-              </p>
+            <DialogDescription>
+              You can&apos;t undo this changes. Click <b>Delete Team</b> when
+              you&apos;re sure to delete
+              <span className="px-1.5 font-medium text-primary">{email}</span>
+              from your Team.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
+          <DialogFooter className="mt-8 flex flex-row items-center justify-end space-x-2">
             <Button
               type="button"
               variant="ghost"
-              size="sm"
               onClick={() => setOpen(false)}
             >
               Cancel
             </Button>
             {isPending ? (
-              <Button disabled variant="destructive" size="sm">
+              <Button disabled variant="destructive">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
               </Button>
@@ -107,7 +104,6 @@ export function DeleteTeam({ id, email }: Props) {
                 disabled={disabled || isPending}
                 type="submit"
                 variant="destructive"
-                size="sm"
               >
                 Delete Team
               </Button>
