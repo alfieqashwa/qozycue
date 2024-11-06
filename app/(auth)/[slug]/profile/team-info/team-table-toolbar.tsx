@@ -1,12 +1,12 @@
 "use client"
 
-import { Cross2Icon } from "@radix-ui/react-icons"
-import { type Table } from "@tanstack/react-table"
 import { roles } from "@/app/constants/options"
 import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-filter"
 import { DataTableViewOptions } from "@/components/table/data-table-view-options"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Cross2Icon } from "@radix-ui/react-icons"
+import { type Table } from "@tanstack/react-table"
 import { CreateTeam } from "./create-team"
 
 interface TeamTableToolbarProps<TData> {
@@ -32,7 +32,7 @@ export function TeamTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("role")}
             title="Role"
-            options={roles}
+            options={roles.filter((r) => r.value !== "DEWA")}
           />
         )}
         {isFiltered && (
