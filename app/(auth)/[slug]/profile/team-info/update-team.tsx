@@ -1,51 +1,16 @@
-import { roles } from "@/app/constants/options"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
-import { Role } from "@/types"
-import {
-  TUpdateRoleById,
-  updateRoleByIdSchema,
-} from "@/types/schema/user-schema"
-import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
-import { zodResolver } from "@hookform/resolvers/zod"
-import {
-  useMutation,
-  useQuery as useTanstackQuery,
-} from "@tanstack/react-query"
-import { ConvexError } from "convex/values"
-import { Loader2 } from "lucide-react"
+import { TUpdateRoleById } from "@/types/schema/user-schema"
 import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
+import { UpdateTeamForm } from "./update-team-form"
 
 type UpdateTeamProps = {
   name: string | undefined
@@ -70,9 +35,8 @@ export function UpdateTeam({ id, name, role, email }: UpdateTeamProps) {
       </DialogTrigger>
       <DialogContent className="bg-card">
         <DialogHeader>
-          <DialogTitle>Update Team</DialogTitle>
-          <DialogDescription>
-            Edit
+          <DialogTitle>
+            Update{" "}
             <span
               className={cn("px-1 capitalize text-amber-300", {
                 lowercase: name == null,
@@ -80,105 +44,13 @@ export function UpdateTeam({ id, name, role, email }: UpdateTeamProps) {
             >
               {name ?? email}
             </span>
-            role of your team here. Click <b>Update Team</b> when you&apos;re
-            done.
+          </DialogTitle>
+          <DialogDescription>
+            Click <b>Update Team</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <UpdateTeamForm id={id} role={role} setOpen={setOpen} />
       </DialogContent>
     </Dialog>
-  )
-}
-
-type UpdateTeamFormProps = {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-} & TUpdateRoleById
-export const UpdateTeamForm = ({ id, role, setOpen }: UpdateTeamFormProps) => {
-  const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.users.updateRoleByIdAdminProcedure),
-    onSuccess: () =>
-      toast.success("Succeed!", {
-        description: "Your team has been updated.",
-      }),
-    onError: (err) =>
-      toast.error("Something went wrong.", {
-        description:
-          err instanceof ConvexError ? err.data : "Unexpected error occurred",
-      }),
-    onSettled: () => setOpen(false),
-  })
-
-  const form = useForm<TUpdateRoleById>({
-    resolver: zodResolver(updateRoleByIdSchema),
-    defaultValues: {
-      id,
-      role,
-    },
-  })
-
-  function onSubmit(values: TUpdateRoleById) {
-    const { role } = values
-
-    mutate({
-      updateRoleByIdSchema: {
-        id,
-        role,
-      },
-    })
-  }
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 py-4">
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem className="pt-4">
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value as Role}
-              >
-                <FormLabel>Role</FormLabel>
-                <FormControl className="w-[200px]">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Role" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Role</SelectLabel>
-                    {roles
-                      .filter((r) => r.value !== "DEWA")
-                      .map((role, i) => (
-                        <SelectItem value={role.value} key={`${role}-${i}`}>
-                          {role.label}
-                        </SelectItem>
-                      ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormDescription className="pt-2">
-                Select user&apos;s access level.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <DialogFooter className="flex flex-row items-center justify-end space-x-2">
-          <DialogClose className={cn(buttonVariants({ variant: "secondary" }))}>
-            Cancel
-          </DialogClose>
-          {isPending ? (
-            <Button disabled>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button type="submit">Update Team</Button>
-          )}
-        </DialogFooter>
-      </form>
-    </Form>
   )
 }
