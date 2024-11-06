@@ -55,15 +55,7 @@ type UpdateTeamProps = {
 export function UpdateTeam({ id, name, role, email }: UpdateTeamProps) {
   const [open, setOpen] = useState(false)
 
-  const { data: profile, status } = useTanstackQuery(
-    convexQuery(api.users.me, {}),
-  )
-
-  const disabled =
-    (status === "success" &&
-      profile?.email !== process.env.NEXT_PUBLIC_SUPER_ADMIN &&
-      email === process.env.NEXT_PUBLIC_SUPER_ADMIN) ||
-    profile?.role === "ADMIN"
+  const disabled = role === "ADMIN"
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
