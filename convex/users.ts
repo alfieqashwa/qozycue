@@ -114,9 +114,47 @@ export const updateRoleByIdAdminProcedure = zMutation({
   },
 })
 
-export const upsert = zMutation({
+export const upsertSuperAdminProcedure = zMutation({
   args: { upsertUserSchema },
   handler: async (ctx, { upsertUserSchema: { email, role, companyId } }) => {
+    await superAdminProcedure(ctx, {})
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", email))
+      .unique()
+
+    let upsert
+
+    if (!user) {
+      // if no-user, then createTeam
+      upsert = await ctx.db.insert("users", {
+        email,
+        role,
+        companyId,
+      })
+    } else {
+      /*
+       * this is for user who's already on portal page,
+       * which didn't create a company.
+       * And whether user has companyId or not,
+       * retrieve anyway. No impact for this case!
+       */
+      upsert = await ctx.db.patch(user._id, {
+        role,
+        companyId,
+      })
+    }
+    return upsert
+  },
+})
+
+export const upsertAdminProcedure = zMutation({
+  args: { upsertUserSchema },
+  handler: async (ctx, { upsertUserSchema: { email, role, companyId } }) => {
+    await adminProcedure(ctx, {})
+
+    // Validate user's limit based on company's subscriptions
     const subs = await subscriptions(ctx, { companyId })
     const isValid = validateSubscriptionLimits({
       subscription: subs.subscription!,

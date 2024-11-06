@@ -67,8 +67,6 @@ export const reset = internalMutation({
 export const subscriptions = zInternalQuery({
   args: { companyId: zid("companies").optional() },
   handler: async (ctx, { companyId }) => {
-    await adminProcedure(ctx, {})
-
     if (!companyId) throw new Error("No company provided!")
     const company = await ctx.db.get(companyId)
 

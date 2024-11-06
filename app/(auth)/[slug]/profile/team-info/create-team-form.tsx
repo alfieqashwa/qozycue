@@ -43,7 +43,7 @@ export function CreateTeamForm({
   useMutation
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.users.upsert),
+    mutationFn: useConvexMutation(api.users.upsertAdminProcedure),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "Your new team has been created.",

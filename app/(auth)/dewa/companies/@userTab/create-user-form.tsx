@@ -44,7 +44,7 @@ export function CreateUserForm({
   const companies = useTanstackQuery(convexQuery(api.companies.findAll, {}))
 
   const upsertUser = useMutation({
-    mutationFn: useConvexMutation(api.users.upsert),
+    mutationFn: useConvexMutation(api.users.upsertSuperAdminProcedure),
     async onSuccess() {
       toast.success("Succeed!", {
         description: "Your new user has been created.",
