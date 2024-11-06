@@ -14,8 +14,9 @@ export function TeamInfo({
   companyId: Id<"companies"> | undefined
 }) {
   const users = useTanstackQuery({
-    enabled: Boolean(companyId),
     ...convexQuery(api.users.findAllByCompanyId, { companyId: companyId! }),
+    enabled: Boolean(companyId),
+    select: (users) => users.filter((user) => user.role !== "DEWA"),
   })
 
   if (users.status !== "success") return <LoadingSpinner />
