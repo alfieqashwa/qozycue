@@ -20,12 +20,13 @@ import { Loader2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
-type Props = {
+export function DeleteUser({
+  id,
+  email,
+}: {
   id: Id<"users">
   email: string | undefined
-}
-
-export function DeleteUser({ id, email }: Props) {
+}) {
   const [open, setOpen] = useState(false)
 
   const { data: profile, status } = useTanstackQuery(
@@ -47,10 +48,7 @@ export function DeleteUser({ id, email }: Props) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    mutate({
-      id,
-    })
+    mutate({ id })
   }
 
   // avoid user (admin) to delete his / her own account

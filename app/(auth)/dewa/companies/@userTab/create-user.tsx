@@ -12,7 +12,6 @@ import { CreateUserForm } from "./create-user-form"
 
 export function CreateUser() {
   const [open, setOpen] = useState(false)
-
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>

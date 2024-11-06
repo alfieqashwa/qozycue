@@ -7,12 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Role } from "@/types"
-import { convexQuery } from "@convex-dev/react-query"
-import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { UpdateUserForm } from "./update-user-form"
 
@@ -23,7 +20,6 @@ type UpdateUserProps = {
   role: Role
   companyId: Id<"companies"> | undefined
 }
-
 export function UpdateUser({
   id,
   name,

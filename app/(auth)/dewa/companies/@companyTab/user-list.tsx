@@ -25,6 +25,7 @@ import { Doc, Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { FunctionReturnType } from "convex/server"
 import { Hash, Key, Mail, User2, Users2 } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
@@ -89,7 +90,11 @@ export function UserList({
   )
 }
 
-const UserTableRow = ({ user }: { user: Doc<"users"> }) => (
+const UserTableRow = ({
+  user,
+}: {
+  user: FunctionReturnType<typeof api.users.findAllByCompanyId>[0]
+}) => (
   <TableRow>
     <TableCell>
       <div className="flex items-center">

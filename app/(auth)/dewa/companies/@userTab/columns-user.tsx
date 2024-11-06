@@ -49,9 +49,9 @@ export const columnsUser: ColumnDef<
     ),
     cell: ({ row }) => {
       const userAvatar = row.original.image
-      if (userAvatar) {
-        return (
-          <div className="flex items-center">
+      return (
+        <div className="flex items-center">
+          {userAvatar ? (
             <span className="relative ml-1 h-10 w-10">
               <Image
                 src={userAvatar}
@@ -61,17 +61,14 @@ export const columnsUser: ColumnDef<
                 className="rounded-full bg-background object-cover text-muted-foreground ring-2 ring-ring ring-offset-2 ring-offset-background"
               />
             </span>
-          </div>
-        )
-      }
-      return (
-        <div className="flex items-center">
-          <span className="relative ml-1">
-            <User
-              size={40}
-              className="rounded-full bg-background object-cover p-1 text-muted-foreground ring-2 ring-ring ring-offset-2 ring-offset-background"
-            />
-          </span>
+          ) : (
+            <span className="relative ml-1">
+              <User
+                size={40}
+                className="rounded-full bg-background object-cover p-1 text-muted-foreground ring-2 ring-ring ring-offset-2 ring-offset-background"
+              />
+            </span>
+          )}
         </div>
       )
     },
@@ -85,7 +82,6 @@ export const columnsUser: ColumnDef<
       const {
         original: { _id, name },
       } = row
-
       return <ActiveUser id={_id} name={name} />
     },
   },
@@ -166,7 +162,6 @@ export const columnsUser: ColumnDef<
       const {
         original: { _id, name, email, role, companyId },
       } = row
-
       return (
         <UpdateUser
           id={_id}

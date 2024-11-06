@@ -55,8 +55,6 @@ export function CreateCompanyForm({
 
   // 2. Define a submit handler
   function onSubmit(values: TCreateCompany) {
-    // Do something with the form values.
-    // This will b type-safe and validated.
     const { name, phone, location, isPublished } = values
 
     mutate({
@@ -125,8 +123,6 @@ export function CreateCompanyForm({
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  // disabled
-                  // aria-readonly
                 />
               </FormControl>
               <FormMessage />

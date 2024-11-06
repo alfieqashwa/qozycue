@@ -75,7 +75,6 @@ export function UpdateUserForm({
 
   function onSubmit(values: TUpdateUser) {
     const { role, companyId } = values
-
     mutate({
       updateUserSchema: {
         id,

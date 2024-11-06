@@ -69,9 +69,6 @@ export function CreateUserForm({
 
   // 2. Define a submit handler
   function onSubmit(values: TUpsertUser) {
-    // Do something with the form values.
-    // This will b type-safe and validated.
-
     const { email, role, companyId } = values
 
     // avoid user to input his / her own email.

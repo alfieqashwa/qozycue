@@ -5,15 +5,13 @@ import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-fi
 import { DataTableViewOptions } from "@/components/table/data-table-view-options"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Cross2Icon } from "@radix-ui/react-icons"
-import { type Table } from "@tanstack/react-table"
-import { Building2 } from "lucide-react"
-// import { api } from "@/trpc/react"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
+import { Cross2Icon } from "@radix-ui/react-icons"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { type Table } from "@tanstack/react-table"
+import { Building2 } from "lucide-react"
 import { CreateUser } from "./create-user"
-
 interface UserTableToolbarProps<TData> {
   table: Table<TData>
 }

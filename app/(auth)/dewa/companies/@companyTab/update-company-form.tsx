@@ -144,14 +144,17 @@ export function UpdateCompanyForm({
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue placeholder="Select Subscription" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={"TRIAL"}>TRIAL</SelectItem>
-                  <SelectItem value={"BASIC"}>BASIC</SelectItem>
-                  <SelectItem value={"PRO"}>PRO</SelectItem>
-                  <SelectItem value={"ENTERPRISE"}>ENTERPRISE</SelectItem>
+                  {["TRIAL", "BASIC", "PRO", "ENTERPRISE"].map(
+                    (subscrtiption, i) => (
+                      <SelectItem value={subscription} key={i}>
+                        {subscription}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
