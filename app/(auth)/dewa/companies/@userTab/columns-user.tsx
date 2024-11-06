@@ -57,6 +57,7 @@ export const columnsUser: ColumnDef<
                 src={userAvatar}
                 alt="username"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="rounded-full bg-background object-cover text-muted-foreground ring-2 ring-ring ring-offset-2 ring-offset-background"
               />
             </span>
