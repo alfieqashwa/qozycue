@@ -21,8 +21,7 @@ import {
 import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
-import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
-import { Role, Subscription } from "@/types"
+import { Role } from "@/types"
 import { upsertTeamSchema, type TUpsertTeam } from "@/types/schema/user-schema"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,6 +29,7 @@ import {
   useMutation,
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -48,10 +48,15 @@ export function CreateTeamForm({
       toast.success("Succeed!", {
         description: "Your new team has been created.",
       }),
-    onError: (err) =>
+
+    onError: (err) => {
+      // source => https://docs.convex.dev/functions/error-handling/application-errors#throwing-application-errors
+      const errrorMesage =
+        err instanceof ConvexError ? err.data : "Unexpected error occurred"
       toast.error("Something went wrong.", {
-        description: err.message || "There was a problem with your request.",
-      }),
+        description: errrorMesage,
+      })
+    },
     onSettled: () => setOpen(false),
   })
 
@@ -64,19 +69,6 @@ export function CreateTeamForm({
     },
   })
 
-  const subscriptions = useTanstackQuery({
-    enabled: Boolean(profile.data?.companyId),
-    ...convexQuery(api.companies.subscriptions, {
-      companyId: profile.data?.companyId,
-    }),
-  })
-
-  // TODOS: move this validation logic into internal api
-  const isValid = validateSubscriptionLimits({
-    status: subscriptions.status,
-    subscription: subscriptions.data?.subscription as Subscription,
-    userLen: subscriptions.data?._count.users,
-  })
   // 2. Define a submit handler
   function onSubmit(values: TUpsertTeam) {
     // Do something with the form values.
@@ -88,12 +80,6 @@ export function CreateTeamForm({
     if (profile.data?.email === email) {
       return toast.error("Something went wrong.", {
         description: "Please DO NOT input your own email, Dude!",
-      })
-    }
-
-    if (!isValid) {
-      return toast.error("Something went wrong.", {
-        description: "Max user limit exceeded",
       })
     }
 

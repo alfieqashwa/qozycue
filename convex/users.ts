@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import {
   updateRoleByIdOnlyForSuperAminSchema,
   updateRoleByIdSchema,
@@ -10,7 +10,9 @@ import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
   protectedProcedure,
+  subscriptions,
   superAdminProcedure,
+  validateSubscriptionLimits,
   zMutation,
 } from "./helpers"
 
@@ -112,44 +114,17 @@ export const updateRoleByIdAdminProcedure = zMutation({
   },
 })
 
-// upsertDewa: dewaProcedure
-//   .input(upsertUserSchema)
-//   .mutation(async ({ ctx, input }) => {
-//     function upsertTeam({ email, role, companyId }: TUpsertUser) {
-//       return ctx.db.$transaction(async (tx) => {
-//         const user = await tx.user.findUnique({
-//           where: { email },
-//         })
-
-//         let upsertUser
-
-//         if (!user) {
-//           // if no-user, then createTeam
-//           upsertUser = await tx.user.create({
-//             data: {
-//               email,
-//               role,
-//               companyId,
-//             },
-//           })
-//         } else if (!!user && !user.companyId) {
-//           // this is for user who's already on pending page
-//           upsertUser = await tx.user.update({
-//             where: { email },
-//             data: { role, companyId },
-//           })
-//         } else {
-//           return null
-//         }
-//         return upsertUser
-//       })
-//     }
-//     await upsertTeam(input)
-//   }),
-
 export const upsert = zMutation({
   args: { upsertUserSchema },
   handler: async (ctx, { upsertUserSchema: { email, role, companyId } }) => {
+    const subs = await subscriptions(ctx, { companyId })
+    const isValid = validateSubscriptionLimits({
+      subscription: subs.subscription!,
+      userLen: subs._count.users,
+    })
+
+    if (!isValid) throw new ConvexError("Max user limit exceeded!")
+
     const user = await ctx.db
       .query("users")
       .withIndex("email", (q) => q.eq("email", email))

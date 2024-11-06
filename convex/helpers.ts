@@ -1,6 +1,6 @@
 import { authTables, getAuthUserId } from "@convex-dev/auth/server"
 import { NoOp } from "convex-helpers/server/customFunctions"
-import { zCustomMutation, zCustomQuery } from "convex-helpers/server/zod"
+import { zCustomMutation, zCustomQuery, zid } from "convex-helpers/server/zod"
 import { v } from "convex/values"
 import {
   internalMutation,
@@ -11,6 +11,7 @@ import {
 
 export const zQuery = zCustomQuery(query, NoOp)
 export const zMutation = zCustomMutation(mutation, NoOp)
+export const zInternalQuery = zCustomQuery(internalQuery, NoOp)
 
 export const protectedProcedure = internalQuery({
   args: {},
@@ -61,3 +62,87 @@ export const reset = internalMutation({
     }
   },
 })
+
+//? this API will be used to validate the client based on its subscriptions.
+export const subscriptions = zInternalQuery({
+  args: { companyId: zid("companies").optional() },
+  handler: async (ctx, { companyId }) => {
+    await adminProcedure(ctx, {})
+
+    if (!companyId) throw new Error("No company provided!")
+    const company = await ctx.db.get(companyId)
+
+    const users = await ctx.db
+      .query("users")
+      .withIndex("companyId", (q) => q.eq("companyId", companyId))
+      .collect()
+    const poolTables = await ctx.db
+      .query("poolTables")
+      .withIndex("companyId", (q) => q.eq("companyId", companyId))
+      .collect()
+    const products = await ctx.db
+      .query("products")
+      .withIndex("companyId", (q) => q.eq("companyId", companyId))
+      .collect()
+    const packets = await ctx.db
+      .query("packets")
+      .withIndex("companyId", (q) => q.eq("companyId", companyId))
+      .collect()
+
+    const _count = {
+      users: users.length,
+      poolTables: poolTables.length,
+      products: products.length,
+      packets: packets.length,
+    }
+
+    return { subscription: company?.subscription, _count }
+  },
+})
+
+type Subscription = "TRIAL" | "BASIC" | "PRO" | "ENTERPRISE"
+interface ValidationParams {
+  subscription: Subscription
+  poolTableLen?: number
+  productLen?: number
+  packetLen?: number
+  userLen?: number
+}
+
+//? Source -> https://chatgpt.com/c/66ebf326-a3a4-8002-ba16-560775196c62
+export function validateSubscriptionLimits({
+  subscription,
+  poolTableLen,
+  productLen,
+  packetLen,
+  userLen,
+}: ValidationParams): boolean {
+  // Max limits for different subscription levels
+  const limits = {
+    poolTable: { TRIAL: 10, BASIC: 20, PRO: 40, ENTERPRISE: undefined },
+    product: {
+      TRIAL: 20,
+      BASIC: undefined,
+      PRO: undefined,
+      ENTERPRISE: undefined,
+    }, // No limits for BASIC and PRO
+    packet: {
+      TRIAL: 5,
+      BASIC: undefined,
+      PRO: undefined,
+      ENTERPRISE: undefined,
+    }, // No limits for BASIC and PRO
+    user: { TRIAL: 4, BASIC: 5, PRO: 10, ENTERPRISE: undefined },
+  }
+
+  // Validation logic
+  const isValid = (len: number | undefined, limit: number | undefined) =>
+    typeof len === "undefined" || limit === undefined || len < limit
+
+  return (
+    isValid(poolTableLen, limits.poolTable[subscription]) &&
+    isValid(productLen, limits.product[subscription]) &&
+    isValid(packetLen, limits.packet[subscription]) &&
+    isValid(userLen, limits.user[subscription])
+  )
+}
