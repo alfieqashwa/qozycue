@@ -40,6 +40,7 @@ export const update = zMutation({
 export const toggle = mutation({
   args: { id: v.id("taxes"), isDefaultValue: v.boolean() },
   handler: async (ctx, args) => {
+    await managerProcedure(ctx, {})
     return await ctx.db.patch(args.id, { isDefaultValue: !args.isDefaultValue })
   },
 })

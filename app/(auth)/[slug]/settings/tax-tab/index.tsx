@@ -59,10 +59,15 @@ export function TaxTab({ companyId }: { companyId: Id<"companies"> }) {
                   name={x.name}
                   value={x.value}
                   companyId={companyId}
+                  isDefaultValue={x.isDefaultValue}
                 />
               </TableCell>
               <TableCell className="w-[100px]">
-                <DeleteTax id={x._id} name={x.name} />
+                <DeleteTax
+                  id={x._id}
+                  name={x.name}
+                  isDefaultValue={x.isDefaultValue}
+                />
               </TableCell>
             </TableRow>
           ))}

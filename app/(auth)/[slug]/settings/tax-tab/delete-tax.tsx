@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
@@ -19,7 +20,15 @@ import { Loader2, Trash } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
-export const DeleteTax = ({ id, name }: { id: Id<"taxes">; name: string }) => {
+export const DeleteTax = ({
+  id,
+  name,
+  isDefaultValue,
+}: {
+  id: Id<"taxes">
+  name: string
+  isDefaultValue: boolean
+}) => {
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
@@ -43,22 +52,22 @@ export const DeleteTax = ({ id, name }: { id: Id<"taxes">; name: string }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          size="sm"
-          variant="destructive"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <Trash size={16} className="mr-1" />
-          <span className="text-sm">Delete</span>
-        </Button>
+      <DialogTrigger
+        disabled={isDefaultValue}
+        className={cn(
+          buttonVariants({ variant: "destructive", size: "sm" }),
+          "flex disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Trash size={16} className="mr-1" />
+        <span className="text-sm">Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
             <DialogDescription>
-              You can&apos;t undo this changes. Click <b>Delete Tax</b> when
+              You can&apos;t undo this changes. Click <b>Delete</b> when
               you&apos;re sure to delete{" "}
               <span className="text-primary">{name}</span>.
             </DialogDescription>
@@ -78,7 +87,7 @@ export const DeleteTax = ({ id, name }: { id: Id<"taxes">; name: string }) => {
               </Button>
             ) : (
               <Button type="submit" variant="destructive">
-                Delete Tax
+                Delete
               </Button>
             )}
           </DialogFooter>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { taxSchema, type TTax } from "@/types/schema/tax-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -36,11 +37,13 @@ export const UpdateTax = ({
   name,
   value,
   companyId,
+  isDefaultValue,
 }: {
   id: Id<"taxes">
   name: string
   value: number
   companyId: Id<"companies">
+  isDefaultValue: boolean
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -75,21 +78,21 @@ export const UpdateTax = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          size="sm"
-          variant="outline"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <Pencil size={16} className="mr-1" />
-          <span className="text-sm">Edit</span>
-        </Button>
+      <DialogTrigger
+        disabled={isDefaultValue}
+        className={cn(
+          buttonVariants({ variant: "secondary", size: "sm" }),
+          "flex disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Pencil size={16} className="mr-1" />
+        <span className="text-sm">Edit</span>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Tax</DialogTitle>
           <DialogDescription>
-            Klik Update setelah selesai memperbarui form.
+            Click <b>Update</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
