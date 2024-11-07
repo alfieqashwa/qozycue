@@ -19,13 +19,14 @@ export default async function SlugLayout({
     {},
     { token: convexAuthNextjsToken() },
   )
+  if (!session._id) redirect("/signin")
+
   const company = await fetchQuery(
     api.companies.find,
     { id: session?.companyId },
     { token: convexAuthNextjsToken() },
   )
 
-  if (!session._id) redirect("/signin")
   if (session.user?.role === "USER") redirect("/portal/")
 
   const { slug } = params
