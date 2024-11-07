@@ -1,5 +1,5 @@
 import { v } from "convex/values"
-import { taxSchema, createTaxSchema } from "../types/schema/tax-schema"
+import { createTaxSchema, taxSchema } from "../types/schema/tax-schema"
 import { mutation, query } from "./_generated/server"
 import { managerProcedure, protectedProcedure, zMutation } from "./helpers"
 
@@ -35,6 +35,12 @@ export const update = zMutation({
       isDefaultValue: false,
       companyId,
     })
+  },
+})
+export const toggle = mutation({
+  args: { id: v.id("taxes"), isDefaultValue: v.boolean() },
+  handler: async (ctx, args) => {
+    return await ctx.db.patch(args.id, { isDefaultValue: !args.isDefaultValue })
   },
 })
 export const remove = mutation({

@@ -1,47 +1,34 @@
 "use client"
 
 import { Switch } from "@/components/ui/switch"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
 import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { ConvexError } from "convex/values"
+import { toast } from "sonner"
 
 export function ToggleTax({
   id,
   isDefaultValue,
   hasDefaultValueTax,
 }: {
-  id: string
+  id: Id<"taxes">
   isDefaultValue: boolean
   hasDefaultValueTax: boolean
 }) {
-  const router = useRouter()
-  const { toast } = useToast()
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.taxes.toggle),
-    onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: (
-          <p>
-            {variables?.isDefaultValue === true ? "Enabled" : "Disabled"}{" "}
-            defaultValue
-          </p>
-        ),
-      })
-      router.refresh()
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
+    onSuccess: () => {
+      toast.success("Succeed!", {
+        description: `${variables?.isDefaultValue ? "Disabled" : "Enabled"}`,
       })
     },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
 
   const disabledNonDefaultValueTax = hasDefaultValueTax && !isDefaultValue
@@ -49,9 +36,7 @@ export function ToggleTax({
     <Switch
       disabled={isPending || disabledNonDefaultValueTax}
       checked={isDefaultValue}
-      onCheckedChange={() =>
-        mutate({ id, isDefaultValue: isDefaultValue === true ? false : true })
-      }
+      onCheckedChange={() => mutate({ id, isDefaultValue })}
     />
   )
 }
