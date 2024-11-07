@@ -32,9 +32,11 @@ import { toast } from "sonner"
 export const UpdateUom = ({
   id,
   name,
+  description,
 }: {
   id: Id<"unitOfMeasures">
   name: string
+  description: string
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -57,6 +59,7 @@ export const UpdateUom = ({
     defaultValues: {
       id,
       name,
+      description,
     },
   })
   function onSubmit(values: TUom) {

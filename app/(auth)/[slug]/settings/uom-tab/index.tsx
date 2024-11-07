@@ -37,6 +37,7 @@ export function UoMTab({ companyId }: { companyId: Id<"companies"> }) {
             <TableRow className="capitalize">
               <TableHead>ID</TableHead>
               <TableHead>name</TableHead>
+              <TableHead>description</TableHead>
               <TableHead className="sr-only">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -49,8 +50,13 @@ export function UoMTab({ companyId }: { companyId: Id<"companies"> }) {
                 <TableCell className="font-medium capitalize">
                   {uom.name}
                 </TableCell>
+                <TableCell className="capitalize">{uom.description}</TableCell>
                 <TableCell className="w-[100px] font-medium capitalize">
-                  <UpdateUom id={uom._id} name={uom.name} />
+                  <UpdateUom
+                    id={uom._id}
+                    name={uom.name}
+                    description={uom.description}
+                  />
                 </TableCell>
                 <TableCell className="w-[100px] font-medium capitalize">
                   <DeleteUom id={uom._id} name={uom.name} />
