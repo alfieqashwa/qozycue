@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { type TUom, uomSchema } from "@/types/schema/unit-of-measure"
+import { type TUom, uomSchema } from "@/types/schema/unit-of-measure-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"

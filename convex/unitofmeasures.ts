@@ -1,5 +1,8 @@
 import { v } from "convex/values"
-import { createUomSchema, uomSchema } from "../types/schema/unit-of-measure"
+import {
+  createUomSchema,
+  uomSchema,
+} from "../types/schema/unit-of-measure-schema"
 import { mutation, query } from "./_generated/server"
 import { managerProcedure, protectedProcedure, zMutation } from "./helpers"
 

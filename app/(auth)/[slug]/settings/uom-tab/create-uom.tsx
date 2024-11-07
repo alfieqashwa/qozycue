@@ -21,7 +21,7 @@ import { api } from "@/convex/_generated/api"
 import {
   createUomSchema,
   type TCreateUom,
-} from "@/types/schema/unit-of-measure"
+} from "@/types/schema/unit-of-measure-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
