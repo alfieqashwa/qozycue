@@ -1,10 +1,12 @@
 "use client"
 
+import { Switch } from "@/components/ui/switch"
+import { ToastAction } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
+import { api } from "@/convex/_generated/api"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { Switch } from "~/components/ui/switch"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
 
 export function ToggleTax({
   id,
@@ -17,8 +19,9 @@ export function ToggleTax({
 }) {
   const router = useRouter()
   const { toast } = useToast()
-  const { mutate, isPending, variables } = api.tax.toggle.useMutation({
-    async onSuccess() {
+  const { mutate, isPending, variables } = useMutation({
+    mutationFn: useConvexMutation(api.taxes.toggle),
+    onSuccess() {
       toast({
         title: "Succeed!",
         variant: "default",

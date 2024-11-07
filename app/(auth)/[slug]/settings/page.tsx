@@ -8,6 +8,8 @@ import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { DiscountTab } from "./discount-tab"
 import { CreateDiscount } from "./discount-tab/create-discount"
+import { TaxTab } from "./tax-tab"
+import { CreateTax } from "./tax-tab/create-tax"
 import { UoMTab } from "./uom-tab"
 
 export const metadata: Metadata = {
@@ -80,8 +82,12 @@ export default async function SettingPage() {
       )}
       {/* // TODO: Migrate Tax Tab */}
       <TabsContent value="tax">
-        <h2>Tax Tab</h2>
-        {/* <TaxTab /> */}
+        <Suspense fallback={<LoadingSpinner />}>
+          <div className="text-right">
+            <CreateTax companyId={session.companyId!} />
+          </div>
+          <TaxTab companyId={session.companyId!} />
+        </Suspense>
       </TabsContent>
       {/* // TODO: Check what's the different with the other tabs */}
       <Suspense fallback={<LoadingSpinner />}>

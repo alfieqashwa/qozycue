@@ -1,11 +1,6 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Pencil } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -13,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -22,68 +17,60 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
-import { taxSchema, type TTax } from "~/types/schema/tax-schema"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { taxSchema, type TTax } from "@/types/schema/tax-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Pencil } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export const UpdateTax = ({
   id,
   name,
   value,
-  disabledBasedOnAccessLevel,
+  companyId,
 }: {
-  id: string
+  id: Id<"taxes">
   name: string
   value: number
-  disabledBasedOnAccessLevel: boolean
+  companyId: Id<"companies">
 }) => {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.tax.update.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.taxes.update),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "The tax has been updated.",
-      })
-
-      router.refresh()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  // 1. Define your form.
   const form = useForm<TTax>({
     resolver: zodResolver(taxSchema),
     defaultValues: {
       id,
       name,
       value,
+      companyId,
     },
   })
 
-  // 2. Define a submit handler.
   function onSubmit(values: TTax) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const { id, name, value } = values
-
-    mutate({ id, name: name.toLowerCase(), value })
+    mutate({ taxSchema: { id, name: name.toLowerCase(), value, companyId } })
   }
 
   return (
@@ -92,7 +79,6 @@ export const UpdateTax = ({
         <Button
           size="sm"
           variant="outline"
-          disabled={disabledBasedOnAccessLevel}
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Pencil size={16} className="mr-1" />
@@ -122,7 +108,7 @@ export const UpdateTax = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Contoh: 6%, 11%, 21%</FormDescription>
+                  <FormDescription>eg: 6%, 11%, 21%</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -137,7 +123,7 @@ export const UpdateTax = ({
                   <FormControl>
                     <Input type="number" placeholder="Value" {...field} />
                   </FormControl>
-                  <FormDescription>contoh: 0.06, 0.11, 0.21</FormDescription>
+                  <FormDescription>eg: 0.06, 0.11, 0.21</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

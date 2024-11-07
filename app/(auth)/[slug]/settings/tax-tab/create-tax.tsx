@@ -1,10 +1,5 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { FilePlus2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,57 +19,55 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { createTaxSchema, type TCreateTax } from "@/types/schema/tax-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { FilePlus2 } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
-export const CreateTax = () => {
+export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.tax.create.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.taxes.create),
+    onSuccess: () => {
+      toast.success("Succeed", {
         description: "New Tax has been created.",
       })
-
-      router.refresh()
+    },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
       setOpen(false)
       form.reset()
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
   })
 
-  // 1. Define your form.
   const form = useForm<TCreateTax>({
     resolver: zodResolver(createTaxSchema),
     defaultValues: {
       name: "",
       value: 0,
+      companyId,
     },
   })
-
-  // 2. Define a submit handler.
   function onSubmit(values: TCreateTax) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const { name, value } = values
-
     mutate({
-      name: name.toLowerCase(),
-      value,
+      createTaxSchema: {
+        name: name.toLowerCase(),
+        value,
+        companyId,
+      },
     })
   }
 
@@ -83,7 +76,6 @@ export const CreateTax = () => {
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          disabled={disabledBasedOnAccessLevel}
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <FilePlus2 size={16} className="mr-1" />
