@@ -13,16 +13,6 @@ export const zQuery = zCustomQuery(query, NoOp)
 export const zMutation = zCustomMutation(mutation, NoOp)
 export const zInternalQuery = zCustomQuery(internalQuery, NoOp)
 
-export const protectedProcedure = internalQuery({
-  args: {},
-  handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx)
-
-    if (!userId) throw new ConvexError("Please signed in!")
-    return
-  },
-})
-
 export const superAdminProcedure = internalQuery({
   args: {},
   handler: async (ctx) => {
@@ -43,6 +33,48 @@ export const adminProcedure = internalQuery({
 
     if (user?.role !== "DEWA" && user?.role !== "ADMIN")
       throw new ConvexError("You do not have access!")
+    return
+  },
+})
+
+export const managerProcedure = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "MANAGER"
+    )
+      throw new ConvexError("You do not have access!")
+    return
+  },
+})
+
+export const cashierProcedure = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "CASHIER"
+    )
+      throw new ConvexError("You do not have access!")
+    return
+  },
+})
+
+export const protectedProcedure = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+
+    if (!userId) throw new ConvexError("Please signed in!")
     return
   },
 })
