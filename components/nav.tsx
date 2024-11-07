@@ -13,9 +13,19 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 
-type NavProps = { isOwner: boolean; slug: string; links: TLinkList[] }
+type NavProps = {
+  ownerAccessLevel: boolean
+  managerAccessLevel: boolean
+  slug: string
+  links: TLinkList[]
+}
 
-export function Nav({ isOwner, slug, links }: NavProps) {
+export function Nav({
+  ownerAccessLevel,
+  managerAccessLevel,
+  slug,
+  links,
+}: NavProps) {
   const store = useToggleStore()
   const pathname = usePathname()
 
@@ -52,7 +62,10 @@ export function Nav({ isOwner, slug, links }: NavProps) {
                           "bg-muted text-primary hover:bg-muted"
                       : pathname === link.href &&
                           "bg-muted text-primary hover:bg-muted",
-                    link.href === "/dashboard" && !isOwner && "hidden",
+                    link.href === "/dashboard" && !ownerAccessLevel && "hidden",
+                    link.href === "/settings" &&
+                      !managerAccessLevel &&
+                      "hidden",
                   )}
                 >
                   <link.icon size={28} className="shrink-0" />
@@ -84,7 +97,8 @@ export function Nav({ isOwner, slug, links }: NavProps) {
                       "bg-muted text-primary hover:bg-muted"
                   : pathname === link.href &&
                       "bg-muted text-primary hover:bg-muted",
-                link.href === "/dashboard" && !isOwner && "hidden",
+                link.href === "/dashboard" && !ownerAccessLevel && "hidden",
+                link.href === "/settings" && !managerAccessLevel && "hidden",
               )}
             >
               <link.icon size={28} className="mr-4 shrink-0" />

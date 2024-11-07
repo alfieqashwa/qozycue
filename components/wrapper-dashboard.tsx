@@ -62,6 +62,9 @@ export function WrapperDashboard({
   const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(
     session.user.role ?? "",
   )
+  const managerAccessLevel = ["DEWA", "ADMIN", "OWNER", "MANAGER"].includes(
+    session.user.role ?? "",
+  )
 
   return (
     <div className="relative pb-12 sm:pb-4">
@@ -84,13 +87,15 @@ export function WrapperDashboard({
         <ToggleGrip />
         <ScrollArea className="h-svh">
           <Nav
-            isOwner={ownerAccessLevel}
+            ownerAccessLevel={ownerAccessLevel}
+            managerAccessLevel={managerAccessLevel}
             slug={session.companySlug!}
             links={linkList.filter((l) => l.isGeneral)}
           />
           <Separator className="py-[1px]" />
           <Nav
-            isOwner={ownerAccessLevel}
+            ownerAccessLevel={ownerAccessLevel}
+            managerAccessLevel={managerAccessLevel}
             slug={session.companySlug!}
             links={linkList.filter((l) => !l.isGeneral)}
           />

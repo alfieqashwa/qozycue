@@ -4,6 +4,7 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import { type Metadata } from "next"
+import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { DiscountTab } from "./discount-tab"
 import { CreateDiscount } from "./discount-tab/create-discount"
@@ -20,25 +21,35 @@ export default async function SettingPage() {
     { token: convexAuthNextjsToken() },
   )
 
-  const superAdminAccessLevel = session.user.role === "DEWA"
-  const adminAccessLevel = session.user.role === "ADMIN"
-  const managerAccessLevel = session.user.role === "MANAGER"
+  if (session.user.role === "CASHIER")
+    redirect(`/${encodeURIComponent(session.companySlug!)}/tables`)
+
+  const isSuperAdmin = session.user.role === "DEWA"
+  const isAdmin = session.user.role === "ADMIN"
 
   return (
     <Tabs
-      defaultValue={
-        superAdminAccessLevel ? "category" : adminAccessLevel ? "pool" : "tax"
-      }
+      defaultValue={isSuperAdmin ? "category" : isAdmin ? "pool" : "tax"}
       className="mt-2"
     >
       <TabsList className="mb-3">
-        {superAdminAccessLevel && (
+        {isSuperAdmin && (
           <>
-            <TabsTrigger value="category">Categories</TabsTrigger>
-            <TabsTrigger value="uom">UoM</TabsTrigger>
+            <TabsTrigger
+              value="category"
+              className="data-[state=active]:text-rose-500"
+            >
+              Categories
+            </TabsTrigger>
+            <TabsTrigger
+              value="uom"
+              className="data-[state=active]:text-rose-500"
+            >
+              UoM
+            </TabsTrigger>
           </>
         )}
-        {adminAccessLevel && (
+        {(isSuperAdmin || isAdmin) && (
           <TabsTrigger value="pool">Pool Tables</TabsTrigger>
         )}
         <TabsTrigger className="hidden sm:block" value="tax">
@@ -48,7 +59,7 @@ export default async function SettingPage() {
           Discounts
         </TabsTrigger>
       </TabsList>
-      {superAdminAccessLevel && (
+      {isSuperAdmin && (
         <>
           <TabsContent value="category">
             <h2>Category Tab</h2>
@@ -60,7 +71,7 @@ export default async function SettingPage() {
           </TabsContent>
         </>
       )}
-      {adminAccessLevel && (
+      {(isSuperAdmin || isAdmin) && (
         <TabsContent value="pool">
           <h2>Pool Table Tab</h2>
           {/* // TODO: */}
