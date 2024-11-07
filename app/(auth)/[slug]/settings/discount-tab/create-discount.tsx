@@ -1,10 +1,5 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { FilePlus2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,59 +19,63 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import {
   createDiscountSchema,
   type TCreateDiscount,
 } from "@/types/schema/discount-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { FilePlus2 } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
-export const CreateDiscount = () => {
+export const CreateDiscount = ({
+  companyId,
+}: {
+  companyId: Id<"companies">
+}) => {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.discount.create.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.discounts.create),
+    onSuccess: () => {
+      toast.success("Succeed", {
         description: "New Discount has been created.",
       })
-      router.refresh()
-      setOpen(false)
-      form.reset()
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
+      setOpen(false)
+      // form.reset()
     },
   })
 
-  // 1. Define your form.
   const form = useForm<TCreateDiscount>({
     resolver: zodResolver(createDiscountSchema),
     defaultValues: {
       name: "",
       value: 0,
+      companyId,
     },
   })
 
-  // 2. Define a submit handler.
   function onSubmit(values: TCreateDiscount) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const { name, value } = values
-
     mutate({
-      name: name.toLowerCase(),
-      value,
+      createDiscountSchema: {
+        name: name.toLowerCase(),
+        value: Number(value),
+        companyId,
+      },
     })
   }
 
@@ -85,18 +84,20 @@ export const CreateDiscount = () => {
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          disabled={disabledBasedOnAccessLevel}
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <FilePlus2 size={16} className="mr-1" />
           <span>Create</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-card sm:max-w-[425px]">
+      <DialogContent
+        onCloseAutoFocus={() => form.reset()}
+        className="bg-card sm:max-w-[425px]"
+      >
         <DialogHeader>
           <DialogTitle>Create Discount</DialogTitle>
           <DialogDescription>
-            Klik Submit setelah selesai mengisi form.
+            Click <b>Create Discount</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -109,12 +110,12 @@ export const CreateDiscount = () => {
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="name"
-                      className="capitalize"
+                      placeholder="eg. 10%"
+                      className="w-[100px] capitalize"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>contoh: 5%, 10%, 15%, 20%</FormDescription>
+                  <FormDescription>eg: 5%, 10%, 15%, 20%</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -127,17 +128,20 @@ export const CreateDiscount = () => {
                 <FormItem>
                   <FormLabel>Value</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Value" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="eg. 0.10"
+                      className="w-[100px]"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>
-                    contoh: 0.05, 0.10, 0.15 0.20
-                  </FormDescription>
+                  <FormDescription>eg: 0.05, 0.10, 0.15 0.20</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button disabled={isPending} type="submit">
-              Submit
+              Create Discount
             </Button>
           </form>
         </Form>

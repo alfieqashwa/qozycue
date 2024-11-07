@@ -1,5 +1,5 @@
-import { Suspense } from "react"
-import { LoadingSpinner } from "@/app/_components/loading"
+"use client"
+
 import {
   Table,
   TableBody,
@@ -9,58 +9,54 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { CreateDiscount } from "./create-discount"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { DeleteDiscount } from "./delete-discount"
 import { UpdateDiscount } from "./update-discount"
 
-export async function DiscountTab() {
-  const discounts = await api.discount.findAllByCompanyId()
+export function DiscountTab({ companyId }: { companyId: Id<"companies"> }) {
+  const { data: discounts, status } = useTanstackQuery({
+    ...convexQuery(api.discounts.findAllByCompanyId, { companyId }),
+    enabled: Boolean(companyId),
+  })
   return (
-    <>
-      <div className="text-right">
-        <CreateDiscount />
-      </div>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Table>
-          <TableCaption>A list of discounts.</TableCaption>
-          <TableHeader>
-            <TableRow className="capitalize">
-              <TableHead>ID</TableHead>
-              <TableHead>name</TableHead>
-              <TableHead>value</TableHead>
-              <TableHead className="sr-only">Actions</TableHead>
+    <Table>
+      <TableCaption>A list of discounts.</TableCaption>
+      <TableHeader>
+        <TableRow className="capitalize">
+          <TableHead>ID</TableHead>
+          <TableHead>name</TableHead>
+          <TableHead>value</TableHead>
+          <TableHead className="sr-only">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {status === "success" &&
+          discounts.map((disc) => (
+            <TableRow key={disc._id}>
+              <TableCell className="w-[200px] font-medium">
+                {disc._id.slice(-8, disc._id.length)}
+              </TableCell>
+              <TableCell className="w-[200px] font-medium capitalize">
+                {disc.name}
+              </TableCell>
+              <TableCell>{disc.value}</TableCell>
+              <TableCell className="w-[100px]">
+                <UpdateDiscount
+                  id={disc._id}
+                  name={disc.name}
+                  value={disc.value}
+                  companyId={companyId}
+                />
+              </TableCell>
+              <TableCell className="w-[100px]">
+                <DeleteDiscount id={disc._id} name={disc.name} />
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {discounts.map((c) => (
-              <TableRow key={c.id}>
-                <TableCell className="w-[200px] font-medium">
-                  {c.id.slice(-8, c.id.length)}
-                </TableCell>
-                <TableCell className="w-[200px] font-medium capitalize">
-                  {c.name}
-                </TableCell>
-                <TableCell>{c.value}</TableCell>
-                <TableCell className="w-[100px]">
-                  <UpdateDiscount
-                    id={c.id}
-                    name={c.name}
-                    value={c.value}
-                    disabledBasedOnAccessLevel={disabledBasedOnAccessLevel}
-                  />
-                </TableCell>
-                <TableCell className="w-[100px]">
-                  <DeleteDiscount
-                    id={c.id}
-                    name={c.name}
-                    disabledBasedOnAccessLevel={disabledBasedOnAccessLevel}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Suspense>
-    </>
+          ))}
+      </TableBody>
+    </Table>
   )
 }

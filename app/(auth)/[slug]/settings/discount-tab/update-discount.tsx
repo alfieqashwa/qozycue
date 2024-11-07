@@ -1,11 +1,6 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Pencil } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -13,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -22,67 +17,61 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
-import { discountSchema, type TDiscount } from "~/types/schema/discount-schema"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { discountSchema, type TDiscount } from "@/types/schema/discount-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Pencil } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export const UpdateDiscount = ({
   id,
   name,
   value,
-  disabledBasedOnAccessLevel,
+  companyId,
 }: {
-  id: string
+  id: Id<"discounts">
   name: string
   value: number
-  disabledBasedOnAccessLevel: boolean
+  companyId: Id<"companies">
 }) => {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.discount.update.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.discounts.update),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "The discount has been updated.",
-      })
-      router.refresh()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  // 1. Define your form.
   const form = useForm<TDiscount>({
     resolver: zodResolver(discountSchema),
     defaultValues: {
       id,
       name,
       value,
+      companyId,
     },
   })
-
-  // 2. Define a submit handler.
   function onSubmit(values: TDiscount) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const { id, name, value } = values
-
-    mutate({ id, name: name.toLowerCase(), value })
+    mutate({
+      discountSchema: { id, name: name.toLowerCase(), value, companyId },
+    })
   }
 
   return (
@@ -91,7 +80,6 @@ export const UpdateDiscount = ({
         <Button
           size="sm"
           variant="outline"
-          disabled={disabledBasedOnAccessLevel}
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Pencil size={16} className="mr-1" />
@@ -102,7 +90,7 @@ export const UpdateDiscount = ({
         <DialogHeader>
           <DialogTitle>Edit Discount</DialogTitle>
           <DialogDescription>
-            Klik Update setelah selesai memperbarui form.
+            Click <b>Update Discount</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -121,7 +109,7 @@ export const UpdateDiscount = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>contoh: 5%, 10%, 15%, 20%</FormDescription>
+                  <FormDescription>eg: 5%, 10%, 15%, 20%</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -136,15 +124,13 @@ export const UpdateDiscount = ({
                   <FormControl>
                     <Input type="number" placeholder="Value" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    contoh: 0.05, 0.10, 0.15 0.20
-                  </FormDescription>
+                  <FormDescription>eg: 0.05, 0.10, 0.15 0.20</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button disabled={isPending} type="submit">
-              Update
+              Update Discount
             </Button>
           </form>
         </Form>

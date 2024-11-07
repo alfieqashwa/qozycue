@@ -1,13 +1,13 @@
-import { type Metadata } from "next"
+import { LoadingSpinner } from "@/components/loading-spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CategoryTab } from "./category-tab"
-import { PoolTableTab } from "./pool-table-tab"
-import { UoMTab } from "./uom-tab"
-import { TaxTab } from "./tax-tab"
-import { DiscountTab } from "./discount-tab"
-import { fetchQuery } from "convex/nextjs"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
+import { fetchQuery } from "convex/nextjs"
+import { type Metadata } from "next"
+import { Suspense } from "react"
+import { DiscountTab } from "./discount-tab"
+import { CreateDiscount } from "./discount-tab/create-discount"
+import { UoMTab } from "./uom-tab"
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -22,18 +22,21 @@ export default async function SettingPage() {
 
   const superAdminAccessLevel = session.user.role === "DEWA"
   const adminAccessLevel = session.user.role === "ADMIN"
+  const managerAccessLevel = session.user.role === "MANAGER"
+
   return (
     <Tabs
       defaultValue={
-        session.user.role === "DEWA" || session.user.role === "ADMIN"
-          ? "pool"
-          : "taxes"
+        superAdminAccessLevel ? "category" : adminAccessLevel ? "pool" : "tax"
       }
       className="mt-2"
     >
       <TabsList className="mb-3">
         {superAdminAccessLevel && (
-          <TabsTrigger value="category">Categories</TabsTrigger>
+          <>
+            <TabsTrigger value="category">Categories</TabsTrigger>
+            <TabsTrigger value="uom">UoM</TabsTrigger>
+          </>
         )}
         {adminAccessLevel && (
           <TabsTrigger value="pool">Pool Tables</TabsTrigger>
@@ -44,27 +47,40 @@ export default async function SettingPage() {
         <TabsTrigger className="hidden sm:block" value="discount">
           Discounts
         </TabsTrigger>
-        <TabsTrigger value="uom">UoM</TabsTrigger>
       </TabsList>
       {superAdminAccessLevel && (
-        <TabsContent value="category">
-          <CategoryTab />
-        </TabsContent>
+        <>
+          <TabsContent value="category">
+            <h2>Category Tab</h2>
+            {/* // TODO: */}
+            {/* <CategoryTab /> */}
+          </TabsContent>
+          <TabsContent value="uom">
+            <UoMTab companyId={session.companyId!} />
+          </TabsContent>
+        </>
       )}
       {adminAccessLevel && (
         <TabsContent value="pool">
-          <PoolTableTab />
+          <h2>Pool Table Tab</h2>
+          {/* // TODO: */}
+          {/* <PoolTableTab /> */}
         </TabsContent>
       )}
+      {/* // TODO: Migrate Tax Tab */}
       <TabsContent value="tax">
-        <TaxTab />
+        <h2>Tax Tab</h2>
+        {/* <TaxTab /> */}
       </TabsContent>
-      <TabsContent value="discount">
-        <DiscountTab />
-      </TabsContent>
-      <TabsContent value="uom">
-        <UoMTab companyId={session.companyId!} />
-      </TabsContent>
+      {/* // TODO: Check what's the different with the other tabs */}
+      <Suspense fallback={<LoadingSpinner />}>
+        <TabsContent value="discount">
+          <div className="text-right">
+            <CreateDiscount companyId={session.companyId!} />
+          </div>
+          <DiscountTab companyId={session.companyId!} />
+        </TabsContent>
+      </Suspense>
     </Tabs>
   )
 }
