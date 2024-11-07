@@ -21,6 +21,7 @@ import type * as messages from "../messages.js";
 import type * as orders from "../orders.js";
 import type * as pooltables from "../pooltables.js";
 import type * as sessions from "../sessions.js";
+import type * as unitofmeasures from "../unitofmeasures.js";
 import type * as users from "../users.js";
 
 /**
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   orders: typeof orders;
   pooltables: typeof pooltables;
   sessions: typeof sessions;
+  unitofmeasures: typeof unitofmeasures;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

@@ -1,9 +1,4 @@
-"use client"
-
-import { Loader2, Trash } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,51 +7,41 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
+} from "@/components/ui/dialog"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2, Trash } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 export function DeleteUom({
   id,
   name,
-  disabledBasedOnAccessLevel,
 }: {
-  id: string
+  id: Id<"unitOfMeasures">
   name: string
-  disabledBasedOnAccessLevel: boolean
 }) {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.unitOfMeasure.delete.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.unitofmeasures.remove),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "The UoM has been deleted.",
-      })
-      await utils.unitOfMeasure.findAllByCompanyId.invalidate()
-      router.refresh()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     mutate({ id })
   }
 
@@ -66,7 +51,6 @@ export function DeleteUom({
         <Button
           size="sm"
           variant="destructive"
-          disabled={disabledBasedOnAccessLevel}
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Trash size={16} className="mr-1" />
@@ -77,14 +61,10 @@ export function DeleteUom({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                Anda tidak dapat membatalkan perubahan ini. Klik Delete untuk
-                menghapus UoM
-                <span className="px-1.5 font-medium uppercase text-primary">
-                  {name}.
-                </span>
-              </p>
+            <DialogDescription>
+              You can&apos;t undo this changes. Click <b>Delete UoM</b> when
+              you&apos;re sure to delete{" "}
+              <span className="text-primary">{name}</span>.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">

@@ -1,11 +1,4 @@
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Pencil } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -13,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -22,51 +15,43 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
-import { uomSchema, type TUom } from "~/types/schema/unit-of-measure"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { type TUom, uomSchema } from "@/types/schema/unit-of-measure"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Pencil } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export const UpdateUom = ({
   id,
   name,
-  disabledBasedOnAccessLevel,
 }: {
-  id: string
+  id: Id<"unitOfMeasures">
   name: string
-  disabledBasedOnAccessLevel: boolean
 }) => {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.unitOfMeasure.update.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.unitofmeasures.update),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "The UoM has been updated.",
-      })
-      await utils.unitOfMeasure.findAllByCompanyId.invalidate()
-      router.refresh()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  // 1. Define your form.
   const form = useForm<TUom>({
     resolver: zodResolver(uomSchema),
     defaultValues: {
@@ -74,14 +59,15 @@ export const UpdateUom = ({
       name,
     },
   })
-
-  // 2. Define a submit handler.
   function onSubmit(values: TUom) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const { id, name } = values
-
-    mutate({ id, name: name.toLowerCase() })
+    mutate({
+      uomSchema: {
+        id,
+        name: name.toLowerCase(),
+        description: name.toLocaleLowerCase(), // for now leave it that way
+      },
+    })
   }
 
   return (
@@ -90,7 +76,6 @@ export const UpdateUom = ({
         <Button
           size="sm"
           variant="outline"
-          disabled={disabledBasedOnAccessLevel}
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Pencil size={16} className="mr-1" />
@@ -101,7 +86,7 @@ export const UpdateUom = ({
         <DialogHeader>
           <DialogTitle>Edit Unit of Measure</DialogTitle>
           <DialogDescription>
-            Klik Update setelah selesai memperbarui form.
+            Click <b>Update UoM</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -119,15 +104,13 @@ export const UpdateUom = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Contoh: pcs, item, bungkus, dan sbg-nya.
-                  </FormDescription>
+                  <FormDescription>Eg: pcs, item, unit, etc.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button disabled={isPending} type="submit">
-              Update
+              Update UoM
             </Button>
           </form>
         </Form>

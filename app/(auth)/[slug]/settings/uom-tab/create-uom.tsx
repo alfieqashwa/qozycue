@@ -1,9 +1,3 @@
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { FilePlus2 } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -23,59 +17,53 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
 import {
   createUomSchema,
   type TCreateUom,
 } from "@/types/schema/unit-of-measure"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { FilePlus2 } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
-export function CreateUom({
-  disabledBasedOnAccessLevel,
-}: {
-  disabledBasedOnAccessLevel: boolean
-}) {
+export function CreateUom() {
   const [open, setOpen] = useState(false)
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.unitOfMeasure.create.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.unitofmeasures.create),
+    onSuccess: () =>
+      toast.success("Succeed", {
         description: "New UoM has been created.",
-      })
-      await utils.unitOfMeasure.findAllByCompanyId.invalidate()
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  // 1. Define your form.
   const form = useForm<TCreateUom>({
     resolver: zodResolver(createUomSchema),
     defaultValues: {
       name: "",
+      description: "",
     },
   })
 
-  // 2. Define a submit handler.
   function onSubmit(values: TCreateUom) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const { name } = values
-
-    mutate({ name: name.toLowerCase() })
+    mutate({
+      createUomSchema: {
+        name: name.toLowerCase(),
+        description: name.toLocaleLowerCase(),
+      },
+    })
   }
 
   return (
@@ -83,18 +71,17 @@ export function CreateUom({
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          disabled={disabledBasedOnAccessLevel}
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <FilePlus2 size={16} className="mr-1" />
-          Create
+          Create UoM
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create Unit of Measure</DialogTitle>
           <DialogDescription>
-            Klik Submit setelah selesai memgisi form.
+            Click <b>Create UoM</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -107,7 +94,7 @@ export function CreateUom({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="name"
+                      placeholder="name of unit of measure"
                       className="capitalize"
                       {...field}
                     />
@@ -120,7 +107,7 @@ export function CreateUom({
               )}
             />
             <Button disabled={isPending} type="submit">
-              Submit
+              Create UoM
             </Button>
           </form>
         </Form>

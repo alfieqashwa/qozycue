@@ -10,23 +10,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { CreateUom } from "./create-uom"
 import { DeleteUom } from "./delete-uom"
 import { UpdateUom } from "./update-uom"
 
-export function UoMTab({
-  disabledBasedOnAccessLevel,
-}: {
-  disabledBasedOnAccessLevel: boolean
-}) {
-  const { data: unitOfMeasures, status } =
-    api.unitOfMeasure.findAllByCompanyId.useQuery()
+export function UoMTab({ companyId }: { companyId: Id<"companies"> }) {
+  const { data: unitOfMeasures, status } = useTanstackQuery({
+    ...convexQuery(api.unitofmeasures.findAllByCompanyId, { companyId }),
+    enabled: Boolean(companyId),
+  })
+
   if (status === "pending") return <LoadingSpinner />
   return (
     <>
-      <div className="text-right">
-        <CreateUom disabledBasedOnAccessLevel={disabledBasedOnAccessLevel} />
-      </div>
+      <section className="text-right">
+        <CreateUom />
+      </section>
       {status === "success" && !!unitOfMeasures?.length && (
         <Table>
           <TableCaption>A list of unit of measures.</TableCaption>
@@ -39,26 +42,18 @@ export function UoMTab({
           </TableHeader>
           <TableBody>
             {unitOfMeasures.map((uom) => (
-              <TableRow key={uom.id}>
+              <TableRow key={uom._id}>
                 <TableCell className="w-[100px] font-medium">
-                  {uom.id.slice(-8, uom.id.length)}
+                  {uom._id.slice(-8, uom._id.length)}
                 </TableCell>
                 <TableCell className="font-medium capitalize">
                   {uom.name}
                 </TableCell>
                 <TableCell className="w-[100px] font-medium capitalize">
-                  <UpdateUom
-                    id={uom.id}
-                    name={uom.name}
-                    disabledBasedOnAccessLevel={disabledBasedOnAccessLevel}
-                  />
+                  <UpdateUom id={uom._id} name={uom.name} />
                 </TableCell>
                 <TableCell className="w-[100px] font-medium capitalize">
-                  <DeleteUom
-                    id={uom.id}
-                    name={uom.name}
-                    disabledBasedOnAccessLevel={disabledBasedOnAccessLevel}
-                  />
+                  <DeleteUom id={uom._id} name={uom.name} />
                 </TableCell>
               </TableRow>
             ))}

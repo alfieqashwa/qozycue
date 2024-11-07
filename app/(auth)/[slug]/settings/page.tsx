@@ -63,7 +63,7 @@ export default async function SettingPage() {
         <DiscountTab />
       </TabsContent>
       <TabsContent value="uom">
-        <UoMTab />
+        <UoMTab companyId={session.companyId!} />
       </TabsContent>
     </Tabs>
   )
