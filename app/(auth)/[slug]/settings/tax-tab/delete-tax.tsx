@@ -35,7 +35,7 @@ export const DeleteTax = ({
     mutationFn: useConvexMutation(api.taxes.remove),
     onSuccess: () =>
       toast.success("Succeed!", {
-        description: "The tax has been deleted.",
+        description: `The tax has been deleted.`,
       }),
     onError: (err) =>
       toast.error("Something went wrong.", {

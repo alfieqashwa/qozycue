@@ -1,7 +1,12 @@
 import { v } from "convex/values"
-import { createTaxSchema, taxSchema } from "../types/schema/tax-schema"
+import { createTaxSchema, updateTaxSchema } from "../types/schema/tax-schema"
 import { mutation, query } from "./_generated/server"
-import { managerProcedure, protectedProcedure, zMutation } from "./helpers"
+import {
+  managerProcedure,
+  protectedProcedure,
+  stringToFloat,
+  zMutation,
+} from "./helpers"
 
 export const findAllByCompanyId = query({
   args: { companyId: v.id("companies") },
@@ -13,9 +18,10 @@ export const findAllByCompanyId = query({
 })
 export const create = zMutation({
   args: { createTaxSchema },
-  handler: async (ctx, { createTaxSchema: { name, value, companyId } }) => {
+  handler: async (ctx, { createTaxSchema: { name, companyId } }) => {
     await managerProcedure(ctx, {})
 
+    const value = stringToFloat(name)
     return await ctx.db.insert("taxes", {
       name,
       value,
@@ -25,10 +31,11 @@ export const create = zMutation({
   },
 })
 export const update = zMutation({
-  args: { taxSchema },
-  handler: async (ctx, { taxSchema: { id, name, value, companyId } }) => {
+  args: { updateTaxSchema },
+  handler: async (ctx, { updateTaxSchema: { id, name, companyId } }) => {
     await managerProcedure(ctx, {})
 
+    const value = stringToFloat(name)
     return await ctx.db.patch(id, {
       name,
       value,

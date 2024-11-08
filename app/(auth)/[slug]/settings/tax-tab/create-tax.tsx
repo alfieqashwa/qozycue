@@ -12,7 +12,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,11 +33,11 @@ import { toast } from "sonner"
 export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
   const [open, setOpen] = useState(false)
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.taxes.create),
     onSuccess: () => {
       toast.success("Succeed", {
-        description: "New Tax has been created.",
+        description: `Tax ${variables?.createTaxSchema.name}% has been created.`,
       })
     },
     onError: (err) =>
@@ -56,16 +55,13 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
     resolver: zodResolver(createTaxSchema),
     defaultValues: {
       name: "",
-      value: 0,
       companyId,
     },
   })
   function onSubmit(values: TCreateTax) {
-    const { name, value } = values
     mutate({
       createTaxSchema: {
-        name: name.toLowerCase(),
-        value,
+        name: values.name.toLowerCase(),
         companyId,
       },
     })
@@ -96,30 +92,17 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Tax in %</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="name"
-                      className="capitalize"
+                      type="number"
+                      min="0"
+                      max="30"
+                      placeholder="eg: 6.5, 11, 21"
+                      className="w-[200px]"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Contoh: 6%, 11%, 21%</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Value */}
-            <FormField
-              control={form.control}
-              name="value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Value</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Value" {...field} />
-                  </FormControl>
-                  <FormDescription>contoh: 0.06, 0.11, 0.21</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

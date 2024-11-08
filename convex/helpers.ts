@@ -179,3 +179,8 @@ export function validateSubscriptionLimits({
     isValid(userLen, limits.user[subscription])
   )
 }
+
+export function stringToFloat(str: string): number {
+  const value = (Math.round(Number(str)) / 100).toFixed(2)
+  return +value
+}
