@@ -37,7 +37,7 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
     mutationFn: useConvexMutation(api.taxes.create),
     onSuccess: () => {
       toast.success("Succeed", {
-        description: `Tax ${variables?.createTaxSchema.name}% has been created.`,
+        description: `Tax ${variables?.createTaxSchema.value}% has been created.`,
       })
     },
     onError: (err) =>
@@ -54,14 +54,15 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
   const form = useForm<TCreateTax>({
     resolver: zodResolver(createTaxSchema),
     defaultValues: {
-      name: "",
+      value: 0,
       companyId,
     },
   })
   function onSubmit(values: TCreateTax) {
+    const { value } = values
     mutate({
       createTaxSchema: {
-        name: values.name.toLowerCase(),
+        value,
         companyId,
       },
     })
@@ -89,15 +90,13 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="name"
+              name="value"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tax in %</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      min="0"
-                      max="30"
                       placeholder="eg: 6.5, 11, 21"
                       className="w-[200px]"
                       {...field}

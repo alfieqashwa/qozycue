@@ -180,7 +180,14 @@ export function validateSubscriptionLimits({
   )
 }
 
-export function stringToFloat(str: string): number {
-  const value = (Math.round(Number(str)) / 100).toFixed(2)
-  return +value
+export function percentToDecimal(num: number): number {
+  // Convert to decimal and round to two decimals
+  const decimal = num / 100
+  return parseFloat(decimal.toFixed(2))
 }
+
+// export function decimalToPercent(decimal: number): number {
+//   // Convert back to percentage and ensure two decimals
+//   const percentage = decimal * 100
+//   return parseFloat(percentage.toFixed(2))
+// }

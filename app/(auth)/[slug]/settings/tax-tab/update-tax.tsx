@@ -12,7 +12,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,7 +21,7 @@ import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
-import { taxSchema, type TTax } from "@/types/schema/tax-schema"
+import { TUpdateTax, updateTaxSchema } from "@/types/schema/tax-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -34,46 +33,47 @@ import { toast } from "sonner"
 
 export const UpdateTax = ({
   id,
-  name,
   value,
   companyId,
   isDefaultValue,
 }: {
   id: Id<"taxes">
-  name: string
   value: number
   companyId: Id<"companies">
   isDefaultValue: boolean
 }) => {
   const [open, setOpen] = useState(false)
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.taxes.update),
-    onSuccess: () =>
+    onSuccess() {
       toast.success("Succeed!", {
-        description: "The tax has been updated.",
-      }),
+        description: `Tax has been updated to ${variables?.updateTaxSchema.value}%.`,
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
+    onSettled: () => {
+      setOpen(false)
+    },
   })
 
-  const form = useForm<TTax>({
-    resolver: zodResolver(taxSchema),
+  const val = value * 100
+  const form = useForm<TUpdateTax>({
+    resolver: zodResolver(updateTaxSchema),
     defaultValues: {
       id,
-      name,
-      value,
+      value: val,
       companyId,
     },
   })
 
-  function onSubmit(values: TTax) {
-    const { id, name, value } = values
-    mutate({ taxSchema: { id, name: name.toLowerCase(), value, companyId } })
+  function onSubmit(values: TUpdateTax) {
+    const { id, value } = values
+    mutate({ updateTaxSchema: { id, value, companyId } })
   }
 
   return (
@@ -100,33 +100,20 @@ export const UpdateTax = ({
             {/* Name */}
             <FormField
               control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="name"
-                      className="capitalize"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>eg: 6%, 11%, 21%</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Value */}
-            <FormField
-              control={form.control}
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Value</FormLabel>
+                  <FormLabel>Value in %</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Value" {...field} />
+                    <Input
+                      type="number"
+                      // min="0"
+                      // max="30"
+                      placeholder="eg: 6.5, 11, 21"
+                      className="w-[200px]"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>eg: 0.06, 0.11, 0.21</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

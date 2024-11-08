@@ -3,8 +3,8 @@ import { createTaxSchema, updateTaxSchema } from "../types/schema/tax-schema"
 import { mutation, query } from "./_generated/server"
 import {
   managerProcedure,
+  percentToDecimal,
   protectedProcedure,
-  stringToFloat,
   zMutation,
 } from "./helpers"
 
@@ -18,13 +18,13 @@ export const findAllByCompanyId = query({
 })
 export const create = zMutation({
   args: { createTaxSchema },
-  handler: async (ctx, { createTaxSchema: { name, companyId } }) => {
+  handler: async (ctx, { createTaxSchema: { value, companyId } }) => {
     await managerProcedure(ctx, {})
 
-    const value = stringToFloat(name)
+    const val = percentToDecimal(value)
     return await ctx.db.insert("taxes", {
-      name,
-      value,
+      name: `${val}%`,
+      value: val,
       isDefaultValue: false,
       companyId,
     })
@@ -32,13 +32,13 @@ export const create = zMutation({
 })
 export const update = zMutation({
   args: { updateTaxSchema },
-  handler: async (ctx, { updateTaxSchema: { id, name, companyId } }) => {
+  handler: async (ctx, { updateTaxSchema: { id, value, companyId } }) => {
     await managerProcedure(ctx, {})
 
-    const value = stringToFloat(name)
+    const val = percentToDecimal(value)
     return await ctx.db.patch(id, {
-      name,
-      value,
+      name: `${val}%`,
+      value: val,
       isDefaultValue: false,
       companyId,
     })

@@ -56,7 +56,6 @@ export function TaxTab({ companyId }: { companyId: Id<"companies"> }) {
               <TableCell className="w-[100px]">
                 <UpdateTax
                   id={x._id}
-                  name={x.name}
                   value={x.value}
                   companyId={companyId}
                   isDefaultValue={x.isDefaultValue}
