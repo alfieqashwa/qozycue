@@ -1,0 +1,230 @@
+"use client"
+
+import { type ColumnDef } from "@tanstack/react-table"
+import { Coffee, Hash, ShoppingBasket, Soup, Star, Tags } from "lucide-react"
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
+import { type RouterOutputs } from "@/trpc/react"
+import { ProductRowActions } from "./product-row-actions"
+import { ToggleSwitchProduct } from "./toggle-switch"
+
+export const columnsProduct: ColumnDef<
+  RouterOutputs["product"]["findAllByCompanyId"][0]
+>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="translate-y-[2px]"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-[2px]"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="ID" />
+    ),
+    cell: ({ row }) => {
+      const id: string = row.getValue("id")
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <span className="max-w-[300px] truncate font-medium">
+            {id.slice(-8, id.length)}
+          </span>
+        </Badge>
+      )
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
+    cell: ({ row }) => {
+      const category = row.getValue("category")
+      const colorBasedOnCategory =
+        category === "food"
+          ? "text-emerald-200"
+          : category === "drink"
+            ? "text-fuchsia-200"
+            : "text-lime-200"
+      return (
+        <Badge
+          variant="secondary"
+          className={cn("px-3 py-1.5", colorBasedOnCategory)}
+        >
+          <Star className="mr-2 h-4 w-4" />
+          <span className="whitespace-nowrap capitalize">
+            {row.getValue("name")}
+          </span>
+        </Badge>
+      )
+    },
+  },
+  {
+    accessorKey: "costPrice",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Cost Price" />
+    ),
+    cell: ({ row }) => {
+      const category = row.getValue("category")
+      const colorBasedOnCategory =
+        category === "food"
+          ? "text-emerald-200"
+          : category === "drink"
+            ? "text-fuchsia-200"
+            : "text-lime-200"
+      const costPrice = row.getValue("costPrice")
+
+      return (
+        <Badge
+          variant="secondary"
+          className={cn("px-3 py-1.5", colorBasedOnCategory)}
+        >
+          <span className="max-w-[500px] truncate font-medium capitalize">
+            {formattedPriceWithRupiah.format(Number(costPrice))}
+          </span>
+        </Badge>
+      )
+    },
+  },
+  {
+    accessorKey: "salePrice",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Sale Price" />
+    ),
+    cell: ({ row }) => {
+      const category = row.getValue("category")
+      const colorBasedOnCategory =
+        category === "food"
+          ? "text-emerald-200"
+          : category === "drink"
+            ? "text-fuchsia-200"
+            : "text-lime-200"
+      const salePrice = row.getValue("salePrice")
+      return (
+        <Badge
+          variant="secondary"
+          className={cn("px-3 py-1.5", colorBasedOnCategory)}
+        >
+          <span className="max-w-[500px] truncate font-medium capitalize">
+            {formattedPriceWithRupiah.format(Number(salePrice))}
+          </span>
+        </Badge>
+      )
+    },
+  },
+  {
+    accessorKey: "uom",
+    accessorFn: (row) => row.unitOfMeasure?.name,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="UoM" />
+    ),
+    cell: ({ row }) => {
+      const category = row.getValue("category")
+      const colorBasedOnCategory =
+        category === "food"
+          ? "text-emerald-200"
+          : category === "drink"
+            ? "text-fuchsia-200"
+            : "text-lime-200"
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <Tags className={cn("mr-2 h-4 w-4", colorBasedOnCategory)} />
+          <span className="max-w-[500px] truncate font-medium uppercase">
+            {row.getValue("uom")}
+          </span>
+        </Badge>
+      )
+    },
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: "category",
+    accessorFn: (row) => row.category?.name,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Category" />
+    ),
+    cell: ({ row }) => {
+      const category = row.getValue("category")
+      let tagIcon
+
+      if (category === "food")
+        tagIcon = <Soup className="mr-2 h-4 w-4 text-emerald-200" />
+      if (category === "drink")
+        tagIcon = <Coffee className="mr-2 h-4 w-4 text-fuchsia-200" />
+      if (category === "others")
+        tagIcon = <ShoppingBasket className="mr-2 h-4 w-4 text-lime-200" />
+
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          {tagIcon}
+          <span className="max-w-[500px] truncate capitalize">
+            {row.getValue("category")}
+          </span>
+        </Badge>
+      )
+    },
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Enabled?" />
+    ),
+    cell: ({ row }) => {
+      const {
+        original: { id, name, status },
+      } = row
+      return <ToggleSwitchProduct id={id} name={name} status={status} />
+    },
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const { id, name, costPrice, salePrice, categoryId, unitOfMeasureId } =
+        row.original
+      return (
+        <div className="relative">
+          <ProductRowActions
+            id={id}
+            name={name}
+            costPrice={costPrice}
+            salePrice={salePrice}
+            categoryId={categoryId}
+            unitOfMeasureId={unitOfMeasureId}
+          />
+        </div>
+      )
+    },
+  },
+]
