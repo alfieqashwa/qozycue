@@ -1,10 +1,6 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { FilePlus2 } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -21,44 +17,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { api } from "@/convex/_generated/api"
 import {
   createCategorySchema,
   type TCreateCategory,
-} from "~/types/schema/category-schema"
+} from "@/types/schema/category-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { FilePlus2 } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export const CreateCategory = () => {
   const [open, setOpen] = useState(false)
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.category.create.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.categories.create),
+    onSuccess: () =>
+      toast.success("Succeed", {
         description: "New Category has been created.",
-      })
-      await utils.category.findAll.invalidate()
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
       setOpen(false)
       form.reset()
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
   })
 
-  // 1. Define your form.
   const form = useForm<TCreateCategory>({
     resolver: zodResolver(createCategorySchema),
     defaultValues: {
@@ -66,14 +60,9 @@ export const CreateCategory = () => {
       description: "",
     },
   })
-
-  // 2. Define a submit handler.
   function onSubmit(values: TCreateCategory) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const { name, description } = values
-
-    mutate({ name: name.toLowerCase(), description })
+    mutate({ createCategorySchema: { name: name.toLowerCase(), description } })
   }
 
   return (
@@ -88,7 +77,7 @@ export const CreateCategory = () => {
         <DialogHeader>
           <DialogTitle>Create Category</DialogTitle>
           <DialogDescription>
-            Klik Submit setelah selesai mengisi form.
+            Click <b>Submit</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -102,11 +91,11 @@ export const CreateCategory = () => {
                   <FormControl>
                     <Input
                       placeholder="name"
-                      className="capitalize"
+                      className="w-[200px] capitalize"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Category's name</FormDescription>
+                  <FormDescription>Category Name</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -119,7 +108,11 @@ export const CreateCategory = () => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="Description" {...field} />
+                    <Input
+                      placeholder="Description"
+                      className="w-[200px] capitalize"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>Description</FormDescription>
                   <FormMessage />

@@ -6,6 +6,8 @@ import { fetchQuery } from "convex/nextjs"
 import { type Metadata } from "next"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
+import { CategoryTab } from "./category-tab"
+import { CreateCategory } from "./category-tab/create-category"
 import { DiscountTab } from "./discount-tab"
 import { CreateDiscount } from "./discount-tab/create-discount"
 import { TaxTab } from "./tax-tab"
@@ -62,16 +64,17 @@ export default async function SettingPage() {
         </TabsTrigger>
       </TabsList>
       {isSuperAdmin && (
-        <>
+        <Suspense fallback={<LoadingSpinner />}>
           <TabsContent value="category">
-            <h2>Category Tab</h2>
-            {/* // TODO: */}
-            {/* <CategoryTab /> */}
+            <div className="text-right">
+              <CreateCategory />
+            </div>
+            <CategoryTab />
           </TabsContent>
           <TabsContent value="uom">
             <UoMTab companyId={session.companyId!} />
           </TabsContent>
-        </>
+        </Suspense>
       )}
       {(isSuperAdmin || isAdmin) && (
         <TabsContent value="pool">

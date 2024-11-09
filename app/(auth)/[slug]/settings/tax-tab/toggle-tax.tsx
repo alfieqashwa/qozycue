@@ -1,5 +1,3 @@
-"use client"
-
 import { Switch } from "@/components/ui/switch"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"

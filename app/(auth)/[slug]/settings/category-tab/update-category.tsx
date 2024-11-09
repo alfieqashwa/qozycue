@@ -1,11 +1,4 @@
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Pencil } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -13,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -22,51 +15,45 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
-import { categorySchema, type TCategory } from "~/types/schema/category-schema"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { categorySchema, type TCategory } from "@/types/schema/category-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Pencil } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export const UpdateCategory = ({
   id,
   name,
   description,
 }: {
-  id: string
+  id: Id<"categories">
   name: string
   description: string
 }) => {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.category.update.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.categories.update),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "The category has been updated.",
-      })
-      await utils.category.findAll.invalidate()
-      router.refresh()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  // 1. Define your form.
   const form = useForm<TCategory>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
@@ -75,14 +62,9 @@ export const UpdateCategory = ({
       description,
     },
   })
-
-  // 2. Define a submit handler.
   function onSubmit(values: TCategory) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const { id, name, description } = values
-
-    mutate({ id, name: name.toLowerCase(), description })
+    mutate({ categorySchema: { id, name: name.toLowerCase(), description } })
   }
 
   return (
@@ -116,7 +98,7 @@ export const UpdateCategory = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Category's name</FormDescription>
+                  <FormDescription>Category Name</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
