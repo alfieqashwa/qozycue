@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import {
   updatePoolTableSchema,
   type TUpdatePoolTable,
@@ -80,16 +81,15 @@ export const UpdatePoolTable = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          disabled={isActive}
-          size="sm"
-          variant="outline"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <Pencil size={16} className="mr-1" />
-          <span className="text-sm">Edit</span>
-        </Button>
+      <DialogTrigger
+        disabled={isActive}
+        className={cn(
+          buttonVariants({ variant: "secondary", size: "sm" }),
+          "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Pencil size={16} className="mr-1" />
+        <span className="text-sm">Edit</span>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
         <DialogHeader>

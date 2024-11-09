@@ -57,7 +57,7 @@ export const DeletePoolTable = ({
       <DialogTrigger
         disabled={isActive || status === "enabled"}
         className={cn(
-          buttonVariants({ variant: "destructive" }),
+          buttonVariants({ variant: "destructive", size: "sm" }),
           "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >

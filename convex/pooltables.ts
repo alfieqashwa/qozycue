@@ -16,6 +16,7 @@ import {
 export const findAllByCompanyId = query({
   args: { companyId: v.id("companies") },
   handler: async (ctx, args) => {
+    //? a.k.a -> protectedProcedure
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
 
@@ -37,14 +38,12 @@ export const create = zMutation({
   args: { createPoolTableSchema },
   handler: async (ctx, { createPoolTableSchema: { name, companyId } }) => {
     await adminProcedure(ctx, {})
-    // Validate poolTables's limit based on company's subscriptions
 
     const subs = await subscriptions(ctx, { companyId })
     const isValid = validateSubscriptionLimits({
       subscription: subs.subscription!,
       poolTableLen: subs._count.poolTables,
     })
-
     if (!isValid) throw new ConvexError("Max poolTable limit exceeded!")
 
     const company = await ctx.db.get(companyId)
@@ -87,8 +86,9 @@ export const toggle = zMutation({
   args: { toggleSchema },
   handler: async (ctx, { toggleSchema: { id, status } }) => {
     await adminProcedure(ctx, {})
+
     return await ctx.db.patch(id, {
-      status: status == "enabled" ? "disabled" : "enabled",
+      status: status === "enabled" ? "disabled" : "enabled",
     })
   },
 })

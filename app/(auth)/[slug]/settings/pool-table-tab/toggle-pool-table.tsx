@@ -20,16 +20,16 @@ export const TogglePoolTable = ({
   name: string
   status: Status
 }) => {
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.pooltables.toggle),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: (
           <p>
-            <span>{status === "enabled" ? "Enabled" : "Disabled"}</span>
-            <span className="pl-1 font-medium uppercase text-primary">
-              Table {name}
-            </span>
+            {variables?.toggleSchema.status !== "enabled"
+              ? "Enabled"
+              : "Disabled"}{" "}
+            Table {name}
           </p>
         ),
       }),
