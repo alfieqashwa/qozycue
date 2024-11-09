@@ -52,7 +52,7 @@ export const UpdateDiscount = ({
     mutationFn: useConvexMutation(api.discounts.update),
     onSuccess() {
       toast.success("Succeed!", {
-        description: `Discount has been updated to ${variables?.updateDiscountSchema.value}%.`,
+        description: `Discount has been updated to ${variables?.updateDiscountSchema.value.toFixed(0)}%.`,
       })
     },
     onError: (err) =>

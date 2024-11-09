@@ -30,7 +30,7 @@ export const DeleteDiscount = ({
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.discounts.remove),
     onSuccess: () =>
-      toast("Succeed!", {
+      toast.success("Succeed!", {
         description: "The discount has been deleted.",
       }),
     onError: (err) =>

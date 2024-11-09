@@ -50,7 +50,7 @@ export const create = zMutation({
     return await ctx.db.insert("poolTables", {
       companyId,
       name,
-      description: `table ${name} of ${company?.name ?? ""}`,
+      description: `table ${name} ${company?.name ?? ""}`,
       isActive: false,
       status: "disabled",
       gapDuration: 10,
@@ -68,7 +68,7 @@ export const update = zMutation({
     const company = await ctx.db.get(companyId!)
     return await ctx.db.patch(id, {
       name,
-      description: `table ${name} of ${company?.name ?? ""}`,
+      description: `table ${name} ${company?.name ?? ""}`,
     })
   },
 })
