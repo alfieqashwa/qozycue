@@ -62,6 +62,7 @@ export const CreatePoolTable = ({
     resolver: zodResolver(createPoolTableSchema),
     defaultValues: {
       name: "",
+      companyId,
     },
   })
   function onSubmit(values: TCreatePoolTable) {
@@ -98,6 +99,7 @@ export const CreatePoolTable = ({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       placeholder="name"
                       className="w-[200px] capitalize"
                       {...field}
