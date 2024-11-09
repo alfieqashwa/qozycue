@@ -1,19 +1,29 @@
-import { v } from "convex/values"
+import { getAuthUserId } from "@convex-dev/auth/server"
+import { ConvexError, v } from "convex/values"
 import { createTaxSchema, updateTaxSchema } from "../types/schema/tax-schema"
 import { mutation, query } from "./_generated/server"
 import {
+  decimalToPercent,
   managerProcedure,
   percentToDecimal,
-  protectedProcedure,
   zMutation,
 } from "./helpers"
 
-export const findAllByCompanyId = query({
-  args: { companyId: v.id("companies") },
+export const findAll = query({
+  args: {},
   handler: async (ctx) => {
-    await protectedProcedure(ctx, {})
+    const userId = await getAuthUserId(ctx)
 
-    return await ctx.db.query("taxes").collect()
+    if (!userId) throw new ConvexError("Please signed in!")
+    const user = await ctx.db.get(userId)
+
+    const taxes = await ctx.db
+      .query("taxes")
+      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
+      .collect()
+    const sortedByValue = taxes.sort((p, q) => p.value - q.value)
+
+    return sortedByValue
   },
 })
 export const create = zMutation({
@@ -22,8 +32,9 @@ export const create = zMutation({
     await managerProcedure(ctx, {})
 
     const val = percentToDecimal(value)
+    const name = decimalToPercent(val)
     return await ctx.db.insert("taxes", {
-      name: `${val}%`,
+      name: `${name}%`,
       value: val,
       isDefaultValue: false,
       companyId,
@@ -36,10 +47,10 @@ export const update = zMutation({
     await managerProcedure(ctx, {})
 
     const val = percentToDecimal(value)
+    const name = decimalToPercent(val)
     return await ctx.db.patch(id, {
-      name: `${val}%`,
+      name: `${name}%`,
       value: val,
-      isDefaultValue: false,
       companyId,
     })
   },

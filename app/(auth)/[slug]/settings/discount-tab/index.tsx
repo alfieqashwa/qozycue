@@ -17,10 +17,9 @@ import { DeleteDiscount } from "./delete-discount"
 import { UpdateDiscount } from "./update-discount"
 
 export function DiscountTab({ companyId }: { companyId: Id<"companies"> }) {
-  const { data: discounts, status } = useTanstackQuery({
-    ...convexQuery(api.discounts.findAllByCompanyId, { companyId }),
-    enabled: Boolean(companyId),
-  })
+  const { data: discounts, status } = useTanstackQuery(
+    convexQuery(api.discounts.findAll, {}),
+  )
   return (
     <Table>
       <TableCaption>A list of discounts.</TableCaption>
@@ -42,7 +41,7 @@ export function DiscountTab({ companyId }: { companyId: Id<"companies"> }) {
               <TableCell className="w-[200px] font-medium capitalize">
                 {disc.name}
               </TableCell>
-              <TableCell>{disc.value}</TableCell>
+              <TableCell>{disc.value === 1 ? "free" : disc.value}</TableCell>
               <TableCell className="w-[100px]">
                 <UpdateDiscount
                   id={disc._id}

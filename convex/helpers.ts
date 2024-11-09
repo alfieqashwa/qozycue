@@ -186,8 +186,8 @@ export function percentToDecimal(num: number): number {
   return parseFloat(decimal.toFixed(2))
 }
 
-// export function decimalToPercent(decimal: number): number {
-//   // Convert back to percentage and ensure two decimals
-//   const percentage = decimal * 100
-//   return parseFloat(percentage.toFixed(2))
-// }
+export function decimalToPercent(decimal: number): number {
+  // Convert back to percentage and ensure two decimals
+  const percentage = decimal * 100
+  return parseFloat(percentage.toFixed(0))
+}

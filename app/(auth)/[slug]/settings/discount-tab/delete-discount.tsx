@@ -83,7 +83,7 @@ export const DeleteDiscount = ({
               </Button>
             ) : (
               <Button type="submit" variant="destructive">
-                Delete Discount
+                Delete
               </Button>
             )}
           </DialogFooter>

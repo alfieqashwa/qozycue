@@ -20,8 +20,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { decimalToPercent } from "@/convex/helpers"
 import { cn } from "@/lib/utils"
-import { TUpdateTax, updateTaxSchema } from "@/types/schema/tax-schema"
+import { type TUpdateTax, updateTaxSchema } from "@/types/schema/tax-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -48,7 +49,7 @@ export const UpdateTax = ({
     mutationFn: useConvexMutation(api.taxes.update),
     onSuccess() {
       toast.success("Succeed!", {
-        description: `Tax has been updated to ${variables?.updateTaxSchema.value}%.`,
+        description: `Tax has been updated to ${variables?.updateTaxSchema.value.toFixed(0)}%.`,
       })
     },
     onError: (err) =>
@@ -61,7 +62,7 @@ export const UpdateTax = ({
     },
   })
 
-  const val = value * 100
+  const val = decimalToPercent(value)
   const form = useForm<TUpdateTax>({
     resolver: zodResolver(updateTaxSchema),
     defaultValues: {
@@ -107,9 +108,7 @@ export const UpdateTax = ({
                   <FormControl>
                     <Input
                       type="number"
-                      // min="0"
-                      // max="30"
-                      placeholder="eg: 6.5, 11, 21"
+                      placeholder="eg. 6, 11, 21"
                       className="w-[200px]"
                       {...field}
                     />

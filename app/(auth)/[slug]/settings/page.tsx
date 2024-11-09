@@ -86,7 +86,7 @@ export default async function SettingPage() {
           <div className="text-right">
             <CreateTax companyId={session.companyId!} />
           </div>
-          <TaxTab companyId={session.companyId!} />
+          <TaxTab />
         </Suspense>
       </TabsContent>
       {/* // TODO: Check what's the different with the other tabs */}

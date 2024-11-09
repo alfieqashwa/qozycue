@@ -83,7 +83,7 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
         <DialogHeader>
           <DialogTitle>Create Tax</DialogTitle>
           <DialogDescription>
-            Klik Submit setelah selesai mengisi form.
+            Click <b>Submit</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -97,7 +97,7 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="eg: 6.5, 11, 21"
+                      placeholder="eg. 6, 11, 21"
                       className="w-[200px]"
                       {...field}
                     />

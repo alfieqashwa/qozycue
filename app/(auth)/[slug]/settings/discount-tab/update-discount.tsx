@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,7 +20,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { discountSchema, type TDiscount } from "@/types/schema/discount-schema"
+import { decimalToPercent } from "@/convex/helpers"
+import { cn } from "@/lib/utils"
+import {
+  updateDiscountSchema,
+  type TUpdateDiscount,
+} from "@/types/schema/discount-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -44,12 +48,13 @@ export const UpdateDiscount = ({
 }) => {
   const [open, setOpen] = useState(false)
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.discounts.update),
-    onSuccess: () =>
+    onSuccess() {
       toast.success("Succeed!", {
-        description: "The discount has been updated.",
-      }),
+        description: `Discount has been updated to ${variables?.updateDiscountSchema.value}%.`,
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
@@ -58,79 +63,63 @@ export const UpdateDiscount = ({
     onSettled: () => setOpen(false),
   })
 
-  const form = useForm<TDiscount>({
-    resolver: zodResolver(discountSchema),
+  const val = decimalToPercent(value)
+  const form = useForm<TUpdateDiscount>({
+    resolver: zodResolver(updateDiscountSchema),
     defaultValues: {
       id,
-      name,
-      value,
+      value: val,
       companyId,
     },
   })
-  function onSubmit(values: TDiscount) {
-    const { id, name, value } = values
+  function onSubmit(values: TUpdateDiscount) {
+    const { id, value } = values
     mutate({
-      discountSchema: { id, name: name.toLowerCase(), value, companyId },
+      updateDiscountSchema: { id, value, companyId },
     })
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          size="sm"
-          variant="outline"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <Pencil size={16} className="mr-1" />
-          <span className="text-sm">Edit</span>
-        </Button>
+      <DialogTrigger
+        className={cn(
+          buttonVariants({ variant: "secondary", size: "sm" }),
+          "flex disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Pencil size={16} className="mr-1" />
+        <span className="text-sm">Edit</span>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Discount</DialogTitle>
           <DialogDescription>
-            Click <b>Update Discount</b> when you&apos;re done.
+            Click <b>Update</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
+        {/* Value */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* Name */}
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="name"
-                      className="capitalize"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>eg: 5%, 10%, 15%, 20%</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Value */}
             <FormField
               control={form.control}
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Value</FormLabel>
+                  <FormLabel>Value in %</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Value" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="eg. 10, 15, 20"
+                      className="w-[200px]"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>eg: 0.05, 0.10, 0.15 0.20</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button disabled={isPending} type="submit">
-              Update Discount
+              Update
             </Button>
           </form>
         </Form>

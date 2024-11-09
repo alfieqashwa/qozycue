@@ -1,13 +1,18 @@
 import { zid } from "convex-helpers/server/zod"
 import { z } from "zod"
 
-export const discountSchema = z.object({
+const discountSchema = z.object({
   id: zid("discounts"),
-  name: z.string().min(1).max(4),
-  value: z.coerce.number(),
+  name: z.string().min(1).max(5),
+  value: z.coerce.number().lte(100).positive(),
   companyId: zid("companies"),
 })
-export type TDiscount = z.infer<typeof discountSchema>
 
-export const createDiscountSchema = discountSchema.omit({ id: true })
+export const createDiscountSchema = discountSchema.omit({
+  id: true,
+  name: true,
+})
 export type TCreateDiscount = z.infer<typeof createDiscountSchema>
+
+export const updateDiscountSchema = discountSchema.omit({ name: true })
+export type TUpdateDiscount = z.infer<typeof updateDiscountSchema>

@@ -10,18 +10,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { api } from "@/convex/_generated/api"
-import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { DeleteTax } from "./delete-tax"
 import { ToggleTax } from "./toggle-tax"
 import { UpdateTax } from "./update-tax"
 
-export function TaxTab({ companyId }: { companyId: Id<"companies"> }) {
-  const taxes = useTanstackQuery({
-    ...convexQuery(api.taxes.findAllByCompanyId, { companyId }),
-    enabled: Boolean(companyId),
-  })
+export function TaxTab() {
+  const taxes = useTanstackQuery(convexQuery(api.taxes.findAll, {}))
 
   return (
     <Table>
@@ -57,7 +53,7 @@ export function TaxTab({ companyId }: { companyId: Id<"companies"> }) {
                 <UpdateTax
                   id={x._id}
                   value={x.value}
-                  companyId={companyId}
+                  companyId={x.companyId}
                   isDefaultValue={x.isDefaultValue}
                 />
               </TableCell>

@@ -12,7 +12,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -41,11 +40,11 @@ export const CreateDiscount = ({
 }) => {
   const [open, setOpen] = useState(false)
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.discounts.create),
     onSuccess: () => {
       toast.success("Succeed", {
-        description: "New Discount has been created.",
+        description: `Discount ${variables?.createDiscountSchema.value} has been created.`,
       })
     },
     onError: (err) =>
@@ -55,25 +54,23 @@ export const CreateDiscount = ({
       }),
     onSettled: () => {
       setOpen(false)
-      // form.reset()
+      form.reset()
     },
   })
 
   const form = useForm<TCreateDiscount>({
     resolver: zodResolver(createDiscountSchema),
     defaultValues: {
-      name: "",
       value: 0,
       companyId,
     },
   })
 
   function onSubmit(values: TCreateDiscount) {
-    const { name, value } = values
+    const { value } = values
     mutate({
       createDiscountSchema: {
-        name: name.toLowerCase(),
-        value: Number(value),
+        value,
         companyId,
       },
     })
@@ -97,51 +94,32 @@ export const CreateDiscount = ({
         <DialogHeader>
           <DialogTitle>Create Discount</DialogTitle>
           <DialogDescription>
-            Click <b>Create Discount</b> when you&apos;re done.
+            Click <b>Submit</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="eg. 10%"
-                      className="w-[100px] capitalize"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>eg: 5%, 10%, 15%, 20%</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             {/* Value */}
             <FormField
               control={form.control}
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Value</FormLabel>
+                  <FormLabel>Value in %</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="eg. 0.10"
-                      className="w-[100px]"
+                      placeholder="eg. 10, 15, 20"
+                      className="w-[200px]"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>eg: 0.05, 0.10, 0.15 0.20</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button disabled={isPending} type="submit">
-              Create Discount
+              Submit
             </Button>
           </form>
         </Form>
