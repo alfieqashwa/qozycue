@@ -9,7 +9,7 @@ const poolTableSchema = z.object({
       invalid_type_error: "Name must be a string.",
     })
     .min(1, { message: "Name must be at least 1 characters." })
-    .max(10, { message: "Name must contain at most 10 character(s)." }),
+    .max(3, { message: "Name must contain at most 3 character(s)." }),
   description: z.string().max(30),
   status: z.enum(["enabled", "disabled"]),
   companyId: zid("companies"),
