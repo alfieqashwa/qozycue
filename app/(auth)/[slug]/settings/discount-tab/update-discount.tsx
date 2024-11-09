@@ -84,7 +84,7 @@ export const UpdateDiscount = ({
       <DialogTrigger
         className={cn(
           buttonVariants({ variant: "secondary", size: "sm" }),
-          "flex disabled:pointer-events-auto disabled:cursor-not-allowed",
+          "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <Pencil size={16} className="mr-1" />

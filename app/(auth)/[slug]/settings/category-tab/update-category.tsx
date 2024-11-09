@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { categorySchema, type TCategory } from "@/types/schema/category-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -69,11 +70,14 @@ export const UpdateCategory = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="outline">
-          <Pencil size={16} className="mr-1" />
-          <span className="text-sm">Edit</span>
-        </Button>
+      <DialogTrigger
+        className={cn(
+          buttonVariants({ variant: "secondary", size: "sm" }),
+          "flex items-center",
+        )}
+      >
+        <Pencil size={16} className="mr-1" />
+        <span className="text-sm">Edit</span>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
         <DialogHeader>

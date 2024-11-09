@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
@@ -47,15 +48,14 @@ export function DeleteUom({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          size="sm"
-          variant="destructive"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <Trash size={16} className="mr-1" />
-          <span className="text-sm">Delete</span>
-        </Button>
+      <DialogTrigger
+        className={cn(
+          buttonVariants({ variant: "destructive", size: "sm" }),
+          "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Trash size={16} className="mr-1" />
+        <span className="text-sm">Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>

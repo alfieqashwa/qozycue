@@ -56,7 +56,7 @@ export const DeleteTax = ({
         disabled={isDefaultValue}
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
-          "flex disabled:pointer-events-auto disabled:cursor-not-allowed",
+          "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <Trash size={16} className="mr-1" />

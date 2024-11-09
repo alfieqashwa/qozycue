@@ -50,9 +50,13 @@ export const DeleteCategory = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        className={cn(buttonVariants({ variant: "destructive", size: "sm" }))}
+        className={cn(
+          buttonVariants({ variant: "destructive", size: "sm" }),
+          "flex items-center",
+        )}
       >
-        <Trash size={16} className="mr-1" /> Delete
+        <Trash size={16} className="mr-1" />
+        <span>Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import {
   createUomSchema,
   type TCreateUom,
@@ -68,14 +69,14 @@ export function CreateUom() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <FilePlus2 size={16} className="mr-1" />
-          Create UoM
-        </Button>
+      <DialogTrigger
+        className={cn(
+          buttonVariants({ variant: "secondary" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <FilePlus2 size={16} className="mr-1" />
+        <span>Create</span>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
         <DialogHeader>
@@ -99,9 +100,7 @@ export function CreateUom() {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Contoh: pcs, item, bungkus, dan sbg-nya.
-                  </FormDescription>
+                  <FormDescription>Eg: pcs, item, unit, etc.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
