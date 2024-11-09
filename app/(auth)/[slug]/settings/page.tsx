@@ -4,6 +4,7 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import { type Metadata } from "next"
+import { unstable_noStore as noStore } from "next/cache"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { CategoryTab } from "./category-tab"
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
 }
 
 export default async function SettingPage() {
+  noStore()
   const session = await fetchQuery(
     api.sessions.find,
     {},
