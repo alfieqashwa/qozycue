@@ -10,6 +10,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -108,11 +109,15 @@ export const UpdatePoolTable = ({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       placeholder="name"
                       className="w-[200px] capitalize"
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Use number! eg: 1, 2, 3, 4, 12
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
