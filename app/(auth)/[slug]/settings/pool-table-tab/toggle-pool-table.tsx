@@ -1,10 +1,13 @@
 "use client"
 
-import { Status } from "@prisma/client"
-import { Switch } from "~/components/ui/switch"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
+import { Switch } from "@/components/ui/switch"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { Status } from "@/types"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { toast } from "sonner"
 
 export const TogglePoolTable = ({
   isActive,
@@ -13,48 +16,40 @@ export const TogglePoolTable = ({
   status,
 }: {
   isActive: boolean
-  id: string
+  id: Id<"poolTables">
   name: string
   status: Status
 }) => {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.poolTable.toggle.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.pooltables.toggle),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: (
           <p>
-            <span>{status === Status.disabled ? "Enabled" : "Disabled"}</span>
+            <span>{status === "enabled" ? "Enabled" : "Disabled"}</span>
             <span className="pl-1 font-medium uppercase text-primary">
               Table {name}
             </span>
           </p>
         ),
-      })
-      await utils.poolTable.findAllByCompanyId.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
 
   return (
     <Switch
       disabled={isActive || isPending}
-      checked={status === Status.enabled ? true : false}
+      checked={status === "enabled" ? true : false}
       onCheckedChange={() =>
         mutate({
-          id,
-          status: status === Status.disabled ? "enabled" : "disabled",
+          toggleSchema: {
+            id,
+            status,
+          },
         })
       }
     />

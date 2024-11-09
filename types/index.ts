@@ -1,15 +1,3 @@
-// export enum Role {
-//   DEWA,
-//   ADMIN,
-//   MANAGER,
-//   OWNER,
-//   CASHIER,
-//   USER,
-// }
-
-// const EnumRole = z.nativeEnum(Role)
-// export type TRole = z.infer<typeof EnumRole>
-
 export type Role =
   | "DEWA"
   | "ADMIN"
@@ -18,14 +6,28 @@ export type Role =
   | "CASHIER"
   | "USER"
   | undefined
+export enum RoleEnum {
+  DEWA,
+  ADMIN,
+  MANAGER,
+  OWNER,
+  CASHIER,
+  USER,
+}
 
 export type Subscription = "TRIAL" | "BASIC" | "PRO" | "ENTERPRISE"
-// export enum Subscription {
-//   TRIAL,
-//   BASIC,
-//   PRO,
-//   ENTERPRISE,
-// }
+export enum SubscriptionEnum {
+  TRIAL,
+  BASIC,
+  PRO,
+  ENTERPRISE,
+}
+
+export type Status = "enabled" | "disabled"
+export enum StatusEnum {
+  enabled,
+  disabled,
+}
 
 export enum PaymentMethod {
   CASH,
@@ -37,8 +39,6 @@ export enum Rate {
   MINUTE,
   HOUR,
 }
-
-export type Status = "enabled" | "disabled"
 
 export enum StatusPayment {
   OPEN,

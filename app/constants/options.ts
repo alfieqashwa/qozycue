@@ -1,4 +1,4 @@
-import { PaymentMethod, Rate, Status, StatusPayment } from "@/types"
+import { PaymentMethod, Rate, StatusEnum, StatusPayment } from "@/types"
 import {
   Banknote,
   Coffee,
@@ -30,12 +30,12 @@ export type Options = {
 
 export const statusEnabled = [
   {
-    value: Status.enabled,
+    value: StatusEnum.enabled,
     label: "Enabled",
     icon: PackageCheck,
   },
   {
-    value: Status.disabled,
+    value: StatusEnum.disabled,
     label: "Disabled",
     icon: PackageX,
   },

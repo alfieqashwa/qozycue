@@ -56,7 +56,12 @@ export default async function SettingPage() {
           </>
         )}
         {(isSuperAdmin || isAdmin) && (
-          <TabsTrigger value="pool">Pool Tables</TabsTrigger>
+          <TabsTrigger
+            value="pool"
+            className="data-[state=active]:text-amber-400"
+          >
+            Pool Tables
+          </TabsTrigger>
         )}
         <TabsTrigger className="hidden sm:block" value="tax">
           Taxes

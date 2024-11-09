@@ -11,21 +11,25 @@ const poolTableSchema = z.object({
     .min(1, { message: "Name must be at least 1 characters." })
     .max(10, { message: "Name must contain at most 10 character(s)." }),
   description: z.string().max(30),
+  status: z.enum(["enabled", "disabled"]),
   companyId: zid("companies"),
 })
 
 export const createPoolTableSchema = poolTableSchema.omit({
   id: true,
   description: true,
+  status: true,
 })
 export type TCreatePoolTable = z.infer<typeof createPoolTableSchema>
 
 export const updatePoolTableSchema = poolTableSchema.omit({
   description: true,
+  status: true,
 })
 export type TUpdatePoolTable = z.infer<typeof updatePoolTableSchema>
 
-export const deletePoolTableSchema = poolTableSchema.pick({ id: true })
+export const toggleSchema = poolTableSchema.pick({ id: true, status: true })
+export type TToggle = z.infer<typeof toggleSchema>
 
 export const updateGapDurationSchema = z.object({
   poolTableId: z.string().cuid(),
