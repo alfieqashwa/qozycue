@@ -38,10 +38,7 @@ export enum Rate {
   HOUR,
 }
 
-export enum Status {
-  enabled,
-  disabled,
-}
+export type Status = "enabled" | "disabled"
 
 export enum StatusPayment {
   OPEN,

@@ -10,6 +10,8 @@ import { CategoryTab } from "./category-tab"
 import { CreateCategory } from "./category-tab/create-category"
 import { DiscountTab } from "./discount-tab"
 import { CreateDiscount } from "./discount-tab/create-discount"
+import { PoolTableTab } from "./pool-table-tab"
+import { CreatePoolTable } from "./pool-table-tab/create-pool-table"
 import { TaxTab } from "./tax-tab"
 import { CreateTax } from "./tax-tab/create-tax"
 import { UoMTab } from "./uom-tab"
@@ -78,9 +80,13 @@ export default async function SettingPage() {
       )}
       {(isSuperAdmin || isAdmin) && (
         <TabsContent value="pool">
-          <h2>Pool Table Tab</h2>
-          {/* // TODO: */}
-          {/* <PoolTableTab /> */}
+          <div className="text-right">
+            <CreatePoolTable companyId={session.companyId!} />
+          </div>
+          <Suspense fallback={<LoadingSpinner />}>
+            <div className="text-right">{/* <CreatePoolTable /> */}</div>
+            <PoolTableTab companyId={session.companyId!} />
+          </Suspense>
         </TabsContent>
       )}
       {/* // TODO: Migrate Tax Tab */}

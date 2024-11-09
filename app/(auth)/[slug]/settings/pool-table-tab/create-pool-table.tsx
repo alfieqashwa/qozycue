@@ -1,11 +1,6 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { type Subscription } from "@prisma/client"
-import { FilePlus2 } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -13,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -22,82 +17,59 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { validateSubscriptionLimits } from "~/lib/validate-subscription-limits"
-import { api } from "~/trpc/react"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import {
   createPoolTableSchema,
   type TCreatePoolTable,
-} from "~/types/schema/pool-table-schema"
+} from "@/types/schema/pool-table-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { FilePlus2 } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
-export const CreatePoolTable = () => {
+export const CreatePoolTable = ({
+  companyId,
+}: {
+  companyId: Id<"companies">
+}) => {
   const [open, setOpen] = useState(false)
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const subscriptions = api.company.subscriptions.useQuery()
-
-  const { mutate, isPending } = api.poolTable.create.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.pooltables.create),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "New Table has been created.",
-      })
-      await utils.poolTable.findAllByCompanyId.invalidate()
-      await utils.company.subscriptions.invalidate()
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
       setOpen(false)
       form.reset()
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
   })
 
-  // 1. Define your form.
   const form = useForm<TCreatePoolTable>({
     resolver: zodResolver(createPoolTableSchema),
     defaultValues: {
       name: "",
-      description: "",
-      isActive: false,
     },
   })
-
-  const isValid = validateSubscriptionLimits({
-    status: subscriptions.status,
-    subscription: subscriptions.data?.subscription as Subscription,
-    poolTableLen: subscriptions.data?._count.pooltables,
-  })
-  // 2. Define a submit handler.
   function onSubmit(values: TCreatePoolTable) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    const { name, description, isActive } = values
-
-    if (!isValid) {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        // description: "There was a problem with your request.",
-        description: "Max pool-table limit exceeded",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    }
-
     mutate({
-      name: name.toLowerCase(),
-      description,
-      isActive,
+      createPoolTableSchema: {
+        name: values.name.toLowerCase(),
+        companyId,
+      },
     })
   }
 
@@ -127,30 +99,13 @@ export const CreatePoolTable = () => {
                   <FormControl>
                     <Input
                       placeholder="name"
-                      className="capitalize"
+                      className="w-[200px] capitalize"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Contoh: 1, 2, 3, 4, 12</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Description */}
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Description"
-                      {...field}
-                      className="capitalize"
-                    />
-                  </FormControl>
-                  <FormDescription>Description</FormDescription>
+                  <FormDescription>
+                    Use number! eg: 1, 2, 3, 4, 12
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
