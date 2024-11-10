@@ -1,5 +1,3 @@
-import { Loader2, Trash } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useMediaQuery } from "@/app/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,55 +18,43 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2, Trash } from "lucide-react"
+import { toast } from "sonner"
+
+const DESCRIPTION =
+  "You can&apos;t undo this changes. Click Delete Product when you&apos;re sure to delete Product"
 
 type DeleteProductProps = {
-  id: string
+  id: Id<"products">
   name: string
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
-
-const DESCRIPTION =
-  "Anda tidak dapat membatalkan perubahan ini. Klik Delete Product untuk menghapus Produk"
-
 export function DeleteProductForm({ id, name, setOpen }: DeleteProductProps) {
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.product.delete.useMutation({
-    async onSuccess() {
-      // delete user from team
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.products.remove),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: `Product ${name.toUpperCase()} has been deleted.`,
-      })
-      await utils.company.subscriptions.invalidate()
-      router.refresh()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     mutate({ id })
   }
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
-
   if (isDesktop) {
     return (
       <DeleteDialog name={name}>
