@@ -4,12 +4,12 @@ import {
   createCategorySchema,
 } from "../types/schema/category-schema"
 import { mutation, query } from "./_generated/server"
-import { superAdminProcedure, zMutation } from "./helpers"
+import { protectedProcedure, superAdminProcedure, zMutation } from "./helpers"
 
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await superAdminProcedure(ctx, {})
+    await protectedProcedure(ctx, {})
 
     return await ctx.db.query("categories").collect()
   },

@@ -28,8 +28,8 @@ export const updatePoolTableSchema = poolTableSchema.omit({
 })
 export type TUpdatePoolTable = z.infer<typeof updatePoolTableSchema>
 
-export const toggleSchema = poolTableSchema.pick({ id: true, status: true })
-export type TToggle = z.infer<typeof toggleSchema>
+export const togglePoolSchema = poolTableSchema.pick({ id: true, status: true })
+export type TTogglePool = z.infer<typeof togglePoolSchema>
 
 export const updateGapDurationSchema = z.object({
   poolTableId: z.string().cuid(),

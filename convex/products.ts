@@ -1,17 +1,25 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { ConvexError, v } from "convex/values"
+import { ConvexError } from "convex/values"
 import {
   createProductSchema,
+  deleteProductSchema,
+  deleteSelectedProductSchema,
   toggleProductSchema,
   updateProductSchema,
 } from "../types/schema/product-schema"
-import { mutation, query } from "./_generated/server"
-import { managerProcedure, zMutation } from "./helpers"
+import { query } from "./_generated/server"
+import {
+  adminProcedure,
+  managerProcedure,
+  subscriptions,
+  validateSubscriptionLimits,
+  zMutation,
+} from "./helpers"
 
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    //? protectedProcedure
+    //? findAll mostly are protectedProcedure
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
 
@@ -58,6 +66,13 @@ export const create = zMutation({
       throw new ConvexError("You do not have access!")
     }
     if (!user) throw new ConvexError("No user!")
+
+    const subs = await subscriptions(ctx, { companyId: user.companyId })
+    const isValid = validateSubscriptionLimits({
+      subscription: subs.subscription!,
+      productLen: subs._count.products,
+    })
+    if (!isValid) throw new ConvexError("Max product limit exceeded!")
 
     return await ctx.db.insert("products", {
       companyId: user?.companyId!,
@@ -106,11 +121,26 @@ export const toggle = zMutation({
     })
   },
 })
-export const remove = mutation({
-  args: { id: v.id("products") },
-  handler: async (ctx, args) => {
+/**
+ * remove && removeSelected is AdminProcedure.
+ */
+export const remove = zMutation({
+  args: { deleteProductSchema },
+  handler: async (ctx, { deleteProductSchema: { id } }) => {
     await managerProcedure(ctx, {})
 
-    return await ctx.db.delete(args.id)
+    return await ctx.db.delete(id)
+  },
+})
+export const removeSelected = zMutation({
+  args: { deleteSelectedProductSchema },
+  handler: async (ctx, args) => {
+    await adminProcedure(ctx, {})
+
+    return await Promise.all(
+      args.deleteSelectedProductSchema.ids.map(async ({ id }) => {
+        return await ctx.db.delete(id)
+      }),
+    )
   },
 })

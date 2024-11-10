@@ -2,7 +2,7 @@ import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError, v } from "convex/values"
 import {
   createPoolTableSchema,
-  toggleSchema,
+  togglePoolSchema,
   updatePoolTableSchema,
 } from "../types/schema/pool-table-schema"
 import { mutation, query } from "./_generated/server"
@@ -83,8 +83,8 @@ export const remove = mutation({
 })
 
 export const toggle = zMutation({
-  args: { toggleSchema },
-  handler: async (ctx, { toggleSchema: { id, status } }) => {
+  args: { togglePoolSchema },
+  handler: async (ctx, { togglePoolSchema: { id, status } }) => {
     await adminProcedure(ctx, {})
 
     return await ctx.db.patch(id, {

@@ -11,18 +11,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { api } from "@/convex/_generated/api"
-import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { CreateUom } from "./create-uom"
 import { DeleteUom } from "./delete-uom"
 import { UpdateUom } from "./update-uom"
 
-export function UoMTab({ companyId }: { companyId: Id<"companies"> }) {
-  const { data: unitOfMeasures, status } = useTanstackQuery({
-    ...convexQuery(api.unitofmeasures.findAllByCompanyId, { companyId }),
-    enabled: Boolean(companyId),
-  })
+export function UoMTab() {
+  const { data: unitOfMeasures, status } = useTanstackQuery(
+    convexQuery(api.unitofmeasures.findAll, {}),
+  )
 
   if (status === "pending") return <LoadingSpinner />
   return (

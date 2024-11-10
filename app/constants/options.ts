@@ -30,12 +30,12 @@ export type Options = {
 
 export const statusEnabled = [
   {
-    value: StatusEnum.enabled,
+    value: "enabled",
     label: "Enabled",
     icon: PackageCheck,
   },
   {
-    value: StatusEnum.disabled,
+    value: "disabled",
     label: "Disabled",
     icon: PackageX,
   },
