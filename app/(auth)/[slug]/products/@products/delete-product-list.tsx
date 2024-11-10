@@ -36,10 +36,6 @@ export function DeleteProductList<TData>({
     typeof api.products.findAll
   >
 
-  const ids = selectedRows.map((row) => ({
-    id: row._id,
-  }))
-
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.products.removeSelected),
     onSuccess: () =>
@@ -59,7 +55,7 @@ export function DeleteProductList<TData>({
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    mutate({ deleteSelectedProductSchema: { ids } })
+    mutate({ ids: selectedRows.map((product) => product._id) })
   }
 
   return (

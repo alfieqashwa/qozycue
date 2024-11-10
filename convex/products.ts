@@ -1,13 +1,12 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { ConvexError } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import {
   createProductSchema,
   deleteProductSchema,
-  deleteSelectedProductSchema,
   toggleProductSchema,
   updateProductSchema,
 } from "../types/schema/product-schema"
-import { query } from "./_generated/server"
+import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
   managerProcedure,
@@ -74,8 +73,11 @@ export const create = zMutation({
     })
     if (!isValid) throw new ConvexError("Max product limit exceeded!")
 
+    if (!user.companyId || !unitOfMeasureId || !categoryId)
+      throw new ConvexError("Company, uom, category are required!")
+
     return await ctx.db.insert("products", {
-      companyId: user?.companyId!,
+      companyId: user?.companyId,
       name,
       costPrice,
       salePrice,
@@ -132,15 +134,14 @@ export const remove = zMutation({
     return await ctx.db.delete(id)
   },
 })
-export const removeSelected = zMutation({
-  args: { deleteSelectedProductSchema },
-  handler: async (ctx, args) => {
+export const removeSelected = mutation({
+  args: { ids: v.array(v.id("products")) },
+  handler: async (ctx, { ids }) => {
     await adminProcedure(ctx, {})
 
-    return await Promise.all(
-      args.deleteSelectedProductSchema.ids.map(async ({ id }) => {
-        return await ctx.db.delete(id)
-      }),
+    const removeAll = await Promise.all(
+      ids.map(async (id) => await ctx.db.delete(id)),
     )
+    return { ...removeAll }
   },
 })

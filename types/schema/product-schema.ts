@@ -1,6 +1,5 @@
 import { zid } from "convex-helpers/server/zod"
 import { z } from "zod"
-import { StatusEnum } from ".."
 
 const productSchema = z.object({
   id: zid("products"),
@@ -28,8 +27,8 @@ const productSchema = z.object({
       message: "Sale Price must be zero or a positive number.",
     }),
   status: z.enum(["enabled", "disabled"]),
-  unitOfMeasureId: zid("unitOfMeasures"),
-  categoryId: zid("categories"),
+  unitOfMeasureId: zid("unitOfMeasures").optional(),
+  categoryId: zid("categories").optional(),
 
   /**
    * TODO: setup later!
@@ -67,6 +66,6 @@ export type TToggleProduct = z.infer<typeof toggleProductSchema>
 
 export const deleteProductSchema = productSchema.pick({ id: true })
 
-export const deleteSelectedProductSchema = z.object({
-  ids: z.array(productSchema.pick({ id: true })),
-})
+// export const deleteSelectedProductSchema = z.object({
+//   ids: z.array(productSchema.pick({ id: true })),
+// })
