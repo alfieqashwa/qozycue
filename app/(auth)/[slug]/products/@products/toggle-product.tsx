@@ -1,35 +1,43 @@
-"use client"
-
 import { Switch } from "@/components/ui/switch"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { Status } from "@/types"
-import { useConvexMutation } from "@convex-dev/react-query"
-import { useMutation } from "@tanstack/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { toast } from "sonner"
 
-export const TogglePoolTable = ({
-  isActive,
+//? Product
+export function ToggleProduct({
   id,
   name,
   status,
 }: {
-  isActive: boolean
-  id: Id<"poolTables">
+  id: Id<"products">
   name: string
   status: Status
-}) => {
+}) {
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const managerAccessLevel =
+    me.data?.role === "DEWA" ||
+    me.data?.role === "ADMIN" ||
+    me.data?.role === "MANAGER"
+
   const { mutate, isPending, variables } = useMutation({
-    mutationFn: useConvexMutation(api.pooltables.toggle),
+    mutationFn: useConvexMutation(api.products.toggle),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: (
           <p>
-            {variables?.togglePoolSchema.status !== "enabled"
-              ? "Enabled"
-              : "Disabled"}{" "}
-            Table {name}
+            <p>
+              {variables?.toggleProductSchema.status !== "enabled"
+                ? "Enabled"
+                : "Disabled"}{" "}
+              {name}
+            </p>
           </p>
         ),
       }),
@@ -42,11 +50,11 @@ export const TogglePoolTable = ({
 
   return (
     <Switch
-      disabled={isActive || isPending}
+      disabled={!managerAccessLevel || isPending}
       checked={status === "enabled" ? true : false}
       onCheckedChange={() =>
         mutate({
-          togglePoolSchema: {
+          toggleProductSchema: {
             id,
             status,
           },

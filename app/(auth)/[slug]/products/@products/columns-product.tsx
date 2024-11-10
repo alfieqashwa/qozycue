@@ -3,14 +3,14 @@
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { api } from "@/convex/_generated/api"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { type ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
 import { Coffee, Hash, ShoppingBasket, Soup, Star, Tags } from "lucide-react"
 import { ProductRowActions } from "./product-row-actions"
-import { ToggleSwitchProduct } from "./toggle-switch"
-import { FunctionReturnType } from "convex/server"
-import { api } from "@/convex/_generated/api"
+import { ToggleProduct } from "./toggle-product"
 
 export const columnsProduct: ColumnDef<
   FunctionReturnType<typeof api.products.findAll>[0]
@@ -203,7 +203,7 @@ export const columnsProduct: ColumnDef<
       const {
         original: { _id, name, status },
       } = row
-      return <ToggleSwitchProduct id={_id} name={name} status={status} />
+      return <ToggleProduct id={_id} name={name} status={status} />
     },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id))

@@ -1,16 +1,16 @@
 "use client"
 
-import { Rate } from "@prisma/client"
-import { type ColumnDef } from "@tanstack/react-table"
-import { Hash, Hourglass, ScrollText, Star, Timer } from "lucide-react"
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { type RouterOutputs } from "@/trpc/react"
-import { ToggleSwitchPacket } from "../@products/toggle-switch"
+import { Rate } from "@prisma/client"
+import { type ColumnDef } from "@tanstack/react-table"
+import { Hash, Hourglass, ScrollText, Star, Timer } from "lucide-react"
 import { PacketRowActions } from "./packet-row-actions"
+import { TogglePacket } from "./toggle-packet"
 
 export const columnsPacket: ColumnDef<
   RouterOutputs["packet"]["findAllByCompanyId"][0]
@@ -154,7 +154,7 @@ export const columnsPacket: ColumnDef<
       const {
         original: { id, name, status },
       } = row
-      return <ToggleSwitchPacket id={id} name={name} status={status} />
+      return <TogglePacket id={id} name={name} status={status} />
     },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id))
