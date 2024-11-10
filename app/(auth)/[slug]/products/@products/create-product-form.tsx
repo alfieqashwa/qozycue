@@ -1,7 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { type Subscription } from "@prisma/client"
 import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,46 +21,44 @@ import {
 } from "@/components/ui/select"
 import { SheetFooter } from "@/components/ui/sheet"
 import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
-import { api } from "@/trpc/react"
 import {
   createProductSchema,
   type TCreateProduct,
 } from "@/types/schema/product-schema"
+import {
+  useMutation,
+  useQueries as useTanstackQueries,
+} from "@tanstack/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { api } from "@/convex/_generated/api"
+import { toast } from "sonner"
+import { ConvexError } from "convex/values"
+import { useMemo } from "react"
 
 export function CreateProductForm({
   setOpen,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
+  const [uoms, categories] = useTanstackQueries({
+    queries: [
+      convexQuery(api.unitofmeasures.findAll, {}),
+      convexQuery(api.categories.findAll, {}),
+    ],
+  })
 
-  const uoms = api.unitOfMeasure.findAll.useQuery()
-  const categories = api.category.findAll.useQuery()
-  const subscriptions = api.company.subscriptions.useQuery()
-
-  const { mutate, isPending } = api.product.create.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.products.create),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "Your product has been created.",
-      })
-      await utils.company.subscriptions.invalidate()
-      router.refresh()
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const form = useForm<TCreateProduct>({
@@ -76,36 +72,24 @@ export function CreateProductForm({
     },
   })
 
-  const isValid = validateSubscriptionLimits({
-    status: subscriptions.status,
-    subscription: subscriptions.data?.subscription as Subscription,
-    productLen: subscriptions.data?._count.products,
-  })
-
-  // Custom validation rule to check if sale price is less than cost price
   function onSubmit(values: TCreateProduct) {
     const { name, costPrice, salePrice, unitOfMeasureId, categoryId } = values
-
-    if (!isValid) {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Max product limit exceeded",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    }
     mutate({
-      name: name.toLowerCase(),
-      costPrice,
-      salePrice,
-      unitOfMeasureId,
-      categoryId,
+      createProductSchema: {
+        name: name.toLowerCase(),
+        costPrice,
+        salePrice,
+        unitOfMeasureId,
+        categoryId,
+      },
     })
   }
 
   // disabled submitting whenever costPrice is greater than or equal to salePrice
-  const disabledPriceComparison =
-    Number(form.watch("costPrice")) >= Number(form.watch("salePrice"))
+  const disabledPriceComparison = useMemo(
+    () => Number(form.watch("costPrice")) >= Number(form.watch("salePrice")),
+    [form],
+  )
 
   return (
     <Form {...form}>
@@ -171,9 +155,9 @@ export function CreateProductForm({
                       !!uoms.data.length &&
                       uoms.data.map((uom) => (
                         <SelectItem
-                          value={uom.id}
+                          value={uom._id}
                           className="capitalize"
-                          key={uom.id}
+                          key={uom._id}
                         >
                           {uom.name}
                         </SelectItem>
@@ -204,9 +188,9 @@ export function CreateProductForm({
                       !!categories.data.length &&
                       categories.data.map((category) => (
                         <SelectItem
-                          value={category.id}
+                          value={category._id}
                           className="uppercase"
-                          key={category.id}
+                          key={category._id}
                         >
                           {category.name}
                         </SelectItem>

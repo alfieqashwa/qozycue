@@ -1,18 +1,19 @@
 "use client"
 
-import { type ColumnDef } from "@tanstack/react-table"
-import { Coffee, Hash, ShoppingBasket, Soup, Star, Tags } from "lucide-react"
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
-import { type RouterOutputs } from "@/trpc/react"
+import { type ColumnDef } from "@tanstack/react-table"
+import { Coffee, Hash, ShoppingBasket, Soup, Star, Tags } from "lucide-react"
 import { ProductRowActions } from "./product-row-actions"
 import { ToggleSwitchProduct } from "./toggle-switch"
+import { FunctionReturnType } from "convex/server"
+import { api } from "@/convex/_generated/api"
 
 export const columnsProduct: ColumnDef<
-  RouterOutputs["product"]["findAllByCompanyId"][0]
+  FunctionReturnType<typeof api.products.findAll>[0]
 >[] = [
   {
     id: "select",
@@ -200,9 +201,9 @@ export const columnsProduct: ColumnDef<
     ),
     cell: ({ row }) => {
       const {
-        original: { id, name, status },
+        original: { _id, name, status },
       } = row
-      return <ToggleSwitchProduct id={id} name={name} status={status} />
+      return <ToggleSwitchProduct id={_id} name={name} status={status} />
     },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id))
@@ -211,12 +212,12 @@ export const columnsProduct: ColumnDef<
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id, name, costPrice, salePrice, categoryId, unitOfMeasureId } =
+      const { _id, name, costPrice, salePrice, categoryId, unitOfMeasureId } =
         row.original
       return (
         <div className="relative">
           <ProductRowActions
-            id={id}
+            id={_id}
             name={name}
             costPrice={costPrice}
             salePrice={salePrice}
