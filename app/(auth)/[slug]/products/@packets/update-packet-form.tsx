@@ -1,9 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Rate } from "@prisma/client"
-import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { Button } from "~/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -11,8 +6,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -20,12 +15,22 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select"
-import { SheetFooter } from "~/components/ui/sheet"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
-import { packetSchema, type TPacket } from "~/types/schema/packet-schema"
+} from "@/components/ui/select"
+import { SheetClose, SheetFooter } from "@/components/ui/sheet"
+import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
+import {
+  TUpdatePacket,
+  updatePacketSchema,
+  type TPacket,
+} from "@/types/schema/packet-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function UpdatePacketForm({
   packet,
@@ -36,33 +41,22 @@ export function UpdatePacketForm({
 }) {
   const { id, name, description, cost, rate } = packet
 
-  const router = useRouter()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.packet.update.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.packets.update),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "Your packet has been updated.",
-      })
-      router.refresh()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  // 1. Define form.
-  const form = useForm<TPacket>({
-    resolver: zodResolver(packetSchema),
+  const form = useForm<TUpdatePacket>({
+    resolver: zodResolver(updatePacketSchema),
     defaultValues: {
       id,
       name,
@@ -71,17 +65,16 @@ export function UpdatePacketForm({
       rate,
     },
   })
-
-  // 2. Define a submit handler.
-  function onSubmit(values: TPacket) {
+  function onSubmit(values: TUpdatePacket) {
     const { id, name, description, cost, rate } = values
-
     mutate({
-      id,
-      name: name.toLowerCase(),
-      description,
-      cost,
-      rate,
+      updatePacketSchema: {
+        id,
+        name: name.toLowerCase(),
+        description,
+        cost,
+        rate,
+      },
     })
   }
 
@@ -145,12 +138,11 @@ export function UpdatePacketForm({
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value={Rate.MINUTE} className="capitalize">
-                      {Rate.MINUTE}
-                    </SelectItem>
-                    <SelectItem value={Rate.HOUR} className="capitalize">
-                      {Rate.HOUR}
-                    </SelectItem>
+                    {["minute", "hour"].map((rate, i) => (
+                      <SelectItem value={rate} className="capitalize" key={i}>
+                        {rate}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -159,14 +151,9 @@ export function UpdatePacketForm({
           )}
         />
         <SheetFooter className="absolute bottom-4 left-0 right-0 px-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setOpen(false)}
-            className="mt-1.5 sm:mt-0"
-          >
+          <SheetClose className={cn(buttonVariants({ variant: "secondary" }))}>
             Cancel
-          </Button>
+          </SheetClose>
           {isPending ? (
             <Button disabled>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -1,5 +1,3 @@
-import { Loader2, Trash } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,63 +8,56 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api } from "@/trpc/react"
-
+import { api } from "@/convex/_generated/api"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { type Table } from "@tanstack/react-table"
-import { useRouter } from "next/navigation"
-import { type RouterOutputs } from "@/trpc/react"
+import { FunctionReturnType } from "convex/server"
+import { ConvexError } from "convex/values"
+import { Loader2, Trash } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 interface DeletePacketListProps<TData> {
   table: Table<TData>
   disabledBasedOnAccessLevel: boolean
 }
-
 export function DeletePacketList<TData>({
   table,
   disabledBasedOnAccessLevel,
 }: DeletePacketListProps<TData>) {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const { toast } = useToast()
-
   const selectedRows = table
     .getFilteredSelectedRowModel()
-    .rows.map(
-      (row) => row.original,
-    ) as RouterOutputs["product"]["findAllByCompanyId"]
+    .rows.map((row) => row.original) as FunctionReturnType<
+    typeof api.packets.findAll
+  >
 
   const ids = selectedRows.map((row) => ({
-    id: row.id,
+    id: row._id,
   }))
 
-  const { mutate, isPending } = api.packet.deleteSelected.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.packets.removeSelected),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "All selected packet(s) have been deleted.",
-      })
-      router.refresh()
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
       table.resetRowSelection() // reset row selection after succeed
-      /* auto-closed after succeed submit the dialog form */
       setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
     },
   })
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    mutate({ ids })
+    mutate({ deleteSelectedPacketSchema: { ids } })
   }
 
   return (
@@ -82,16 +73,13 @@ export function DeletePacketList<TData>({
           Delete Selected ({table.getFilteredSelectedRowModel().rows.length})
         </Button>
       </DialogTrigger>
-
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                Anda tidak dapat membatalkan perubahan ini. Klik Delete All
-                untuk menghapus paket yang dipilih.
-              </p>
+            <DialogDescription>
+              You can&apos;t undo this changes. Click <b>Delete All</b> when to
+              delete the selected packet(s).
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">

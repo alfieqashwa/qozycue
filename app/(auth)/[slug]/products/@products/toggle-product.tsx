@@ -32,12 +32,10 @@ export function ToggleProduct({
       toast.success("Succeed!", {
         description: (
           <p>
-            <p>
-              {variables?.toggleProductSchema.status !== "enabled"
-                ? "Enabled"
-                : "Disabled"}{" "}
-              {name}
-            </p>
+            {variables?.toggleProductSchema.status !== "enabled"
+              ? "Enabled"
+              : "Disabled"}{" "}
+            {name}
           </p>
         ),
       }),

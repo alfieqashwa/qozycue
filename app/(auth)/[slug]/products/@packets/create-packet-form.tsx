@@ -1,9 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Rate, type Subscription } from "@prisma/client"
-import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -21,80 +16,58 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { SheetFooter } from "@/components/ui/sheet"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { validateSubscriptionLimits } from "@/lib/validate-subscription-limits"
-import { api } from "@/trpc/react"
+import { SheetClose, SheetFooter } from "@/components/ui/sheet"
+import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import {
   createPacketSchema,
-  type TcreatePacket,
+  type TCreatePacket,
 } from "@/types/schema/packet-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function CreatePacketForm({
   setOpen,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.packet.create.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.packets.create),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "Your packet has been created.",
-      })
-      await utils.company.subscriptions.invalidate()
-      router.refresh()
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  const form = useForm<TcreatePacket>({
+  const form = useForm<TCreatePacket>({
     resolver: zodResolver(createPacketSchema),
     defaultValues: {
       name: "",
       description: "",
       cost: 0,
-      rate: "MINUTE",
+      rate: "minute",
     },
   })
-
-  const subscriptions = api.company.subscriptions.useQuery()
-  const isValid = validateSubscriptionLimits({
-    status: subscriptions.status,
-    subscription: subscriptions.data?.subscription as Subscription,
-    packetLen: subscriptions.data?._count.packets,
-  })
-
-  function onSubmit(values: TcreatePacket) {
+  function onSubmit(values: TCreatePacket) {
     const { name, description, cost, rate } = values
-
-    if (!isValid) {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Max packet limit exceeded",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    }
-
     mutate({
-      name: name.toLowerCase(),
-      description,
-      cost,
-      rate,
+      createPacketSchema: {
+        name: name.toLowerCase(),
+        description,
+        cost,
+        rate,
+      },
     })
   }
 
@@ -158,12 +131,11 @@ export function CreatePacketForm({
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value={Rate.HOUR} className="uppercase">
-                      {Rate.HOUR}
-                    </SelectItem>
-                    <SelectItem value={Rate.MINUTE} className="uppercase">
-                      {Rate.MINUTE}
-                    </SelectItem>
+                    {["minute", "hour"].map((rate, i) => (
+                      <SelectItem value={rate} className="uppercase" key={i}>
+                        {rate}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -172,14 +144,9 @@ export function CreatePacketForm({
           )}
         />
         <SheetFooter className="absolute bottom-4 left-0 right-0 px-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setOpen(false)}
-            className="mt-1.5 sm:mt-0"
-          >
+          <SheetClose className={cn(buttonVariants({ variant: "secondary" }))}>
             Cancel
-          </Button>
+          </SheetClose>
           {isPending ? (
             <Button disabled>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

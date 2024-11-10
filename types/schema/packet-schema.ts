@@ -18,14 +18,21 @@ export const packetSchema = z.object({
       invalid_type_error: "Cost must be a number.",
     })
     .nonnegative({ message: "Cost must be zero or a positive number." }),
-  rate: z.nativeEnum(Rate),
+  rate: z.enum(["minute", "hour"]),
+  status: z.enum(["enabled", "disabled"]),
 })
 export type TPacket = z.infer<typeof packetSchema>
-export const createPacketSchema = packetSchema.omit({ id: true })
-export type TcreatePacket = z.infer<typeof createPacketSchema>
+
+export const createPacketSchema = packetSchema.omit({ id: true, status: true })
+export type TCreatePacket = z.infer<typeof createPacketSchema>
+
+export const updatePacketSchema = packetSchema.omit({ status: true })
+export type TUpdatePacket = z.infer<typeof updatePacketSchema>
 
 export const deletePacketSchema = packetSchema.pick({ id: true })
 
 export const deleteSelectedPacketSchema = z.object({
   ids: z.array(packetSchema.pick({ id: true })),
 })
+
+export const togglePacketSchema = packetSchema.pick({ id: true, status: true })

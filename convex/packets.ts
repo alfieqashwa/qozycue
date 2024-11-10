@@ -1,12 +1,12 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError } from "convex/values"
 import {
-  createProductSchema,
-  deleteProductSchema,
-  deleteSelectedProductSchema,
-  toggleProductSchema,
-  updateProductSchema,
-} from "../types/schema/product-schema"
+  createPacketSchema,
+  deletePacketSchema,
+  deleteSelectedPacketSchema,
+  togglePacketSchema,
+  updatePacketSchema,
+} from "../types/schema/packet-schema"
 import { query } from "./_generated/server"
 import {
   adminProcedure,
@@ -26,34 +26,17 @@ export const findAll = query({
     const user = await ctx.db.get(userId)
     if (!user || !user?.companyId) throw new ConvexError("No user!")
 
-    const products = await ctx.db
-      .query("products")
+    return await ctx.db
+      .query("packets")
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
       .collect()
-
-    return Promise.all(
-      products.map(async (product) => {
-        const unitOfMeasure = await ctx.db.get(product.unitOfMeasureId)
-        const category = await ctx.db.get(product.categoryId)
-
-        return { ...product, unitOfMeasure, category }
-      }),
-    )
   },
 })
 export const create = zMutation({
-  args: { createProductSchema },
+  args: { createPacketSchema },
   handler: async (
     ctx,
-    {
-      createProductSchema: {
-        name,
-        costPrice,
-        salePrice,
-        unitOfMeasureId,
-        categoryId,
-      },
-    },
+    { createPacketSchema: { name, description, cost, rate } },
   ) => {
     //? managerProcedure
     const userId = await getAuthUserId(ctx)
@@ -70,50 +53,39 @@ export const create = zMutation({
     const subs = await subscriptions(ctx, { companyId: user.companyId })
     const isValid = validateSubscriptionLimits({
       subscription: subs.subscription!,
-      productLen: subs._count.products,
+      productLen: subs._count.packets,
     })
     if (!isValid) throw new ConvexError("Max product limit exceeded!")
 
-    return await ctx.db.insert("products", {
+    return await ctx.db.insert("packets", {
       companyId: user?.companyId!,
       name,
-      costPrice,
-      salePrice,
-      unitOfMeasureId,
-      categoryId,
+      description,
+      cost,
       status: "disabled",
+      rate,
     })
   },
 })
 export const update = zMutation({
-  args: { updateProductSchema },
+  args: { updatePacketSchema },
   handler: async (
     ctx,
-    {
-      updateProductSchema: {
-        id,
-        name,
-        costPrice,
-        salePrice,
-        unitOfMeasureId,
-        categoryId,
-      },
-    },
+    { updatePacketSchema: { id, name, description, cost, rate } },
   ) => {
     await managerProcedure(ctx, {})
 
     return await ctx.db.patch(id, {
       name,
-      costPrice,
-      salePrice,
-      unitOfMeasureId,
-      categoryId,
+      description,
+      cost,
+      rate,
     })
   },
 })
 export const toggle = zMutation({
-  args: { toggleProductSchema },
-  handler: async (ctx, { toggleProductSchema: { id, status } }) => {
+  args: { togglePacketSchema },
+  handler: async (ctx, { togglePacketSchema: { id, status } }) => {
     await managerProcedure(ctx, {})
 
     return await ctx.db.patch(id, {
@@ -125,20 +97,20 @@ export const toggle = zMutation({
  * remove && removeSelected is AdminProcedure.
  */
 export const remove = zMutation({
-  args: { deleteProductSchema },
-  handler: async (ctx, { deleteProductSchema: { id } }) => {
+  args: { deletePacketSchema },
+  handler: async (ctx, { deletePacketSchema: { id } }) => {
     await adminProcedure(ctx, {})
 
     return await ctx.db.delete(id)
   },
 })
 export const removeSelected = zMutation({
-  args: { deleteSelectedProductSchema },
+  args: { deleteSelectedPacketSchema },
   handler: async (ctx, args) => {
     await adminProcedure(ctx, {})
 
     return await Promise.all(
-      args.deleteSelectedProductSchema.ids.map(async ({ id }) => {
+      args.deleteSelectedPacketSchema.ids.map(async ({ id }) => {
         return await ctx.db.delete(id)
       }),
     )

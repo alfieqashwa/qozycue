@@ -1,15 +1,15 @@
 "use client"
 
-import { Cross2Icon } from "@radix-ui/react-icons"
-import { type Table } from "@tanstack/react-table"
-
+import { packetRates, statusEnabled } from "@/app/constants/options"
 import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-filter"
 import { DataTableViewOptions } from "@/components/table/data-table-view-options"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
-import { packetRates, statusEnabled } from "@/app/constants/options"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { Cross2Icon } from "@radix-ui/react-icons"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { type Table } from "@tanstack/react-table"
 import { CreatePacket } from "./create-packet"
 import { DeletePacketList } from "./delete-packet-list"
 
@@ -22,15 +22,15 @@ export function PacketTableToolbar<TData>({
 }: PacketTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
-  const me = api.user.me.useQuery()
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const adminAccessLevel =
+    me.status === "success" &&
+    (me.data?.role === "DEWA" || me.data?.role === "ADMIN")
   const managerAccessLevel =
     me.status === "success" &&
     (me.data?.role === "DEWA" ||
       me.data?.role === "ADMIN" ||
       me.data?.role === "MANAGER")
-  const adminAccessLevel =
-    me.status === "success" &&
-    (me.data?.role === "DEWA" || me.data?.role === "ADMIN")
 
   return (
     <div className="flex flex-col items-center space-y-2 md:flex-row md:justify-between md:space-y-0">

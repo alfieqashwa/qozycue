@@ -3,17 +3,17 @@
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { api } from "@/convex/_generated/api"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
-import { type RouterOutputs } from "@/trpc/react"
-import { Rate } from "@prisma/client"
 import { type ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
 import { Hash, Hourglass, ScrollText, Star, Timer } from "lucide-react"
 import { PacketRowActions } from "./packet-row-actions"
 import { TogglePacket } from "./toggle-packet"
 
 export const columnsPacket: ColumnDef<
-  RouterOutputs["packet"]["findAllByCompanyId"][0]
+  FunctionReturnType<typeof api.packets.findAll>[0]
 >[] = [
   {
     id: "select",
@@ -66,7 +66,7 @@ export const columnsPacket: ColumnDef<
     cell: ({ row }) => {
       const rate = row.getValue("rate")
       const colorBasedOnRate =
-        rate === Rate.HOUR ? "text-sky-400" : "text-amber-300"
+        rate === "hour" ? "text-sky-400" : "text-amber-300"
       return (
         <Badge
           variant="secondary"
@@ -88,7 +88,7 @@ export const columnsPacket: ColumnDef<
     cell: ({ row }) => {
       const rate = row.getValue("rate")
       const colorBasedOnRate =
-        rate === Rate.HOUR ? "text-sky-400" : "text-amber-300"
+        rate === "hour" ? "text-sky-400" : "text-amber-300"
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <ScrollText className={cn("mr-2 h-4 w-4", colorBasedOnRate)} />
@@ -108,7 +108,7 @@ export const columnsPacket: ColumnDef<
       const cost = row.getValue("cost")
       const rate = row.getValue("rate")
       const colorBasedOnRate =
-        rate === Rate.HOUR ? "text-sky-400" : "text-amber-300"
+        rate === "hour" ? "text-sky-400" : "text-amber-300"
       return (
         <Badge
           variant="secondary"
@@ -130,7 +130,7 @@ export const columnsPacket: ColumnDef<
       const rate = row.getValue("rate")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          {rate === Rate.HOUR ? (
+          {rate === "hour" ? (
             <Hourglass className="mr-2 size-4 text-sky-400" />
           ) : (
             <Timer className="mr-2 size-4 text-amber-300" />
@@ -152,9 +152,9 @@ export const columnsPacket: ColumnDef<
     ),
     cell: ({ row }) => {
       const {
-        original: { id, name, status },
+        original: { _id, name, status },
       } = row
-      return <TogglePacket id={id} name={name} status={status} />
+      return <TogglePacket id={_id} name={name} status={status} />
     },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id))
