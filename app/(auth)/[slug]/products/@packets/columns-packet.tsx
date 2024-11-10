@@ -50,7 +50,7 @@ export const columnsPacket: ColumnDef<
         <Badge variant="secondary" className="px-3 py-1.5">
           <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
           <span className="max-w-[300px] truncate">
-            {id.slice(-8, id.length)}
+            {id?.slice(-8, id?.length)}
           </span>
         </Badge>
       )
@@ -161,11 +161,19 @@ export const columnsPacket: ColumnDef<
     },
   },
   {
+    // id, name, description, cost, rate
     id: "actions",
     cell: ({ row }) => {
+      const { _id, name, description, cost, rate } = row.original
       return (
         <div className="relative">
-          <PacketRowActions row={row} />
+          <PacketRowActions
+            id={_id}
+            name={name}
+            description={description}
+            cost={cost}
+            rate={rate}
+          />
         </div>
       )
     },

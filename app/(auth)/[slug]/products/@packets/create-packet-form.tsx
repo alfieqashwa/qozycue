@@ -64,7 +64,7 @@ export function CreatePacketForm({
     mutate({
       createPacketSchema: {
         name: name.toLowerCase(),
-        description,
+        description: description.toLowerCase(),
         cost,
         rate,
       },
@@ -82,7 +82,11 @@ export function CreatePacketForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="capitalize" />
+                <Input
+                  placeholder="name"
+                  {...field}
+                  className="w-[200px] capitalize"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,7 +100,11 @@ export function CreatePacketForm({
             <FormItem>
               <FormLabel>Desc</FormLabel>
               <FormControl>
-                <Input placeholder="description" {...field} />
+                <Input
+                  placeholder="description"
+                  className="w-[200px] capitalize"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -110,7 +118,12 @@ export function CreatePacketForm({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Price" {...field} />
+                <Input
+                  type="number"
+                  placeholder="Price"
+                  className="w-[200px]"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -124,7 +137,7 @@ export function CreatePacketForm({
             <FormItem>
               <FormLabel>Rate</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="uppercase">
+                <FormControl className="w-[200px] uppercase">
                   <SelectTrigger>
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>

@@ -18,12 +18,10 @@ import {
 } from "@/components/ui/select"
 import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
-import {
-  TUpdatePacket,
-  updatePacketSchema,
-  type TPacket,
-} from "@/types/schema/packet-schema"
+import { Rate } from "@/types"
+import { TUpdatePacket, updatePacketSchema } from "@/types/schema/packet-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
@@ -33,14 +31,20 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 export function UpdatePacketForm({
-  packet,
+  id,
+  name,
+  description,
+  cost,
+  rate,
   setOpen,
 }: {
-  packet: TPacket
+  id: Id<"packets">
+  name: string
+  description?: string
+  cost: number
+  rate: Rate
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const { id, name, description, cost, rate } = packet
-
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.packets.update),
     onSuccess: () =>
@@ -71,7 +75,7 @@ export function UpdatePacketForm({
       updatePacketSchema: {
         id,
         name: name.toLowerCase(),
-        description,
+        description: description.toLowerCase(),
         cost,
         rate,
       },
@@ -89,7 +93,11 @@ export function UpdatePacketForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="capitalize" />
+                <Input
+                  placeholder="name"
+                  {...field}
+                  className="w-[200px] capitalize"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -103,7 +111,11 @@ export function UpdatePacketForm({
             <FormItem>
               <FormLabel>Desc</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} />
+                <Input
+                  placeholder="name"
+                  className="w-[200px] capitalize"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -117,7 +129,12 @@ export function UpdatePacketForm({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Price" {...field} />
+                <Input
+                  type="number"
+                  placeholder="Price"
+                  className="w-[200px]"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -131,7 +148,7 @@ export function UpdatePacketForm({
             <FormItem>
               <FormLabel>Rate</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="capitalize">
+                <FormControl className="w-[200px] capitalize">
                   <SelectTrigger>
                     <SelectValue placeholder="Select Rate" />
                   </SelectTrigger>

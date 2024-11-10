@@ -37,7 +37,7 @@ export function CreateProduct({
         <SheetHeader>
           <SheetTitle>Create New Product</SheetTitle>
           <SheetDescription>
-            Klik Create Product setelah mengisi form di bawah ini.
+            Click <b>Create Product</b> when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         <CreateProductForm setOpen={setOpen} />

@@ -123,7 +123,12 @@ export function UpdateProductForm({
             <FormItem>
               <FormLabel>Cost Price</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="cost price" {...field} />
+                <Input
+                  type="number"
+                  placeholder="cost price"
+                  className="w-[200px]"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -137,7 +142,12 @@ export function UpdateProductForm({
             <FormItem>
               <FormLabel>Sale Price</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="sale price" {...field} />
+                <Input
+                  type="number"
+                  placeholder="sale price"
+                  className="w-[200px]"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -151,7 +161,7 @@ export function UpdateProductForm({
             <FormItem>
               <FormLabel>Unit of Measure</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="capitalize">
+                <FormControl className="w-[200px] capitalize">
                   <SelectTrigger>
                     <SelectValue placeholder="Select UoM" />
                   </SelectTrigger>
@@ -184,7 +194,7 @@ export function UpdateProductForm({
             <FormItem>
               <FormLabel>Category</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="uppercase">
+                <FormControl className="w-[200px] uppercase">
                   <SelectTrigger>
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>

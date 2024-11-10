@@ -1,4 +1,4 @@
-import { PaymentMethod, Rate, StatusEnum, StatusPayment } from "@/types"
+import { PaymentMethod, StatusPayment } from "@/types"
 import {
   Banknote,
   Coffee,
@@ -43,12 +43,12 @@ export const statusEnabled = [
 
 export const packetRates = [
   {
-    value: Rate.HOUR,
+    value: "hour",
     label: "HOUR",
     icon: Hourglass,
   },
   {
-    value: Rate.MINUTE,
+    value: "minute",
     label: "MINUTE",
     icon: Timer,
   },

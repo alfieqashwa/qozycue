@@ -35,7 +35,7 @@ export function CreatePacket({
         <SheetHeader>
           <SheetTitle>Create New Packet</SheetTitle>
           <SheetDescription>
-            Klik Create Packet setelah mengisi form di bawah ini.
+            Click <b>Create Packet</b> when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
         <CreatePacketForm setOpen={setOpen} />

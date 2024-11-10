@@ -35,7 +35,8 @@ export enum PaymentMethod {
   CREDIT,
 }
 
-export enum Rate {
+export type Rate = "minute" | "hour"
+export enum RateEnum {
   MINUTE,
   HOUR,
 }

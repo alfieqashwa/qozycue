@@ -11,6 +11,7 @@ import { FunctionReturnType } from "convex/server"
 import { Coffee, Hash, ShoppingBasket, Soup, Star, Tags } from "lucide-react"
 import { ProductRowActions } from "./product-row-actions"
 import { ToggleProduct } from "./toggle-product"
+import { Id } from "@/convex/_generated/dataModel"
 
 export const columnsProduct: ColumnDef<
   FunctionReturnType<typeof api.products.findAll>[0]
@@ -45,12 +46,12 @@ export const columnsProduct: ColumnDef<
       <DataTableColumnHeader column={column} title="ID" />
     ),
     cell: ({ row }) => {
-      const id: string = row.getValue("id")
+      const id: Id<"products"> = row.getValue("id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
           <span className="max-w-[300px] truncate font-medium">
-            {id.slice(-8, id.length)}
+            {id?.slice(-8, id?.length)}
           </span>
         </Badge>
       )

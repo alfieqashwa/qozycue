@@ -17,13 +17,24 @@ import { useState } from "react"
 import { DeletePacket } from "./delete-packet"
 import { UpdatePacket } from "./update-packet"
 import { UpdatePacketForm } from "./update-packet-form"
+import { Rate } from "@/types"
+import { Id } from "@/convex/_generated/dataModel"
 
-interface PacketRowActionsProps<TData> {
-  row: Row<TData>
+type PacketRowActionsProps = {
+  id: Id<"packets">
+  name: string
+  description?: string
+  cost: number
+  rate: Rate
 }
-export function PacketRowActions<TData>({ row }: PacketRowActionsProps<TData>) {
+export function PacketRowActions<TData>({
+  id,
+  name,
+  description,
+  cost,
+  rate,
+}: PacketRowActionsProps) {
   const [open, setOpen] = useState(false)
-  const packet = packetSchema.parse(row.original)
 
   const { data: me, status } = useTanstackQuery(convexQuery(api.users.me, {}))
   const adminAccessLevel = me?.role === "DEWA" || me?.role === "ADMIN"
@@ -51,20 +62,22 @@ export function PacketRowActions<TData>({ row }: PacketRowActionsProps<TData>) {
         >
         {...}
         </DropdownMenuItem> */}
-        <UpdatePacket name={packet.name}>
-          <UpdatePacketForm packet={packet} setOpen={setOpen} />
+        <UpdatePacket name={name}>
+          <UpdatePacketForm
+            id={id}
+            name={name}
+            description={description}
+            cost={cost}
+            rate={rate}
+            setOpen={setOpen}
+          />
         </UpdatePacket>
         {status === "success" && !!adminAccessLevel && (
           <DropdownMenuItem
             className="group"
             onSelect={(e) => e.preventDefault()}
           >
-            <DeletePacket
-              id={packet.id}
-              name={packet.name}
-              open={open}
-              setOpen={setOpen}
-            />
+            <DeletePacket id={id} name={name} open={open} setOpen={setOpen} />
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

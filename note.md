@@ -14,6 +14,9 @@
 
     - Follow the instruction above but,
 
+[-] Restrict to delete enabled product(s) and packet(s)
+[-] Move Button Edit and Delete Product and Packet into row list of table
+
 ## Backlog (Future Plan)
 
 [-] Relate the Discount Table -> Product Table (So each product can have discount configuration)
