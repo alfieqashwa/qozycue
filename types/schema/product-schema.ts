@@ -1,7 +1,8 @@
 import { zid } from "convex-helpers/server/zod"
 import { z } from "zod"
+import { StatusEnum } from ".."
 
-export const productSchema = z.object({
+const productSchema = z.object({
   id: zid("products"),
   name: z
     .string({
@@ -26,8 +27,9 @@ export const productSchema = z.object({
     .nonnegative({
       message: "Sale Price must be zero or a positive number.",
     }),
-  unitOfMeasureId: z.string().cuid(),
-  categoryId: z.string().cuid(),
+  status: z.enum(["enabled", "disabled"]),
+  unitOfMeasureId: zid("unitOfMeasures"),
+  categoryId: zid("categories"),
 
   /**
    * TODO: setup later!
@@ -38,22 +40,30 @@ export const productSchema = z.object({
    */
 })
 
-export type TProduct = z.infer<typeof productSchema>
-
 export const createProductSchema = productSchema
   .omit({
     id: true,
+    status: true,
   })
   .refine((val) => val.costPrice < val.salePrice, {
     path: ["comparison price"],
     message: "Cost Price must be less than Sale Price",
   })
+
+export const updateProductSchema = productSchema.omit({ status: true })
+export type TUpdateProduct = z.infer<typeof updateProductSchema>
 /*
   Unanswered how to display zod-refine error-message. 
   https://github.com/shadcn-ui/ui/discussions/2120
 */
 
 export type TCreateProduct = z.infer<typeof createProductSchema>
+
+export const toggleProductSchema = productSchema.pick({
+  id: true,
+  status: true,
+})
+export type TToggleProduct = z.infer<typeof toggleProductSchema>
 
 export const deleteProductSchema = productSchema.pick({ id: true })
 

@@ -51,7 +51,7 @@ export function DeleteProductForm({ id, name, setOpen }: DeleteProductProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    mutate({ id })
+    mutate({ deleteProductSchema: { id } })
   }
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
