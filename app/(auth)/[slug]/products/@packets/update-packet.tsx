@@ -1,3 +1,4 @@
+import { buttonVariants } from "@/components/ui/button"
 import {
   Sheet,
   SheetContent,
@@ -6,17 +7,40 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
+import { Rate, Status } from "@/types"
 import { Pen } from "lucide-react"
+import { useState } from "react"
+import { UpdatePacketForm } from "./update-packet-form"
 
 type UpdatePacketProps = {
+  id: Id<"packets">
   name: string
-  children: React.ReactNode
+  description?: string
+  cost: number
+  rate: Rate
+  status: Status
 }
-export function UpdatePacket({ name, children }: UpdatePacketProps) {
+export function UpdatePacket({
+  id,
+  name,
+  description,
+  cost,
+  rate,
+  status,
+}: UpdatePacketProps) {
+  const [open, setOpen] = useState(false)
   return (
-    <Sheet>
-      <SheetTrigger className="group flex w-full items-center py-1 pl-2 hover:bg-accent">
-        <Pen className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger
+        disabled={status === "enabled"}
+        className={cn(
+          buttonVariants({ variant: "secondary", size: "sm" }),
+          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Pen className="mr-2 h-4 w-4" />
         <span className="text-sm">Edit</span>
       </SheetTrigger>
 
@@ -31,7 +55,14 @@ export function UpdatePacket({ name, children }: UpdatePacketProps) {
             . Click <b>Update Packet</b> when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
-        {children}
+        <UpdatePacketForm
+          id={id}
+          name={name}
+          description={description}
+          cost={cost}
+          rate={rate}
+          setOpen={setOpen}
+        />
       </SheetContent>
     </Sheet>
   )

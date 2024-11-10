@@ -9,8 +9,9 @@ import { cn } from "@/lib/utils"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
 import { Hash, Hourglass, ScrollText, Star, Timer } from "lucide-react"
-import { PacketRowActions } from "./packet-row-actions"
+import { DeletePacket } from "./delete-packet"
 import { TogglePacket } from "./toggle-packet"
+import { UpdatePacket } from "./update-packet"
 
 export const columnsPacket: ColumnDef<
   FunctionReturnType<typeof api.packets.findAll>[0]
@@ -161,21 +162,26 @@ export const columnsPacket: ColumnDef<
     },
   },
   {
-    // id, name, description, cost, rate
-    id: "actions",
+    id: "update",
     cell: ({ row }) => {
-      const { _id, name, description, cost, rate } = row.original
+      const { _id, name, description, cost, rate, status } = row.original
       return (
-        <div className="relative">
-          <PacketRowActions
-            id={_id}
-            name={name}
-            description={description}
-            cost={cost}
-            rate={rate}
-          />
-        </div>
+        <UpdatePacket
+          id={_id}
+          name={name}
+          description={description}
+          cost={cost}
+          rate={rate}
+          status={status}
+        />
       )
+    },
+  },
+  {
+    id: "delete",
+    cell: ({ row }) => {
+      const { _id, name, status } = row.original
+      return <DeletePacket id={_id} name={name} status={status} />
     },
   },
 ]

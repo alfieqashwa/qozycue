@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -10,19 +10,23 @@ import {
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
+import { Status } from "@/types"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 type DeletePacketProps = {
   id: Id<"packets">
   name: string
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  status: Status
 }
-export function DeletePacket({ id, name, open, setOpen }: DeletePacketProps) {
+export function DeletePacket({ id, name, status }: DeletePacketProps) {
+  const [open, setOpen] = useState(false)
+
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.packets.remove),
     onSuccess: () =>
@@ -43,9 +47,15 @@ export function DeletePacket({ id, name, open, setOpen }: DeletePacketProps) {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger className="flex w-full items-center">
-        <Trash className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        disabled={status === "enabled"}
+        className={cn(
+          buttonVariants({ variant: "destructive", size: "sm" }),
+          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Trash className="mr-2 h-4 w-4" />
         <span>Delete</span>
       </DialogTrigger>
 
@@ -66,7 +76,7 @@ export function DeletePacket({ id, name, open, setOpen }: DeletePacketProps) {
               type="button"
               variant="ghost"
               size="sm"
-              onClick={() => setOpen(!open)}
+              onClick={() => setOpen(false)}
             >
               Cancel
             </Button>
