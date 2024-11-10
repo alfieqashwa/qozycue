@@ -4,14 +4,15 @@ import { DataTableColumnHeader } from "@/components/table/data-table-column-head
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
 import { Coffee, Hash, ShoppingBasket, Soup, Star, Tags } from "lucide-react"
-import { ProductRowActions } from "./product-row-actions"
+import { DeleteProductForm } from "./delete-product-form"
 import { ToggleProduct } from "./toggle-product"
-import { Id } from "@/convex/_generated/dataModel"
+import { UpdateProduct } from "./update-product"
 
 export const columnsProduct: ColumnDef<
   FunctionReturnType<typeof api.products.findAll>[0]
@@ -211,22 +212,35 @@ export const columnsProduct: ColumnDef<
     },
   },
   {
-    id: "actions",
+    id: "update",
     cell: ({ row }) => {
-      const { _id, name, costPrice, salePrice, categoryId, unitOfMeasureId } =
-        row.original
+      const {
+        _id,
+        name,
+        costPrice,
+        salePrice,
+        status,
+        categoryId,
+        unitOfMeasureId,
+      } = row.original
       return (
-        <div className="relative">
-          <ProductRowActions
-            id={_id}
-            name={name}
-            costPrice={costPrice}
-            salePrice={salePrice}
-            categoryId={categoryId}
-            unitOfMeasureId={unitOfMeasureId}
-          />
-        </div>
+        <UpdateProduct
+          id={_id}
+          name={name}
+          costPrice={costPrice}
+          salePrice={salePrice}
+          status={status}
+          categoryId={categoryId}
+          unitOfMeasureId={unitOfMeasureId}
+        />
       )
+    },
+  },
+  {
+    id: "delete",
+    cell: ({ row }) => {
+      const { _id, name, status } = row.original
+      return <DeleteProductForm id={_id} name={name} status={status} />
     },
   },
 ]

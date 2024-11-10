@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import {
   updateProductSchema,
   type TUpdateProduct,
@@ -41,12 +42,12 @@ export function UpdateProductForm({
   unitOfMeasureId,
   setOpen,
 }: {
-  id: string
+  id: Id<"products">
   name: string
   costPrice: number
   salePrice: number
-  categoryId: string
-  unitOfMeasureId: string
+  categoryId: Id<"categories">
+  unitOfMeasureId: Id<"unitOfMeasures">
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   const [uoms, categories] = useTanstackQueries({
@@ -109,7 +110,11 @@ export function UpdateProductForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="capitalize" />
+                <Input
+                  placeholder="name"
+                  {...field}
+                  className="w-[280px] capitalize"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

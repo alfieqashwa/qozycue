@@ -1,5 +1,5 @@
 import { useMediaQuery } from "@/app/hooks/use-media-query"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -20,21 +20,26 @@ import {
 } from "@/components/ui/drawer"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
+import { Status } from "@/types"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 const DESCRIPTION =
-  "You can&apos;t undo this changes. Click Delete Product when you&apos;re sure to delete Product"
+  "You can't undo this changes. Click Delete Product when you're sure to delete"
 
 type DeleteProductProps = {
   id: Id<"products">
   name: string
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  status: Status
 }
-export function DeleteProductForm({ id, name, setOpen }: DeleteProductProps) {
+export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
+  const [open, setOpen] = useState(false)
+
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.products.remove),
     onSuccess: () =>
@@ -57,7 +62,7 @@ export function DeleteProductForm({ id, name, setOpen }: DeleteProductProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   if (isDesktop) {
     return (
-      <DeleteDialog name={name}>
+      <DeleteDialog name={name} status={status} open={open} setOpen={setOpen}>
         <form onSubmit={handleSubmit}>
           {isPending ? (
             <Button disabled variant="destructive">
@@ -74,7 +79,7 @@ export function DeleteProductForm({ id, name, setOpen }: DeleteProductProps) {
     )
   }
   return (
-    <DeleteDrawer name={name}>
+    <DeleteDrawer name={name} status={status} open={open} setOpen={setOpen}>
       <form onSubmit={handleSubmit}>
         {isPending ? (
           <Button disabled variant="destructive" className="w-full">
@@ -93,15 +98,27 @@ export function DeleteProductForm({ id, name, setOpen }: DeleteProductProps) {
 
 function DeleteDialog({
   name,
+  status,
+  open,
+  setOpen,
   children,
 }: {
   name: string
+  status: Status
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
   children: React.ReactNode
 }) {
   return (
-    <Dialog>
-      <DialogTrigger className="flex w-full items-center">
-        <Trash className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        disabled={status === "enabled"}
+        className={cn(
+          buttonVariants({ variant: "destructive", size: "sm" }),
+          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Trash className="mr-2 h-4 w-4" />
         <span>Delete</span>
       </DialogTrigger>
 
@@ -126,15 +143,27 @@ function DeleteDialog({
 
 function DeleteDrawer({
   name,
+  status,
+  open,
+  setOpen,
   children,
 }: {
   name: string
+  status: Status
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
   children: React.ReactNode
 }) {
   return (
-    <Drawer>
-      <DrawerTrigger className="flex w-full items-center">
-        <Trash className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger
+        disabled={status === "enabled"}
+        className={cn(
+          buttonVariants({ variant: "destructive", size: "sm" }),
+          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Trash className="mr-2 h-4 w-4" />
         <span>Delete</span>
       </DrawerTrigger>
 
