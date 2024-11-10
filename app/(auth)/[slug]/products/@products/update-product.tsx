@@ -22,9 +22,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Status } from "@/types"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Pen } from "lucide-react"
 import { useState } from "react"
 import { UpdateProductForm } from "./update-product-form"
@@ -52,11 +55,18 @@ export function UpdateProduct({
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const managerAccessLevel =
+    me.status === "success" &&
+    (me.data?.role === "DEWA" ||
+      me.data?.role === "ADMIN" ||
+      me.data?.role === "MANAGER")
+
   if (isDesktop) {
     return (
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger
-          disabled={status === "enabled"}
+          disabled={status === "enabled" || !managerAccessLevel}
           className={cn(
             buttonVariants({ variant: "secondary", size: "sm" }),
             "flex w-full items-center",
@@ -96,7 +106,7 @@ export function UpdateProduct({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger
-        disabled={status === "enabled"}
+        disabled={status === "enabled" || !managerAccessLevel}
         className={cn(
           buttonVariants({ variant: "secondary", size: "sm" }),
           "flex w-full items-center",

@@ -12,8 +12,11 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Status } from "@/types"
-import { useConvexMutation } from "@convex-dev/react-query"
-import { useMutation } from "@tanstack/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
 import { useState } from "react"
@@ -26,6 +29,11 @@ type DeletePacketProps = {
 }
 export function DeletePacket({ id, name, status }: DeletePacketProps) {
   const [open, setOpen] = useState(false)
+
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const adminAccessLevel =
+    me.status === "success" &&
+    (me.data?.role === "DEWA" || me.data?.role === "ADMIN")
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.packets.remove),
@@ -49,14 +57,14 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        disabled={status === "enabled"}
+        disabled={status === "enabled" || !adminAccessLevel}
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <Trash className="mr-2 h-4 w-4" />
-        <span>Delete</span>
+        <span className="text-sm">Delete</span>
       </DialogTrigger>
 
       <DialogContent className="bg-card">

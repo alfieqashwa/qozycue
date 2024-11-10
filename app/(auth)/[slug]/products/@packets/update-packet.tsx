@@ -7,9 +7,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Rate, Status } from "@/types"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Pen } from "lucide-react"
 import { useState } from "react"
 import { UpdatePacketForm } from "./update-packet-form"
@@ -31,10 +34,18 @@ export function UpdatePacket({
   status,
 }: UpdatePacketProps) {
   const [open, setOpen] = useState(false)
+
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const managerAccessLevel =
+    me.status === "success" &&
+    (me.data?.role === "DEWA" ||
+      me.data?.role === "ADMIN" ||
+      me.data?.role === "MANAGER")
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
-        disabled={status === "enabled"}
+        disabled={status === "enabled" || !managerAccessLevel}
         className={cn(
           buttonVariants({ variant: "secondary", size: "sm" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",

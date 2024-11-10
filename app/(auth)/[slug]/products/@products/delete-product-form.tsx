@@ -22,8 +22,11 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Status } from "@/types"
-import { useConvexMutation } from "@convex-dev/react-query"
-import { useMutation } from "@tanstack/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
 import { useState } from "react"
@@ -39,6 +42,11 @@ type DeleteProductProps = {
 }
 export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
   const [open, setOpen] = useState(false)
+
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const adminAccessLevel =
+    me.status === "success" &&
+    (me.data?.role === "DEWA" || me.data?.role === "ADMIN")
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.products.remove),
@@ -62,7 +70,13 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   if (isDesktop) {
     return (
-      <DeleteDialog name={name} status={status} open={open} setOpen={setOpen}>
+      <DeleteDialog
+        disabledBasedOnAccessLevel={!adminAccessLevel}
+        name={name}
+        status={status}
+        open={open}
+        setOpen={setOpen}
+      >
         <form onSubmit={handleSubmit}>
           {isPending ? (
             <Button disabled variant="destructive">
@@ -79,7 +93,13 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
     )
   }
   return (
-    <DeleteDrawer name={name} status={status} open={open} setOpen={setOpen}>
+    <DeleteDrawer
+      disabledBasedOnAccessLevel={!adminAccessLevel}
+      name={name}
+      status={status}
+      open={open}
+      setOpen={setOpen}
+    >
       <form onSubmit={handleSubmit}>
         {isPending ? (
           <Button disabled variant="destructive" className="w-full">
@@ -97,12 +117,14 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
 }
 
 function DeleteDialog({
+  disabledBasedOnAccessLevel,
   name,
   status,
   open,
   setOpen,
   children,
 }: {
+  disabledBasedOnAccessLevel: boolean
   name: string
   status: Status
   open: boolean
@@ -112,14 +134,14 @@ function DeleteDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        disabled={status === "enabled"}
+        disabled={status === "enabled" || disabledBasedOnAccessLevel}
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <Trash className="mr-2 h-4 w-4" />
-        <span>Delete</span>
+        <span className="text-sm">Delete</span>
       </DialogTrigger>
 
       <DialogContent className="bg-card pb-16">
@@ -142,12 +164,14 @@ function DeleteDialog({
 }
 
 function DeleteDrawer({
+  disabledBasedOnAccessLevel,
   name,
   status,
   open,
   setOpen,
   children,
 }: {
+  disabledBasedOnAccessLevel: boolean
   name: string
   status: Status
   open: boolean
@@ -157,14 +181,14 @@ function DeleteDrawer({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger
-        disabled={status === "enabled"}
+        disabled={status === "enabled" || disabledBasedOnAccessLevel}
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <Trash className="mr-2 h-4 w-4" />
-        <span>Delete</span>
+        <span className="text-sm">Delete</span>
       </DrawerTrigger>
 
       <DrawerContent className="bg-card px-4 pb-4">
