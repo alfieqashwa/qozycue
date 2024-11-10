@@ -34,10 +34,6 @@ export function DeletePacketList<TData>({
     typeof api.packets.findAll
   >
 
-  const ids = selectedRows.map((row) => ({
-    id: row._id,
-  }))
-
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.packets.removeSelected),
     onSuccess: () =>
@@ -57,7 +53,7 @@ export function DeletePacketList<TData>({
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    mutate({ deleteSelectedPacketSchema: { ids } })
+    mutate({ ids: selectedRows.map((packet) => packet._id) })
   }
 
   return (

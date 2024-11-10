@@ -1,13 +1,12 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { ConvexError } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import {
   createPacketSchema,
   deletePacketSchema,
-  deleteSelectedPacketSchema,
   togglePacketSchema,
   updatePacketSchema,
 } from "../types/schema/packet-schema"
-import { query } from "./_generated/server"
+import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
   managerProcedure,
@@ -104,15 +103,15 @@ export const remove = zMutation({
     return await ctx.db.delete(id)
   },
 })
-export const removeSelected = zMutation({
-  args: { deleteSelectedPacketSchema },
-  handler: async (ctx, args) => {
+export const removeSelected = mutation({
+  args: { ids: v.array(v.id("packets")) },
+  handler: async (ctx, { ids }) => {
     await adminProcedure(ctx, {})
 
-    return await Promise.all(
-      args.deleteSelectedPacketSchema.ids.map(async ({ id }) => {
-        return await ctx.db.delete(id)
-      }),
+    const removeAll = await Promise.all(
+      ids.map(async (id) => await ctx.db.delete(id)),
     )
+
+    return { ...removeAll }
   },
 })

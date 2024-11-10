@@ -1,6 +1,5 @@
 import { zid } from "convex-helpers/server/zod"
 import { z } from "zod"
-import { Rate } from ".."
 
 export const packetSchema = z.object({
   id: zid("packets"),
@@ -30,9 +29,5 @@ export const updatePacketSchema = packetSchema.omit({ status: true })
 export type TUpdatePacket = z.infer<typeof updatePacketSchema>
 
 export const deletePacketSchema = packetSchema.pick({ id: true })
-
-export const deleteSelectedPacketSchema = z.object({
-  ids: z.array(packetSchema.pick({ id: true })),
-})
 
 export const togglePacketSchema = packetSchema.pick({ id: true, status: true })
