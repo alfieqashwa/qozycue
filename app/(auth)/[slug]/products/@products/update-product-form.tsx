@@ -1,7 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -20,10 +16,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api } from "@/trpc/react"
-import { productSchema, type TProduct } from "@/types/schema/product-schema"
+import { api } from "@/convex/_generated/api"
+import {
+  updateProductSchema,
+  type TUpdateProduct,
+} from "@/types/schema/product-schema"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  useMutation,
+  useQueries as useTanstackQueries,
+} from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function UpdateProductForm({
   id,
@@ -42,41 +49,29 @@ export function UpdateProductForm({
   unitOfMeasureId: string
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const router = useRouter()
-  const { toast } = useToast()
-
-  const uoms = api.unitOfMeasure.findAllByCompanyId.useQuery(undefined, {
-    select(data) {
-      return data.filter((d) => d.name !== "minute" && d.name !== "hour")
-    },
+  const [uoms, categories] = useTanstackQueries({
+    queries: [
+      convexQuery(api.unitofmeasures.findAll, {}),
+      convexQuery(api.categories.findAll, {}),
+    ],
   })
 
-  const categories = api.category.findAll.useQuery()
-
-  const { mutate, isPending } = api.product.update.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.products.update),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "Your product has been updated.",
-      })
-      /* auto-closed after succeed submit the dialog form */
-      router.refresh()
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  // 1. Define form.
-  const form = useForm<TProduct>({
-    resolver: zodResolver(productSchema),
+  const form = useForm<TUpdateProduct>({
+    resolver: zodResolver(updateProductSchema),
     defaultValues: {
       id,
       name,
@@ -86,22 +81,20 @@ export function UpdateProductForm({
       unitOfMeasureId,
     },
   })
-
-  // 2. Define a submit handler.
-  function onSubmit(values: TProduct) {
+  function onSubmit(values: TUpdateProduct) {
     const { id, name, costPrice, salePrice, categoryId, unitOfMeasureId } =
       values
-
     mutate({
-      id,
-      name: name.toLowerCase(),
-      costPrice,
-      salePrice,
-      categoryId,
-      unitOfMeasureId,
+      updateProductSchema: {
+        id,
+        name: name.toLowerCase(),
+        costPrice,
+        salePrice,
+        categoryId,
+        unitOfMeasureId,
+      },
     })
   }
-
   // disabled submitting whenever costPrice is greater than or equal to salePrice
   const disabled = form.watch("costPrice") >= form.watch("salePrice")
 
@@ -169,9 +162,9 @@ export function UpdateProductForm({
                       !!uoms.data.length &&
                       uoms.data.map((uom) => (
                         <SelectItem
-                          value={uom.id}
+                          value={uom._id}
                           className="capitalize"
-                          key={uom.id}
+                          key={uom._id}
                         >
                           {uom.name}
                         </SelectItem>
@@ -202,9 +195,9 @@ export function UpdateProductForm({
                       !!categories.data.length &&
                       categories.data.map((category) => (
                         <SelectItem
-                          value={category.id}
+                          value={category._id}
                           className="uppercase"
-                          key={category.id}
+                          key={category._id}
                         >
                           {category.name}
                         </SelectItem>

@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 import { categories, statusEnabled } from "@/app/constants/options"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { CreateProduct } from "./create-product"
 import { DeleteProductList } from "./delete-product-list"
 
@@ -22,7 +24,7 @@ export function ProductTableToolbar<TData>({
 }: ProductTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
-  const me = api.user.me.useQuery()
+  const me = useTanstackQuery(convexQuery(api.users.me, {}))
   const managerAccessLevel =
     me.status === "success" &&
     (me.data?.role === "DEWA" ||

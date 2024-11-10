@@ -9,9 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { useState } from "react"
 import { DeleteProductForm } from "./delete-product-form"
 import { UpdateProduct } from "./update-product"
 import { UpdateProductForm } from "./update-product-form"
@@ -21,7 +24,7 @@ import { UpdateProductForm } from "./update-product-form"
 // }
 
 type ProductRowActionsProps = {
-  id: string
+  id: Id<"products">
   name: string
   costPrice: number
   salePrice: number
@@ -39,12 +42,11 @@ export function ProductRowActions({
 }: ProductRowActionsProps) {
   const [open, setOpen] = useState(false)
   // const product = productSchema.parse(row.original)
+  const { data: me, status } = useTanstackQuery(convexQuery(api.users.me, {}))
 
-  const { data: me, status } = api.user.me.useQuery()
-
+  const adminAccessLevel = me?.role === "DEWA" || me?.role === "ADMIN"
   const managerAccessLevel =
     me?.role === "DEWA" || me?.role === "ADMIN" || me?.role === "MANAGER"
-  const adminAccessLevel = me?.role === "DEWA" || me?.role === "ADMIN"
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>

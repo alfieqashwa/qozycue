@@ -1,6 +1,5 @@
 "use client"
 
-import { Pen } from "lucide-react"
 import { useMediaQuery } from "@/app/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,6 +20,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { Pen } from "lucide-react"
 
 type UpdateProductProps = {
   name: string
@@ -30,7 +30,7 @@ type UpdateProductProps = {
 export function UpdateProduct({ name, children }: UpdateProductProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  const description = "Klik Update Product setelah selesai memperbarui form."
+  const description = "Click Update Product when you&apos;re done."
 
   if (isDesktop) {
     return (
