@@ -1,6 +1,5 @@
 "use client"
 
-import { StatusPayment } from "@prisma/client"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Copy, Printer, ScrollText } from "lucide-react"
 import { useRef, useState } from "react"
@@ -22,6 +21,11 @@ import { PrintReceipt } from "@/components/print-receipt"
 // import { DetailButton } from "../../tables/pool-table-tab/pool-table-card/list-button/detail-button"
 import { ArchiveOrder } from "./archive-order"
 import { UpdateCustomer } from "./update-customer"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { convexQuery } from "@convex-dev/react-query"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { StatusPayment } from "@/types"
 
 export function OrderRowActions({
   id,
@@ -30,7 +34,7 @@ export function OrderRowActions({
   customerPhone,
   createdBy,
 }: {
-  id: string
+  id: Id<"orders">
   statusPayment: StatusPayment
   customerName?: string
   customerPhone?: string | null
@@ -38,38 +42,27 @@ export function OrderRowActions({
 }) {
   const [open, setOpen] = useState(false)
 
-  const { data: order } = api.order.findById.useQuery(
-    { id, notIn: ["ARCHIVE"] },
-    {
-      enabled: !!id,
-      select: (data) => ({
-        id: data?.id,
-        // poolTableName: data?.poolTable?.name,
-        poolTableName: data?.poolRental?.poolTable?.name,
-        // poolRental: data?.poolRentals.find(
-        //   (r) => r.poolTableId === poolTableId,
-        // ),
-        poolRental: data?.poolRental,
-        orderlines: data?.orderLines,
-        hasOrderlines: !!data?.orderLines.length,
-      }),
-    },
-  )
+  const { data: order } = useTanstackQuery({
+    ...convexQuery(api.orders.findById, { id }),
+    enabled: Boolean(id),
+  })
 
-  const { data: me, status } = api.user.me.useQuery()
+  const { data: me, status } = useTanstackQuery({
+    ...convexQuery(api.users.me, {}),
+  })
   const managerAndCashierAccessLevel =
     me?.role === "MANAGER" ||
     me?.role === "CASHIER" ||
     me?.role === "ADMIN" ||
     me?.role === "DEWA"
 
-  const componentRef = useRef(null)
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: `order_receipt_${order?.id?.slice(-8, order?.id.length)}`,
-    onPrintError: () => alert("there is an error when printing receipt."),
-    // pageStyle: "@page { margin-top: 10mm; }",
-  })
+  // const componentRef = useRef(null)
+  // const handlePrint = useReactToPrint({
+  //   content: () => componentRef.current,
+  //   documentTitle: `order_receipt_${order?.id?.slice(-8, order?.id.length)}`,
+  //   onPrintError: () => alert("there is an error when printing receipt."),
+  //   // pageStyle: "@page { margin-top: 10mm; }",
+  // })
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -96,13 +89,13 @@ export function OrderRowActions({
           className="group"
           onSelect={(e) => e.preventDefault()}
         > */}
-        <UpdateCustomer
+        {/* <UpdateCustomer
           id={id}
           statusPayment={statusPayment}
           customerName={customerName}
           customerPhone={customerPhone}
           setOpen={setOpen}
-        />
+        /> */}
         {/* </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -149,7 +142,7 @@ export function OrderRowActions({
           </DetailButton> */}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {statusPayment === StatusPayment.PAID && (
+        {/* {statusPayment === StatusPayment.PAID && (
           <DropdownMenuItem
             className="group"
             onSelect={(e) => e.preventDefault()}
@@ -169,9 +162,9 @@ export function OrderRowActions({
               <span>Receipt</span>
             </button>
           </DropdownMenuItem>
-        )}
+        )} */}
         <DropdownMenuSeparator
-          className={cn(statusPayment !== StatusPayment.PAID && "hidden")}
+          className={cn(statusPayment !== "PAID" && "hidden")}
         />
         {status === "success" && !!managerAndCashierAccessLevel && (
           <DropdownMenuItem

@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { type StatusPayment } from "@prisma/client"
 import { Loader2, User2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -25,7 +24,6 @@ import { Input } from "@/components/ui/input"
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
-import { api } from "@/trpc/react"
 import { orderSchema, type TUpdateOrder } from "@/types/schema/order-schema"
 
 export function UpdateCustomer({

@@ -55,24 +55,24 @@ export const packetRates = [
 ] as unknown as Options[]
 
 export const statusPayments = [
-  { value: StatusPayment.OPEN, label: "Open", icon: Disc2 },
-  { value: StatusPayment.PENDING, label: "Pending", icon: Disc2 },
-  { value: StatusPayment.PAID, label: "Paid", icon: Disc2 },
+  { value: "OPEN", label: "Open", icon: Disc2 },
+  { value: "PENDING", label: "Pending", icon: Disc2 },
+  { value: "PAID", label: "Paid", icon: Disc2 },
 ]
 
 export const paymentMethods = [
   {
-    value: PaymentMethod.CASH,
+    value: "CASH",
     label: "Cash",
     icon: Banknote,
   },
   {
-    value: PaymentMethod.CREDIT,
+    value: "CREDIT",
     label: "Credit",
     icon: CreditCard,
   },
   {
-    value: PaymentMethod.DEBIT,
+    value: "DEBIT",
     label: "Debit",
     icon: Wallet2,
   },

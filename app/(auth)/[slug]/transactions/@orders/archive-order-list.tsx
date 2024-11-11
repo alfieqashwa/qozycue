@@ -11,26 +11,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { FunctionReturnType } from "convex/server"
+import { api } from "@/convex/_generated/api"
 
 interface ArchiveOrderListProps<TData> {
   table: Table<TData>
-  disabledBasedOnAccessLevel: boolean
 }
 
 export function ArchiveOrderList<TData>({
   table,
-  disabledBasedOnAccessLevel,
 }: ArchiveOrderListProps<TData>) {
   const [open, setOpen] = useState(false)
 
   const selectedRows = table
     .getFilteredSelectedRowModel()
-    .rows.map(
-      (row) => row.original,
-    ) as RouterOutputs["order"]["findAllByCompanyId"]
+    .rows.map((row) => row.original) as FunctionReturnType<
+    typeof api.orders.findAllSortedByDate
+  >
 
   const ids = selectedRows.map((row) => ({
-    id: row.id,
+    id: row._id,
   }))
 
   /*
@@ -38,36 +38,36 @@ export function ArchiveOrderList<TData>({
     where has Status Payment to not equal to "PAID".
     Which means, only PAID order can be sent to Archives Page.
   */
-  const disabled =
-    selectedRows.some((row) => row.statusPayment !== "PAID") ||
-    disabledBasedOnAccessLevel
+  const disabled = selectedRows.some((row) => row.statusPayment !== "PAID")
+  // || disabledBasedOnAccessLevel
 
-  const { mutate, isPending } = api.order.archiveSelected.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: "All selected order(s) have been archived.",
-      })
-      table.resetRowSelection() // reset row selection after succeed
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
-  })
+  // const { mutate, isPending } = api.order.archiveSelected.useMutation({
+  //   async onSuccess() {
+  //     toast({
+  //       title: "Succeed!",
+  //       variant: "default",
+  //       description: "All selected order(s) have been archived.",
+  //     })
+  //     table.resetRowSelection() // reset row selection after succeed
+  //     /* auto-closed after succeed submit the dialog form */
+  //     setOpen(false)
+  //   },
+  //   onError(err) {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Uh oh! Something went wrong.",
+  //       description: err.message || "There was a problem with your request.",
+  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //     })
+  //   },
+  // })
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    mutate({ ids })
-  }
+  // function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  //   e.preventDefault()
+  //   mutate({ ids })
+  // }
 
+  const isPending = false // temporary var
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -83,7 +83,7 @@ export function ArchiveOrderList<TData>({
       </DialogTrigger>
 
       <DialogContent className="bg-card">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={() => console.log(`submitted`)}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
             <DialogDescription>

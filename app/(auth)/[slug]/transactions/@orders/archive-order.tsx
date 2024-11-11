@@ -11,9 +11,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
+import { StatusPayment } from "@/types"
+import { Id } from "@/convex/_generated/dataModel"
 
 type ArchiveOrderProps = {
-  id: string
+  id: Id<"orders">
   statusPayment: StatusPayment
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -34,7 +36,6 @@ export function ArchiveOrder({
       // await utils.order.findAllByCompanyId.invalidate()
 
       /* auto-closed after succeed submit the dialog form */
-      await utils.order.invalidate()
       setOpen(false)
     },
     onError(err) {

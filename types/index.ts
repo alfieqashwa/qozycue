@@ -29,7 +29,8 @@ export enum StatusEnum {
   disabled,
 }
 
-export enum PaymentMethod {
+export type PaymentMethod = "CASH" | "DEBIT" | "CREDIT"
+export enum PaymentMethodEnum {
   CASH,
   DEBIT,
   CREDIT,
@@ -40,8 +41,13 @@ export enum RateEnum {
   MINUTE,
   HOUR,
 }
-
-export enum StatusPayment {
+export type StatusPayment =
+  | "OPEN"
+  | "PENDING"
+  | "CANCELLED"
+  | "PAID"
+  | "ARCHIVE"
+export enum StatusPaymentEnum {
   OPEN,
   PENDING,
   PAID,

@@ -14,15 +14,16 @@ import {
 } from "./helpers"
 
 export const findAllByCompanyId = query({
-  args: { companyId: v.id("companies") },
+  args: {},
   handler: async (ctx, args) => {
     //? a.k.a -> protectedProcedure
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
+    const user = userId !== null ? await ctx.db.get(userId) : null
 
     const pooltables = await ctx.db
       .query("poolTables")
-      .withIndex("companyId", (q) => q.eq("companyId", args.companyId))
+      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
       .collect()
 
     return Promise.all(

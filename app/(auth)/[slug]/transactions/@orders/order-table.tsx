@@ -31,13 +31,11 @@ import { OrderTableToolbar } from "./order-table-toolbar"
 interface OrderTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  disabledBasedOnAccessLevel: boolean
 }
 
 export function OrderTable<TData, TValue>({
   columns,
   data,
-  disabledBasedOnAccessLevel,
 }: OrderTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -71,10 +69,7 @@ export function OrderTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <OrderTableToolbar
-        table={table}
-        disabledBasedOnAccessLevel={disabledBasedOnAccessLevel}
-      />
+      <OrderTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

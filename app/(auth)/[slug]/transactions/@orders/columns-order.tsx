@@ -1,6 +1,5 @@
 "use client"
 
-import { PaymentMethod, StatusPayment } from "@prisma/client"
 import { type ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
@@ -21,11 +20,13 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
-import { type RouterOutputs } from "@/trpc/react"
 import { OrderRowActions } from "./order-row-actions"
+import { FunctionReturnType } from "convex/server"
+import { api } from "@/convex/_generated/api"
+import { PaymentMethod, StatusPayment } from "@/types"
 
 export const columnsOrder: ColumnDef<
-  RouterOutputs["order"]["findAllByCompanyId"][0]
+  FunctionReturnType<typeof api.orders.findAllSortedByDate>[0]
 >[] = [
   {
     id: "select",
@@ -124,20 +125,20 @@ export const columnsOrder: ColumnDef<
       <DataTableColumnHeader column={column} title="Status Payment" />
     ),
     cell: ({ row }) => {
-      const statusPayment = row.getValue("statusPayment")
+      const statusPayment = row.getValue("statusPayment") as StatusPayment
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <span
             className={cn(
               "max-w-[500px] truncate",
-              statusPayment === StatusPayment.OPEN
+              statusPayment === "OPEN"
                 ? "text-emerald-400"
-                : statusPayment === StatusPayment.PENDING
+                : statusPayment === "PENDING"
                   ? "text-amber-400"
                   : "text-muted-foreground",
             )}
           >
-            {statusPayment as StatusPayment}
+            {statusPayment}
           </span>
         </Badge>
       )
@@ -155,11 +156,11 @@ export const columnsOrder: ColumnDef<
       const paymentMethod = row.getValue("paymentMethod")
       const icon = (paymentMethod: PaymentMethod) => {
         switch (paymentMethod) {
-          case PaymentMethod.CASH:
+          case "CASH":
             return <Banknote className="mr-2 h-4 w-4 text-emerald-400" />
-          case PaymentMethod.CREDIT:
+          case "CREDIT":
             return <CreditCard className="mr-2 h-4 w-4 text-rose-400" />
-          case PaymentMethod.DEBIT:
+          case "DEBIT":
             return <Wallet2 className="mr-2 h-4 w-4 text-amber-400" />
           default:
             break
@@ -217,7 +218,7 @@ export const columnsOrder: ColumnDef<
   },
   {
     accessorKey: "orderlines",
-    accessorFn: (row) => row._count.orderLines,
+    accessorFn: (row) => row.orderlines.length,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Orderlines" />
     ),
@@ -277,26 +278,28 @@ export const columnsOrder: ColumnDef<
     ),
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "_creationTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">
-        {format(row.getValue("createdAt"), "PPpp", { locale: id })}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const timestamp = row.getValue("_creationTime")
+      const createdAt = format(new Date(timestamp as Date), "PPpp", {
+        locale: id,
+      })
+      return <div className="whitespace-nowrap">{createdAt}</div>
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
       // const { id, poolTableId, statusPayment, customer, createdBy } =
-      const { id, statusPayment, customer, createdBy } = row.original
+      const { _id, statusPayment, customer, createdBy } = row.original
 
       return (
         <div className="relative">
           <OrderRowActions
-            id={id}
+            id={_id}
             statusPayment={statusPayment}
             customerName={customer?.name}
             customerPhone={customer?.phone}

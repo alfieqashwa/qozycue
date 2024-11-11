@@ -12,34 +12,32 @@ import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-fi
 import { DataTableViewOptions } from "@/components/table/data-table-view-options"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { api } from "@/trpc/react"
 import { ArchiveOrderList } from "./archive-order-list"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { convexQuery } from "@convex-dev/react-query"
+import { api } from "@/convex/_generated/api"
 
 interface OrderTableToolbarProps<TData> {
   table: Table<TData>
-  disabledBasedOnAccessLevel: boolean
 }
 export function OrderTableToolbar<TData>({
   table,
-  disabledBasedOnAccessLevel,
 }: OrderTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
-  const { data, status } = api.poolTable.findAllByCompanyId.useQuery(
-    undefined,
-    {
-      select(data) {
-        const pools: Options[] = [...new Set(data.map((d) => d.name))]
-          .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-          .map((pool) => ({
-            value: pool,
-            label: pool,
-            icon: Star,
-          }))
-        return { pools }
-      },
+  const { data, status } = useTanstackQuery({
+    ...convexQuery(api.pooltables.findAllByCompanyId, {}),
+    select(data) {
+      const pools: Options[] = [...new Set(data.map((d) => d.name))]
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+        .map((pool) => ({
+          value: pool,
+          label: pool,
+          icon: Star,
+        }))
+      return { pools }
     },
-  )
+  })
 
   return (
     <div className="flex flex-col items-center space-y-2 md:flex-row md:justify-between md:space-y-0">
@@ -96,10 +94,7 @@ export function OrderTableToolbar<TData>({
       </div>
       <div className="flex flex-col space-y-1 md:flex-row-reverse md:space-y-0">
         {!!table.getSelectedRowModel().rows.length && (
-          <ArchiveOrderList
-            table={table}
-            disabledBasedOnAccessLevel={disabledBasedOnAccessLevel}
-          />
+          <ArchiveOrderList table={table} />
         )}
         <DataTableViewOptions table={table} />
       </div>
