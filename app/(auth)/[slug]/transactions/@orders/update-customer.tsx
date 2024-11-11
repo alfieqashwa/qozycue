@@ -21,71 +21,63 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
-import { orderSchema, type TUpdateOrder } from "@/types/schema/order-schema"
+import { StatusPayment } from "@/types"
+import { useMutation } from "@tanstack/react-query"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { api } from "@/convex/_generated/api"
+import { toast } from "sonner"
+import { ConvexError } from "convex/values"
+import {
+  TUpdateCustomer,
+  updateCustomerSchema,
+} from "@/types/schema/customer-schema"
+import { Id } from "@/convex/_generated/dataModel"
 
 export function UpdateCustomer({
-  id,
+  customerId,
   statusPayment,
   customerName,
   customerPhone,
   setOpen,
 }: {
-  id: string
+  customerId: Id<"customers">
   statusPayment: StatusPayment
   customerName?: string
   customerPhone?: string | null
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.order.updateCustomerByOrderId.useMutation({
-    async onSuccess() {
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.customers.update),
+    onSuccess: () =>
       // delete user from team
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: `Updated customer info.`,
-      })
-      // await utils.order.findAllByCompanyId.invalidate()
-
-      /* auto-closed after succeed submit the dialog form */
-      await utils.order.invalidate()
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      toast.success("Succeed!", {
+        description: "Updated customer info.",
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
-  // 1. Define your form.
-  const form = useForm<TUpdateOrder>({
-    resolver: zodResolver(orderSchema),
+  const form = useForm<TUpdateCustomer>({
+    resolver: zodResolver(updateCustomerSchema),
     defaultValues: {
-      id,
-      customerName,
-      customerPhone: customerPhone ?? "",
+      id: customerId,
+      name: customerName,
+      phone: customerPhone ?? "",
     },
   })
-
-  // 2. Define a submit handler.
-  function onSubmit(values: TUpdateOrder) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-
-    const { id, customerName, customerPhone } = values
+  function onSubmit(values: TUpdateCustomer) {
+    const { id, name, phone } = values
     mutate({
-      id,
-      customerName,
-      customerPhone,
+      updateCustomerSchema: {
+        id,
+        name: name.toLowerCase(),
+        phone,
+      },
     })
   }
 
@@ -102,14 +94,14 @@ export function UpdateCustomer({
         <DialogHeader>
           <DialogTitle>Update Customer</DialogTitle>
           <DialogDescription>
-            Click Update Customer when you're done.
+            Click <b>Update Customer</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="customerName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="whitespace-nowrap">
@@ -128,7 +120,7 @@ export function UpdateCustomer({
             />
             <FormField
               control={form.control}
-              name="customerPhone"
+              name="phone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="whitespace-nowrap">
@@ -138,6 +130,7 @@ export function UpdateCustomer({
                     <Input
                       type="number"
                       placeholder="Customer Phone"
+                      className="w-[200px]"
                       {...field}
                     />
                   </FormControl>
