@@ -1,14 +1,19 @@
 import { type Metadata } from "next"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { OrderTab } from "./order-tab"
-import { OrderlineTab } from "./orderline-tab"
-import { RentalTab } from "./rental-tab"
 
 export const metadata: Metadata = {
   title: "Transactions",
 }
 
-export default async function TransactionPage() {
+export default async function TransactionLayout({
+  orders,
+  // rentals,
+  // orderlines,
+}: Readonly<{
+  orders: React.ReactNode
+  // rentals: React.ReactNode
+  // orderlines: React.ReactNode
+}>) {
   // ? not allowing owner to click button ???
 
   // const managerAndCashierAccessLevel =
@@ -21,18 +26,15 @@ export default async function TransactionPage() {
     <Tabs defaultValue="order" className="mt-2">
       <TabsList className="mb-3">
         <TabsTrigger value="order">Orders</TabsTrigger>
-        <TabsTrigger value="pool-rental">Pool Rentals</TabsTrigger>
-        <TabsTrigger value="orderline">Orderlines</TabsTrigger>
+        {/* <TabsTrigger value="pool-rental">Pool Rentals</TabsTrigger>
+        <TabsTrigger value="orderline">Orderlines</TabsTrigger> */}
       </TabsList>
       <TabsContent value="order">
-        <OrderTab disabledBasedOnAccessLevel={!managerAndCashierAccessLevel} />
+        {/* <OrderTab disabledBasedOnAccessLevel={!managerAndCashierAccessLevel} /> */}
+        {orders}
       </TabsContent>
-      <TabsContent value="pool-rental">
-        <RentalTab />
-      </TabsContent>
-      <TabsContent value="orderline">
-        <OrderlineTab />
-      </TabsContent>
+      {/* <TabsContent value="pool-rental">{rentals}</TabsContent>
+      <TabsContent value="orderline">{orderlines}</TabsContent> */}
     </Tabs>
   )
 }
