@@ -13,9 +13,9 @@ import {
   zMutation,
 } from "./helpers"
 
-export const findAllByCompanyId = query({
+export const findAll = query({
   args: {},
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     //? a.k.a -> protectedProcedure
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")

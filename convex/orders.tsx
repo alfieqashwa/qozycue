@@ -1,7 +1,8 @@
 import { ConvexError, v } from "convex/values"
-import { query } from "./_generated/server"
-import { protectedProcedure, zQuery } from "./helpers"
+import { mutation, query } from "./_generated/server"
+import { cashierProcedure, protectedProcedure, zQuery } from "./helpers"
 import { getAuthUserId } from "@convex-dev/auth/server"
+import { Id } from "./_generated/dataModel"
 
 export const findAll = query({
   args: { companyId: v.id("companies") },
@@ -92,5 +93,99 @@ export const findById = query({
     await protectedProcedure(ctx, {})
 
     return await ctx.db.get(args.id)
+  },
+})
+
+export const findByPoolTableId = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, args) => {
+    await protectedProcedure(ctx, {})
+
+    const poolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
+      .first()
+
+    const order =
+      poolRental !== null
+        ? await ctx.db
+            .query("orders")
+            .withIndex("by_id", (q) => q.eq("_id", poolRental?.orderId))
+            .filter((q) =>
+              q.and(
+                q.eq(q.field("statusPayment"), "OPEN"),
+                q.eq(q.field("isBooking"), false),
+              ),
+            )
+            .first()
+        : null
+
+    return order
+  },
+})
+
+// MUTATION
+
+export const startTimer = mutation({
+  args: {
+    poolTableId: v.id("poolTables"),
+    gapDuration: v.number(),
+    customerName: v.optional(v.string()),
+    customerPhone: v.optional(v.string()),
+    packetId: v.id("packets"),
+    duration: v.number(),
+    cost: v.float64(),
+    rate: v.union(v.literal("MINUTE"), v.literal("HOUR")),
+  },
+  handler: async (ctx, args) => {
+    // cashierProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "CASHIER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    if (!user.companyId) throw new ConvexError("No company provided!")
+
+    const HOUR_TO_MILLISECOND = 60 * 60 * 1000
+    const startTime = Date.now()
+    const endTime = startTime + args.duration * HOUR_TO_MILLISECOND
+
+    const updatePoolTable = await ctx.db.patch(args.poolTableId, {
+      isActive: true,
+      startTime,
+      endTime: args.rate === "HOUR" ? endTime : undefined,
+    })
+
+    const totalCost = Math.round((args.cost * args.duration) / 100) * 100
+
+    const customerId = await ctx.db.insert("customers", {
+      name: args.customerName ?? "anonymous",
+      phone: args.customerPhone,
+      companyId: user.companyId,
+    })
+
+    const orderId = await ctx.db.insert("orders", {
+      createdBy: user._id,
+      companyId: user.companyId,
+      isBooking: false,
+      statusPayment: "OPEN",
+      customerId,
+    })
+
+    const createOrder = await ctx.db.insert("poolRentals", {
+      orderId,
+      poolTableId: args.poolTableId,
+      packetId: args.packetId,
+      duration: args.duration,
+      totalCost,
+      timeStart: startTime,
+      timeEnd: args.rate === "HOUR" ? endTime : undefined,
+    })
+
+    return { updatePoolTable, createOrder }
   },
 })

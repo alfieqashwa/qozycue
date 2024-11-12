@@ -25,7 +25,7 @@ export default defineSchema({
         v.literal("USER"),
       ),
     ),
-    pinCode: v.optional(v.int64()),
+    pinCode: v.optional(v.number()),
     companyId: v.optional(v.id("companies")), // exception set this to optional
   })
     .index("email", ["email"])
@@ -93,10 +93,8 @@ export default defineSchema({
   }).index("companyId", ["companyId"]),
 
   orders: defineTable({
-    paymentMethod: v.union(
-      v.literal("CASH"),
-      v.literal("DEBIT"),
-      v.literal("CREDIT"),
+    paymentMethod: v.optional(
+      v.union(v.literal("CASH"), v.literal("DEBIT"), v.literal("CREDIT")),
     ),
     statusPayment: v.union(
       v.literal("OPEN"),
@@ -123,11 +121,10 @@ export default defineSchema({
 
   // poolRentals is similar to orderlines
   poolRentals: defineTable({
-    name: v.string(),
     description: v.optional(v.string()),
     timeStart: v.float64(), // required
     timeEnd: v.optional(v.float64()), // not required
-    duration: v.optional(v.int64()),
+    duration: v.optional(v.number()),
     totalCost: v.optional(v.float64()),
     poolTableId: v.id("poolTables"),
     packetId: v.id("packets"),
@@ -154,7 +151,7 @@ export default defineSchema({
   orderlines: defineTable({
     description: v.optional(v.string()),
     orderlineStatus: v.union(v.literal("unordered"), v.literal("ordered")),
-    quantity: v.int64(),
+    quantity: v.number(),
     amount: v.float64(),
     productId: v.id("products"),
     orderId: v.id("orders"),
