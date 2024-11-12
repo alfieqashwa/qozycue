@@ -23,6 +23,7 @@ import type * as http from "../http.js";
 import type * as messages from "../messages.js";
 import type * as orders from "../orders.js";
 import type * as packets from "../packets.js";
+import type * as poolrentals from "../poolrentals.js";
 import type * as pooltables from "../pooltables.js";
 import type * as products from "../products.js";
 import type * as sessions from "../sessions.js";
@@ -49,6 +50,7 @@ declare const fullApi: ApiFromModules<{
   messages: typeof messages;
   orders: typeof orders;
   packets: typeof packets;
+  poolrentals: typeof poolrentals;
   pooltables: typeof pooltables;
   products: typeof products;
   sessions: typeof sessions;

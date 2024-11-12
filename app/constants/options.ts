@@ -43,12 +43,12 @@ export const statusEnabled = [
 
 export const packetRates = [
   {
-    value: "hour",
+    value: "HOUR",
     label: "HOUR",
     icon: Hourglass,
   },
   {
-    value: "minute",
+    value: "MINUTE",
     label: "MINUTE",
     icon: Timer,
   },

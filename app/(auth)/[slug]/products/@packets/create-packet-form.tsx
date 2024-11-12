@@ -56,7 +56,7 @@ export function CreatePacketForm({
       name: "",
       description: "",
       cost: 0,
-      rate: "minute",
+      rate: "MINUTE",
     },
   })
   function onSubmit(values: TCreatePacket) {
@@ -144,7 +144,7 @@ export function CreatePacketForm({
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    {["minute", "hour"].map((rate, i) => (
+                    {["MINUTE", "HOUR"].map((rate, i) => (
                       <SelectItem value={rate} className="uppercase" key={i}>
                         {rate}
                       </SelectItem>

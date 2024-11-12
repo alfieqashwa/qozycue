@@ -1,12 +1,19 @@
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
+import { Timer } from "./timer"
 
 export function PoolTableCard({
   poolTable,
 }: {
   poolTable: FunctionReturnType<typeof api.pooltables.findAll>[0]
 }) {
+  const order = useTanstackQuery(
+    convexQuery(api.orders.findByPoolTableId, { poolTableId: poolTable._id }),
+  )
+
   return (
     <div className="group relative">
       <div
@@ -25,7 +32,12 @@ export function PoolTableCard({
         )}
       />
       <div className="relative h-44 rounded-2xl bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow">
-        <pre>{JSON.stringify(poolTable, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(poolTable, null, 2)}</pre> */}
+        <section className="flex justify-between">
+          {order.status === "success" && (
+            <Timer poolTable={poolTable} order={order.data} />
+          )}
+        </section>
       </div>
     </div>
   )

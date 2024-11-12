@@ -17,7 +17,7 @@ export const packetSchema = z.object({
       invalid_type_error: "Cost must be a number.",
     })
     .nonnegative({ message: "Cost must be zero or a positive number." }),
-  rate: z.enum(["minute", "hour"]),
+  rate: z.enum(["MINUTE", "HOUR"]),
   status: z.enum(["enabled", "disabled"]),
 })
 export type TPacket = z.infer<typeof packetSchema>

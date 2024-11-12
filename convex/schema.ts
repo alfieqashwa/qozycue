@@ -88,7 +88,7 @@ export default defineSchema({
     description: v.optional(v.string()),
     cost: v.float64(),
     status: v.union(v.literal("disabled"), v.literal("enabled")),
-    rate: v.union(v.literal("minute"), v.literal("hour")),
+    rate: v.union(v.literal("MINUTE"), v.literal("HOUR")),
     companyId: v.id("companies"),
   }).index("companyId", ["companyId"]),
 

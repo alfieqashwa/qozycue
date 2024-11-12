@@ -155,7 +155,7 @@ export function UpdatePacketForm({
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    {["minute", "hour"].map((rate, i) => (
+                    {["MINUTE", "HOUR"].map((rate, i) => (
                       <SelectItem value={rate} className="capitalize" key={i}>
                         {rate}
                       </SelectItem>

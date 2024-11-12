@@ -1,8 +1,14 @@
 import { ConvexError, v } from "convex/values"
 import { mutation, query } from "./_generated/server"
-import { cashierProcedure, protectedProcedure, zQuery } from "./helpers"
+import {
+  cashierProcedure,
+  protectedProcedure,
+  zMutation,
+  zQuery,
+} from "./helpers"
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { Id } from "./_generated/dataModel"
+import { startTimerSchema, stopTimerSchema } from "../types/schema/order-schema"
 
 export const findAll = query({
   args: { companyId: v.id("companies") },
@@ -106,38 +112,44 @@ export const findByPoolTableId = query({
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
       .first()
 
-    const order =
-      poolRental !== null
-        ? await ctx.db
-            .query("orders")
-            .withIndex("by_id", (q) => q.eq("_id", poolRental?.orderId))
-            .filter((q) =>
-              q.and(
-                q.eq(q.field("statusPayment"), "OPEN"),
-                q.eq(q.field("isBooking"), false),
-              ),
-            )
-            .first()
-        : null
+    const order = await ctx.db
+      .query("orders")
+      .withIndex("by_id", (q) => q.eq("_id", poolRental?.orderId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "OPEN"),
+          q.eq(q.field("isBooking"), false),
+        ),
+      )
+      .first()
 
-    return order
+    const packet = await ctx.db.get(poolRental?.packetId!)
+
+    return { ...order, poolRental, packet }
   },
 })
 
-// MUTATION
+// === MUTATION ===
 
-export const startTimer = mutation({
+export const startTimer = zMutation({
   args: {
-    poolTableId: v.id("poolTables"),
-    gapDuration: v.number(),
-    customerName: v.optional(v.string()),
-    customerPhone: v.optional(v.string()),
-    packetId: v.id("packets"),
-    duration: v.number(),
-    cost: v.float64(),
-    rate: v.union(v.literal("MINUTE"), v.literal("HOUR")),
+    startTimerSchema,
   },
-  handler: async (ctx, args) => {
+  handler: async (
+    ctx,
+    {
+      startTimerSchema: {
+        poolTableId,
+        gapDuration,
+        customerName,
+        customerPhone,
+        packetId,
+        duration,
+        cost,
+        rate,
+      },
+    },
+  ) => {
     // cashierProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
@@ -152,19 +164,19 @@ export const startTimer = mutation({
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     const startTime = Date.now()
-    const endTime = startTime + args.duration * HOUR_TO_MILLISECOND
+    const endTime = startTime + duration * HOUR_TO_MILLISECOND
 
-    const updatePoolTable = await ctx.db.patch(args.poolTableId, {
+    const updatePoolTable = await ctx.db.patch(poolTableId, {
       isActive: true,
       startTime,
-      endTime: args.rate === "HOUR" ? endTime : undefined,
+      endTime: rate === "HOUR" ? endTime : undefined,
     })
 
-    const totalCost = Math.round((args.cost * args.duration) / 100) * 100
+    const totalCost = Math.round((cost * duration) / 100) * 100
 
     const customerId = await ctx.db.insert("customers", {
-      name: args.customerName ?? "anonymous",
-      phone: args.customerPhone,
+      name: customerName ?? "anonymous",
+      phone: customerPhone,
       companyId: user.companyId,
     })
 
@@ -178,14 +190,102 @@ export const startTimer = mutation({
 
     const createOrder = await ctx.db.insert("poolRentals", {
       orderId,
-      poolTableId: args.poolTableId,
-      packetId: args.packetId,
-      duration: args.duration,
+      poolTableId: poolTableId,
+      packetId: packetId,
+      duration: duration,
       totalCost,
       timeStart: startTime,
-      timeEnd: args.rate === "HOUR" ? endTime : undefined,
+      timeEnd: rate === "HOUR" ? endTime : undefined,
     })
 
     return { updatePoolTable, createOrder }
   },
 })
+
+export const stopTimer = zMutation({
+  args: { stopTimerSchema },
+  handler: async (
+    ctx,
+    {
+      stopTimerSchema: {
+        poolTableId,
+        poolRentalId,
+        startTime,
+        endTime,
+        cost,
+        rate,
+      },
+    },
+  ) => {
+    const updatePoolTable = await ctx.db.patch(poolTableId, {
+      isActive: false,
+      endTime,
+    })
+
+    //? Calculate duration in minute-rate
+    const ONE_HOUR_IN_MILLISECONDS = 1_000 * 60 * 30
+
+    const elapsedTime = endTime - startTime
+    const elapsedInMinutes = Math.floor(elapsedTime / (1000 * 60))
+    const oneHourInMinutes = Math.floor(ONE_HOUR_IN_MILLISECONDS / (1000 * 60))
+
+    //? Calculate totalCost in minute-rate and Math.round() it
+    let totalCostInMinutes: number
+
+    //? If duration is less than one hour, than cust must pay as 1hr totalCost
+    if (elapsedTime < ONE_HOUR_IN_MILLISECONDS) {
+      totalCostInMinutes = cost * oneHourInMinutes
+    } else {
+      totalCostInMinutes = cost * elapsedInMinutes
+    }
+
+    const totalCost = Math.round(totalCostInMinutes / 100) * 100
+
+    //? For MINUTE rate only
+
+    let updatePoolRental
+
+    if (rate === "MINUTE") {
+      updatePoolRental = await ctx.db.patch(poolRentalId, {
+        duration: elapsedInMinutes,
+        totalCost,
+        timeEnd: endTime,
+      })
+    } else {
+      updatePoolRental = await ctx.db.patch(poolRentalId, {
+        timeEnd: endTime,
+      })
+    }
+    return { updatePoolTable, updatePoolRental }
+  },
+})
+
+const resetTimer = mutation({
+  args: {
+    poolTableId: v.id("poolTables"),
+    orderId: v.id("orders"),
+  },
+  handler: async (ctx, args) => {
+    const updatePoolTable = await ctx.db.patch(args.poolTableId, {
+      startTime: undefined,
+      endTime: undefined,
+      isActive: false,
+    })
+
+    const updateOrder = await ctx.db.patch(args.orderId, {
+      statusPayment: "PENDING",
+    })
+
+    return { updatePoolTable, updateOrder }
+  },
+})
+
+/**
+alfieqshwa: k575ywf2h48g4r326pcyq7aa3n73mf53
+cozycue: jx77ycz3zzpkez925c3ef5gnvn740tj4
+custID: kn77s1hjhe02gt1nxp6j9dkgcn74fbdx
+orderID: m575rk0t8a6hzwcekzj5z65avd74fcjn
+poolTablID (1): k97cg2bh19423r51hewqgay98h73n6p1
+packetID: (minute_regular): kh79by5vzkyyj0re47hm13bcvn74fn17
+
+ */
