@@ -1,24 +1,25 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { api } from "@/convex/_generated/api"
+import { formattedPrice } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
+import { FunctionReturnType } from "convex/server"
 import { BaggageClaim, Coffee, ShoppingBasket, Soup } from "lucide-react"
 import { Fragment, useMemo } from "react"
-import { Badge } from "~/components/ui/badge"
-import { ScrollArea } from "~/components/ui/scroll-area"
-import { Separator } from "~/components/ui/separator"
-import { formattedPrice } from "~/lib/format-price"
-import { type IOrderline } from "~/lib/types"
-import { cn } from "~/lib/utils"
 
 type OrderlineDetailProps = {
-  orderlines: NonNullable<IOrderline[]>
+  orderlines: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
 }
 
 export function OrderlineDetail({ orderlines }: OrderlineDetailProps) {
   const totalAmount = useMemo(() => {
-    return orderlines.reduce((acc, curr) => acc + curr.amount, 0)
+    return orderlines?.reduce((acc, curr) => acc + curr.amount, 0)
   }, [orderlines])
   const totalQty = useMemo(() => {
-    return orderlines.reduce((acc, curr) => acc + curr.quantity, 0)
+    return orderlines?.reduce((acc, curr) => acc + curr.quantity, 0)
   }, [orderlines])
 
   return (
@@ -46,7 +47,7 @@ export function OrderlineDetail({ orderlines }: OrderlineDetailProps) {
                     : "text-lime-200"
 
               return (
-                <Fragment key={orderline.id}>
+                <Fragment key={orderline._id}>
                   <li className="flex w-full items-center py-1 md:py-2">
                     {icon}
                     <div className="flex w-9/12 items-center justify-between pl-4">

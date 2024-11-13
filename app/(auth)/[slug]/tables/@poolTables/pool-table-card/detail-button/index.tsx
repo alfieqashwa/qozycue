@@ -14,6 +14,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
 import { Phone, ScrollText, User2 } from "lucide-react"
 import { useState } from "react"
@@ -26,6 +28,9 @@ export function DetailButton({
   poolTable: FunctionReturnType<typeof api.pooltables.findAll>[0]
   order: FunctionReturnType<typeof api.orders.findByPoolTableId> | undefined
 }) {
+  const orderlines = useTanstackQuery(
+    convexQuery(api.orderlines.findAllByOrderId, { orderId: order?._id }),
+  )
   const [open, setOpen] = useState(false)
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -91,7 +96,7 @@ export function DetailButton({
               </TabsTrigger>
               <TabsTrigger
                 value="cafe"
-                disabled={!!order?.orderlines?.length}
+                disabled={!!orderlines.data?.length}
                 className="disabled:pointer-events-auto disabled:cursor-not-allowed"
               >
                 Cafe
@@ -126,8 +131,8 @@ export function DetailButton({
             />
           </TabsContent>
           <TabsContent value="cafe">
-            {order?.orderlines && (
-              <OrderlineDetail orderlines={order.orderlines} />
+            {orderlines.status === "success" && (
+              <OrderlineDetail orderlines={orderlines.data} />
             )}
           </TabsContent>
         </Tabs>

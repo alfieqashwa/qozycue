@@ -135,16 +135,6 @@ export const findByPoolTableId = query({
             .collect()
         : null
 
-    const orderlines = orderlineList?.map(async (ol) => {
-      const product = await ctx.db.get(ol.productId)
-      const category =
-        product !== null ? await ctx.db.get(product?.categoryId) : null
-      const uom =
-        product !== null ? await ctx.db.get(product?.unitOfMeasureId) : null
-
-      return { ...ol, product, category, uom }
-    })
-
     const customer = order !== null ? await ctx.db.get(order?.companyId) : null
     const createdBy =
       order !== null
@@ -158,7 +148,6 @@ export const findByPoolTableId = query({
       ...order,
       poolRental,
       packet,
-      orderlines,
       customer,
       createdBy,
     }
