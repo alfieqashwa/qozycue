@@ -1,28 +1,29 @@
 "use client"
 
-import { type Rate } from "@prisma/client"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { useEffect, useState } from "react"
-import { ScrollArea } from "~/components/ui/scroll-area"
-import { Separator } from "~/components/ui/separator"
-import { formattedPrice } from "~/lib/format-price"
-import { cn } from "~/lib/utils"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { formattedPrice } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
+import { Rate } from "@/types"
+import { Id } from "@/convex/_generated/dataModel"
 
 type PoolRentalDetailProps = {
   isActive: boolean
   packetName?: string
   packetRate?: Rate
   packetCost?: number
-  duration?: number | null
+  duration?: number
   totalCost?: number
-  startTime?: Date | null
-  endTime?: Date | null
-  timeStart?: Date | null
-  timeEnd?: Date | null
-  poolRentalId?: string
-  createdBy?: string | null
-  createdAt?: Date
+  startTime?: number
+  endTime?: number
+  timeStart?: number
+  timeEnd?: number
+  poolRentalId?: Id<"poolRentals">
+  createdBy?: string
+  createdAt?: number
 }
 
 export function PoolRentalDetail({
@@ -32,8 +33,8 @@ export function PoolRentalDetail({
   packetRate,
   duration,
   totalCost,
-  startTime = null,
-  endTime = null,
+  startTime,
+  endTime,
   timeStart,
   timeEnd,
   poolRentalId,
@@ -54,13 +55,13 @@ export function PoolRentalDetail({
       if (isActive === false) return
       if (startTime == null) return
 
-      const now = new Date()
-      const difference = now.getTime() - startTime.getTime()
+      const now = Date.now()
+      const difference = now - startTime
 
       // for Card-Description
       const realtimeDuration = Math.floor(difference / (1000 * 60))
       setRealtimeDuration(realtimeDuration)
-      if (packetCost == null) return
+      if (!packetCost) return
       setRealtimeTotalCost(
         Math.round((packetCost * realtimeDuration) / 100) * 100,
       )

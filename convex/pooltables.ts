@@ -93,3 +93,38 @@ export const toggle = zMutation({
     })
   },
 })
+
+export const transfer = mutation({
+  args: {
+    orderId: v.id("orders"),
+    poolTableIdFrom: v.id("poolTables"),
+    poolTableIdTo: v.id("poolTables"),
+    startTime: v.float64(),
+    endTime: v.float64(),
+  },
+  handler: async (ctx, args) => {
+    const startPoolTableTo = await ctx.db.patch(args.poolTableIdTo, {
+      startTime: args.startTime,
+      endTime: args.endTime,
+      isActive: true,
+    })
+
+    const resetPoolTableFrom = await ctx.db.patch(args.poolTableIdFrom, {
+      isActive: false,
+      startTime: undefined,
+      endTime: undefined,
+    })
+
+    const findPoolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId", (q) => q.eq("orderId", args.orderId))
+      .first()
+
+    if (!findPoolRental) throw new ConvexError("No PoolRental found!")
+
+    const transferTable = await ctx.db.patch(findPoolRental?._id, {
+      poolTableId: args.poolTableIdTo,
+    })
+    return { startPoolTableTo, resetPoolTableFrom, transferTable }
+  },
+})

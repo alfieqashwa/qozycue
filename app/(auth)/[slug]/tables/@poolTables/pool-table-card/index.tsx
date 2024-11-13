@@ -4,9 +4,9 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
 import { DescriptionTable } from "./description-table"
+import { DetailButton } from "./detail-button"
 import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
-import { ListButton } from "./list-button"
 
 export function PoolTableCard({
   poolTable,
@@ -48,7 +48,14 @@ export function PoolTableCard({
             endTime={poolTable.endTime}
           />
         </section>
-        <ListButton />
+
+        {/* === STARTS LIST_BUTTON === */}
+        <div className="absolute bottom-2.5 left-1/2 w-full -translate-x-1/2 font-sans">
+          <div className="mx-2 flex justify-between sm:mx-3">
+            <DetailButton poolTable={poolTable} order={order.data} />
+          </div>
+        </div>
+        {/* === ENDS LIST_BUTTON === */}
       </div>
     </div>
   )

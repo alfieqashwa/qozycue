@@ -103,7 +103,10 @@ export const findById = query({
 export const findByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    // await protectedProcedure(ctx, {})
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new ConvexError("Please signed in!")
+    const user = userId !== null ? await ctx.db.get(userId) : null
 
     const poolRental = await ctx.db
       .query("poolRentals")
@@ -115,6 +118,7 @@ export const findByPoolTableId = query({
       .withIndex("by_id", (q) => q.eq("_id", poolRental?.orderId!))
       .filter((q) =>
         q.and(
+          q.eq(q.field("companyId"), user?.companyId),
           q.eq(q.field("statusPayment"), "OPEN"),
           q.eq(q.field("isBooking"), false),
         ),
@@ -122,8 +126,42 @@ export const findByPoolTableId = query({
       .first()
 
     const packet = await ctx.db.get(poolRental?.packetId!)
+    const orderlineList =
+      order !== null
+        ? await ctx.db
+            .query("orderlines")
+            .withIndex("orderId", (q) => q.eq("orderId", order?._id))
+            .order("desc")
+            .collect()
+        : null
 
-    return { ...order, poolRental, packet }
+    const orderlines = orderlineList?.map(async (ol) => {
+      const product = await ctx.db.get(ol.productId)
+      const category =
+        product !== null ? await ctx.db.get(product?.categoryId) : null
+      const uom =
+        product !== null ? await ctx.db.get(product?.unitOfMeasureId) : null
+
+      return { ...ol, product, category, uom }
+    })
+
+    const customer = order !== null ? await ctx.db.get(order?.companyId) : null
+    const createdBy =
+      order !== null
+        ? await ctx.db
+            .query("users")
+            .withIndex("by_id", (q) => q.eq("_id", order?.createdBy))
+            .unique()
+        : null
+
+    return {
+      ...order,
+      poolRental,
+      packet,
+      orderlines,
+      customer,
+      createdBy,
+    }
   },
 })
 
