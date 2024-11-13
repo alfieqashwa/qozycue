@@ -50,8 +50,7 @@ export function Timer({
               poolTableId={poolTable._id}
               poolTableName={poolTable.name}
               orderId={order?._id}
-              disabled={false}
-              // disabled={!isCashier || (!hasStartTime && !hasEndTime)}
+              disabled={!poolTable.startTime && !poolTable.endTime}
             />
           )}
         </div>
