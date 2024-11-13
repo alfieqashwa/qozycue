@@ -4,7 +4,7 @@ import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
-import { PoolTableCard } from "./poolTableCard"
+import { PoolTableCard } from "./pool-table-card"
 
 export default function Page() {
   const { data: sortedPoolTableList, status } = useQuery({

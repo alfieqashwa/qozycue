@@ -6,6 +6,7 @@ import { FunctionReturnType } from "convex/server"
 import { DescriptionTable } from "./description-table"
 import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
+import { ListButton } from "./list-button"
 
 export function PoolTableCard({
   poolTable,
@@ -47,6 +48,7 @@ export function PoolTableCard({
             endTime={poolTable.endTime}
           />
         </section>
+        <ListButton />
       </div>
     </div>
   )
