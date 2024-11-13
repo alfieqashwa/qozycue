@@ -1,18 +1,23 @@
 "use client"
 
-import { type CSSProperties, useEffect, useState } from "react"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { Rate } from "@/types"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { type CSSProperties, useEffect, useState } from "react"
+import { toast } from "sonner"
 import { TimeCard } from "./time-card"
 import { UpdateDuration } from "./update-duration"
-import { Rate } from "@/types"
-import { toast } from "sonner"
 
 type CountdownProps = {
   endTime?: number
-  poolTableId: string
+  poolTableId: Id<"poolTables">
   poolTableName: string
   startTime?: number
-  poolRentalId?: string
+  poolRentalId?: Id<"poolRentals">
   packetRate?: Rate
   packetCost?: number
   duration?: number
@@ -36,70 +41,72 @@ export function Countdown({
     seconds: number
   } | null>(null)
 
-  // const stopTimerAutomatically = api.poolRental.stopTimer.useMutation({
-  //   async onSuccess() {
-  //     toast.success("Succeed!", {
-  //       description: (
-  //         <p>Table {poolTableName} has been stopped automatically.</p>
-  //       ),
-  //     })
-  //     setStopCount(false)
-  //   },
-  //   onError(err) {
-  //     toast.error("Something went wrong.", {
-  //       description: err.message || "There was a problem with your request.",
-  //     })
-  //   },
-  // })
+  const stopTimerAutomatically = useMutation({
+    mutationFn: useConvexMutation(api.orders.stopTimer),
+    onSuccess() {
+      toast.success("Succeed!", {
+        description: (
+          <p>Table {poolTableName} has been stopped automatically.</p>
+        ),
+      })
+      setStopCount(false)
+    },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+  })
 
-  // useEffect(() => {
-  //   if (!endTime || !startTime) return
+  useEffect(() => {
+    if (!endTime || !startTime) return
 
-  //   const updateLocalTime = () => {
-  //     const now = Date.now()
-  //     const difference = endTime.getTime() - now
+    const updateLocalTime = () => {
+      const now = Date.now()
+      const difference = endTime - now
 
-  //     // find the percentage time:
-  //     const totalTime = endTime.getTime() - startTime?.getTime()
-  //     const percentage = (difference / totalTime) * 100
-  //     setPercentageRemaining(Math.floor(percentage))
+      // find the percentage time:
+      const totalTime = endTime - startTime
+      const percentage = (difference / totalTime) * 100
+      setPercentageRemaining(Math.floor(percentage))
 
-  //     const hours = Math.floor(
-  //       (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-  //     )
-  //     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
-  //     const seconds = Math.floor((difference % (1000 * 60)) / 1000)
+      const hours = Math.floor(
+        (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+      )
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000)
 
-  //     setLocalTime({ hours, minutes, seconds })
+      setLocalTime({ hours, minutes, seconds })
 
-  //     if (now >= endTime.getTime()) {
-  //       setStopCount(true)
+      if (now >= endTime) {
+        setStopCount(true)
 
-  //       stopTimerAutomatically.mutate({
-  //         poolTableId,
-  //         poolRentalId: poolRentalId as string,
-  //         startTime: startTime,
-  //         endTime,
-  //         cost: packetCost as number,
-  //         rate: packetRate as Rate,
-  //       })
-  //     }
-  //   }
-  //   const interval = setInterval(updateLocalTime, 1000)
-  //   return () => clearInterval(interval)
-  // }, [
-  //   endTime,
-  //   packetCost,
-  //   packetRate,
-  //   poolRentalId,
-  //   poolTableId,
-  //   startTime,
-  //   stopTimerAutomatically,
-  // ])
-  // last useEffect dependencies -> isActive, endTime, stopCount
+        stopTimerAutomatically.mutate({
+          stopTimerSchema: {
+            poolTableId,
+            poolRentalId: poolRentalId!,
+            startTime,
+            endTime,
+            cost: packetCost!,
+            rate: packetRate!,
+          },
+        })
+      }
+    }
+    const interval = setInterval(updateLocalTime, 1000)
+    return () => clearInterval(interval)
+  }, [
+    endTime,
+    packetCost,
+    packetRate,
+    poolRentalId,
+    poolTableId,
+    startTime,
+    stopTimerAutomatically,
+  ])
+
   return (
     <>
-      <div>countdown</div>
       <div
         className={cn(
           "group radial-progress absolute inset-x-1/2 inset-y-1/2 -translate-x-1/2 -translate-y-1/2 text-sky-400",
@@ -115,14 +122,14 @@ export function Countdown({
         }
       >
         <div className="relative">
-          {/* {!!duration && (
+          {!!duration && (
             <UpdateDuration
               poolTableId={poolTableId}
               poolTableName={poolTableName}
               poolRentalId={poolRentalId}
               duration={duration}
             />
-          )} */}
+          )}
           <p className="absolute top-4 -translate-x-1/2">
             <span
               className={cn(
