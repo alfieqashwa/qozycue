@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
+import { DescriptionTable } from "./description-table"
 import { Timer } from "./timer"
 
 export function PoolTableCard({
@@ -37,6 +38,11 @@ export function PoolTableCard({
           {order.status === "success" && (
             <Timer poolTable={poolTable} order={order.data} />
           )}
+          <DescriptionTable
+            poolTable={poolTable}
+            orderStatusSucceed={order.status === "success"}
+            order={order.data}
+          />
         </section>
       </div>
     </div>
