@@ -150,7 +150,7 @@ export default defineSchema({
 
   orderlines: defineTable({
     description: v.optional(v.string()),
-    orderlineStatus: v.union(v.literal("unordered"), v.literal("ordered")),
+    orderlineStatus: v.union(v.literal("UNORDERED"), v.literal("ORDERED")),
     quantity: v.number(),
     amount: v.float64(),
     productId: v.id("products"),
