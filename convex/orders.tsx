@@ -1,14 +1,12 @@
-import { ConvexError, v } from "convex/values"
-import { mutation, query } from "./_generated/server"
-import {
-  cashierProcedure,
-  protectedProcedure,
-  zMutation,
-  zQuery,
-} from "./helpers"
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { Id } from "./_generated/dataModel"
-import { startTimerSchema, stopTimerSchema } from "../types/schema/order-schema"
+import { ConvexError, v } from "convex/values"
+import {
+  startTimerSchema,
+  stopTimerSchema,
+  updateDurationSchema,
+} from "../types/schema/order-schema"
+import { mutation, query } from "./_generated/server"
+import { cashierProcedure, protectedProcedure, zMutation } from "./helpers"
 
 export const findAll = query({
   args: { companyId: v.id("companies") },
@@ -260,12 +258,14 @@ export const stopTimer = zMutation({
   },
 })
 
-const resetTimer = mutation({
+export const resetTimer = mutation({
   args: {
     poolTableId: v.id("poolTables"),
     orderId: v.id("orders"),
   },
   handler: async (ctx, args) => {
+    await cashierProcedure(ctx, {})
+
     const updatePoolTable = await ctx.db.patch(args.poolTableId, {
       startTime: undefined,
       endTime: undefined,
@@ -277,6 +277,73 @@ const resetTimer = mutation({
     })
 
     return { updatePoolTable, updateOrder }
+  },
+})
+
+export const updatedDuration = zMutation({
+  args: { updateDurationSchema },
+  handler: async (
+    ctx,
+    { updateDurationSchema: { poolTableId, poolRentalId, updatedDuration } },
+  ) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new ConvexError("Please signed in!")
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    const order = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "OPEN"),
+          q.eq(q.field("isBooking"), true),
+        ),
+      )
+      .first()
+
+    const firstBooking = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+      .filter((q) => q.eq(q.field("poolTableId"), poolTableId))
+      .order("asc")
+      .first()
+
+    const poolTable = await ctx.db.get(poolTableId)
+
+    // Endsure poolTable exists
+    if (!poolTable?.startTime || !poolTable.gapDuration) {
+      throw new ConvexError("Pool table not found or missing required fields.")
+    }
+    // (previous-code): newEndTime.setHours(newEndTime.getHours() + updatedDuration)
+    // convert gapDuration to time_in_milliseconds
+    const updatedDurationInMilliseconds = updatedDuration * 60 * 1000
+    const newEndTime = poolTable.startTime + updatedDurationInMilliseconds
+
+    // If there's no firstBooking, we can skip the overlap check
+    if (firstBooking?.timeStart) {
+      const gapDurationInMilliseconds = poolTable.gapDuration * 60 * 1000
+      const bufferedStartTime =
+        firstBooking.timeStart - gapDurationInMilliseconds
+
+      // If newEndTime is greater than bufferedStartTime, throw an overlap error
+      if (newEndTime > bufferedStartTime) {
+        throw new ConvexError(
+          "The selected time overlaps with another booking.",
+        )
+      }
+    }
+
+    // Proceed to update the rental and pool table
+    const updatePoolRental = await ctx.db.patch(poolRentalId, {
+      duration: updatedDuration,
+      timeEnd: newEndTime,
+    })
+
+    const updatePoolTable = await ctx.db.patch(poolTableId, {
+      endTime: newEndTime,
+    })
+
+    return { updatePoolRental, updatePoolTable }
   },
 })
 

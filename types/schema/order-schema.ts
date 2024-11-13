@@ -39,3 +39,20 @@ export const stopTimerSchema = z.object({
   rate: z.enum(["MINUTE", "HOUR"]),
 })
 export type TStopTimer = z.infer<typeof stopTimerSchema>
+
+export const startBookingTimerSchema = z.object({
+  openAndNotBookingOrderId: zid("orders").optional(),
+  orderId: zid("orders"),
+  poolTableId: zid("poolTables"),
+  startTime: z.number(),
+  endTime: z.number(),
+})
+
+export type TStartBookingTimer = z.infer<typeof startBookingTimerSchema>
+
+export const updateDurationSchema = z.object({
+  poolTableId: zid("poolTables"),
+  poolRentalId: zid("poolRentals"),
+  updatedDuration: z.coerce.number().nonnegative().min(1).max(5),
+})
+export type TUpdateDuration = z.infer<typeof updateDurationSchema>

@@ -1,8 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Button, buttonVariants } from "~/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -12,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -20,22 +16,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
+} from "@/components/ui/form"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select"
-import { ToastAction } from "~/components/ui/toast"
-import { toast } from "~/components/ui/use-toast"
-import { cn } from "~/lib/utils"
-import { api } from "~/trpc/react"
+} from "@/components/ui/select"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import {
   type TUpdateDuration,
   updateDurationSchema,
-} from "~/types/schema/pool-rental-schema"
+} from "@/types/schema/order-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2 } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function UpdateDuration({
   poolTableId,
@@ -43,34 +46,26 @@ export function UpdateDuration({
   poolRentalId,
   duration,
 }: {
-  poolTableId: string
+  poolTableId: Id<"poolTables">
   poolTableName: string
-  poolRentalId?: string
+  poolRentalId?: Id<"poolRentals">
   duration: number
 }) {
   const [open, setOpen] = useState(false)
 
-  const utils = api.useUtils()
-  const { mutate, isPending } = api.poolRental.updateDuration.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.updatedDuration),
+    onSuccess: () => {
+      toast("Succeed!", {
         description: <p>Table {poolTableName} has been updated.</p>,
       })
-
-      await utils.poolTable.findAllByCompanyId.invalidate()
-      await utils.order.findByPoolTableId.invalidate({ poolTableId })
-      setOpen(false)
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const form = useForm<TUpdateDuration>({
@@ -86,9 +81,11 @@ export function UpdateDuration({
 
   function onSubmit(values: TUpdateDuration) {
     mutate({
-      poolTableId,
-      poolRentalId: poolRentalId!,
-      updatedDuration: Number(values.updatedDuration),
+      updateDurationSchema: {
+        poolTableId,
+        poolRentalId: poolRentalId!,
+        updatedDuration: Number(values.updatedDuration),
+      },
     })
   }
   return (
