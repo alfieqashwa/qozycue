@@ -1,5 +1,3 @@
-"use client"
-
 import { Rate } from "@/types"
 import { useEffect, useState } from "react"
 import { TimeCard } from "./time-card"
