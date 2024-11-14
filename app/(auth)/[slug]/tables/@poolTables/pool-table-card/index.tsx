@@ -5,6 +5,9 @@ import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
 import { DescriptionTable } from "./description-table"
 import { DetailButton } from "./detail-button"
+import { PaymentButton } from "./payment-button"
+import { StartTimerButton } from "./start-timer-button"
+import { StopTimerButton } from "./stop-timer-button"
 import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
 
@@ -60,33 +63,34 @@ export function PoolTableCard({
           </div>
         </div>
         {/* === ENDS LIST_BUTTON === */}
-        {isActive === false && !startTime && !endTime ? (
+        {poolTable.isActive === false &&
+        !poolTable.startTime &&
+        !poolTable.endTime ? (
           <StartTimerButton
-            isCashier={isCashier}
-            poolTableId={poolTableId}
-            poolTableName={poolTableName}
-            gapDuration={gapDuration}
+            // isCashier={isCashier}
+            poolTableId={poolTable._id}
+            poolTableName={poolTable.name}
+            gapDuration={poolTable.gapDuration}
           />
-        ) : isActive === true && !!startTime ? (
+        ) : poolTable.isActive === true && !!poolTable.startTime ? (
           <StopTimerButton
-            isCashier={isCashier}
-            poolTableId={poolTableId}
-            poolTableName={poolTableName}
-            startTime={startTime}
-            poolRentalId={order?.poolRental?.id}
-            packetCost={order?.poolRental?.packet.cost}
-            packetRate={order?.poolRental?.packet.rate}
+            // isCashier={isCashier}
+            poolTableId={poolTable._id}
+            poolTableName={poolTable.name}
+            startTime={poolTable.startTime}
+            poolRentalId={order.data?.poolRental?._id}
+            packetCost={order.data?.packet?.cost}
+            packetRate={order.data?.packet?.rate}
           />
         ) : (
           <PaymentButton
-            isCashier={isCashier}
-            orderId={order?.id as string}
-            statusPayment={order?.statusPayment as StatusPayment}
-            poolTableName={poolTableName}
-            customerName={order?.customer?.name}
-            customerPhone={order?.customer?.phone}
-            totalCost={order?.poolRental?.totalCost as number}
-            orderlines={order?.orderLines}
+            // isCashier={isCashier}
+            orderId={order.data?._id}
+            statusPayment={order?.data?.statusPayment!}
+            poolTableName={poolTable.name}
+            customerName={order.data?.customer?.name}
+            customerPhone={order.data?.customer?.phone}
+            totalCost={order.data?.poolRental?.totalCost}
           />
         )}
       </div>

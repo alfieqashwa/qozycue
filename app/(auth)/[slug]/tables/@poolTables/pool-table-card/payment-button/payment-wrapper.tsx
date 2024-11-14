@@ -1,5 +1,4 @@
-import { Banknote } from "lucide-react"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Drawer,
   DrawerContent,
@@ -7,7 +6,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "~/components/ui/drawer"
+} from "@/components/ui/drawer"
 import {
   Sheet,
   SheetContent,
@@ -15,7 +14,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "~/components/ui/sheet"
+} from "@/components/ui/sheet"
+import { Banknote } from "lucide-react"
 
 type Props = {
   open: boolean

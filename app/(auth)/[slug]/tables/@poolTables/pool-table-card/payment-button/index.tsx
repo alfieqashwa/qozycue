@@ -1,34 +1,39 @@
-"use client"
-
-import { type StatusPayment } from "@prisma/client"
+import { useMediaQuery } from "@/app/hooks/use-media-query"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { StatusPayment } from "@/types"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { useState } from "react"
-import { useMediaQuery } from "~/app/hooks/use-media-query"
-import { type IOrderline } from "~/lib/types"
-import { api } from "~/trpc/react"
 import { PaymentForm } from "./payment-form"
 import { PaymentDrawer, PaymentSheet } from "./payment-wrapper"
 
 export function PaymentButton({
-  isCashier,
+  // isCashier,
   orderId,
   poolTableName,
   customerName,
   customerPhone,
   totalCost,
-  orderlines,
   statusPayment,
 }: {
-  isCashier: boolean
-  orderId: string
+  // isCashier: boolean
+  orderId: Id<"orders"> | undefined
+  statusPayment: StatusPayment
   poolTableName: string
   customerName?: string
-  customerPhone?: string | null
-  totalCost: number
-  orderlines?: NonNullable<IOrderline[]>
-  statusPayment: StatusPayment
+  customerPhone?: string
+  totalCost?: number
 }) {
   const [open, setOpen] = useState(false)
-  const { data: defaultTax, status } = api.tax.findDefaultValue.useQuery()
+
+  const [{ data: defaultTax, status }, { data: orderlines }] =
+    useTanstackQueries({
+      queries: [
+        convexQuery(api.taxes.findDefaultValue, {}),
+        convexQuery(api.orderlines.findAllByOrderId, { orderId }),
+      ],
+    })
 
   const isDesktop = useMediaQuery("(min-width:768px)")
   if (isDesktop) {
@@ -36,18 +41,16 @@ export function PaymentButton({
       <PaymentSheet
         open={open}
         setOpen={setOpen}
-        disabled={
-          !isCashier ||
-          orderlines?.some((o) => o.orderlineStatus === "UNORDERED")
-        }
+        disabled={// !isCashier ||
+        orderlines?.some((o) => o.orderlineStatus === "UNORDERED")}
         poolTableName={poolTableName}
       >
         {status === "success" && (
           <PaymentForm
-            orderId={orderId}
+            orderId={orderId!}
             customerName={customerName}
             customerPhone={customerPhone}
-            totalCost={totalCost}
+            totalCost={totalCost!}
             orderlines={orderlines}
             statusPayment={statusPayment}
             defaultTax={defaultTax?.value}
@@ -62,17 +65,16 @@ export function PaymentButton({
     <PaymentDrawer
       open={open}
       setOpen={setOpen}
-      disabled={
-        !isCashier || orderlines?.some((o) => o.orderlineStatus === "UNORDERED")
-      }
+      disabled={// !isCashier || orderlines?.some((o) => o.orderlineStatus === "UNORDERED")
+      orderlines?.some((o) => o.orderlineStatus === "UNORDERED")}
       poolTableName={poolTableName}
     >
       {status === "success" && (
         <PaymentForm
-          orderId={orderId}
+          orderId={orderId!}
           customerName={customerName}
           customerPhone={customerPhone}
-          totalCost={totalCost}
+          totalCost={totalCost!}
           orderlines={orderlines}
           statusPayment={statusPayment}
           defaultTax={defaultTax?.value}
