@@ -52,10 +52,43 @@ export function PoolTableCard({
         {/* === STARTS LIST_BUTTON === */}
         <div className="absolute bottom-2.5 left-1/2 w-full -translate-x-1/2 font-sans">
           <div className="mx-2 flex justify-between sm:mx-3">
-            <DetailButton poolTable={poolTable} order={order.data} />
+            <DetailButton
+              poolTable={poolTable}
+              orderStatus={order.status}
+              order={order.data}
+            />
           </div>
         </div>
         {/* === ENDS LIST_BUTTON === */}
+        {isActive === false && !startTime && !endTime ? (
+          <StartTimerButton
+            isCashier={isCashier}
+            poolTableId={poolTableId}
+            poolTableName={poolTableName}
+            gapDuration={gapDuration}
+          />
+        ) : isActive === true && !!startTime ? (
+          <StopTimerButton
+            isCashier={isCashier}
+            poolTableId={poolTableId}
+            poolTableName={poolTableName}
+            startTime={startTime}
+            poolRentalId={order?.poolRental?.id}
+            packetCost={order?.poolRental?.packet.cost}
+            packetRate={order?.poolRental?.packet.rate}
+          />
+        ) : (
+          <PaymentButton
+            isCashier={isCashier}
+            orderId={order?.id as string}
+            statusPayment={order?.statusPayment as StatusPayment}
+            poolTableName={poolTableName}
+            customerName={order?.customer?.name}
+            customerPhone={order?.customer?.phone}
+            totalCost={order?.poolRental?.totalCost as number}
+            orderlines={order?.orderLines}
+          />
+        )}
       </div>
     </div>
   )

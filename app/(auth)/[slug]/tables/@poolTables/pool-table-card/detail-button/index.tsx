@@ -23,9 +23,11 @@ import { TransferTable } from "./transfer-table"
 
 export function DetailButton({
   poolTable,
+  orderStatus,
   order,
 }: {
   poolTable: FunctionReturnType<typeof api.pooltables.findAll>[0]
+  orderStatus: "pending" | "error" | "success"
   order: FunctionReturnType<typeof api.orders.findByPoolTableId> | undefined
 }) {
   const orderlines = useTanstackQuery(
@@ -116,19 +118,21 @@ export function DetailButton({
             )}
           </div>
           <TabsContent value="table">
-            <PoolRentalDetail
-              isActive={poolTable.isActive}
-              packetName={order?.packet?.name}
-              packetCost={order?.packet?.cost}
-              packetRate={order?.packet?.rate}
-              duration={order?.poolRental?.duration}
-              totalCost={order?.poolRental?.totalCost}
-              startTime={order?.poolRental?.timeStart}
-              endTime={order?.poolRental?.timeEnd}
-              poolRentalId={order?.poolRental?._id}
-              createdBy={order?.createdBy?.name}
-              createdAt={order?.poolRental?._creationTime}
-            />
+            {orderStatus === "success" && (
+              <PoolRentalDetail
+                isActive={poolTable.isActive}
+                packetName={order?.packet?.name}
+                packetCost={order?.packet?.cost}
+                packetRate={order?.packet?.rate}
+                duration={order?.poolRental?.duration}
+                totalCost={order?.poolRental?.totalCost}
+                startTime={order?.poolRental?.timeStart}
+                endTime={order?.poolRental?.timeEnd}
+                poolRentalId={order?.poolRental?._id}
+                createdBy={order?.createdBy?.name}
+                createdAt={order?.poolRental?._creationTime}
+              />
+            )}
           </TabsContent>
           <TabsContent value="cafe">
             {orderlines.status === "success" && (
