@@ -23,14 +23,13 @@ export const findAllSortedByDate = query({
   args: {
     from: v.optional(v.float64()),
     to: v.optional(v.float64()),
-    // notEqual: v.array(
-    //   v.union(
-    //     v.literal("OPEN"),
-    //     v.literal("PENDING"),
-    //     v.literal("PAID"),
-    //     v.literal("ARCHIVE"),
-    //   ),
-    // ),
+    notEqual: v.union(
+      v.literal("OPEN"),
+      v.literal("CANCELLED"),
+      v.literal("PENDING"),
+      v.literal("PAID"),
+      v.literal("ARCHIVE"),
+    ),
   },
   handler: async (ctx, args) => {
     // protectedProcedure
@@ -44,7 +43,7 @@ export const findAllSortedByDate = query({
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
       .filter((q) =>
         q.and(
-          // q.neq(q.field("statusPayment"), args.notEqual),
+          q.neq(q.field("statusPayment"), args.notEqual),
           q.gt(q.field("_creationTime"), args.from!),
           q.lte(q.field("_creationTime"), args.to!),
         ),
@@ -92,11 +91,45 @@ export const findAllSortedByDate = query({
 })
 
 export const findById = query({
-  args: { id: v.id("orders") },
+  args: {
+    id: v.id("orders"),
+    notEqual: v.union(
+      v.literal("OPEN"),
+      v.literal("CANCELLED"),
+      v.literal("PENDING"),
+      v.literal("PAID"),
+      v.literal("ARCHIVE"),
+    ),
+  },
   handler: async (ctx, args) => {
     await protectedProcedure(ctx, {})
 
-    return await ctx.db.get(args.id)
+    const order = await ctx.db
+      .query("orders")
+      .withIndex("by_id", (q) => q.eq("_id", args.id))
+      .filter((q) => q.neq(q.field("statusPayment"), args.notEqual))
+      .first()
+
+    const createdBy = await ctx.db.get(order?.createdBy!)
+    const poolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+      .first()
+    const poolTable = await ctx.db.get(poolRental?.poolTableId!)
+    const packet = await ctx.db.get(poolRental?.packetId!)
+
+    const company = await ctx.db.get(order?.companyId!)
+
+    return {
+      ...order,
+      createdBy,
+      poolRental: {
+        ...poolRental,
+        poolTable,
+        packet,
+      },
+      company,
+    }
   },
 })
 

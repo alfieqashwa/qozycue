@@ -1,12 +1,15 @@
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { formattedPrice, formattedPriceWithRupiah } from "@/lib/format-price"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { Phone } from "lucide-react"
 import { forwardRef, type LegacyRef } from "react"
-import { formattedPrice, formattedPriceWithRupiah } from "~/lib/format-price"
-import { api } from "~/trpc/react"
 
 type PrintReceiptProps = {
-  orderId: string
+  orderId: Id<"orders">
   customerName?: string
   printStatus?: "receipt" | "bill"
 }
@@ -15,46 +18,43 @@ export const PrintReceipt = forwardRef(
     { orderId, customerName, printStatus = "receipt" }: PrintReceiptProps,
     ref,
   ) => {
-    const { data: order, status } = api.order.findById.useQuery(
-      {
-        id: orderId,
-        notIn: ["ARCHIVE"],
-      },
-      {
-        enabled: !!orderId,
-        select: (data) => ({
-          data: data,
-          date: data?.createdAt,
-          poolRental: data?.poolRental,
-          poolTableName: data?.poolRental?.poolTable?.name,
-          orderlines: data?.orderLines,
-          hasOrderlines: !!data?.orderLines.length,
-          company: data?.company,
-        }),
-      },
-    )
+    const [{ data: order, status }, { data: orderlines }] = useTanstackQueries({
+      queries: [
+        {
+          ...convexQuery(api.orders.findById, {
+            id: orderId,
+            notEqual: "ARCHIVE",
+          }),
+          enabled: Boolean(orderId),
+        },
+        {
+          ...convexQuery(api.orderlines.findAllByOrderId, { orderId }),
+          enabled: Boolean(orderId),
+        },
+      ],
+    })
 
     const formattedCurrentDate = format(new Date(), "dd/MM/yyyy:HH:mm:ss", {
       locale: id,
     })
     const totalCost = !!order?.poolRental ? order?.poolRental.totalCost : 0
     const totalAmount =
-      order?.orderlines?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0
+      orderlines?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0
 
     const formattedPacketCost = formattedPrice.format(
-      Number(order?.poolRental?.packet.cost),
+      Number(order?.poolRental.packet?.cost),
     )
     const formattedRate =
-      order?.poolRental?.packet.rate === "HOUR" ? "hr" : "min"
+      order?.poolRental.packet?.rate === "HOUR" ? "hr" : "min"
     const formattedTotalCost = formattedPrice.format(
-      Number(order?.poolRental?.totalCost.toFixed(0)),
+      Number(order?.poolRental.totalCost?.toFixed(0)),
     )
     const formattedTotalOrder = formattedPrice.format(Number(totalAmount))
-    const subTotal = totalCost + totalAmount
+    const subTotal = totalCost! + totalAmount
     const formattedSubTotal = formattedPrice.format(Number(subTotal))
 
-    const discount = order?.data?.discount
-    const tax = order?.data?.tax
+    const discount = order?.discount
+    const tax = order?.tax
 
     return (
       <div
@@ -95,7 +95,7 @@ export const PrintReceipt = forwardRef(
                 <p className="capitalize">
                   Customer: {!!customerName ? customerName : "-"}
                 </p>
-                <p>Cashier: {order.data?.createdBy?.name}</p>
+                <p>Cashier: {order.createdBy?.name}</p>
               </article>
             </section>
             {/* ENDS INFO */}
@@ -106,11 +106,11 @@ export const PrintReceipt = forwardRef(
                 <h3 className="-ml-4 uppercase">Pool Rental</h3>
                 <div className="flex items-center justify-between">
                   <p>Table:</p>
-                  <p> {order.poolTableName}</p>
+                  <p> {order.poolRental.poolTable?.name}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Packet:</p>
-                  <p className="capitalize">{order.poolRental.packet.name}</p>
+                  <p className="capitalize">{order.poolRental.packet?.name}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Cost:</p>
@@ -121,7 +121,7 @@ export const PrintReceipt = forwardRef(
                 <div className="flex items-center justify-between">
                   <p>Start:</p>
                   <p>
-                    {format(order.poolRental.timeStart as Date, "pp", {
+                    {format(order.poolRental.timeStart!, "pp", {
                       locale: id,
                     })}
                   </p>
@@ -129,7 +129,7 @@ export const PrintReceipt = forwardRef(
                 <div className="flex items-center justify-between">
                   <p>End:</p>
                   <p>
-                    {format(order.poolRental.timeEnd as Date, "pp", {
+                    {format(order.poolRental.timeEnd!, "pp", {
                       locale: id,
                     })}
                   </p>
@@ -150,7 +150,7 @@ export const PrintReceipt = forwardRef(
             {/* ENDS POOL RENTAL */}
 
             {/* STARTS ORDERLINES */}
-            {order.hasOrderlines && (
+            {!!orderlines?.length && (
               <section className="pl-4 pt-2">
                 <h3 className="-ml-4 uppercase">Orders</h3>
                 <ul>
@@ -165,11 +165,11 @@ export const PrintReceipt = forwardRef(
                       <p>Amount</p>
                     </div>
                   </li>
-                  {order.orderlines?.map((orderline) => {
+                  {orderlines?.map((orderline) => {
                     return (
                       <li
                         className="flex w-full items-center"
-                        key={orderline.id}
+                        key={orderline._id}
                       >
                         <div className="w-2/12 pr-16 text-right">
                           <p>{orderline.quantity}</p>
@@ -204,7 +204,7 @@ export const PrintReceipt = forwardRef(
                   <p>{formattedTotalCost}</p>
                 </div>
               )}
-              {order.hasOrderlines && (
+              {!!orderlines?.length && (
                 <div className="flex items-center justify-between">
                   <p>Total Order:</p>
                   <p>{formattedTotalOrder}</p>
@@ -232,7 +232,7 @@ export const PrintReceipt = forwardRef(
               {printStatus === "receipt" && (
                 <div className="flex items-center justify-between">
                   <p>Payment:</p>
-                  <p>{order.data?.paymentMethod}</p>
+                  <p>{order.paymentMethod}</p>
                 </div>
               )}
             </section>
@@ -244,9 +244,7 @@ export const PrintReceipt = forwardRef(
                 <div className="flex items-center justify-between">
                   <p>Grand Total:</p>
                   <p>
-                    {formattedPriceWithRupiah.format(
-                      Number(order.data?.totalAmount),
-                    )}
+                    {formattedPriceWithRupiah.format(Number(order.totalAmount))}
                   </p>
                 </div>
               </section>
