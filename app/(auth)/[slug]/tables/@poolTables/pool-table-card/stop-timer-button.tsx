@@ -1,9 +1,4 @@
-"use client"
-
-import { type Rate } from "@prisma/client"
-import { Loader2, TimerOff } from "lucide-react"
-import { useState } from "react"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,13 +7,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
-import { ToastAction } from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
-import { api } from "~/trpc/react"
+} from "@/components/ui/dialog"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { Rate } from "@/types"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2, TimerOff } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 export function StopTimerButton({
-  isCashier,
+  // isCashier,
   poolTableId,
   poolTableName,
   startTime,
@@ -26,53 +27,42 @@ export function StopTimerButton({
   packetRate,
   packetCost,
 }: {
-  isCashier: boolean
-  poolTableId: string
+  // isCashier: boolean
+  poolTableId: Id<"poolTables">
   poolTableName: string
-  startTime: Date | null
-  poolRentalId?: string
+  startTime: number
+  poolRentalId?: Id<"poolRentals">
   packetRate?: Rate
   packetCost?: number
 }) {
   const [open, setOpen] = useState(false)
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.poolRental.stopTimer.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: <p>Table {poolTableName} has been stopped.</p>,
-      })
-      await utils.poolTable.invalidate()
-      await utils.order.findByPoolTableId.invalidate({ poolTableId })
-      await utils.order.findByPoolTableIdPublic.invalidate({ poolTableId })
-      await utils.poolRental.countIsBooking.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.stopTimer),
+    onSuccess: () =>
+      toast.success("Succeed!", {
+        description: `Table ${poolTableName} has been stopped.`,
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     mutate({
-      poolTableId,
-      poolRentalId: poolRentalId as string,
-      startTime: startTime as Date,
-      endTime: new Date(),
-      cost: packetCost as number,
-      rate: packetRate as Rate,
+      stopTimerSchema: {
+        poolTableId,
+        poolRentalId: poolRentalId!,
+        startTime: startTime,
+        endTime: Date.now(),
+        cost: packetCost!,
+        rate: packetRate!,
+      },
     })
   }
 
@@ -80,7 +70,7 @@ export function StopTimerButton({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={!isCashier}
+          // disabled={!isCashier}
           variant="secondary"
           className="space-x-2 text-red-500 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
