@@ -8,6 +8,7 @@ import {
 import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
+  protectedProcedure,
   subscriptions,
   validateSubscriptionLimits,
   zMutation,
@@ -126,5 +127,44 @@ export const transfer = mutation({
       poolTableId: args.poolTableIdTo,
     })
     return { startPoolTableTo, resetPoolTableFrom, transferTable }
+  },
+})
+
+// transferPoolTableList: protectedProcedure
+//   .input(z.object({ poolTableIdFrom: z.string().cuid() }))
+//   .query(async ({ ctx, input: { poolTableIdFrom } }) => {
+//     return await ctx.db.poolTable.findMany({
+//       where: {
+//         companyId: ctx.session.user.companyId as string,
+//         id: { not: poolTableIdFrom },
+//         isActive: false,
+//         startTime: null,
+//         poolRentals: { none: { order: { isBooking: true } } },
+//       },
+//     })
+//   }),
+export const transferPoolTableList = query({
+  args: { poolTableIdFrom: v.id("poolTables") },
+  handler: async (ctx, args) => {
+    // await protectedProcedure(ctx, {})
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    const pooltables = await ctx.db
+      .query("poolTables")
+      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
+      .filter((q) =>
+        q.and(
+          q.neq(q.field("_id"), args.poolTableIdFrom),
+          q.eq(q.field("isActive"), false),
+          q.eq(q.field("startTime"), undefined),
+        ),
+      )
+      .collect()
+
+    /**
+     * TODO: filtering poolrental's none order where is booking is true
+     */
+    return pooltables
   },
 })
