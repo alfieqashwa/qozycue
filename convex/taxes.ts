@@ -13,7 +13,6 @@ export const findAll = query({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
-
     if (!userId) throw new ConvexError("Please signed in!")
     const user = await ctx.db.get(userId)
 
@@ -53,6 +52,20 @@ export const update = zMutation({
       value: val,
       companyId,
     })
+  },
+})
+export const findDefaultValue = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new ConvexError("Please signed in!")
+    const user = await ctx.db.get(userId)
+
+    return await ctx.db
+      .query("taxes")
+      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
+      .filter((q) => q.eq(q.field("isDefaultValue"), true))
+      .first()
   },
 })
 export const toggle = mutation({
