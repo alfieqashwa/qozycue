@@ -1,14 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PaymentMethod, type StatusPayment } from "@prisma/client"
 import { CircleHelp, Loader2, Printer } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { type Control, useForm, useWatch } from "react-hook-form"
 import { useReactToPrint } from "react-to-print"
 import { useDebouncedCallback } from "use-debounce"
-import { PrintReceipt } from "~/app/(auth)/[slug]/_components/print-receipt"
-import { useMediaQuery } from "~/app/hooks/use-media-query"
-import { Button } from "~/components/ui/button"
+import { PrintReceipt } from "@/app/(auth)/[slug]/_components/print-receipt"
+import { useMediaQuery } from "@/app/hooks/use-media-query"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -16,14 +14,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover"
-import { ScrollArea } from "~/components/ui/scroll-area"
+} from "@/components/ui/popover"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -31,24 +29,26 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select"
-import { Separator } from "~/components/ui/separator"
-import { Textarea } from "~/components/ui/textarea"
-import { ToastAction } from "~/components/ui/toast"
+} from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~/components/ui/tooltip"
-import { useToast } from "~/components/ui/use-toast"
-import { formattedPrice, formattedPriceWithRupiah } from "~/lib/format-price"
-import type { IOrderline } from "~/lib/types"
-import { cn } from "~/lib/utils"
-import { api } from "~/trpc/react"
+} from "@/components/ui/tooltip"
+import { formattedPrice, formattedPriceWithRupiah } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
 import {
   submitPaymentSchema,
   type TSubmitPayment,
-} from "~/types/schema/payment-schema"
+} from "@/types/schema/payment-schema"
+import { Id } from "@/convex/_generated/dataModel"
+import { FunctionReturnType } from "convex/server"
+import { api } from "@/convex/_generated/api"
+import { StatusPayment } from "@/types"
+import { ConvexError } from "convex/values"
+import { toast } from "sonner"
 
 export function PaymentForm({
   orderId,
@@ -60,20 +60,17 @@ export function PaymentForm({
   defaultTax,
   setOpen,
 }: {
-  orderId: string
+  orderId: Id<"orders">
   customerName?: string
   customerPhone?: string | null
   totalCost: number
-  orderlines?: NonNullable<IOrderline[]>
+  orderlines?: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   statusPayment: StatusPayment
   defaultTax: number | undefined
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   const receiptRef = useRef(null)
   const billRef = useRef(null)
-  const router = useRouter() // for invalidate pending payment api b'coz it's not in "use-client"
-  const utils = api.useUtils()
-  const { toast } = useToast()
   const [changeMoney, setChangeMoney] = useState("")
 
   const form = useForm<TSubmitPayment>({
@@ -85,28 +82,15 @@ export function PaymentForm({
       discount: 0,
       totalAmount: 0,
       revenue: 0,
-      paymentMethod: PaymentMethod.CASH,
+      paymentMethod: "CASH",
       note: "",
     },
   })
 
   const { mutate, isPending } = api.order.payment.useMutation({
     async onSuccess() {
-      // await utils.order.findByPoolTableId.invalidate({ poolTableId })
-      // await utils.order.findAllPendingStatusByPoolTableId.invalidate({
-      //   poolTableId,
-      // })
-      // await utils.order.countPendingStatus.invalidate()
-
       setOpen(false)
-
-      await utils.order.invalidate() // invalidate all orders api
-      await utils.poolTable.invalidate()
-      router.refresh()
-
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast.success("Succeed!", {
         description: "Payment process is succeed.",
         action: (
           <>
@@ -126,14 +110,11 @@ export function PaymentForm({
         duration: 10000, // 10 secs
       })
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
 
   // STARTS PRINT THE PAYMENT CONFIGURATiON
