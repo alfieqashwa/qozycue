@@ -44,7 +44,6 @@ export const findAllSortedByDate = query({
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
       .filter((q) =>
         q.and(
-          q.eq(q.field("isBooking"), false),
           // q.neq(q.field("statusPayment"), args.notEqual),
           q.gt(q.field("_creationTime"), args.from!),
           q.lte(q.field("_creationTime"), args.to!),
@@ -58,6 +57,7 @@ export const findAllSortedByDate = query({
         const poolRental = await ctx.db
           .query("poolRentals")
           .withIndex("orderId", (q) => q.eq("orderId", order._id))
+          .filter((q) => q.eq(q.field("isBooking"), false))
           .unique()
         const poolTable = await ctx.db.get(poolRental?.poolTableId!)
         const orderlines = await ctx.db
@@ -111,6 +111,7 @@ export const findByPoolTableId = query({
     const poolRental = await ctx.db
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
+      .filter((q) => q.eq(q.field("isBooking"), false))
       .first()
 
     const order = await ctx.db
@@ -120,21 +121,11 @@ export const findByPoolTableId = query({
         q.and(
           q.eq(q.field("companyId"), user?.companyId),
           q.eq(q.field("statusPayment"), "OPEN"),
-          q.eq(q.field("isBooking"), false),
         ),
       )
       .first()
 
     const packet = await ctx.db.get(poolRental?.packetId!)
-    const orderlineList =
-      order !== null
-        ? await ctx.db
-            .query("orderlines")
-            .withIndex("orderId", (q) => q.eq("orderId", order?._id))
-            .order("desc")
-            .collect()
-        : null
-
     const customer = order !== null ? await ctx.db.get(order?.companyId) : null
     const createdBy =
       order !== null
@@ -208,7 +199,6 @@ export const startTimer = zMutation({
     const orderId = await ctx.db.insert("orders", {
       createdBy: user._id,
       companyId: user.companyId,
-      isBooking: false,
       statusPayment: "OPEN",
       customerId,
     })
@@ -221,6 +211,7 @@ export const startTimer = zMutation({
       totalCost,
       timeStart: startTime,
       timeEnd: rate === "HOUR" ? endTime : undefined,
+      isBooking: false,
     })
 
     return { updatePoolTable, createOrder }
@@ -320,18 +311,18 @@ export const updatedDuration = zMutation({
     const order = await ctx.db
       .query("orders")
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("statusPayment"), "OPEN"),
-          q.eq(q.field("isBooking"), true),
-        ),
-      )
+      .filter((q) => q.and(q.eq(q.field("statusPayment"), "OPEN")))
       .first()
 
     const firstBooking = await ctx.db
       .query("poolRentals")
       .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
-      .filter((q) => q.eq(q.field("poolTableId"), poolTableId))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("poolTableId"), poolTableId),
+          q.eq(q.field("isBooking"), true),
+        ),
+      )
       .order("asc")
       .first()
 

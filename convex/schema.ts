@@ -103,7 +103,7 @@ export default defineSchema({
       v.literal("CANCELLED"), // new enum
       v.literal("ARCHIVE"),
     ),
-    isBooking: v.boolean(),
+    // isBooking: v.boolean(),
     // Todos: totalAmount, revenue, tax, disc, note, dueDate, should be on Model Payments (note: createdBy has both in Model Orders & Payments)
     totalAmount: v.optional(v.float64()),
     revenue: v.optional(v.float64()),
@@ -126,6 +126,7 @@ export default defineSchema({
     timeEnd: v.optional(v.float64()), // not required
     duration: v.optional(v.number()),
     totalCost: v.optional(v.float64()),
+    isBooking: v.boolean(),
     poolTableId: v.id("poolTables"),
     packetId: v.id("packets"),
     orderId: v.id("orders"),
