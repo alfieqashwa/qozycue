@@ -52,7 +52,6 @@ export function PaymentButton({
             customerPhone={customerPhone}
             totalCost={totalCost!}
             orderlines={orderlines}
-            statusPayment={statusPayment}
             defaultTax={defaultTax?.value}
             setOpen={setOpen}
           />
@@ -76,7 +75,6 @@ export function PaymentButton({
           customerPhone={customerPhone}
           totalCost={totalCost!}
           orderlines={orderlines}
-          statusPayment={statusPayment}
           defaultTax={defaultTax?.value}
           setOpen={setOpen}
         />

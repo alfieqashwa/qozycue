@@ -1,11 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { CircleHelp, Loader2, Printer } from "lucide-react"
-import { useCallback, useMemo, useRef, useState } from "react"
-import { type Control, useForm, useWatch } from "react-hook-form"
-import { useReactToPrint } from "react-to-print"
-import { useDebouncedCallback } from "use-debounce"
-import { PrintReceipt } from "@/app/(auth)/[slug]/_components/print-receipt"
 import { useMediaQuery } from "@/app/hooks/use-media-query"
+import { PrintReceipt } from "@/components/print-receipt"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -37,18 +31,28 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice, formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import {
   submitPaymentSchema,
   type TSubmitPayment,
 } from "@/types/schema/payment-schema"
-import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  useMutation,
+  useQueries as useTanstackQueries,
+} from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
-import { api } from "@/convex/_generated/api"
-import { StatusPayment } from "@/types"
 import { ConvexError } from "convex/values"
+import { CircleHelp, Loader2, Printer } from "lucide-react"
+import { useCallback, useMemo, useRef, useState } from "react"
+import { type Control, useForm, useWatch } from "react-hook-form"
+import { useReactToPrint } from "react-to-print"
 import { toast } from "sonner"
+import { useDebouncedCallback } from "use-debounce"
 
 export function PaymentForm({
   orderId,
@@ -56,7 +60,6 @@ export function PaymentForm({
   customerPhone,
   totalCost,
   orderlines,
-  statusPayment,
   defaultTax,
   setOpen,
 }: {
@@ -65,7 +68,6 @@ export function PaymentForm({
   customerPhone?: string | null
   totalCost: number
   orderlines?: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
-  statusPayment: StatusPayment
   defaultTax: number | undefined
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -77,7 +79,6 @@ export function PaymentForm({
     resolver: zodResolver(submitPaymentSchema),
     defaultValues: {
       orderId,
-      statusPayment,
       tax: defaultTax ?? 0,
       discount: 0,
       totalAmount: 0,
@@ -87,8 +88,19 @@ export function PaymentForm({
     },
   })
 
-  const { mutate, isPending } = api.order.payment.useMutation({
-    async onSuccess() {
+  // const discounts = api.discount.findAllByCompanyId.useQuery()
+  // const taxes = api.tax.findAllByCompanyId.useQuery()
+
+  const [taxes, discounts] = useTanstackQueries({
+    queries: [
+      convexQuery(api.taxes.findAll, {}),
+      convexQuery(api.discounts.findAll, {}),
+    ],
+  })
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.payment),
+    onSuccess() {
       setOpen(false)
       toast.success("Succeed!", {
         description: "Payment process is succeed.",
@@ -187,9 +199,6 @@ export function PaymentForm({
     [fixedGrandTotal.totalAmount],
   )
 
-  const discounts = api.discount.findAllByCompanyId.useQuery()
-  const taxes = api.tax.findAllByCompanyId.useQuery()
-
   /**
    * Calculates the change money based on the customer's payment and the fixed grand total.
    * Returns the formatted change money if it's non-negative, otherwise returns undefined.
@@ -224,14 +233,15 @@ export function PaymentForm({
   const onSubmit = (values: TSubmitPayment) => {
     const { orderId, discount, tax, paymentMethod, note } = values
     mutate({
-      orderId,
-      discount,
-      tax,
-      paymentMethod,
-      statusPayment,
-      totalAmount: fixedGrandTotal.totalAmount,
-      revenue: fixedGrandTotal.revenue,
-      note,
+      submitPaymentSchema: {
+        orderId,
+        discount,
+        tax,
+        paymentMethod,
+        totalAmount: fixedGrandTotal.totalAmount,
+        revenue: fixedGrandTotal.revenue,
+        note,
+      },
     })
   }
 
@@ -401,8 +411,7 @@ const InfoRow = ({
 )
 
 interface PaymentFormValue {
-  orderId: string
-  statusPayment: "OPEN" | "PENDING" | "PAID" | "ARCHIVE"
+  orderId: Id<"orders">
   discount: number
   tax: number
   paymentMethod: "CASH" | "DEBIT" | "CREDIT"
@@ -414,10 +423,10 @@ type PaymentFormFieldProps = {
   control: Control<PaymentFormValue>
   name: keyof PaymentFormValue
   data?: Array<{
-    id: string
+    _id: Id<"taxes"> | Id<"discounts">
     name: string
     value: number
-    companyId: string | null
+    companyId: Id<"companies">
   }>
   status?: "success" | "pending" | "error"
   defaultValue?: number
@@ -468,15 +477,11 @@ const PaymentFormField = ({
                 </SelectGroup>
               ) : (
                 <SelectGroup>
-                  <SelectItem value={PaymentMethod.CASH}>
-                    {PaymentMethod.CASH}
-                  </SelectItem>
-                  <SelectItem value={PaymentMethod.DEBIT}>
-                    {PaymentMethod.DEBIT}
-                  </SelectItem>
-                  <SelectItem value={PaymentMethod.CREDIT}>
-                    {PaymentMethod.CREDIT}
-                  </SelectItem>
+                  {["CASH", "DEBIT", "CREDIT"].map((paymentMethod, i) => (
+                    <SelectItem value={paymentMethod} key={i}>
+                      {paymentMethod}
+                    </SelectItem>
+                  ))}
                 </SelectGroup>
               )}
             </SelectContent>

@@ -5,6 +5,7 @@ import {
   stopTimerSchema,
   updateDurationSchema,
 } from "../types/schema/order-schema"
+import { submitPaymentSchema } from "../types/schema/payment-schema"
 import { mutation, query } from "./_generated/server"
 import { cashierProcedure, protectedProcedure, zMutation } from "./helpers"
 
@@ -398,12 +399,43 @@ export const updatedDuration = zMutation({
   },
 })
 
-/**
-alfieqshwa: k575ywf2h48g4r326pcyq7aa3n73mf53
-cozycue: jx77ycz3zzpkez925c3ef5gnvn740tj4
-custID: kn77s1hjhe02gt1nxp6j9dkgcn74fbdx
-orderID: m575rk0t8a6hzwcekzj5z65avd74fcjn
-poolTablID (1): k97cg2bh19423r51hewqgay98h73n6p1
-packetID: (minute_regular): kh79by5vzkyyj0re47hm13bcvn74fn17
+export const payment = zMutation({
+  args: { submitPaymentSchema },
+  handler: async (
+    ctx,
+    {
+      submitPaymentSchema: {
+        orderId,
+        discount,
+        tax,
+        totalAmount,
+        revenue,
+        paymentMethod,
+        note,
+      },
+    },
+  ) => {
+    const updateOrder = await ctx.db.patch(orderId, {
+      totalAmount,
+      revenue,
+      paymentMethod,
+      statusPayment: "PAID",
+      discount,
+      tax,
+      note,
+    })
 
- */
+    const poolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId")
+      .first()
+    const poolTable = await ctx.db.get(poolRental?.poolTableId!)
+
+    const updatePoolTable = await ctx.db.patch(poolTable?._id!, {
+      startTime: undefined,
+      endTime: undefined,
+    })
+
+    return { updateOrder, updatePoolTable }
+  },
+})

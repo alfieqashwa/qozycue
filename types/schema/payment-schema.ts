@@ -3,7 +3,7 @@ import { z } from "zod"
 
 export const submitPaymentSchema = z.object({
   orderId: zid("orders"),
-  statusPayment: z.enum(["OPEN", "PENDING", "CANCELLED", "PAID", "ARCHIVE"]),
+  // statusPayment: z.enum(["OPEN", "PENDING", "CANCELLED", "PAID", "ARCHIVE"]),
   tax: z.coerce.number(),
   discount: z.coerce.number(),
   paymentMethod: z.enum(["CASH", "DEBIT", "CREDIT"]),
@@ -24,7 +24,7 @@ export const submitPaymentSchema = z.object({
 
 export type TSubmitPayment = z.infer<typeof submitPaymentSchema>
 
-export const submitPaymentCafeOnlySchema = submitPaymentSchema.omit({
-  statusPayment: true,
-})
-export type TSubmitPaymentCafeOnly = z.infer<typeof submitPaymentCafeOnlySchema>
+// export const submitPaymentCafeOnlySchema = submitPaymentSchema.omit({
+//   statusPayment: true,
+// })
+// export type TSubmitPaymentCafeOnly = z.infer<typeof submitPaymentCafeOnlySchema>
