@@ -17,6 +17,7 @@
 [x] Move Button Edit and Delete Product and Packet into row list of table
 [x] Restrict to delete enabled product(s) and packet(s)
 [-] Restrict to disabled the product(s) and packet(s) when they are in OPEN and PENDING order
+[-] Update library "react-to-print" version after learn their recent documentation
 
 ## Backlog (Future Plan)
 
