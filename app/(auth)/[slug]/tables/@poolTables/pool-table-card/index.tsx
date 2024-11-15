@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
+import { CafeButton } from "./cafe-button"
 import { DescriptionTable } from "./description-table"
 import { DetailButton } from "./detail-button"
 import { PaymentButton } from "./payment-button"
@@ -53,46 +54,47 @@ export function PoolTableCard({
         </section>
 
         {/* === STARTS LIST_BUTTON === */}
-        <div className="absolute bottom-2.5 left-1/2 w-full -translate-x-1/2 font-sans">
+        <section className="absolute bottom-2.5 left-1/2 w-full -translate-x-1/2 font-sans">
           <div className="mx-2 flex justify-between sm:mx-3">
             <DetailButton
               poolTable={poolTable}
               orderStatus={order.status}
               order={order.data}
             />
+            {poolTable.isActive === false &&
+            !poolTable.startTime &&
+            !poolTable.endTime ? (
+              <StartTimerButton
+                // isCashier={isCashier}
+                poolTableId={poolTable._id}
+                poolTableName={poolTable.name}
+                gapDuration={poolTable.gapDuration}
+              />
+            ) : poolTable.isActive === true && !!poolTable.startTime ? (
+              <StopTimerButton
+                // isCashier={isCashier}
+                poolTableId={poolTable._id}
+                poolTableName={poolTable.name}
+                startTime={poolTable.startTime}
+                poolRentalId={order.data?.poolRental?._id}
+                packetCost={order.data?.packet?.cost}
+                packetRate={order.data?.packet?.rate}
+              />
+            ) : (
+              <PaymentButton
+                // isCashier={isCashier}
+                orderId={order.data?._id}
+                statusPayment={order?.data?.statusPayment!}
+                poolTableName={poolTable.name}
+                customerName={order.data?.customer?.name}
+                customerPhone={order.data?.customer?.phone}
+                totalCost={order.data?.poolRental?.totalCost}
+              />
+            )}
+            <CafeButton order={order.data} />
           </div>
-        </div>
+        </section>
         {/* === ENDS LIST_BUTTON === */}
-        {poolTable.isActive === false &&
-        !poolTable.startTime &&
-        !poolTable.endTime ? (
-          <StartTimerButton
-            // isCashier={isCashier}
-            poolTableId={poolTable._id}
-            poolTableName={poolTable.name}
-            gapDuration={poolTable.gapDuration}
-          />
-        ) : poolTable.isActive === true && !!poolTable.startTime ? (
-          <StopTimerButton
-            // isCashier={isCashier}
-            poolTableId={poolTable._id}
-            poolTableName={poolTable.name}
-            startTime={poolTable.startTime}
-            poolRentalId={order.data?.poolRental?._id}
-            packetCost={order.data?.packet?.cost}
-            packetRate={order.data?.packet?.rate}
-          />
-        ) : (
-          <PaymentButton
-            // isCashier={isCashier}
-            orderId={order.data?._id}
-            statusPayment={order?.data?.statusPayment!}
-            poolTableName={poolTable.name}
-            customerName={order.data?.customer?.name}
-            customerPhone={order.data?.customer?.phone}
-            totalCost={order.data?.poolRental?.totalCost}
-          />
-        )}
       </div>
     </div>
   )
