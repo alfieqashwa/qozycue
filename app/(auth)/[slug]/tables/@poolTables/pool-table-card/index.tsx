@@ -91,7 +91,11 @@ export function PoolTableCard({
                 totalCost={order.data?.poolRental?.totalCost}
               />
             )}
-            <CafeButton order={order.data} />
+            <CafeButton
+              order={order.data}
+              poolTableId={poolTable._id}
+              poolTableName={poolTable.name}
+            />
           </div>
         </section>
         {/* === ENDS LIST_BUTTON === */}

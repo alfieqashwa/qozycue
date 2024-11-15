@@ -1,0 +1,171 @@
+"use client"
+
+import { Coffee, ShoppingBasket, Soup, Trash2 } from "lucide-react"
+import { Fragment } from "react"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { formattedPrice } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
+import { PrintOrder } from "./print-order"
+import { ReprintOrder } from "./reprint-order"
+import { FunctionReturnType } from "convex/server"
+import { api } from "@/convex/_generated/api"
+
+export function OrderList({
+  // isManager,
+  // isCashier,
+  orderlines,
+  poolTableName,
+  customerName,
+}: {
+  // isManager: boolean
+  // isCashier: boolean
+  orderlines: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
+  poolTableName?: string
+  customerName?: string
+}) {
+  const { mutate, isPending, variables } = api.orderline.delete.useMutation({
+    async onSuccess() {
+      const productName = orderlines.find(
+        (orderline) => orderline.id === variables?.id,
+      )?.product.name
+      await utils.order.findAllCafeOnlyByCompanyId.invalidate()
+      await utils.order.findByPoolTableId.invalidate()
+      await utils.order.findById.invalidate()
+      toast({
+        title: "Succeed!",
+        variant: "default",
+        description: (
+          <p>
+            <span className="font-semibold capitalize">{productName}</span> has
+            been <span className="text-rose-500">deleted</span>.
+          </p>
+        ),
+      })
+    },
+    onError(err) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: err.message || "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
+    },
+  })
+
+  return (
+    <div className="mt-1.5 rounded-2xl bg-card py-4 xl:w-4/12">
+      {!!poolTableName && (
+        <h1 className="whitespace-nowrap text-center sm:text-lg md:text-xl">
+          Table {poolTableName}
+        </h1>
+      )}
+      {!!customerName && (
+        <h1 className="truncate whitespace-nowrap text-center capitalize text-muted-foreground sm:text-sm md:text-lg">
+          {customerName}
+        </h1>
+      )}
+
+      <div className="mx-8 mt-2 flex items-center justify-between space-x-2">
+        <ReprintOrder
+          isManager={isManager}
+          orderlines={orderlines}
+          poolTableName={poolTableName}
+          customerName={customerName}
+        />
+        <PrintOrder
+          isCashier={isCashier}
+          orderlines={orderlines}
+          poolTableName={poolTableName}
+          customerName={customerName}
+        />
+      </div>
+      <ScrollArea className="h-svh px-8 pt-4">
+        <ul className="min-w-max">
+          {orderlines
+            .sort((p, q) => q.orderlineStatus.localeCompare(p.orderlineStatus))
+            .map((orderline) => {
+              const categoryName = orderline.product.category?.name
+
+              const icon =
+                categoryName === "food" ? (
+                  <Soup size={32} className="text-emerald-200" />
+                ) : categoryName === "drink" ? (
+                  <Coffee className="text-fuchsia-200" size={32} />
+                ) : (
+                  <ShoppingBasket size={32} className="text-lime-200" />
+                )
+              const textColor =
+                categoryName === "food"
+                  ? "text-emerald-200"
+                  : categoryName === "drink"
+                    ? "text-fuchsia-200"
+                    : "text-lime-200"
+
+              return (
+                <Fragment key={orderline.id}>
+                  <li
+                    className={cn(
+                      "mt-2 flex flex-col space-y-1.5 py-2 xl:flex-row xl:items-center xl:space-y-0",
+                      (isPending || orderline.orderlineStatus === "ORDERED") &&
+                        "opacity-50",
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "hidden xl:block",
+                        isPending && "animate-bounce",
+                      )}
+                    >
+                      {icon}
+                    </div>
+                    <div className="flex w-full items-center justify-between space-x-2 xl:mx-4 xl:w-9/12">
+                      <section className="w-full">
+                        <h3 className={cn("font-medium capitalize", textColor)}>
+                          {orderline.product.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          <span>
+                            {formattedPrice.format(
+                              Number(orderline.product.salePrice),
+                            )}
+                            /{orderline.product.unitOfMeasure?.name}
+                          </span>
+                        </p>
+                      </section>
+                      <div className="relative min-h-9 min-w-10 rounded-md border bg-muted shadow-md">
+                        <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-semibold">
+                          {orderline.quantity}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mr-2 w-full xl:w-3/12 xl:max-w-24">
+                      <p className="text-right text-sm font-medium">
+                        {formattedPrice.format(Number(orderline.amount))}
+                      </p>
+                    </div>
+                    <Button
+                      disabled={
+                        !isCashier ||
+                        isPending ||
+                        orderline.orderlineStatus === "ORDERED"
+                      }
+                      onClick={() => mutate({ id: orderline.id })}
+                      className="relative min-h-9 min-w-10 rounded-md bg-muted shadow-md transition-colors hover:cursor-pointer hover:bg-muted/75 disabled:pointer-events-auto disabled:cursor-not-allowed"
+                    >
+                      <Trash2
+                        size={18}
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-destructive"
+                      />
+                    </Button>
+                  </li>
+                  <Separator />
+                </Fragment>
+              )
+            })}
+        </ul>
+      </ScrollArea>
+    </div>
+  )
+}
