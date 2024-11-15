@@ -30,6 +30,43 @@ export const findAllByOrderId = query({
 
 // === MUTATIONS ===
 
+export const findAllByIds = query({
+  args: { ids: v.array(v.id("orderlines")) },
+  handler: async (ctx, { ids }) => {
+    await protectedProcedure(ctx, {})
+
+    return await Promise.all(
+      ids.map(async (id) => {
+        const orderline = await ctx.db.get(id)
+        const order =
+          orderline !== null
+            ? await ctx.db
+                .query("orders")
+                .withIndex("by_id", (q) => q.eq("_id", orderline?.orderId))
+                .first()
+            : null
+        const company =
+          order !== null ? await ctx.db.get(order?.companyId) : null
+        const product =
+          orderline !== null ? await ctx.db.get(orderline?.productId) : null
+        const category =
+          product !== null ? await ctx.db.get(product?.categoryId) : null
+
+        return {
+          ...orderline,
+          company: { name: company?.name },
+          product: {
+            name: product?.name,
+            category: {
+              name: category?.name,
+            },
+          },
+        }
+      }),
+    )
+  },
+})
+
 export const updateOrderlineStatusList = mutation({
   args: {
     ids: v.array(v.id("orderlines")),
