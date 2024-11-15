@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { FunctionReturnType } from "convex/server"
+import { ConvexError } from "convex/values"
 import { Loader2, Minus, Plus, Send } from "lucide-react"
+import { toast } from "sonner"
 
 export function OrderProduct({
   isCashier,
@@ -15,60 +22,54 @@ export function OrderProduct({
 }: {
   isCashier: boolean
   poolTableId: string
-  orderline?: IOrderline
+  orderline:
+    | FunctionReturnType<typeof api.orderlines.findAllByOrderId>[0]
+    | undefined
   orderlineQty?: number
-  orderId: string
-  productId: string
+  orderId: Id<"orders">
+  productId: Id<"products">
   name: string
   price: number
   qty: number
   setQty: React.Dispatch<React.SetStateAction<number>>
 }) {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending, variables } = api.orderline.upsert.useMutation({
-    async onSuccess() {
-      await utils.order.findAllCafeOnlyByCompanyId.invalidate()
-      await utils.order.findByPoolTableId.invalidate({ poolTableId })
-      await utils.order.findById.invalidate()
-      setQty(variables?.quantity as number)
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending, variables } = useMutation({
+    mutationFn: useConvexMutation(api.orderlines.upsert),
+    onSuccess() {
+      setQty(variables?.upsertOrderlineSchema.quantity as number)
+      toast.success("Succeed!", {
         description: (
           <p>
             <span className="font-semibold capitalize">{name}</span> has been{" "}
             <span
               className={cn(
-                !!orderline?.id ? "text-amber-400" : "text-emerald-400",
+                !!orderline?._id ? "text-amber-400" : "text-emerald-400",
               )}
             >
-              {!!orderline?.id ? "updated" : "created"}
+              {!!orderline?._id ? "updated" : "created"}
             </span>
             .
           </p>
         ),
       })
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
 
   const addOrderline = () => {
     mutate({
-      id: orderline?.id,
-      orderId,
-      orderlineStatus: orderline?.orderlineStatus,
-      productId,
-      quantity: qty,
-      amount: price * qty,
+      upsertOrderlineSchema: {
+        id: orderline?._id,
+        orderId,
+        orderlineStatus: orderline?.orderlineStatus,
+        productId,
+        quantity: qty,
+        amount: price * qty,
+      },
     })
   }
   return (

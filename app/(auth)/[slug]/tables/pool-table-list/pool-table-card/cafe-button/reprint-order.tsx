@@ -1,17 +1,20 @@
 "use-client"
 
-import { Coffee, Printer, ShoppingBasket, Soup } from "lucide-react"
-import { useRef, useState } from "react"
-import { useReactToPrint } from "react-to-print"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { FunctionReturnType } from "convex/server"
+import { Coffee, Printer, ShoppingBasket, Soup } from "lucide-react"
+import { useRef, useState } from "react"
+import { useReactToPrint } from "react-to-print"
 import { PrintOrderButton } from "./print-order-button"
 import { WrapperDialog } from "./wrapper-modal"
 
-type TVariables = { ids: { id: string }[] }
+type TVariables = { ids: Id<"orderlines">[] }
 
 export function ReprintOrder({
   isManager,
@@ -20,7 +23,7 @@ export function ReprintOrder({
   customerName,
 }: {
   isManager: boolean
-  orderlines: NonNullable<IOrderline[]>
+  orderlines: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   poolTableName?: string
   customerName?: string
 }) {
@@ -64,7 +67,7 @@ export function ReprintOrder({
           )
         }
       })
-      .map((orderline) => ({ id: orderline.id }))
+      .map((orderline) => orderline._id)
 
     setVariables({ ids: unOrderedOrderlineIds })
   }
@@ -174,7 +177,7 @@ export function ReprintOrder({
       >
         <ScrollArea className="h-[20rem] w-8/12 md:h-[28rem] md:pt-4">
           <PrintOrderButton
-            ids={variables?.ids as Array<{ id: string }>}
+            ids={variables?.ids}
             poolTableName={poolTableName}
             customerName={customerName}
             orderBy={reOrderBy}

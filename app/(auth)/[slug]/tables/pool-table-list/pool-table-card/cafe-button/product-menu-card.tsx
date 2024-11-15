@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import {
   Popover,
   PopoverContent,
@@ -9,10 +8,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
+import { FunctionReturnType } from "convex/server"
+import { useEffect, useState } from "react"
 import { OrderProduct } from "./order-product"
-import { Id } from "@/convex/_generated/dataModel"
 
 export function ProductMenuCard({
   isCashier,
@@ -29,7 +31,7 @@ export function ProductMenuCard({
   isCashier: boolean
   isDesktop: boolean
   poolTableId: Id<"poolTables">
-  orderlines?: IOrderline[]
+  orderlines?: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   orderId: Id<"orders">
   productId: Id<"products">
   name: string

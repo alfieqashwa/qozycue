@@ -1,10 +1,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { Metadata } from "next"
-import { PoolTableList } from "./pool-table-list"
-import { CafeOnly } from "./cafe-only"
-import { fetchQuery } from "convex/nextjs"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
+import { fetchQuery } from "convex/nextjs"
+import type { Metadata } from "next"
+import { CafeOnly } from "./cafe-only"
+import { PoolTableList } from "./pool-table-list"
 
 export const metadata: Metadata = {
   title: "Tables",
@@ -40,7 +40,10 @@ export default async function Page() {
         />
       </TabsContent>
       <TabsContent value="cafe-only" className="relative">
-        <CafeOnly />
+        <CafeOnly
+          managerAccessLevel={managerAccessLevel}
+          cashierAccessLevel={cashierAccessLevel}
+        />
       </TabsContent>
     </Tabs>
   )

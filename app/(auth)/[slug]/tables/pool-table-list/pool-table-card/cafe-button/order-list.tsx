@@ -1,16 +1,18 @@
-"use client"
-
-import { Coffee, ShoppingBasket, Soup, Trash2 } from "lucide-react"
-import { Fragment } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { api } from "@/convex/_generated/api"
 import { formattedPrice } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { FunctionReturnType } from "convex/server"
+import { ConvexError } from "convex/values"
+import { Coffee, ShoppingBasket, Soup, Trash2 } from "lucide-react"
+import { Fragment } from "react"
+import { toast } from "sonner"
 import { PrintOrder } from "./print-order"
 import { ReprintOrder } from "./reprint-order"
-import { FunctionReturnType } from "convex/server"
-import { api } from "@/convex/_generated/api"
 
 export function OrderList({
   isManager,
@@ -25,17 +27,13 @@ export function OrderList({
   poolTableName?: string
   customerName?: string
 }) {
-  const { mutate, isPending, variables } = api.orderline.delete.useMutation({
-    async onSuccess() {
+  const { mutate, isPending, variables } = useMutation({
+    mutationFn: useConvexMutation(api.orderlines.remove),
+    onSuccess() {
       const productName = orderlines.find(
-        (orderline) => orderline.id === variables?.id,
+        (orderline) => orderline._id === variables?.id,
       )?.product.name
-      await utils.order.findAllCafeOnlyByCompanyId.invalidate()
-      await utils.order.findByPoolTableId.invalidate()
-      await utils.order.findById.invalidate()
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast.success("Succeed!", {
         description: (
           <p>
             <span className="font-semibold capitalize">{productName}</span> has
@@ -44,14 +42,11 @@ export function OrderList({
         ),
       })
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
 
   return (
@@ -104,7 +99,7 @@ export function OrderList({
                     : "text-lime-200"
 
               return (
-                <Fragment key={orderline.id}>
+                <Fragment key={orderline._id}>
                   <li
                     className={cn(
                       "mt-2 flex flex-col space-y-1.5 py-2 xl:flex-row xl:items-center xl:space-y-0",
@@ -151,7 +146,7 @@ export function OrderList({
                         isPending ||
                         orderline.orderlineStatus === "ORDERED"
                       }
-                      onClick={() => mutate({ id: orderline.id })}
+                      onClick={() => mutate({ id: orderline._id })}
                       className="relative min-h-9 min-w-10 rounded-md bg-muted shadow-md transition-colors hover:cursor-pointer hover:bg-muted/75 disabled:pointer-events-auto disabled:cursor-not-allowed"
                     >
                       <Trash2

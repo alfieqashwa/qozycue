@@ -1,13 +1,19 @@
 "use-client"
 
-import { Coffee, Printer, ShoppingBasket, Soup } from "lucide-react"
-import { useRef, useState } from "react"
-import { useReactToPrint } from "react-to-print"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
+import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { FunctionReturnType } from "convex/server"
+import { ConvexError } from "convex/values"
+import { Coffee, Printer, ShoppingBasket, Soup } from "lucide-react"
+import { useRef, useState } from "react"
+import { useReactToPrint } from "react-to-print"
+import { toast } from "sonner"
 import { PrintOrderButton } from "./print-order-button"
 import { WrapperDialog } from "./wrapper-modal"
 
@@ -18,7 +24,7 @@ export function PrintOrder({
   customerName,
 }: {
   isCashier: boolean
-  orderlines: NonNullable<IOrderline[]>
+  orderlines: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   poolTableName?: string
   customerName?: string
 }) {
@@ -26,36 +32,23 @@ export function PrintOrder({
   const [orderBy, setOrderBy] = useState("")
   const [notes, setNotes] = useState("")
   const [open, setOpen] = useState(false)
-  const { toast } = useToast()
-  const utils = api.useUtils()
 
-  const { mutate, isPending, variables } =
-    api.orderline.updateOrderlineStatusList.useMutation({
-      async onSuccess() {
-        await utils.orderline.invalidate()
-        await utils.order.findAllCafeOnlyByCompanyId.invalidate()
-        await utils.order.findByPoolTableId.invalidate()
-        await utils.order.findById.invalidate()
-
-        setOpen(true)
-        toast({
-          title: "Succeed!",
-          variant: "default",
-          description: "Update to Ordered",
-        })
-      },
-      onError(err) {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: err.message || "There was a problem with your request.",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        })
-      },
-    })
+  const { mutate, isPending, variables } = useMutation({
+    mutationFn: useConvexMutation(api.orderlines.updateOrderlineStatusList),
+    onSuccess: () =>
+      toast.success("Succeed!", {
+        description: "Update to Ordered",
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(true),
+  })
 
   // STARTS PRINT THE ORDER CONFIGURATiON
-  const orderId = orderlines?.[0]?.orderId as string
+  const orderId = orderlines[0].orderId
   const handleOrderPrint = useReactToPrint({
     content: () => orderRef.current,
     documentTitle: `receipt_order_${orderId.slice(-8, orderId.length)}`,
@@ -93,7 +86,7 @@ export function PrintOrder({
           categoryOrder.indexOf(p.product.category?.name as string) -
           categoryOrder.indexOf(q.product.category?.name as string),
       )
-      .map((orderline) => ({ id: orderline.id }))
+      .map((orderline) => orderline._id)
 
     mutate({ ids: unOrderedOrderlineIds })
   }
@@ -209,7 +202,8 @@ export function PrintOrder({
       >
         <ScrollArea className="h-[20rem] w-8/12 md:h-[28rem] md:pt-4">
           <PrintOrderButton
-            ids={variables?.ids as Array<{ id: string }>}
+            ids={variables?.ids}
+            // ids={variables?.ids as Array<{ id: string }>}
             poolTableName={poolTableName}
             customerName={customerName}
             orderBy={orderBy}
