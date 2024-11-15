@@ -1,14 +1,29 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Metadata } from "next"
+import { PoolTableList } from "./pool-table-list"
+import { CafeOnly } from "./cafe-only"
+import { fetchQuery } from "convex/nextjs"
+import { api } from "@/convex/_generated/api"
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 
 export const metadata: Metadata = {
   title: "Tables",
 }
 
-export default function TableLayout({
-  poolTables,
-  cafeOnly,
-}: Readonly<{ poolTables: React.ReactNode; cafeOnly: React.ReactNode }>) {
+export default async function Page() {
+  const session = await fetchQuery(
+    api.sessions.find,
+    {},
+    { token: convexAuthNextjsToken() },
+  )
+
+  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+    session.user.role ?? "",
+  )
+  const cashierAccessLevel = ["DEWA", "ADMIN", "CASHIER"].includes(
+    session.user.role ?? "",
+  )
+
   return (
     <Tabs defaultValue="pool" className="mt-2">
       <TabsList className="mb-3">
@@ -19,18 +34,13 @@ export default function TableLayout({
         </TabsTrigger>
       </TabsList>
       <TabsContent value="pool">
-        {/* <PoolTableTab
+        <PoolTableList
           managerAccessLevel={managerAccessLevel}
           cashierAccessLevel={cashierAccessLevel}
-        /> */}
-        {poolTables}
+        />
       </TabsContent>
       <TabsContent value="cafe-only" className="relative">
-        {/* <CafeOnlyTab
-          managerAccessLevel={managerAccessLevel}
-          cashierAccessLevel={cashierAccessLevel}
-        /> */}
-        {cafeOnly}
+        <CafeOnly />
       </TabsContent>
     </Tabs>
   )

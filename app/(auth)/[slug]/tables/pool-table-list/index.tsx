@@ -6,7 +6,13 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
 import { PoolTableCard } from "./pool-table-card"
 
-export default function Page() {
+export function PoolTableList({
+  managerAccessLevel,
+  cashierAccessLevel,
+}: {
+  managerAccessLevel: boolean
+  cashierAccessLevel: boolean
+}) {
   const { data: sortedPoolTableList, status } = useQuery({
     ...convexQuery(api.pooltables.findAll, {}),
     select(data) {
@@ -29,19 +35,12 @@ export default function Page() {
               />
             )
           return (
-            <PoolTableCard poolTable={poolTable} key={poolTable._id} />
-            // <PoolTableCard
-            //   managerAccessLevel={managerAccessLevel}
-            //   cashierAccessLevel={cashierAccessLevel}
-            //   isPublished={t.company.isPublished}
-            //   isActive={t.isActive}
-            //   poolTableId={t.id}
-            //   poolTableName={t.name}
-            //   poolTableStartTime={t.startTime as Date}
-            //   poolTableEndTime={t.endTime as Date}
-            //   gapDuration={t.gapDuration as number}
-            //   key={t.id}
-            // />
+            <PoolTableCard
+              managerAccessLevel={managerAccessLevel}
+              cashierAccessLevel={cashierAccessLevel}
+              poolTable={poolTable}
+              key={poolTable._id}
+            />
           )
         })}
       </div>

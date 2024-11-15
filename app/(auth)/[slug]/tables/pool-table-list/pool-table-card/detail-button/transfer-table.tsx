@@ -32,7 +32,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 export function TransferTable({
-  // isCashier,
+  isCashier,
   orderId,
   poolTableIdFrom,
   poolTableName,
@@ -40,7 +40,7 @@ export function TransferTable({
   endTime,
   setOpenDetailDrawer,
 }: {
-  // isCashier: boolean
+  isCashier: boolean
   orderId: Id<"orders">
   poolTableIdFrom: Id<"poolTables">
   poolTableName: string
@@ -88,15 +88,14 @@ export function TransferTable({
     })
   }
 
-  // const isCashier = true
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
-        // disabled={!isCashier || !transferPoolTableList?.length}
+        disabled={!isCashier || !transferPoolTableList?.length}
         className={cn(
           "pr-2 text-muted-foreground disabled:pointer-events-auto disabled:cursor-not-allowed",
-          // isCashier &&
-          //   "transition-colors duration-300 ease-in-out hover:text-foreground",
+          isCashier &&
+            "transition-colors duration-300 ease-in-out hover:text-foreground",
         )}
       >
         <Tooltip>

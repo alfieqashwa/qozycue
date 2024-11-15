@@ -13,14 +13,14 @@ import { FunctionReturnType } from "convex/server"
 import { api } from "@/convex/_generated/api"
 
 export function OrderList({
-  // isManager,
-  // isCashier,
+  isManager,
+  isCashier,
   orderlines,
   poolTableName,
   customerName,
 }: {
-  // isManager: boolean
-  // isCashier: boolean
+  isManager: boolean
+  isCashier: boolean
   orderlines: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   poolTableName?: string
   customerName?: string

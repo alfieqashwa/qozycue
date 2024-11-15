@@ -21,7 +21,7 @@ export default function Page() {
     ...convexQuery(api.orders.findAllSortedByDate, {
       from: date?.from?.getTime(),
       to: date?.to?.getTime(),
-      // notEqual: "ARCHIVE",
+      notEqual: "ARCHIVE",
     }),
     enabled: !!date?.from && !!date.to,
     select(data) {

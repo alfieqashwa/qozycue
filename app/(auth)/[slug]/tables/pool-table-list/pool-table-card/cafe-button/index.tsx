@@ -23,10 +23,14 @@ import { ProductMenuCard } from "./product-menu-card"
 import { SearchProductInput } from "./search-product-input"
 
 export function CafeButton({
+  isManager,
+  isCashier,
   order,
   poolTableId,
   poolTableName,
 }: {
+  isManager: boolean
+  isCashier: boolean
   order?: FunctionReturnType<typeof api.orders.findByPoolTableId>
   poolTableId: Id<"poolTables">
   poolTableName: string
@@ -108,7 +112,7 @@ export function CafeButton({
                   {status === "success" &&
                     products.foods.map((p) => (
                       <ProductMenuCard
-                        // isCashier={isCashier}
+                        isCashier={isCashier}
                         isDesktop={isDesktop}
                         poolTableId={poolTableId}
                         orderlines={orderlines}
@@ -129,7 +133,7 @@ export function CafeButton({
                   {status === "success" &&
                     products.drinks.map((p) => (
                       <ProductMenuCard
-                        // isCashier={isCashier}
+                        isCashier={isCashier}
                         isDesktop={isDesktop}
                         poolTableId={poolTableId}
                         orderlines={orderlines}
@@ -153,7 +157,7 @@ export function CafeButton({
                   {status === "success" &&
                     products.others.map((p) => (
                       <ProductMenuCard
-                        // isCashier={isCashier}
+                        isCashier={isCashier}
                         isDesktop={isDesktop}
                         poolTableId={poolTableId}
                         orderlines={orderlines}
@@ -174,8 +178,8 @@ export function CafeButton({
               </TabsContent>
               {!!orderlines?.length && (
                 <OrderList
-                  // isManager={isManager}
-                  // isCashier={isCashier}
+                  isManager={isManager}
+                  isCashier={isCashier}
                   poolTableName={poolTableName}
                   customerName={order?.customer?.name}
                   orderlines={orderlines}

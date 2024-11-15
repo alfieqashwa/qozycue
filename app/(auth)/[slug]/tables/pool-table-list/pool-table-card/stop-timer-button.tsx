@@ -19,7 +19,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 export function StopTimerButton({
-  // isCashier,
+  isCashier,
   poolTableId,
   poolTableName,
   startTime,
@@ -27,7 +27,7 @@ export function StopTimerButton({
   packetRate,
   packetCost,
 }: {
-  // isCashier: boolean
+  isCashier: boolean
   poolTableId: Id<"poolTables">
   poolTableName: string
   startTime: number
@@ -70,7 +70,7 @@ export function StopTimerButton({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          // disabled={!isCashier}
+          disabled={!isCashier}
           variant="secondary"
           className="space-x-2 text-red-500 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >

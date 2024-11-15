@@ -13,8 +13,12 @@ import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
 
 export function PoolTableCard({
+  managerAccessLevel,
+  cashierAccessLevel,
   poolTable,
 }: {
+  managerAccessLevel: boolean
+  cashierAccessLevel: boolean
   poolTable: FunctionReturnType<typeof api.pooltables.findAll>[0]
 }) {
   const order = useTanstackQuery(
@@ -41,7 +45,11 @@ export function PoolTableCard({
       <div className="relative h-44 rounded-2xl bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow">
         {/* <pre>{JSON.stringify(poolTable, null, 2)}</pre> */}
         <section className="flex justify-between">
-          <Timer poolTable={poolTable} order={order.data} />
+          <Timer
+            isCashier={cashierAccessLevel}
+            poolTable={poolTable}
+            order={order.data}
+          />
           <DescriptionTable
             poolTable={poolTable}
             orderStatusSucceed={order.status === "success"}
@@ -57,6 +65,7 @@ export function PoolTableCard({
         <section className="absolute bottom-2.5 left-1/2 w-full -translate-x-1/2 font-sans">
           <div className="mx-2 flex justify-between sm:mx-3">
             <DetailButton
+              isCashier={cashierAccessLevel}
               poolTable={poolTable}
               orderStatus={order.status}
               order={order.data}
@@ -65,14 +74,14 @@ export function PoolTableCard({
             !poolTable.startTime &&
             !poolTable.endTime ? (
               <StartTimerButton
-                // isCashier={isCashier}
+                isCashier={cashierAccessLevel}
                 poolTableId={poolTable._id}
                 poolTableName={poolTable.name}
                 gapDuration={poolTable.gapDuration}
               />
             ) : poolTable.isActive === true && !!poolTable.startTime ? (
               <StopTimerButton
-                // isCashier={isCashier}
+                isCashier={cashierAccessLevel}
                 poolTableId={poolTable._id}
                 poolTableName={poolTable.name}
                 startTime={poolTable.startTime}
@@ -82,9 +91,8 @@ export function PoolTableCard({
               />
             ) : (
               <PaymentButton
-                // isCashier={isCashier}
+                isCashier={cashierAccessLevel}
                 orderId={order.data?._id}
-                statusPayment={order?.data?.statusPayment!}
                 poolTableName={poolTable.name}
                 customerName={order.data?.customer?.name}
                 customerPhone={order.data?.customer?.phone}
@@ -92,6 +100,8 @@ export function PoolTableCard({
               />
             )}
             <CafeButton
+              isManager={managerAccessLevel}
+              isCashier={cashierAccessLevel}
               order={order.data}
               poolTableId={poolTable._id}
               poolTableName={poolTable.name}

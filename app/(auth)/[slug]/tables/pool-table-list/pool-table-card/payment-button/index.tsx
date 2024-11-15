@@ -9,17 +9,15 @@ import { PaymentForm } from "./payment-form"
 import { PaymentDrawer, PaymentSheet } from "./payment-wrapper"
 
 export function PaymentButton({
-  // isCashier,
+  isCashier,
   orderId,
   poolTableName,
   customerName,
   customerPhone,
   totalCost,
-  statusPayment,
 }: {
-  // isCashier: boolean
+  isCashier: boolean
   orderId: Id<"orders"> | undefined
-  statusPayment: StatusPayment
   poolTableName: string
   customerName?: string
   customerPhone?: string
@@ -41,8 +39,10 @@ export function PaymentButton({
       <PaymentSheet
         open={open}
         setOpen={setOpen}
-        disabled={// !isCashier ||
-        orderlines?.some((o) => o.orderlineStatus === "UNORDERED")}
+        disabled={
+          !isCashier ||
+          orderlines?.some((o) => o.orderlineStatus === "UNORDERED")
+        }
         poolTableName={poolTableName}
       >
         {status === "success" && (
@@ -64,8 +64,9 @@ export function PaymentButton({
     <PaymentDrawer
       open={open}
       setOpen={setOpen}
-      disabled={// !isCashier || orderlines?.some((o) => o.orderlineStatus === "UNORDERED")
-      orderlines?.some((o) => o.orderlineStatus === "UNORDERED")}
+      disabled={
+        !isCashier || orderlines?.some((o) => o.orderlineStatus === "UNORDERED")
+      }
       poolTableName={poolTableName}
     >
       {status === "success" && (

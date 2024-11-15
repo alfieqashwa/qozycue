@@ -6,9 +6,11 @@ import { ResetButton } from "./reset-button"
 import { Stopwatch } from "./stopwatch"
 
 export function Timer({
+  isCashier,
   poolTable,
   order,
 }: {
+  isCashier: boolean
   poolTable: FunctionReturnType<typeof api.pooltables.findAll>[0]
   order: FunctionReturnType<typeof api.orders.findByPoolTableId> | undefined
 }) {
@@ -50,7 +52,9 @@ export function Timer({
               poolTableId={poolTable._id}
               poolTableName={poolTable.name}
               orderId={order?._id}
-              disabled={!poolTable.startTime && !poolTable.endTime}
+              disabled={
+                !isCashier || (!poolTable.startTime && !poolTable.endTime)
+              }
             />
           )}
         </div>

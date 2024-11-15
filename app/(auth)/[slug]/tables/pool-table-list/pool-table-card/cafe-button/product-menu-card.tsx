@@ -15,7 +15,7 @@ import { OrderProduct } from "./order-product"
 import { Id } from "@/convex/_generated/dataModel"
 
 export function ProductMenuCard({
-  // isCashier,
+  isCashier,
   isDesktop,
   poolTableId,
   orderlines,
@@ -26,7 +26,7 @@ export function ProductMenuCard({
   className,
   children,
 }: {
-  // isCashier: boolean
+  isCashier: boolean
   isDesktop: boolean
   poolTableId: Id<"poolTables">
   orderlines?: IOrderline[]

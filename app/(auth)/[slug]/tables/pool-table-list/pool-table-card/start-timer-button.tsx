@@ -45,12 +45,12 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 export function StartTimerButton({
-  // isCashier,
+  isCashier,
   poolTableId,
   poolTableName,
   gapDuration,
 }: {
-  // isCashier: boolean
+  isCashier: boolean
   poolTableId: Id<"poolTables">
   poolTableName: string
   gapDuration: number
@@ -148,7 +148,7 @@ export function StartTimerButton({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          // disabled={!isCashier}
+          disabled={!isCashier}
           variant="secondary"
           className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >

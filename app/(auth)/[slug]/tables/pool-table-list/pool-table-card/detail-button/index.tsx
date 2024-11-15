@@ -22,10 +22,12 @@ import { useState } from "react"
 import { TransferTable } from "./transfer-table"
 
 export function DetailButton({
+  isCashier,
   poolTable,
   orderStatus,
   order,
 }: {
+  isCashier: boolean
   poolTable: FunctionReturnType<typeof api.pooltables.findAll>[0]
   orderStatus: "pending" | "error" | "success"
   order: FunctionReturnType<typeof api.orders.findByPoolTableId> | undefined
@@ -106,7 +108,7 @@ export function DetailButton({
             </TabsList>
             {!!order?.poolRental && poolTable.isActive && (
               <TransferTable
-                // isCashier={isCashier as boolean}
+                isCashier={isCashier}
                 orderId={order._id!}
                 poolTableIdFrom={poolTable._id}
                 poolTableName={poolTable.name}
