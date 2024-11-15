@@ -55,6 +55,7 @@ export const findAllByIds = query({
         return {
           ...orderline,
           company: { name: company?.name },
+          order,
           product: {
             name: product?.name,
             category: {

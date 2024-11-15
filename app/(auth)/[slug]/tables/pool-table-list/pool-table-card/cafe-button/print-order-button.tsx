@@ -1,9 +1,13 @@
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { forwardRef, type LegacyRef } from "react"
 
 type PrintOrderProps = {
-  ids: { id: string }[]
+  ids: Id<"orderlines">[] | undefined
   poolTableName?: string
   customerName?: string
   orderBy?: string
@@ -24,10 +28,12 @@ export const PrintOrderButton = forwardRef(
     }: PrintOrderProps,
     ref,
   ) => {
-    const { data: orderlines, status } = api.orderline.findAllbyIds.useQuery(
-      { ids },
-      { enabled: !!ids },
-    )
+    const { data: orderlines, status } = useTanstackQuery({
+      ...convexQuery(api.orderlines.findAllByIds, {
+        ids: ids as Id<"orderlines">[],
+      }),
+      enabled: !!ids,
+    })
 
     const formattedCurrentDate = format(new Date(), "dd/MM/yyyy:HH:mm:ss", {
       locale: id,
@@ -56,9 +62,9 @@ export const PrintOrderButton = forwardRef(
                 <p>Date: {formattedCurrentDate}</p>
                 <p className="features-title">
                   Order: #
-                  {orderlines[0]?.order?.id.slice(
+                  {orderlines[0]?.order?._id.slice(
                     -8,
-                    orderlines[0].order.id.length,
+                    orderlines[0].order._id.length,
                   )}
                 </p>
               </article>
@@ -99,7 +105,7 @@ export const PrintOrderButton = forwardRef(
                       return (
                         <li
                           className="flex w-full items-start space-x-2"
-                          key={orderline.id}
+                          key={orderline._id}
                         >
                           <p className="w-2/12 pr-2 text-right">
                             <span>{orderline.quantity}</span>
@@ -127,3 +133,6 @@ export const PrintOrderButton = forwardRef(
     )
   },
 )
+
+//? source -> https://chatgpt.com/c/67371a5b-3118-8002-8897-64ddd5e71a95
+PrintOrderButton.displayName = "PrintOrderButton"
