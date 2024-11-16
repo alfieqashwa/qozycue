@@ -13,25 +13,28 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import {
   type TUpdateGapDuration,
   updateGapDurationSchema,
 } from "@/types/schema/pool-table-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { Pencil } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function SetupGapDuration({
   poolTableId,
   gapDuration,
 }: {
-  poolTableId: string
+  poolTableId: Id<"poolTables">
   gapDuration?: number
 }) {
-  const { toast } = useToast()
-  const utils = api.useUtils()
-
   const form = useForm<TUpdateGapDuration>({
     resolver: zodResolver(updateGapDurationSchema),
     defaultValues: {
@@ -42,33 +45,28 @@ export function SetupGapDuration({
 
   const gapDurationWatch = form.watch("gapDuration")
 
-  const { mutate, isPending } = api.poolTable.updateGapDuration.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.pooltables.updateGapDuration),
+
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "Gap Duration has been updated.",
-      })
-      await utils.poolTable.invalidate()
-      await utils.poolRental.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
   })
 
   function onSubmit(values: TUpdateGapDuration) {
     const { gapDuration } = values
 
     mutate({
-      poolTableId,
-      gapDuration,
+      updateGapDurationSchema: {
+        poolTableId,
+        gapDuration,
+      },
     })
   }
 

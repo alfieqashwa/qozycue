@@ -3,6 +3,7 @@ import { ConvexError, v } from "convex/values"
 import {
   createPoolTableSchema,
   togglePoolSchema,
+  updateGapDurationSchema,
   updatePoolTableSchema,
 } from "../types/schema/pool-table-schema"
 import { mutation, query } from "./_generated/server"
@@ -161,5 +162,17 @@ export const findGapDuration = query({
     await protectedProcedure(ctx, {})
 
     return await ctx.db.get(poolTableId)
+  },
+})
+
+export const updateGapDuration = zMutation({
+  args: { updateGapDurationSchema },
+  handler: async (
+    ctx,
+    { updateGapDurationSchema: { poolTableId, gapDuration } },
+  ) => {
+    await protectedProcedure(ctx, {})
+
+    return await ctx.db.patch(poolTableId, { gapDuration })
   },
 })
