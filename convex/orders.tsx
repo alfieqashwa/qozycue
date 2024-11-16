@@ -7,7 +7,12 @@ import {
 } from "../types/schema/order-schema"
 import { submitPaymentSchema } from "../types/schema/payment-schema"
 import { mutation, query } from "./_generated/server"
-import { cashierProcedure, protectedProcedure, zMutation } from "./helpers"
+import {
+  cashierProcedure,
+  managerProcedure,
+  protectedProcedure,
+  zMutation,
+} from "./helpers"
 
 export const findAll = query({
   args: { companyId: v.id("companies") },
@@ -437,5 +442,14 @@ export const payment = zMutation({
     })
 
     return { updateOrder, updatePoolTable }
+  },
+})
+
+export const remove = mutation({
+  args: { id: v.id("orders") },
+  handler: async (ctx, { id }) => {
+    await managerProcedure(ctx, {})
+
+    return await ctx.db.delete(id)
   },
 })

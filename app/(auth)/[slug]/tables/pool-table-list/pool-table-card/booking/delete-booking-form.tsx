@@ -20,12 +20,18 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
 
 type DeleteBookingProps = {
-  orderId: string | null
+  orderId: Id<"orders"> | null
   customerName?: string
 }
 
@@ -34,31 +40,20 @@ export function DeleteBookingForm({
   customerName,
 }: DeleteBookingProps) {
   const [open, setOpen] = useState(false)
-  const utils = api.useUtils()
-  const { toast } = useToast()
 
-  const { mutate, isPending } = api.order.delete.useMutation({
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.remove),
     async onSuccess() {
-      // delete user from team
-      await utils.poolTable.invalidate()
-      await utils.order.invalidate()
-
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-      toast({
-        title: "Succeed!",
-        variant: "default",
+      toast("Succeed!", {
         description: `Booking ${customerName} has been deleted.`,
       })
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
