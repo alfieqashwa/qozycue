@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
+import { Booking } from "./booking"
 import { CafeButton } from "./cafe-button"
 import { DescriptionTable } from "./description-table"
 import { DetailButton } from "./detail-button"
@@ -27,6 +28,15 @@ export function PoolTableCard({
 
   return (
     <div className="group relative">
+      {poolTable.isPublished && order.data?.packet?.rate !== "MINUTE" && (
+        <Booking
+          isCashier={cashierAccessLevel}
+          poolTableId={poolTable._id}
+          poolTableName={poolTable.name}
+          gapDuration={poolTable.gapDuration}
+          openAndNotBookingOrderId={order.data?._id}
+        />
+      )}
       <div
         className={cn(
           "group-transition-colors absolute -inset-[1px] h-44 w-full rounded-2xl duration-500 ease-in-out",

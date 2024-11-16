@@ -2,17 +2,25 @@
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FilePlus2 } from "lucide-react"
 import { useState } from "react"
 import { CreateBookingForm } from "./create-booking-form"
 
-export const CreateBooking = ({ poolTableId }: { poolTableId: string }) => {
+export const CreateBooking = ({
+  poolTableId,
+}: {
+  poolTableId: Id<"poolTables">
+}) => {
   const [open, setOpen] = useState(false)
 
-  const { data, status } = api.poolTable.findGapDuration.useQuery(
-    { poolTableId },
-    { enabled: Boolean(poolTableId) },
-  )
+  const { data, status } = useTanstackQuery({
+    ...convexQuery(api.pooltables.findGapDuration, { poolTableId }),
+    enabled: Boolean(poolTableId),
+  })
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -25,7 +33,7 @@ export const CreateBooking = ({ poolTableId }: { poolTableId: string }) => {
       {status === "success" && (
         <CreateBookingForm
           poolTableId={poolTableId}
-          gapDuration={data?.gapDuration as number}
+          gapDuration={data?.gapDuration!}
           setOpen={setOpen}
         />
       )}

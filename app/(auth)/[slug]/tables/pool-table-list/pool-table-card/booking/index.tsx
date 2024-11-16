@@ -12,14 +12,22 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { ToastAction } from "@/components/ui/toast"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import {
+  useMutation,
+  useQueries as useTanstackQueries,
+} from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 import { BookingRentalTable } from "./booking-rental-table"
 import { CreateBooking } from "./create-booking"
 import { CreateBookingForm } from "./create-booking-form"
@@ -33,68 +41,53 @@ export function Booking({
   openAndNotBookingOrderId,
 }: {
   isCashier: boolean
-  poolTableId: string
+  poolTableId: Id<"poolTables">
   poolTableName: string
   gapDuration: number
-  openAndNotBookingOrderId?: string
+  openAndNotBookingOrderId?: Id<"orders">
 }) {
   const [openBooking, setOpenBooking] = useState(false)
   const [openWaitingList, setOpenWaitingList] = useState(false)
 
   // STARTS BOOKING AUTOMATICALLY
   const [stopCount, setStopCount] = useState(false)
-  const [orderId, setOrderId] = useState<string | undefined>(undefined)
-  const [startTime, setStartTime] = useState<Date | null | undefined>(undefined)
-  const [endTime, setEndTime] = useState<Date | null | undefined>(undefined)
+  const [orderId, setOrderId] = useState<Id<"orders"> | undefined>(undefined)
+  const [startTime, setStartTime] = useState<number | null | undefined>(
+    undefined,
+  )
+  const [endTime, setEndTime] = useState<number | null | undefined>(undefined)
   const [hours, setHours] = useState<number | undefined>(undefined)
   const [minutes, setMinutes] = useState<number | undefined>(undefined)
   const [seconds, setSeconds] = useState<number | undefined>(undefined)
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
+  const [findAllBookingByCompanyId, { data: countIsBooking, status }] =
+    useTanstackQueries({
+      queries: [
+        {
+          ...convexQuery(api.poolrentals.findAllBookingByPoolTableId, {
+            poolTableId,
+          }),
+          enabled: !!poolTableId,
+        },
+        {
+          ...convexQuery(api.poolrentals.countIsBooking, { poolTableId }),
+          enabled: !!poolTableId,
+        },
+      ],
+    })
 
-  const findAllBookingByCompanyId =
-    api.poolRental.findAllBookingByCompanyId.useQuery(
-      { poolTableId },
-      { enabled: Boolean(poolTableId) },
-    )
-
-  const { data: countIsBooking, status } =
-    api.poolRental.countIsBooking.useQuery(
-      { poolTableId },
-      { enabled: Boolean(poolTableId), refetchInterval: 1000 * 10 },
-    )
-
-  const { mutate } = api.poolRental.startBookingTimer.useMutation({
-    async onSuccess() {
-      await utils.poolTable.invalidate()
-      await utils.order.findByPoolTableId.invalidate({ poolTableId })
-      await utils.order.countPendingStatus.invalidate({ poolTableId })
-      await utils.poolRental.countIsBooking.invalidate({ poolTableId })
-      await utils.poolRental.findAllBookingByCompanyId.invalidate({
-        poolTableId,
-      })
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate } = useMutation({
+    mutationFn: useConvexMutation(api.poolrentals.startBookingTimer),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "Booking has been started automatically.",
-      })
-    },
-
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
-
-    // Reset `stopCount` in both success and error cases
-    async onSettled() {
-      await wait(15_000) // wait 15secs
-      setStopCount(false)
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setStopCount(false),
   })
 
   useEffect(() => {
@@ -113,7 +106,7 @@ export function Booking({
       if (!startTime || !endTime) return
 
       const now = Date.now()
-      const difference = startTime.getTime() - now
+      const difference = startTime - now
 
       const h = Math.floor(
         (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
@@ -125,15 +118,17 @@ export function Booking({
       setSeconds(s)
 
       // Only trigger the mutation once
-      if (!stopCount && now >= startTime.getTime()) {
+      if (!stopCount && now >= startTime) {
         setStopCount(true) // Stop further execution within this interval
 
         mutate({
-          openAndNotBookingOrderId,
-          orderId: orderId as string,
-          poolTableId,
-          startTime,
-          endTime,
+          startBookingTimerSchema: {
+            openAndNotBookingOrderId,
+            orderId: orderId as Id<"orders">,
+            poolTableId,
+            startTime,
+            endTime,
+          },
         })
       }
     }, 1000)
@@ -265,7 +260,7 @@ const GapDurationDescription = ({ gapDuration }: { gapDuration: number }) => (
     </TooltipTrigger>
     <TooltipContent className="bg-muted">
       <p className="text-xs font-medium text-muted-foreground">
-        Selisih waktu minimum antar masing2 order
+        Minimum time difference between each order
       </p>
     </TooltipContent>
   </Tooltip>

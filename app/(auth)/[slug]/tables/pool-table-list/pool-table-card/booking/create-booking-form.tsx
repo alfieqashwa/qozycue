@@ -28,18 +28,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import {
   createBookingSchema,
   type TCreateBooking,
-} from "@/types/schema/pool-rental-schema"
+} from "@/types/schema/order-schema"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { format, isBefore, isToday, isValid, set } from "date-fns"
 import { id } from "date-fns/locale"
 import { Clock, Loader2 } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { SetupGapDuration } from "./setup-gap-duration"
 
 export function CreateBookingForm({
@@ -48,24 +57,20 @@ export function CreateBookingForm({
   gapDuration,
   setOpen,
 }: {
-  poolTableId: string
+  poolTableId: Id<"poolTables">
   poolTableName?: string
   gapDuration: number
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState(Date.now())
 
   // Update current time every minute in order to set the startTime field updated.
   // The purpose is to not allowing the user pick the time before the current time.
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 60_000)
+    const timer = setInterval(() => setCurrentTime(Date.now()), 60_000)
     return () => clearInterval(timer)
   }, [])
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  // 1. Define your form.
   const form = useForm<TCreateBooking>({
     resolver: zodResolver(createBookingSchema),
     defaultValues: {
@@ -80,7 +85,7 @@ export function CreateBookingForm({
     },
   })
 
-  const formatTimeForDisplay = (date: Date | null) => {
+  const formatTimeForDisplay = (date: number | null) => {
     if (!date || !isValid(date)) return "Pick a time"
     return format(date, "PPP 'jam' HH:mm", { locale: id })
   }
@@ -95,15 +100,17 @@ export function CreateBookingForm({
     form.reset()
   }
 
-  const countIsBooking = api.poolRental.countIsBooking.useQuery(
-    { poolTableId },
-    { enabled: Boolean(poolTableId) },
-  )
+  const countIsBooking = useTanstackQuery({
+    ...convexQuery(api.poolrentals.countIsBooking, { poolTableId }),
+    enabled: Boolean(poolTableId),
+  })
 
-  const packets = api.packet.findAllByCompanyId.useQuery(undefined, {
+  const packets = useTanstackQuery({
+    ...convexQuery(api.packets.findAll, {}),
+    enabled: Boolean(poolTableId),
     select(data) {
       return data
-        .filter((d) => d.status === Status.enabled && d.rate === "HOUR")
+        .filter((d) => d.status === "enabled" && d.rate === "HOUR")
         .sort((a, b) => b.cost - a.cost)
         .sort((p, q) =>
           p.rate.localeCompare(q.rate, undefined, { numeric: true }),
@@ -111,33 +118,18 @@ export function CreateBookingForm({
     },
   })
 
-  const { mutate, isPending } = api.poolRental.createBooking.useMutation({
-    async onSuccess() {
-      await utils.poolTable.invalidate()
-      await utils.order.findByPoolTableId.invalidate({
-        poolTableId,
-      })
-      await utils.order.findByPoolTableIdPublic.invalidate({
-        poolTableId,
-      })
-      await utils.poolRental.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-      // router.refresh()
-      setOpen(false)
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: <p>Booking Table {poolTableName} has been created.</p>,
-      })
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.poolrentals.createBooking),
+    onSuccess: () =>
+      toast.success("Succeed!", {
+        description: `Booking Table ${poolTableName} has been created.`,
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   function onSubmit(values: TCreateBooking) {
@@ -146,18 +138,20 @@ export function CreateBookingForm({
 
     if (packets.status !== "success" && packetId === "") return
 
-    const costCalc = packets.data?.find((p) => p.id === packetId)
+    const costCalc = packets.data?.find((p) => p._id === packetId)
       ?.cost as number
 
     mutate({
-      gapDuration,
-      startTime,
-      poolTableId,
-      packetId,
-      duration,
-      customerName: customerName.toLowerCase(),
-      customerPhone: customerPhone.trim(),
-      cost: costCalc,
+      createBookingSchema: {
+        gapDuration,
+        startTime,
+        poolTableId,
+        packetId,
+        duration,
+        customerName: customerName.toLowerCase(),
+        customerPhone: customerPhone.trim(),
+        cost: costCalc,
+      },
     })
   }
 
@@ -223,8 +217,10 @@ export function CreateBookingForm({
                           // If the selected date is today, ensure the time is not before current time
                           if (isToday(date) && isBefore(newDate, currentTime)) {
                             newDate = set(date, {
-                              hours: currentTime.getHours(),
-                              minutes: currentTime.getMinutes(),
+                              // hours: currentTime.getHours(),
+                              // minutes: currentTime.getMinutes(),
+                              hours: new Date(currentTime).getHours(),
+                              minutes: new Date(currentTime).getMinutes(),
                             })
                           }
                           field.onChange(newDate)
@@ -266,9 +262,9 @@ export function CreateBookingForm({
                       {packets.status === "success" &&
                         packets.data?.map((p) => (
                           <SelectItem
-                            value={p.id}
+                            value={p._id}
                             className="capitalize"
-                            key={p.id}
+                            key={p._id}
                           >
                             {p.name}
                             <span className="pl-2 text-xs text-sky-400">

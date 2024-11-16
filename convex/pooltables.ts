@@ -129,20 +129,6 @@ export const transfer = mutation({
     return { startPoolTableTo, resetPoolTableFrom, transferTable }
   },
 })
-
-// transferPoolTableList: protectedProcedure
-//   .input(z.object({ poolTableIdFrom: z.string().cuid() }))
-//   .query(async ({ ctx, input: { poolTableIdFrom } }) => {
-//     return await ctx.db.poolTable.findMany({
-//       where: {
-//         companyId: ctx.session.user.companyId as string,
-//         id: { not: poolTableIdFrom },
-//         isActive: false,
-//         startTime: null,
-//         poolRentals: { none: { order: { isBooking: true } } },
-//       },
-//     })
-//   }),
 export const transferPoolTableList = query({
   args: { poolTableIdFrom: v.id("poolTables") },
   handler: async (ctx, args) => {
@@ -166,5 +152,14 @@ export const transferPoolTableList = query({
      * TODO: filtering poolrental's none order where is booking is true
      */
     return pooltables
+  },
+})
+
+export const findGapDuration = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, { poolTableId }) => {
+    await protectedProcedure(ctx, {})
+
+    return await ctx.db.get(poolTableId)
   },
 })

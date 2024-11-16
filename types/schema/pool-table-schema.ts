@@ -32,7 +32,7 @@ export const togglePoolSchema = poolTableSchema.pick({ id: true, status: true })
 export type TTogglePool = z.infer<typeof togglePoolSchema>
 
 export const updateGapDurationSchema = z.object({
-  poolTableId: z.string().cuid(),
+  poolTableId: zid("poolTables"),
   gapDuration: z.coerce
     .number({
       required_error: "Gap Duration is required.",
@@ -43,8 +43,3 @@ export const updateGapDurationSchema = z.object({
     .lte(15),
 })
 export type TUpdateGapDuration = z.infer<typeof updateGapDurationSchema>
-
-export const findGapDurationSchema = updateGapDurationSchema.omit({
-  gapDuration: true,
-})
-export type TFindGapDuration = z.infer<typeof findGapDurationSchema>

@@ -1,6 +1,57 @@
 import { zid } from "convex-helpers/server/zod"
 import { z } from "zod"
 
+// Start Booking
+export const bookingSchema = z.object({
+  gapDuration: z.number().min(5).max(15).nonnegative(),
+  orderId: zid("orders"),
+  startTime: z.number({
+    required_error: "Start Time is required",
+    invalid_type_error: "Start Time must be a date.",
+  }),
+  customerName: z
+    .string({
+      required_error: "Name is required",
+      invalid_type_error: "Name must be a string.",
+    })
+    .min(3)
+    .max(25),
+  customerPhone: z
+    .string({
+      required_error: "Phone is required",
+    })
+    .min(11)
+    .max(12),
+  poolTableId: zid("poolTables"),
+  packetId: zid("packets"),
+  duration: z.coerce
+    .number({
+      required_error: "Duration is required",
+      invalid_type_error: "Duration must be a number.",
+    })
+    .nonnegative({ message: "Cost Price must be 0 or a positive number." })
+    .max(6)
+    .default(0),
+  cost: z.coerce
+    .number({
+      required_error: "Cost Price is required.",
+      invalid_type_error: "Cost Price must be a number.",
+    })
+    .nonnegative({ message: "Cost Price must be 0 or a positive number." }),
+})
+export const createBookingSchema = bookingSchema.omit({ orderId: true })
+export type TCreateBooking = z.infer<typeof createBookingSchema>
+
+export const startBookingTimerSchema = z.object({
+  openAndNotBookingOrderId: zid("orders").optional(),
+  orderId: zid("orders"),
+  poolTableId: zid("poolTables"),
+  startTime: z.number(),
+  endTime: z.number(),
+})
+export type TStartBookingTimer = z.infer<typeof startBookingTimerSchema>
+export type TBooking = z.infer<typeof bookingSchema>
+
 // Start Timer
 export const startTimerSchema = z.object({
   poolTableId: zid("poolTables"),
@@ -39,16 +90,6 @@ export const stopTimerSchema = z.object({
   rate: z.enum(["MINUTE", "HOUR"]),
 })
 export type TStopTimer = z.infer<typeof stopTimerSchema>
-
-export const startBookingTimerSchema = z.object({
-  openAndNotBookingOrderId: zid("orders").optional(),
-  orderId: zid("orders"),
-  poolTableId: zid("poolTables"),
-  startTime: z.number(),
-  endTime: z.number(),
-})
-
-export type TStartBookingTimer = z.infer<typeof startBookingTimerSchema>
 
 export const updateDurationSchema = z.object({
   poolTableId: zid("poolTables"),

@@ -1,8 +1,5 @@
 "use client"
 
-import { format } from "date-fns"
-import { id } from "date-fns/locale"
-import { AlarmClockOff, Hash, UserRoundCheck } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -13,8 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
+import { FunctionReturnType } from "convex/server"
+import { format } from "date-fns"
+import { id } from "date-fns/locale"
+import { AlarmClockOff, Hash, UserRoundCheck } from "lucide-react"
 import { DeleteBookingForm } from "./delete-booking-form"
 import { StartAutomatically } from "./start-booking-automatically"
 import { UpdateBooking } from "./update-booking"
@@ -30,11 +33,13 @@ export function BookingRentalTable({
   minutes,
   seconds,
 }: {
-  bookingList: RouterOutputs["poolRental"]["findAllBookingByCompanyId"]
-  poolTableId: string
+  bookingList: FunctionReturnType<
+    typeof api.poolrentals.findAllBookingByPoolTableId
+  >
+  poolTableId: Id<"poolTables">
   poolTableName: string
   gapDuration: number
-  orderId: string | undefined
+  orderId: Id<"orders"> | undefined
   stopCount: boolean
   hours: number | undefined
   minutes: number | undefined
@@ -46,29 +51,35 @@ export function BookingRentalTable({
         <TableCaption>List of booking orders</TableCaption>
         <TableHeader>
           <TableRow className="text-xs capitalize tracking-wider">
-            <TableHead className="font-semibold">ID</TableHead>
-            <TableHead className="font-semibold">Cust. Name</TableHead>
-            <TableHead className="font-semibold">Cust.Phone</TableHead>
-            <TableHead className="font-semibold">Packet</TableHead>
-            <TableHead className="font-semibold">Cost</TableHead>
-            <TableHead className="font-semibold">Duration</TableHead>
-            <TableHead className="font-semibold">Total Cost</TableHead>
-            <TableHead className="font-semibold">Timer</TableHead>
-            <TableHead className="font-semibold">Start</TableHead>
-            <TableHead className="font-semibold">End</TableHead>
-            <TableHead className="font-semibold">Date Start</TableHead>
-            <TableHead className="font-semibold">Date End</TableHead>
+            {[
+              "ID",
+              "Cust.Name",
+              "Cust.Phone",
+              "Packet",
+              "Cost",
+              "Duration",
+              "Total Cost",
+              "Timer",
+              "Start",
+              "End",
+              "Date Start",
+              "Date End",
+            ].map((title, i) => (
+              <TableHead className="font-semibold" key={i}>
+                {title}
+              </TableHead>
+            ))}
             <TableHead className="sr-only">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {bookingList.map((booking) => (
-            <TableRow key={booking.id}>
+            <TableRow key={booking._id}>
               <TableCell>
                 <Badge variant="secondary" className="px-3 py-1.5">
                   <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
                   <span className="max-w-[300px] truncate">
-                    {booking.order?.id.slice(-8, booking.order.id.length)}
+                    {booking.order.id?.slice(-8, booking.order.id.length)}
                   </span>
                 </Badge>
               </TableCell>
@@ -93,12 +104,12 @@ export function BookingRentalTable({
                   <span
                     className={cn(
                       "max-w-[500px] truncate capitalize",
-                      booking.packet.rate === Rate.HOUR
+                      booking.packet?.rate === "HOUR"
                         ? "text-sky-400"
                         : "text-amber-300",
                     )}
                   >
-                    {booking.packet.name}
+                    {booking.packet?.name}
                   </span>
                 </Badge>
               </TableCell>
@@ -106,7 +117,7 @@ export function BookingRentalTable({
                 <Badge variant="secondary" className="px-3 py-1.5">
                   <span className="max-w-[500px] truncate capitalize">
                     {formattedPriceWithRupiah.format(
-                      Number(booking.packet.cost),
+                      Number(booking.packet?.cost),
                     )}
                   </span>
                 </Badge>
@@ -116,13 +127,13 @@ export function BookingRentalTable({
                   <span
                     className={cn(
                       "max-w-[500px] truncate",
-                      booking.packet.rate === Rate.HOUR
+                      booking.packet?.rate === "HOUR"
                         ? "text-sky-400"
                         : "text-amber-300",
                     )}
                   >
                     {booking.duration}{" "}
-                    {booking.packet.rate === Rate.HOUR ? "hr" : "min"}
+                    {booking.packet?.rate === "HOUR" ? "hr" : "min"}
                   </span>
                 </Badge>
               </TableCell>
@@ -167,24 +178,24 @@ export function BookingRentalTable({
               </TableCell>
               <TableCell>
                 <div className="whitespace-nowrap">
-                  {format(booking.timeStart as Date, "PP", { locale: id })}
+                  {format(booking.timeStart, "PP", { locale: id })}
                 </div>
               </TableCell>
               <TableCell>
                 <div className="whitespace-nowrap">
-                  {format(booking.timeEnd as Date, "PP", { locale: id })}
+                  {format(booking.timeEnd as number, "PP", { locale: id })}
                 </div>
               </TableCell>
               <TableCell className="w-[100px] font-medium capitalize">
                 <UpdateBooking
-                  orderId={booking.order?.id as string}
+                  orderId={booking.order?.id!}
                   poolTableId={poolTableId}
                   poolTableName={poolTableName}
                   gapDuration={gapDuration}
-                  packetId={booking.packet.id}
-                  startTime={booking.timeStart as Date}
-                  duration={booking.duration as number}
-                  totalCost={booking.totalCost}
+                  packetId={booking.packet?._id!}
+                  startTime={booking.timeStart}
+                  duration={booking.duration!}
+                  totalCost={booking.totalCost!}
                   customerName={booking.order?.customer?.name}
                   customerPhone={booking.order?.customer?.phone}
                 />
