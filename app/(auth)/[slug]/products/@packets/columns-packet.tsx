@@ -67,7 +67,7 @@ export const columnsPacket: ColumnDef<
     cell: ({ row }) => {
       const rate = row.getValue("rate")
       const colorBasedOnRate =
-        rate === "hour" ? "text-sky-400" : "text-amber-300"
+        rate === "HOUR" ? "text-sky-400" : "text-amber-300"
       return (
         <Badge
           variant="secondary"
@@ -89,7 +89,7 @@ export const columnsPacket: ColumnDef<
     cell: ({ row }) => {
       const rate = row.getValue("rate")
       const colorBasedOnRate =
-        rate === "hour" ? "text-sky-400" : "text-amber-300"
+        rate === "HOUR" ? "text-sky-400" : "text-amber-300"
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <ScrollText className={cn("mr-2 h-4 w-4", colorBasedOnRate)} />
@@ -109,7 +109,7 @@ export const columnsPacket: ColumnDef<
       const cost = row.getValue("cost")
       const rate = row.getValue("rate")
       const colorBasedOnRate =
-        rate === "hour" ? "text-sky-400" : "text-amber-300"
+        rate === "HOUR" ? "text-sky-400" : "text-amber-300"
       return (
         <Badge
           variant="secondary"
@@ -131,7 +131,7 @@ export const columnsPacket: ColumnDef<
       const rate = row.getValue("rate")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          {rate === "hour" ? (
+          {rate === "HOUR" ? (
             <Hourglass className="mr-2 size-4 text-sky-400" />
           ) : (
             <Timer className="mr-2 size-4 text-amber-300" />
