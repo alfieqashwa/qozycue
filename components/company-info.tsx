@@ -27,9 +27,7 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
   }, [])
 
   const { data, status } = useTanstackQuery(
-    convexQuery(api.pooltables.findAllByCompanyId, {
-      companyId: company?._id as Id<"companies">,
-    }),
+    convexQuery(api.pooltables.findAll, {}),
   )
   if (!hasHydrated) return null
 
@@ -63,7 +61,7 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
   function configureDisplayPathname(
     pathname: string,
     poolTableList:
-      | FunctionReturnType<typeof api.pooltables.findAllByCompanyId>
+      | FunctionReturnType<typeof api.pooltables.findAll>
       | undefined,
   ) {
     // Remove "/" from pathname & substring from the last index of "/"

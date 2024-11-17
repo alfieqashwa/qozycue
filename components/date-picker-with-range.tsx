@@ -54,7 +54,7 @@ export function DatePickerWithRange({
         {/* setup z-index -> z-40 so it will not on top of nav, especially, where it's really annoying on mobile view */}
         <PopoverContent className="z-40 w-auto p-0" align={align}>
           <Calendar
-            initialFocus
+            // initialFocus
             mode="range"
             defaultMonth={date?.from}
             selected={date}
