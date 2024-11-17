@@ -61,7 +61,7 @@ export const PrintReceipt = forwardRef(
         className="bg-white p-8 font-mono text-muted"
         ref={ref as LegacyRef<HTMLDivElement> | undefined}
       >
-        {status === "success" && (
+        {status === "success" && !!order && (
           <main className="text-xs">
             {/* STARTS HEADER */}
             <section>

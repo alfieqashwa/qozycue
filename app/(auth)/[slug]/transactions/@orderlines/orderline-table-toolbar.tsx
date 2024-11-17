@@ -7,14 +7,16 @@ import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-fi
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import { Star } from "lucide-react"
 import {
   categories,
   statusPayments,
   type Options,
 } from "@/app/constants/options"
 import { DataTableViewOptions } from "@/components/table/data-table-view-options"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { Star } from "lucide-react"
 
 interface OrderlineTableToolbarProps<TData> {
   table: Table<TData>
@@ -24,21 +26,19 @@ export function OrderlineTableToolbar<TData>({
 }: OrderlineTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
-  const { data, status } = api.poolTable.findAllByCompanyId.useQuery(
-    undefined,
-    {
-      select(data) {
-        const pools: Options[] = [...new Set(data.map((d) => d.name))]
-          .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-          .map((pool) => ({
-            value: pool,
-            label: pool,
-            icon: Star,
-          }))
-        return { pools }
-      },
+  const { data, status } = useTanstackQuery({
+    ...convexQuery(api.pooltables.findAll, {}),
+    select(data) {
+      const pools: Options[] = [...new Set(data.map((d) => d.name))]
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+        .map((pool) => ({
+          value: pool,
+          label: pool,
+          icon: Star,
+        }))
+      return { pools }
     },
-  )
+  })
 
   return (
     <div className="flex flex-col space-y-2 md:flex-row md:justify-between md:space-y-0">

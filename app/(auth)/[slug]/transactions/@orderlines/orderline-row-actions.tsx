@@ -1,8 +1,5 @@
 "use client"
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Copy } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -10,8 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Id } from "@/convex/_generated/dataModel"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { Copy } from "lucide-react"
+import { useState } from "react"
 
-export function OrderlineRowActions({ id }: { id: string }) {
+export function OrderlineRowActions({ id }: { id: Id<"orderlines"> }) {
   const [open, setOpen] = useState(false)
 
   return (

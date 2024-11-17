@@ -24,7 +24,7 @@ export default function DashboardPage() {
 
 const ListOfTables = ({ companyId }: { companyId: Id<"companies"> }) => {
   const { data, status } = useTanstackQuery(
-    convexQuery(api.pooltables.findAllByCompanyId, { companyId }),
+    convexQuery(api.pooltables.findAll, { companyId }),
   )
   return (
     <div className="mt-12 text-center text-2xl">

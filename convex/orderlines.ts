@@ -4,6 +4,74 @@ import { upsertOrderlineSchema } from "../types/schema/orderline-schema"
 import { mutation, query } from "./_generated/server"
 import { cashierProcedure, protectedProcedure, zMutation } from "./helpers"
 
+export const findAll = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new ConvexError("Please signed in!")
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (!user) throw new ConvexError("You do not have access!")
+
+    const orderlines = await ctx.db
+      .query("orderlines")
+      .filter((q) =>
+        q.and(
+          q.gt(q.field("_creationTime"), args.from!),
+          q.lte(q.field("_creationTime"), args.to!),
+        ),
+      )
+      .order("desc")
+      .collect()
+    return await Promise.all(
+      orderlines
+        .filter(async (ol) => {
+          const order = await ctx.db
+            .query("orders")
+            .withIndex("by_id", (q) => q.eq("_id", ol.orderId))
+            .filter((q) => q.eq(q.field("companyId"), user.companyId))
+            .first()
+          return ol.orderId === order?._id
+        })
+        .map(async (ol) => {
+          const order = await ctx.db.get(ol.orderId)
+          const poolRental =
+            order !== null
+              ? await ctx.db
+                  .query("poolRentals")
+                  .withIndex("orderId", (q) => q.eq("orderId", order?._id))
+                  .first()
+              : null
+          const poolTable =
+            poolRental !== null
+              ? await ctx.db.get(poolRental?.poolTableId)
+              : null
+          const product = await ctx.db.get(ol.productId)
+          const category =
+            product !== null ? await ctx.db.get(product?.categoryId) : null
+          const unitOfMeasure =
+            product !== null ? await ctx.db.get(product?.unitOfMeasureId) : null
+
+          return {
+            ...ol,
+            order: {
+              id: order?._id,
+              statusPayment: order?.statusPayment,
+              poolRental: { poolTable: { name: poolTable?.name } },
+            },
+            product: {
+              ...product,
+              category: { name: category?.name },
+              unitOfMeasure: { name: unitOfMeasure?.name },
+            },
+          }
+        }),
+    )
+  },
+})
+
 export const findAllByOrderId = query({
   args: { orderId: v.optional(v.id("orders")) },
   handler: async (ctx, args) => {
@@ -27,8 +95,6 @@ export const findAllByOrderId = query({
     )
   },
 })
-
-// === MUTATIONS ===
 
 export const findAllByIds = query({
   args: { ids: v.array(v.id("orderlines")) },
@@ -67,6 +133,8 @@ export const findAllByIds = query({
     )
   },
 })
+
+// === MUTATIONS ===
 
 export const updateOrderlineStatusList = mutation({
   args: {

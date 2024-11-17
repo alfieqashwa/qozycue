@@ -53,3 +53,5 @@ export enum StatusPaymentEnum {
   PAID,
   ARCHIVE,
 }
+
+export type OrderlineStatus = "ORDERED" | "UNORDERED"

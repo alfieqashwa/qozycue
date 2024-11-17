@@ -1,7 +1,14 @@
 "use client"
 
-import { type OrderlineStatus, StatusPayment } from "@prisma/client"
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { api } from "@/convex/_generated/api"
+import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
+import { OrderlineStatus, StatusPayment } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import {
@@ -12,16 +19,10 @@ import {
   Star,
   UtensilsCrossed,
 } from "lucide-react"
-import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
-import { cn } from "@/lib/utils"
-import { type RouterOutputs } from "@/trpc/react"
 import { OrderlineRowActions } from "./orderline-row-actions"
 
 export const columnsOrderline: ColumnDef<
-  RouterOutputs["orderline"]["findAllByCompanyId"][0]
+  FunctionReturnType<typeof api.orderlines.findAll>[0]
 >[] = [
   {
     id: "select",
@@ -246,9 +247,9 @@ export const columnsOrderline: ColumnDef<
           <span
             className={cn(
               "max-w-[500px] truncate capitalize",
-              statusPayment === StatusPayment.OPEN
+              statusPayment === "OPEN"
                 ? "text-emerald-300"
-                : statusPayment === StatusPayment.PENDING
+                : statusPayment === "PENDING"
                   ? "text-amber-300"
                   : "text-muted-foreground",
             )}
@@ -263,34 +264,25 @@ export const columnsOrderline: ColumnDef<
     },
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "_creationTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">
-        {format(row.getValue("createdAt"), "PPpp", { locale: id })}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
-    ),
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">
-        {format(row.getValue("updatedAt"), "PPpp", { locale: id })}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const timestamp = row.getValue("_creationTime")
+      const formattedCreatedAt = format(timestamp as number, "PPpp", {
+        locale: id,
+      })
+      return <div className="whitespace-nowrap">{formattedCreatedAt}</div>
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id } = row.original
+      const { _id } = row.original
       return (
         <div className="relative">
-          <OrderlineRowActions id={id} />
+          <OrderlineRowActions id={_id} />
         </div>
       )
     },
