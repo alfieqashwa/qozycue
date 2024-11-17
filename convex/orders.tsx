@@ -202,23 +202,21 @@ export const countPendingStatus = query({
   handler: async (ctx, { poolTableId }) => {
     await protectedProcedure(ctx, {})
 
-    const listOfPoolRental = await ctx.db
+    const poolRentalList = await ctx.db
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
       .collect()
 
-    const filteredBasedOnPendingStatusPaymentOrder = await Promise.all(
-      listOfPoolRental.filter(async (rental) => {
-        const order = await ctx.db
-          .query("orders")
-          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-          .filter((q) => q.eq(q.field("statusPayment"), "PENDING"))
-          .first()
-        return rental.orderId === order?._id
+    const poolRentalListWithOrder = await Promise.all(
+      poolRentalList.map(async (rental) => {
+        const order = await ctx.db.get(rental.orderId!)
+        return { ...rental, order }
       }),
     )
 
-    return filteredBasedOnPendingStatusPaymentOrder.length
+    return poolRentalListWithOrder.filter(
+      (rental) => rental.order?.statusPayment === "PENDING",
+    ).length
   },
 })
 
