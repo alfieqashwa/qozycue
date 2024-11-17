@@ -8,45 +8,45 @@ import { addDays } from "date-fns"
 import { useState } from "react"
 import { type DateRange } from "react-day-picker"
 import { TransactionDatePicker } from "../transactions-date-picker"
-import { columnsOrderline } from "./columns-orderline"
-import { OrderlineTable } from "./orderline-table"
+import { columnsRental } from "./columns-rental"
+import { RentalTable } from "./rental-table"
 
 /**
- * Orderlines:
+ * Pool Rental:
  * table
- * status payment
- * payment methods
- * total amount
- * discount
- * tax
- * createdBy
+ * packet
+ * cost
+ * duration
+ * price
+ * start
+ * end
+ * price to pay
  * */
 
-export function OrderlineTab() {
+export default function RentalPage() {
   const [date, setDate] = useState<DateRange | undefined>({
     from: addDays(new Date(new Date().setHours(0, 0, 0, 0)), -30),
     to: new Date(new Date().setHours(23, 59, 59, 0)),
   })
-  const orderlines = useTanstackQuery({
-    ...convexQuery(api.orderlines.findAll, {
+
+  const poolRentals = useTanstackQuery({
+    ...convexQuery(api.poolrentals.findAll, {
       from: date?.from?.getTime(),
       to: date?.to?.getTime(),
     }),
     enabled: !!date?.from && !!date.to,
     select(data) {
-      return data.filter(
-        (orderline) => orderline.order?.statusPayment !== "ARCHIVE",
-      )
+      return data.filter((rental) => rental.order?.statusPayment !== "ARCHIVE")
     },
   })
 
   return (
     <div className="relative">
       <TransactionDatePicker date={date} setDate={setDate} />
-      {orderlines.status !== "success" ? (
+      {poolRentals.status !== "success" ? (
         <SkeletonDashboardCard className="h-[700px]" />
       ) : (
-        <OrderlineTable data={orderlines.data} columns={columnsOrderline} />
+        <RentalTable data={poolRentals.data} columns={columnsRental} />
       )}
     </div>
   )

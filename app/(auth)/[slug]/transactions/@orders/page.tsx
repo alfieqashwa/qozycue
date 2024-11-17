@@ -11,7 +11,7 @@ import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { convexQuery } from "@convex-dev/react-query"
 import { api } from "@/convex/_generated/api"
 
-export default function Page() {
+export default function OrderPage() {
   const [date, setDate] = useState<DateRange | undefined>({
     from: addDays(new Date(new Date().setHours(0, 0, 0, 0)), -30),
     to: new Date(new Date().setHours(23, 59, 59, 0)),

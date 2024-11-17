@@ -7,12 +7,12 @@ export const metadata: Metadata = {
 
 export default async function TransactionLayout({
   orders,
-  // rentals,
-  // orderlines,
+  rentals,
+  orderlines,
 }: Readonly<{
   orders: React.ReactNode
-  // rentals: React.ReactNode
-  // orderlines: React.ReactNode
+  rentals: React.ReactNode
+  orderlines: React.ReactNode
 }>) {
   // ? not allowing owner to click button ???
 
@@ -26,15 +26,12 @@ export default async function TransactionLayout({
     <Tabs defaultValue="order" className="mt-2">
       <TabsList className="mb-3">
         <TabsTrigger value="order">Orders</TabsTrigger>
-        {/* <TabsTrigger value="pool-rental">Pool Rentals</TabsTrigger>
-        <TabsTrigger value="orderline">Orderlines</TabsTrigger> */}
+        <TabsTrigger value="pool-rental">Pool Rentals</TabsTrigger>
+        <TabsTrigger value="orderline">Orderlines</TabsTrigger>
       </TabsList>
-      <TabsContent value="order">
-        {/* <OrderTab disabledBasedOnAccessLevel={!managerAndCashierAccessLevel} /> */}
-        {orders}
-      </TabsContent>
-      {/* <TabsContent value="pool-rental">{rentals}</TabsContent>
-      <TabsContent value="orderline">{orderlines}</TabsContent> */}
+      <TabsContent value="order">{orders}</TabsContent>
+      <TabsContent value="pool-rental">{rentals}</TabsContent>
+      <TabsContent value="orderline">{orderlines}</TabsContent>
     </Tabs>
   )
 }
