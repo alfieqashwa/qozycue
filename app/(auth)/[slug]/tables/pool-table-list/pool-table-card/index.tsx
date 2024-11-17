@@ -8,11 +8,11 @@ import { CafeButton } from "./cafe-button"
 import { DescriptionTable } from "./description-table"
 import { DetailButton } from "./detail-button"
 import { PaymentButton } from "./payment-button"
+import { PendingStatusCounter } from "./pending-status-counter"
 import { StartTimerButton } from "./start-timer-button"
 import { StopTimerButton } from "./stop-timer-button"
 import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
-import { PendingStatusCounter } from "./pending-status-counter"
 
 export function PoolTableCard({
   managerAccessLevel,
@@ -33,15 +33,16 @@ export function PoolTableCard({
         poolTableId={poolTable._id}
         poolTableName={poolTable.name}
       />
-      {poolTable.isPublished && order.data?.packet?.rate !== "MINUTE" && (
-        <Booking
-          isCashier={cashierAccessLevel}
-          poolTableId={poolTable._id}
-          poolTableName={poolTable.name}
-          gapDuration={poolTable.gapDuration}
-          openAndNotBookingOrderId={order.data?._id}
-        />
-      )}
+      {poolTable.isPublished &&
+        order.data?.poolRental.packet.rate !== "MINUTE" && (
+          <Booking
+            isCashier={cashierAccessLevel}
+            poolTableId={poolTable._id}
+            poolTableName={poolTable.name}
+            gapDuration={poolTable.gapDuration}
+            openAndNotBookingOrderId={order.data?._id}
+          />
+        )}
       <div
         className={cn(
           "group-transition-colors absolute -inset-[1px] h-44 w-full rounded-2xl duration-500 ease-in-out",
@@ -81,7 +82,6 @@ export function PoolTableCard({
           <div className="mx-2 flex justify-between sm:mx-3">
             <DetailButton
               isCashier={cashierAccessLevel}
-              poolTable={poolTable}
               orderStatus={order.status}
               order={order.data}
             />
@@ -101,8 +101,8 @@ export function PoolTableCard({
                 poolTableName={poolTable.name}
                 startTime={poolTable.startTime}
                 poolRentalId={order.data?.poolRental?._id}
-                packetCost={order.data?.packet?.cost}
-                packetRate={order.data?.packet?.rate}
+                packetCost={order.data?.poolRental.packet?.cost}
+                packetRate={order.data?.poolRental.packet?.rate}
               />
             ) : (
               <PaymentButton

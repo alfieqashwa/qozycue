@@ -7,13 +7,17 @@ export const customerSchema = z.object({
   phone: z.string().max(12).optional(),
   email: z.string().email().optional(),
   gender: z.enum(["female", "male"]),
+  orderId: zid("orders"),
 })
 
-export const updateCustomerSchema = customerSchema.omit({
+export const updateCustomerByOrderIdSchema = customerSchema.omit({
+  id: true,
   email: true,
   gender: true,
 })
-export type TUpdateCustomer = z.infer<typeof updateCustomerSchema>
+export type TUpdateCustomerByOrderId = z.infer<
+  typeof updateCustomerByOrderIdSchema
+>
 
 /**
  *  customers: defineTable({

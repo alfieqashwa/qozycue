@@ -20,13 +20,13 @@ import { FileArchive, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 type ArchiveOrderProps = {
-  id: Id<"orders">
+  orderId: Id<"orders">
   statusPayment: StatusPayment
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function ArchiveOrder({
-  id,
+  orderId,
   statusPayment,
   setOpen,
 }: ArchiveOrderProps) {
@@ -34,7 +34,7 @@ export function ArchiveOrder({
     mutationFn: useConvexMutation(api.orders.archive),
     onSuccess: () =>
       toast.success("Succeed!", {
-        description: `Order ${id} has been successfully archived.`,
+        description: `Order ${orderId} has been successfully archived.`,
       }),
     onError: (err) =>
       toast.error("Something went wrong.", {
@@ -47,7 +47,7 @@ export function ArchiveOrder({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    mutate({ id })
+    mutate({ orderId })
   }
 
   return (
@@ -69,7 +69,7 @@ export function ArchiveOrder({
                 Anda tidak dapat membatalkan perubahan ini. Klik Archive untuk
                 mengarsipkan Order ID
                 <span className="px-1.5 font-medium uppercase text-primary">
-                  {id.slice(-10, id.length)}
+                  {orderId.slice(-10, orderId.length)}
                 </span>
               </p>
             </DialogDescription>

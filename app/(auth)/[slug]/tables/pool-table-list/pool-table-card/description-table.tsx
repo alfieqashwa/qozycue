@@ -34,25 +34,28 @@ export function DescriptionTable({
       // for Card-Description
       const realtimeDuration = Math.floor(difference / (1000 * 60))
       setRealtimeDuration(realtimeDuration)
-      if (order?.packet?.cost == null) return
+      if (order?.poolRental.packet?.cost == null) return
       setRealtimeTotalCost(
-        Math.round((order.packet.cost * realtimeDuration) / 100) * 100,
+        Math.round((order.poolRental.packet.cost * realtimeDuration) / 100) *
+          100,
       )
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isActive, order?.packet?.cost, setRealtimeDuration, startTime])
+  }, [isActive, order?.poolRental.packet?.cost, setRealtimeDuration, startTime])
 
-  const formattedRate = order?.packet?.rate === "HOUR" ? "hr" : "min"
+  const formattedRate = order?.poolRental.packet?.rate === "HOUR" ? "hr" : "min"
 
   return (
     <section className="-ml-4">
       <h1
         className={cn(
           "text-center font-bold uppercase",
-          isActive && orderStatusSucceed && order?.packet?.rate === "HOUR"
+          isActive &&
+            orderStatusSucceed &&
+            order?.poolRental.packet?.rate === "HOUR"
             ? "text-sky-400"
-            : orderStatusSucceed && order?.packet?.rate === "MINUTE"
+            : orderStatusSucceed && order?.poolRental.packet?.rate === "MINUTE"
               ? "text-amber-400"
               : "text-muted-foreground",
         )}
@@ -62,15 +65,17 @@ export function DescriptionTable({
 
       <article className="mt-1 grid grid-cols-2 gap-x-2 text-xs text-muted-foreground sm:text-sm">
         <p className="text-right">Packet:</p>
-        {orderStatusSucceed && !!order?.packet?.name ? (
-          <p className="capitalize text-foreground">{order.packet.name}</p>
+        {orderStatusSucceed && !!order?.poolRental.packet?.name ? (
+          <p className="capitalize text-foreground">
+            {order.poolRental.packet.name}
+          </p>
         ) : (
           <InvisibleParagraph />
         )}
         <p className="text-right">Cost:</p>
-        {orderStatusSucceed && !!order?.packet?.cost ? (
+        {orderStatusSucceed && !!order?.poolRental.packet?.cost ? (
           <p className="tracking-tight text-foreground">
-            {formattedPrice.format(Number(order.packet.cost))}/
+            {formattedPrice.format(Number(order.poolRental.packet.cost))}/
             <span>{formattedRate}</span>
           </p>
         ) : (

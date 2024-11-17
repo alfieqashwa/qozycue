@@ -25,15 +25,15 @@ export function Timer({
       >
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           {poolTable.isActive ? (
-            order?.packet?.rate === "HOUR" ? (
+            order?.poolRental.packet?.rate === "HOUR" ? (
               <Countdown
                 endTime={poolTable.endTime}
                 poolTableId={poolTable._id}
                 poolTableName={poolTable.name}
                 poolRentalId={order?.poolRental?._id}
                 startTime={poolTable.startTime}
-                packetCost={order?.packet?.cost}
-                packetRate={order?.packet?.rate}
+                packetCost={order?.poolRental.packet?.cost}
+                packetRate={order?.poolRental.packet?.rate}
                 duration={order?.poolRental?.duration}
               />
             ) : (
@@ -43,8 +43,8 @@ export function Timer({
                 poolTableName={poolTable.name}
                 poolRentalId={order?.poolRental?._id}
                 startTime={poolTable.startTime}
-                packetCost={order?.packet?.cost}
-                packetRate={order?.packet?.rate}
+                packetCost={order?.poolRental.packet?.cost}
+                packetRate={order?.poolRental.packet?.rate}
               />
             )
           ) : (

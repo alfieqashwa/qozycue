@@ -23,14 +23,15 @@ import { TransferTable } from "./transfer-table"
 
 export function DetailButton({
   isCashier,
-  poolTable,
   orderStatus,
   order,
 }: {
-  isCashier: boolean
-  poolTable: FunctionReturnType<typeof api.pooltables.findAll>[0]
+  isCashier?: boolean
   orderStatus: "pending" | "error" | "success"
-  order: FunctionReturnType<typeof api.orders.findByPoolTableId> | undefined
+  order:
+    | FunctionReturnType<typeof api.orders.findByPoolTableId>
+    | FunctionReturnType<typeof api.orders.findById>
+    | undefined
 }) {
   const orderlines = useTanstackQuery(
     convexQuery(api.orderlines.findAllByOrderId, { orderId: order?._id }),
@@ -55,12 +56,12 @@ export function DetailButton({
               <DrawerTitle
                 className={cn(
                   "whitespace-nowrap text-base md:text-lg",
-                  order.packet?.rate === "HOUR"
+                  order.poolRental.packet?.rate === "HOUR"
                     ? "text-sky-400"
                     : "text-amber-300",
                 )}
               >
-                Table {poolTable.name}
+                Table {order.poolRental.poolTable?.name}
               </DrawerTitle>
               <DrawerDescription className="text-xs font-medium">
                 Order ID: {order._id?.slice(-8)}
@@ -106,15 +107,15 @@ export function DetailButton({
                 Cafe
               </TabsTrigger>
             </TabsList>
-            {!!order?.poolRental && poolTable.isActive && (
+            {!!order?.poolRental && order.poolRental.poolTable?.isActive && (
               <TransferTable
-                isCashier={isCashier}
+                isCashier={isCashier!}
                 orderId={order._id!}
-                poolTableIdFrom={poolTable._id}
-                poolTableName={poolTable.name}
-                startTime={poolTable.startTime}
-                endTime={poolTable.endTime}
-                poolRentalId={order.poolRental._id}
+                poolTableIdFrom={order.poolRental.poolTable._id}
+                poolTableName={order.poolRental.poolTable.name}
+                startTime={order.poolRental.poolTable.startTime}
+                endTime={order.poolRental.poolTable.endTime}
+                poolRentalId={order.poolRental._id!}
                 setOpenDetailDrawer={setOpen}
               />
             )}
@@ -122,10 +123,10 @@ export function DetailButton({
           <TabsContent value="table">
             {orderStatus === "success" && (
               <PoolRentalDetail
-                isActive={poolTable.isActive}
-                packetName={order?.packet?.name}
-                packetCost={order?.packet?.cost}
-                packetRate={order?.packet?.rate}
+                isActive={order?.poolRental.poolTable?.isActive!}
+                packetName={order?.poolRental.packet.name}
+                packetCost={order?.poolRental.packet.cost}
+                packetRate={order?.poolRental.packet.rate}
                 duration={order?.poolRental?.duration}
                 totalCost={order?.poolRental?.totalCost}
                 startTime={order?.poolRental?.timeStart}

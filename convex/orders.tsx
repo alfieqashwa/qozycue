@@ -123,18 +123,24 @@ export const findById = query({
       .first()
     const poolTable = await ctx.db.get(poolRental?.poolTableId!)
     const packet = await ctx.db.get(poolRental?.packetId!)
+    const customer = order !== null ? await ctx.db.get(order?.companyId) : null
 
     const company = await ctx.db.get(order?.companyId!)
 
     return {
       ...order,
-      createdBy,
       poolRental: {
         ...poolRental,
         poolTable,
-        packet,
+        packet: { name: packet?.name, cost: packet?.cost, rate: packet?.rate },
       },
-      company,
+      company: {
+        name: company?.name,
+        phone: company?.phone,
+        location: company?.location,
+      },
+      customer: { name: customer?.name, phone: customer?.phone },
+      createdBy: { name: createdBy?.name },
     }
   },
 })
@@ -152,7 +158,7 @@ export const findByPoolTableId = query({
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
       .filter((q) => q.eq(q.field("isBooking"), false))
       .first()
-
+    const poolTable = await ctx.db.get(poolRental?.poolTableId!)
     const order = await ctx.db
       .query("orders")
       .withIndex("by_id", (q) => q.eq("_id", poolRental?.orderId!))
@@ -176,10 +182,17 @@ export const findByPoolTableId = query({
 
     return {
       ...order,
-      poolRental,
-      packet,
-      customer,
-      createdBy,
+      poolRental: {
+        ...poolRental,
+        poolTable,
+        packet: {
+          name: packet?.name,
+          cost: packet?.cost,
+          rate: packet?.rate,
+        },
+      },
+      customer: { name: customer?.name, phone: customer?.phone },
+      createdBy: { name: createdBy?.name },
     }
   },
 })
@@ -471,11 +484,11 @@ export const payment = zMutation({
 })
 
 export const archive = mutation({
-  args: { id: v.id("orders") },
+  args: { orderId: v.id("orders") },
   handler: async (ctx, args) => {
     await protectedProcedure(ctx, {})
 
-    return await ctx.db.patch(args.id, {
+    return await ctx.db.patch(args.orderId, {
       statusPayment: "ARCHIVE",
     })
   },

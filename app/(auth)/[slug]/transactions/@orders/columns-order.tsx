@@ -299,7 +299,7 @@ export const columnsOrder: ColumnDef<
       return (
         <div className="relative">
           <OrderRowActions
-            id={_id}
+            orderId={_id}
             statusPayment={statusPayment}
             customerName={customer?.name}
             customerPhone={customer?.phone}

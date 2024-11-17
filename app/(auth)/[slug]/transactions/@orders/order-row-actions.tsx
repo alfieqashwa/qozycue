@@ -10,25 +10,28 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Copy } from "lucide-react"
+import { Copy, Printer } from "lucide-react"
 import { useRef, useState } from "react"
 // import { DetailButton } from "../../tables/pool-table-tab/pool-table-card/list-button/detail-button"
+import { PrintReceipt } from "@/components/print-receipt"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { useReactToPrint } from "react-to-print"
+import { DetailButton } from "../../tables/pool-table-list/pool-table-card/detail-button"
 import { ArchiveOrder } from "./archive-order"
+import { UpdateCustomer } from "./update-customer"
 
 export function OrderRowActions({
-  id,
+  orderId,
   statusPayment,
   customerName,
   customerPhone,
   createdBy,
 }: {
-  id: Id<"orders">
+  orderId: Id<"orders">
   statusPayment: StatusPayment
   customerName?: string
   customerPhone?: string | null
@@ -36,9 +39,9 @@ export function OrderRowActions({
 }) {
   const [open, setOpen] = useState(false)
 
-  const { data: order } = useTanstackQuery({
-    ...convexQuery(api.orders.findById, { id, notEqual: "ARCHIVE" }),
-    enabled: Boolean(id),
+  const { data: order, status: orderStatus } = useTanstackQuery({
+    ...convexQuery(api.orders.findById, { id: orderId, notEqual: "ARCHIVE" }),
+    enabled: Boolean(orderId),
   })
 
   const { data: me, status } = useTanstackQuery({
@@ -71,7 +74,7 @@ export function OrderRowActions({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(id)}
+          onClick={() => navigator.clipboard.writeText(orderId)}
           className="group hover:cursor-pointer"
         >
           <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70 group-hover:text-primary" />
@@ -83,67 +86,30 @@ export function OrderRowActions({
           className="group"
           onSelect={(e) => e.preventDefault()}
         > */}
-        {/* <UpdateCustomer
-          id={id}
+        <UpdateCustomer
+          orderId={orderId}
           statusPayment={statusPayment}
           customerName={customerName}
           customerPhone={customerPhone}
           setOpen={setOpen}
-        /> */}
+        />
         {/* </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="group"
           onSelect={(e) => e.preventDefault()}
         >
-          {/* <DetailButton
-            orderId={id}
-            poolTableName={order?.poolTableName as string}
-            isPoolRental={!!order?.poolRental}
-            hasOrderlines={order?.hasOrderlines as boolean}
-            customerName={customerName}
-            customerPhone={customerPhone}
-            drawerTrigger={
-              <DrawerTrigger
-                disabled={statusPayment === StatusPayment.OPEN}
-                className="flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
-              >
-                <ScrollText className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
-                <span>Detail</span>
-              </DrawerTrigger>
-            }
-          >
-            <TabsContent value="table">
-              <PoolRentalDetail
-                isActive={false}
-                createdBy={createdBy}
-                packetName={order?.poolRental?.packet.name}
-                packetCost={order?.poolRental?.packet.cost}
-                packetRate={order?.poolRental?.packet.rate}
-                duration={order?.poolRental?.duration}
-                totalCost={order?.poolRental?.totalCost}
-                timeStart={order?.poolRental?.timeStart}
-                timeEnd={order?.poolRental?.timeEnd}
-                poolRentalId={order?.poolRental?.id}
-                createdAt={order?.poolRental?.createdAt}
-              />
-            </TabsContent>
-            <TabsContent value="cafe">
-              {!!order?.orderlines?.length && (
-                <OrderlineDetail orderlines={order.orderlines} />
-              )}
-            </TabsContent>
-          </DetailButton> */}
+          <DetailButton orderStatus={orderStatus} order={order} />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {/* {statusPayment === StatusPayment.PAID && (
+        {statusPayment === "PAID" && (
           <DropdownMenuItem
             className="group"
             onSelect={(e) => e.preventDefault()}
           >
             <div className="hidden">
               <PrintReceipt
-                orderId={id}
+                orderId={orderId}
                 customerName={customerName}
                 ref={componentRef}
               />
@@ -156,7 +122,7 @@ export function OrderRowActions({
               <span>Receipt</span>
             </button>
           </DropdownMenuItem>
-        )} */}
+        )}
         <DropdownMenuSeparator
           className={cn(statusPayment !== "PAID" && "hidden")}
         />
@@ -166,7 +132,7 @@ export function OrderRowActions({
             onSelect={(e) => e.preventDefault()}
           >
             <ArchiveOrder
-              id={id}
+              orderId={orderId}
               statusPayment={statusPayment}
               setOpen={setOpen}
             />

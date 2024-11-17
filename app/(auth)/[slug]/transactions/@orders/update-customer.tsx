@@ -29,19 +29,19 @@ import { api } from "@/convex/_generated/api"
 import { toast } from "sonner"
 import { ConvexError } from "convex/values"
 import {
-  TUpdateCustomer,
-  updateCustomerSchema,
+  type TUpdateCustomerByOrderId,
+  updateCustomerByOrderIdSchema,
 } from "@/types/schema/customer-schema"
 import { Id } from "@/convex/_generated/dataModel"
 
 export function UpdateCustomer({
-  customerId,
+  orderId,
   statusPayment,
   customerName,
   customerPhone,
   setOpen,
 }: {
-  customerId: Id<"customers">
+  orderId: Id<"orders">
   statusPayment: StatusPayment
   customerName?: string
   customerPhone?: string | null
@@ -62,19 +62,19 @@ export function UpdateCustomer({
     onSettled: () => setOpen(false),
   })
 
-  const form = useForm<TUpdateCustomer>({
-    resolver: zodResolver(updateCustomerSchema),
+  const form = useForm<TUpdateCustomerByOrderId>({
+    resolver: zodResolver(updateCustomerByOrderIdSchema),
     defaultValues: {
-      id: customerId,
+      orderId,
       name: customerName,
       phone: customerPhone ?? "",
     },
   })
-  function onSubmit(values: TUpdateCustomer) {
-    const { id, name, phone } = values
+  function onSubmit(values: TUpdateCustomerByOrderId) {
+    const { name, phone } = values
     mutate({
-      updateCustomerSchema: {
-        id,
+      updateCustomerByOrderIdSchema: {
+        orderId,
         name: name.toLowerCase(),
         phone,
       },
