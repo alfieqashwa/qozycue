@@ -1,7 +1,6 @@
 "use client"
 
-import { FilePlus2, Loader2 } from "lucide-react"
-import { useState } from "react"
+import { useMediaQuery } from "@/app/hooks/use-media-query"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
@@ -13,9 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
-import { UpdateBookingForm } from "./update-booking-form"
-import { useMediaQuery } from "@/app/hooks/use-media-query"
 import {
   Drawer,
   DrawerClose,
@@ -26,14 +22,19 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
+import { FilePlus2, Loader2 } from "lucide-react"
+import { useState } from "react"
+import { UpdateBookingForm } from "./update-booking-form"
 
 type UpdateBookingProps = {
-  orderId: string
-  poolTableId: string
+  orderId: Id<"orders">
+  poolTableId: Id<"poolTables">
   poolTableName: string
   gapDuration: number
-  packetId: string
-  startTime: Date
+  packetId: Id<"packets">
+  startTime: number
   duration: number
   totalCost: number
   customerName?: string

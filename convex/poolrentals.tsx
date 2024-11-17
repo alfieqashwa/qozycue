@@ -1,12 +1,13 @@
+import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError, v } from "convex/values"
-import { query } from "./_generated/server"
-import { protectedProcedure, zMutation } from "./helpers"
+import { isTimeOverlap } from "../lib/is-time-overlap"
 import {
+  bookingSchema,
   createBookingSchema,
   startBookingTimerSchema,
 } from "../types/schema/order-schema"
-import { isTimeOverlap } from "../lib/is-time-overlap"
-import { getAuthUserId } from "@convex-dev/auth/server"
+import { query } from "./_generated/server"
+import { protectedProcedure, zMutation } from "./helpers"
 
 export const findAllBookingByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
@@ -151,14 +152,19 @@ export const createBooking = zMutation({
 
     const listOfRentalTime = listOfPoolRental
       .filter(async (rental) => {
-        const order = await ctx.db.get(rental.orderId)
-        return order?.statusPayment === "OPEN"
+        const order = await ctx.db
+          .query("orders")
+          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+          .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+          .first()
+
+        return rental.orderId === order?._id
       })
-      .sort((p, q) => p.timeStart - q.timeStart)
       .map((rental) => ({
         timeStart: rental.timeStart,
         timeEnd: rental.timeEnd,
       }))
+      .sort((p, q) => p.timeStart - q.timeStart)
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     // const startTime = Date.now()
@@ -202,5 +208,86 @@ export const createBooking = zMutation({
       orderId,
       poolRentalId,
     }
+  },
+})
+
+export const updateBooking = zMutation({
+  args: { bookingSchema },
+  handler: async (
+    ctx,
+    {
+      bookingSchema: {
+        gapDuration,
+        orderId,
+        poolTableId,
+        startTime,
+        customerName,
+        customerPhone,
+        packetId,
+        duration,
+        cost,
+      },
+    },
+  ) => {
+    await protectedProcedure(ctx, {})
+
+    const listOfPoolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
+      .filter((q) => q.neq(q.field("orderId"), orderId)) // exclude orderId from the args
+      .collect()
+
+    const listOfRentalTime = listOfPoolRental
+      .filter(async (rental) => {
+        const order = await ctx.db
+          .query("orders")
+          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+          .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+          .first()
+        return rental.orderId === order?._id
+      })
+      .map((rental) => ({
+        timeStart: rental.timeStart,
+        timeEnd: rental.timeEnd,
+      }))
+      .sort((p, q) => p.timeStart - q.timeStart)
+
+    const HOUR_TO_MILLISECOND = 60 * 60 * 1000
+    const endTime = startTime + duration * HOUR_TO_MILLISECOND
+    const totalCost = Math.round((cost * duration) / 100) * 100
+
+    const hasConflict = isTimeOverlap(
+      gapDuration,
+      startTime,
+      endTime,
+      listOfRentalTime,
+    )
+    if (hasConflict) {
+      throw new ConvexError("The selected time overlaps with another booking.")
+    }
+
+    const order = await ctx.db.get(orderId)
+    if (!order) throw new ConvexError("No Order provided!")
+
+    const poolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId", (q) => q.eq("orderId", order?._id))
+      .first()
+
+    if (!poolRental) throw new ConvexError("No Pool Rental provided!")
+    const updatePoolRental = await ctx.db.patch(poolRental?._id, {
+      packetId,
+      duration,
+      totalCost,
+      timeStart: startTime,
+      timeEnd: endTime,
+    })
+
+    const updateCustomer = await ctx.db.patch(order.customerId!, {
+      name: customerName,
+      phone: customerPhone,
+    })
+
+    return { updatePoolRental, updateCustomer }
   },
 })

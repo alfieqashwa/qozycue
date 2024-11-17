@@ -21,15 +21,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
-import { type TBooking, bookingSchema } from "@/types/schema/pool-rental-schema"
+import { type TBooking, bookingSchema } from "@/types/schema/order-schema"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { format, isBefore, isToday, isValid, set } from "date-fns"
 import { id } from "date-fns/locale"
 import { Clock } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { BookingDialogFooter, BookingDrawerFooter } from "./update-booking"
 
 export function UpdateBookingForm({
@@ -45,12 +54,12 @@ export function UpdateBookingForm({
   customerPhone,
   setOpen,
 }: {
-  orderId: string
-  poolTableId: string
+  orderId: Id<"orders">
+  poolTableId: Id<"poolTables">
   poolTableName: string
   gapDuration: number
-  packetId: string
-  startTime: Date
+  packetId: Id<"packets">
+  startTime: number
   duration: number
   totalCost: number
   customerName?: string
@@ -65,10 +74,6 @@ export function UpdateBookingForm({
     return () => clearInterval(timer)
   }, [])
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  // 1. Define your form.
   const form = useForm<TBooking>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -76,7 +81,7 @@ export function UpdateBookingForm({
       orderId,
       poolTableId,
       startTime,
-      customerName: customerName ?? "",
+      customerName: customerName ?? "anonymous",
       customerPhone: customerPhone ?? "",
       packetId,
       duration,
@@ -84,7 +89,7 @@ export function UpdateBookingForm({
     },
   })
 
-  const formatTimeForDisplay = (date: Date | null) => {
+  const formatTimeForDisplay = (date: number | null) => {
     if (!date || !isValid(date)) return "Pick a time"
     return format(date, "PPP 'jam' HH:mm", { locale: id })
   }
@@ -95,10 +100,11 @@ export function UpdateBookingForm({
   const packetIdWatch = form.watch("packetId")
   const durationWatch = form.watch("duration")
 
-  const packets = api.packet.findAllByCompanyId.useQuery(undefined, {
+  const packets = useTanstackQuery({
+    ...convexQuery(api.packets.findAll, {}),
     select(data) {
       return data
-        .filter((d) => d.status === Status.enabled && d.rate === "HOUR")
+        .filter((d) => d.status === "enabled" && d.rate === "HOUR")
         .sort((a, b) => b.cost - a.cost)
         .sort((p, q) =>
           p.rate.localeCompare(q.rate, undefined, { numeric: true }),
@@ -106,33 +112,19 @@ export function UpdateBookingForm({
     },
   })
 
-  const { mutate, isPending } = api.poolRental.updateBooking.useMutation({
-    async onSuccess() {
-      await utils.poolTable.findAllByCompanyId.invalidate()
-      await utils.order.findByPoolTableId.invalidate({
-        poolTableId,
-      })
-      await utils.poolRental.findAllBookingByCompanyId.invalidate({
-        poolTableId,
-      })
-      await utils.packet.findAllByCompanyId.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-      // router.refresh()
-      setOpen(false)
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: <p>Booking Table {poolTableName} has been updated.</p>,
-      })
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.poolrentals.updateBooking),
+
+    onSuccess: () =>
+      toast.success("Succeed!", {
+        description: `Booking Table ${poolTableName} has been updated.`,
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   function onSubmit(values: TBooking) {
@@ -140,19 +132,21 @@ export function UpdateBookingForm({
       values
 
     if (packets.status !== "success" && packetId === "") return
-    const costCalc = packets.data?.find((p) => p.id === packetId)
+    const costCalc = packets.data?.find((p) => p._id === packetId)
       ?.cost as number
 
     mutate({
-      gapDuration,
-      orderId,
-      poolTableId,
-      startTime,
-      packetId,
-      duration,
-      customerName: customerName.toLowerCase(),
-      customerPhone: customerPhone.trim(),
-      cost: costCalc,
+      bookingSchema: {
+        gapDuration,
+        orderId,
+        poolTableId,
+        startTime,
+        packetId,
+        duration,
+        customerName: customerName.toLowerCase(),
+        customerPhone: customerPhone.trim(),
+        cost: costCalc,
+      },
     })
   }
 
@@ -288,9 +282,9 @@ export function UpdateBookingForm({
                     {packets.status === "success" &&
                       packets.data?.map((p) => (
                         <SelectItem
-                          value={p.id}
+                          value={p._id}
                           className="capitalize"
-                          key={p.id}
+                          key={p._id}
                         >
                           {p.name}
                           <span className="pl-2 text-xs text-sky-400">

@@ -202,7 +202,7 @@ export function BookingRentalTable({
               </TableCell>
               <TableCell className="w-[100px] font-medium capitalize">
                 <DeleteBookingForm
-                  orderId={booking.order?.id as string}
+                  orderId={booking.order?.id as Id<"orders">}
                   customerName={booking.order?.customer?.name}
                 />
               </TableCell>
