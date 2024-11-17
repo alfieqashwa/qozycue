@@ -63,7 +63,7 @@ export const columnsOrder: ColumnDef<
         <Badge variant="secondary" className="px-3 py-1.5">
           <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
           <span className="max-w-[300px] truncate">
-            {id?.slice(-8, id?.length)}
+            {id?.slice(-8, id.length)}
           </span>
         </Badge>
       )

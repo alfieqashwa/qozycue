@@ -57,9 +57,9 @@ export function RentalTableToolbar<TData>({
       <div className="flex w-full flex-col items-end space-x-2 space-y-2 md:flex-1 md:flex-row md:items-center md:space-y-0">
         <Input
           placeholder="Filter ID..."
-          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("_id")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("id")?.setFilterValue(event.target.value)
+            table.getColumn("_id")?.setFilterValue(event.target.value)
           }
           className="hidden h-8 w-[250px] xl:block"
         />

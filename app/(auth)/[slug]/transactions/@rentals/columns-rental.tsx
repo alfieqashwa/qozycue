@@ -41,17 +41,17 @@ export const columnsRental: ColumnDef<
     enableHiding: false,
   },
   {
-    accessorKey: "id",
+    accessorKey: "_id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
     ),
     cell: ({ row }) => {
-      const id: string = row.getValue("id")
+      const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
           <span className="max-w-[300px] truncate">
-            {id.slice(-8, id.length)}
+            {id?.slice(-8, id.length)}
           </span>
         </Badge>
       )
