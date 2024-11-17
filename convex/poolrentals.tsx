@@ -67,7 +67,7 @@ export const findAllBookingByPoolTableId = query({
       .filter((q) => q.eq(q.field("isBooking"), true))
       .collect()
 
-    return Promise.all(
+    return await Promise.all(
       bookingRentalList
         .sort((p, q) => p.timeStart - q.timeStart)
         .map(async (poolRental) => {
@@ -86,7 +86,7 @@ export const findAllBookingByPoolTableId = query({
 
           return {
             ...poolRental,
-            ...packet,
+            packet,
             poolTable: {
               id: poolTable?._id,
               name: poolTable?.name,

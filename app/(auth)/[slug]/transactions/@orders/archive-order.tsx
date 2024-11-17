@@ -1,4 +1,3 @@
-import { FileArchive, Loader2 } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,9 +9,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { StatusPayment } from "@/types"
-import { Id } from "@/convex/_generated/dataModel"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { FileArchive, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 type ArchiveOrderProps = {
   id: Id<"orders">
@@ -25,27 +30,18 @@ export function ArchiveOrder({
   statusPayment,
   setOpen,
 }: ArchiveOrderProps) {
-  const { mutate, isPending } = api.order.archive.useMutation({
-    async onSuccess() {
-      // delete user from team
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.archive),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: `Order ${id} has been successfully archived.`,
-      })
-      // await utils.order.findAllByCompanyId.invalidate()
-
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -57,7 +53,7 @@ export function ArchiveOrder({
   return (
     <Dialog>
       <DialogTrigger
-        disabled={statusPayment !== StatusPayment.PAID}
+        disabled={statusPayment !== "PAID"}
         className="flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
       >
         <FileArchive className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />

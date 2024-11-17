@@ -11,13 +11,14 @@ import {
 import { cn } from "@/lib/utils"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Copy } from "lucide-react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 // import { DetailButton } from "../../tables/pool-table-tab/pool-table-card/list-button/detail-button"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { useReactToPrint } from "react-to-print"
 import { ArchiveOrder } from "./archive-order"
 
 export function OrderRowActions({
@@ -49,13 +50,13 @@ export function OrderRowActions({
     me?.role === "ADMIN" ||
     me?.role === "DEWA"
 
-  // const componentRef = useRef(null)
-  // const handlePrint = useReactToPrint({
-  //   content: () => componentRef.current,
-  //   documentTitle: `order_receipt_${order?.id?.slice(-8, order?.id.length)}`,
-  //   onPrintError: () => alert("there is an error when printing receipt."),
-  //   // pageStyle: "@page { margin-top: 10mm; }",
-  // })
+  const componentRef = useRef(null)
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: `order_receipt_${order?._id?.slice(-8, order?._id.length)}`,
+    onPrintError: () => alert("there is an error when printing receipt."),
+    // pageStyle: "@page { margin-top: 10mm; }",
+  })
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
