@@ -1,8 +1,5 @@
 "use client"
 
-import { Cross2Icon } from "@radix-ui/react-icons"
-import { type Table } from "@tanstack/react-table"
-import { Star } from "lucide-react"
 import {
   paymentMethods,
   statusPayments,
@@ -12,10 +9,13 @@ import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-fi
 import { DataTableViewOptions } from "@/components/table/data-table-view-options"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArchiveOrderList } from "./archive-order-list"
-import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { convexQuery } from "@convex-dev/react-query"
 import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { Cross2Icon } from "@radix-ui/react-icons"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { type Table } from "@tanstack/react-table"
+import { Star } from "lucide-react"
+import { ArchiveOrderList } from "./archive-order-list"
 
 interface OrderTableToolbarProps<TData> {
   table: Table<TData>
@@ -26,7 +26,7 @@ export function OrderTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0
 
   const { data, status } = useTanstackQuery({
-    ...convexQuery(api.pooltables.findAllByCompanyId, {}),
+    ...convexQuery(api.pooltables.findAll, {}),
     select(data) {
       const pools: Options[] = [...new Set(data.map((d) => d.name))]
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))

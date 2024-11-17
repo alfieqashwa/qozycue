@@ -9,6 +9,53 @@ import {
 import { query } from "./_generated/server"
 import { protectedProcedure, zMutation } from "./helpers"
 
+export const findAll = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new ConvexError("Please signed in!")
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (!user) throw new ConvexError("You do not have access!")
+
+    const orderListByCompanyId = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) =>
+        q.and(
+          q.gt(q.field("_creationTime"), args.from!),
+          q.lte(q.field("_creationTime"), args.to!),
+        ),
+      )
+      .order("desc")
+      .collect()
+
+    return await Promise.all(
+      orderListByCompanyId.map(async (order) => {
+        const poolRental = await ctx.db
+          .query("poolRentals")
+          .withIndex("orderId", (q) => q.eq("orderId", order._id))
+          .filter((q) => q.eq(q.field("isBooking"), false))
+          .first()
+        const packet =
+          poolRental !== null ? await ctx.db.get(poolRental?.packetId) : null
+
+        const poolTable =
+          poolRental !== null ? await ctx.db.get(poolRental?.poolTableId) : null
+
+        return {
+          ...poolRental,
+          packet,
+          poolTable: { name: poolTable?.name },
+          order: { id: order._id, statusPayment: order.statusPayment },
+        }
+      }),
+    )
+  },
+})
+
 export const findAllBookingByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
@@ -39,7 +86,7 @@ export const findAllBookingByPoolTableId = query({
 
           return {
             ...poolRental,
-            packet,
+            ...packet,
             poolTable: {
               id: poolTable?._id,
               name: poolTable?.name,

@@ -1,11 +1,6 @@
 "use client"
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Copy, Printer, ScrollText } from "lucide-react"
-import { useRef, useState } from "react"
-import { useReactToPrint } from "react-to-print"
 import { Button } from "@/components/ui/button"
-import { DrawerTrigger } from "@/components/ui/drawer"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,19 +8,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { OrderlineDetail } from "@/components/orderline-detail"
-import { PoolRentalDetail } from "@/components/pool-rental-detail"
-import { PrintReceipt } from "@/components/print-receipt"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { Copy } from "lucide-react"
+import { useState } from "react"
 // import { DetailButton } from "../../tables/pool-table-tab/pool-table-card/list-button/detail-button"
-import { ArchiveOrder } from "./archive-order"
-import { UpdateCustomer } from "./update-customer"
-import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { convexQuery } from "@convex-dev/react-query"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { StatusPayment } from "@/types"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { ArchiveOrder } from "./archive-order"
 
 export function OrderRowActions({
   id,
@@ -43,7 +36,7 @@ export function OrderRowActions({
   const [open, setOpen] = useState(false)
 
   const { data: order } = useTanstackQuery({
-    ...convexQuery(api.orders.findById, { id }),
+    ...convexQuery(api.orders.findById, { id, notEqual: "ARCHIVE" }),
     enabled: Boolean(id),
   })
 

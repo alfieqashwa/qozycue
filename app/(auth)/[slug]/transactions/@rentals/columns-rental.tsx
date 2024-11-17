@@ -1,20 +1,20 @@
 "use client"
 
-import { Rate, StatusPayment } from "@prisma/client"
-import { type ColumnDef } from "@tanstack/react-table"
-import { format } from "date-fns"
-import { id } from "date-fns/locale"
-import { Hash, Star } from "lucide-react"
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { api } from "@/convex/_generated/api"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
-import { type RouterOutputs } from "@/trpc/react"
-import { RentalRowActions } from "./rental-row-actions"
+import { StatusPayment } from "@/types"
+import { type ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
+import { format } from "date-fns"
+import { id } from "date-fns/locale"
+import { Hash, Star } from "lucide-react"
 
 export const columnsRental: ColumnDef<
-  RouterOutputs["poolRental"]["findAllByCompanyId"][0]
+  FunctionReturnType<typeof api.poolrentals.findAll>[0]
 >[] = [
   {
     id: "select",
@@ -80,13 +80,13 @@ export const columnsRental: ColumnDef<
   // hidden rate
   {
     accessorKey: "rate",
-    accessorFn: (row) => row.packet.rate,
+    accessorFn: (row) => row.packet?.rate,
     header: () => null,
     cell: () => null,
   },
   {
     accessorKey: "packet",
-    accessorFn: (row) => row.packet.name,
+    accessorFn: (row) => row.packet?.name,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Packet" />
     ),
@@ -97,7 +97,7 @@ export const columnsRental: ColumnDef<
           <span
             className={cn(
               "max-w-[500px] truncate capitalize",
-              rate === Rate.HOUR ? "text-sky-400" : "text-amber-300",
+              rate === "HOUR" ? "text-sky-400" : "text-amber-300",
             )}
           >
             {row.getValue("packet")}
@@ -111,7 +111,7 @@ export const columnsRental: ColumnDef<
   },
   {
     accessorKey: "cost",
-    accessorFn: (row) => row.packet.cost,
+    accessorFn: (row) => row.packet?.cost,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Cost" />
     ),
@@ -140,10 +140,10 @@ export const columnsRental: ColumnDef<
           <span
             className={cn(
               "max-w-[500px] truncate",
-              rate === Rate.HOUR ? "text-sky-400" : "text-amber-300",
+              rate === "HOUR" ? "text-sky-400" : "text-amber-300",
             )}
           >
-            {row.getValue("duration")} {rate === Rate.HOUR ? "hr" : "min"}
+            {row.getValue("duration")} {rate === "HOUR" ? "hr" : "min"}
           </span>
         </Badge>
       )
@@ -168,7 +168,7 @@ export const columnsRental: ColumnDef<
   },
   {
     accessorKey: "statusPayment",
-    accessorFn: (row) => row.order?.statusPayment,
+    accessorFn: (row) => row.order.statusPayment,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status Payment" />
     ),
@@ -179,9 +179,9 @@ export const columnsRental: ColumnDef<
           <span
             className={cn(
               "max-w-[500px] truncate capitalize",
-              statusPayment === StatusPayment.OPEN
+              statusPayment === "OPEN"
                 ? "text-emerald-400"
-                : statusPayment === StatusPayment.PENDING
+                : statusPayment === "PENDING"
                   ? "text-amber-400"
                   : "text-muted-foreground",
             )}
@@ -203,7 +203,7 @@ export const columnsRental: ColumnDef<
     cell: ({ row }) => {
       const timeStart = row.getValue("timeStart")
       if (!timeStart) return "-"
-      const formattedTimeStart = format(timeStart as Date, "pp", {
+      const formattedTimeStart = format(timeStart as number, "pp", {
         locale: id,
       })
       return (
@@ -221,7 +221,7 @@ export const columnsRental: ColumnDef<
     cell: ({ row }) => {
       const timeEnd = row.getValue("timeEnd")
       if (!timeEnd) return "-"
-      const formattedTimeEnd = format(timeEnd as Date, "pp", {
+      const formattedTimeEnd = format(timeEnd as number, "pp", {
         locale: id,
       })
       return (
@@ -232,26 +232,16 @@ export const columnsRental: ColumnDef<
     },
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "_creationTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),
     cell: ({ row }) => {
-      const formattedCreatedAt = format(row.getValue("createdAt"), "PP", {
+      const timestamp = row.getValue("_creationTime")
+      const formattedCreatedAt = format(timestamp as number, "PP", {
         locale: id,
       })
       return <div className="whitespace-nowrap">{formattedCreatedAt}</div>
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const { id } = row.original
-      return (
-        <div className="relative">
-          <RentalRowActions id={id} />
-        </div>
-      )
     },
   },
 ]

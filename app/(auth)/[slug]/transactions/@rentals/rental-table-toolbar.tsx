@@ -7,10 +7,12 @@ import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-fi
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import { Star } from "lucide-react"
 import { statusPayments, type Options } from "@/app/constants/options"
 import { DataTableViewOptions } from "@/components/table/data-table-view-options"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { Star } from "lucide-react"
 
 interface RentalTableToolbarProps<TData> {
   table: Table<TData>
@@ -20,7 +22,8 @@ export function RentalTableToolbar<TData>({
 }: RentalTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
-  const poolTables = api.poolTable.findAllByCompanyId.useQuery(undefined, {
+  const poolTables = useTanstackQuery({
+    ...convexQuery(api.pooltables.findAll, {}),
     select(data) {
       const pools: Options[] = [...new Set(data.map((d) => d.name))]
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
@@ -33,7 +36,8 @@ export function RentalTableToolbar<TData>({
     },
   })
 
-  const packetList = api.packet.findAllByCompanyId.useQuery(undefined, {
+  const packetList = useTanstackQuery({
+    ...convexQuery(api.packets.findAll, {}),
     select(data) {
       const packets: Options[] = [...new Set(data.map((d) => d.name))].map(
         (packet) => ({
