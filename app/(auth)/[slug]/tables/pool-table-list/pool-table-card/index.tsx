@@ -12,6 +12,7 @@ import { StartTimerButton } from "./start-timer-button"
 import { StopTimerButton } from "./stop-timer-button"
 import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
+import { PendingStatusCounter } from "./pending-status-counter"
 
 export function PoolTableCard({
   managerAccessLevel,
@@ -28,6 +29,10 @@ export function PoolTableCard({
 
   return (
     <div className="group relative">
+      <PendingStatusCounter
+        poolTableId={poolTable._id}
+        poolTableName={poolTable.name}
+      />
       {poolTable.isPublished && order.data?.packet?.rate !== "MINUTE" && (
         <Booking
           isCashier={cashierAccessLevel}
