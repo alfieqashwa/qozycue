@@ -1,6 +1,14 @@
 "use client"
 
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { api } from "@/convex/_generated/api"
+import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
+import { PaymentMethod, StatusPayment } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import {
@@ -15,15 +23,7 @@ import {
   UtensilsCrossed,
   Wallet2,
 } from "lucide-react"
-import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
-import { cn } from "@/lib/utils"
 import { OrderRowActions } from "./order-row-actions"
-import { FunctionReturnType } from "convex/server"
-import { api } from "@/convex/_generated/api"
-import { PaymentMethod, StatusPayment } from "@/types"
 
 export const columnsOrder: ColumnDef<
   FunctionReturnType<typeof api.orders.findAllSortedByDate>[0]
@@ -53,17 +53,17 @@ export const columnsOrder: ColumnDef<
     enableHiding: false,
   },
   {
-    accessorKey: "id",
+    accessorKey: "_id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
     ),
     cell: ({ row }) => {
-      const id: string = row.getValue("id")
+      const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
           <span className="max-w-[300px] truncate">
-            {id.slice(-8, id.length)}
+            {id?.slice(-8, id?.length)}
           </span>
         </Badge>
       )
@@ -112,9 +112,13 @@ export const columnsOrder: ColumnDef<
 
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceWithRupiah.format(Number(costPrice))}
-          </span>
+          {!!costPrice ? (
+            <span className="max-w-[500px] truncate capitalize">
+              {formattedPriceWithRupiah.format(Number(costPrice))}
+            </span>
+          ) : (
+            <span className="text-muted-foreground">Rp</span>
+          )}
         </Badge>
       )
     },
@@ -192,7 +196,7 @@ export const columnsOrder: ColumnDef<
         <Badge variant="secondary" className="px-3 py-1.5">
           <Tags className="mr-2 h-4 w-4 text-muted-foreground" />
           <span className="max-w-[500px] truncate uppercase">
-            {discount ?? 0} %
+            {!!discount ? discount + "%" : ""}
           </span>
         </Badge>
       )
@@ -208,7 +212,9 @@ export const columnsOrder: ColumnDef<
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <Tags className="mr-2 h-4 w-4 text-muted-foreground" />
-          <span className="max-w-[500px] truncate uppercase">{tax ?? 0} %</span>
+          <span className="max-w-[500px] truncate uppercase">
+            {!!tax ? tax + "%" : ""}
+          </span>
         </Badge>
       )
     },
@@ -222,14 +228,22 @@ export const columnsOrder: ColumnDef<
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Orderlines" />
     ),
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="px-3 py-1.5">
-        <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
-        <span className="max-w-[500px] truncate">
-          {row.getValue("orderlines")}
-        </span>
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const orderlineLen = Number(row.getValue("orderlines"))
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <span
+            className={cn(
+              orderlineLen === 0 && "text-muted-foreground",
+              "max-w-[500px] truncate",
+            )}
+          >
+            {orderlineLen}
+          </span>
+        </Badge>
+      )
+    },
   },
   {
     accessorKey: "createdBy",
@@ -272,7 +286,7 @@ export const columnsOrder: ColumnDef<
       <Badge variant="secondary" className="px-3 py-1.5">
         <UserRoundCheck className="mr-2 h-4 w-4 text-muted-foreground" />
         <span className="max-w-[500px] truncate capitalize">
-          {!!row.getValue("customer") ? row.getValue("customer") : "Anonymous"}
+          {row.getValue("customer")}
         </span>
       </Badge>
     ),

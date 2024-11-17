@@ -127,7 +127,9 @@ export function StartTimerButton({
     mutate({
       startTimerSchema: {
         gapDuration,
-        customerName: customerName?.toLowerCase(),
+        customerName: !!customerName
+          ? customerName?.toLowerCase()
+          : "anonymous",
         customerPhone: customerPhone?.trim(),
         poolTableId,
         packetId,
