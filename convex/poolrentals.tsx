@@ -150,22 +150,23 @@ export const createBooking = zMutation({
       .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
       .collect()
 
-    const listOfRentalTime = listOfPoolRental
-      .filter(async (rental) => {
-        const order = await ctx.db
-          .query("orders")
-          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-          .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-          .first()
+    const listOfRentalTime = await Promise.all(
+      listOfPoolRental
+        .filter(async (rental) => {
+          const order = await ctx.db
+            .query("orders")
+            .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+            .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+            .first()
 
-        return rental.orderId === order?._id
-      })
-      .map((rental) => ({
-        timeStart: rental.timeStart,
-        timeEnd: rental.timeEnd,
-      }))
-      .sort((p, q) => p.timeStart - q.timeStart)
-
+          return rental.orderId === order?._id
+        })
+        .map((rental) => ({
+          timeStart: rental.timeStart,
+          timeEnd: rental.timeEnd,
+        }))
+        .sort((p, q) => p.timeStart - q.timeStart),
+    )
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     // const startTime = Date.now()
     // const endTime = startTime + duration * HOUR_TO_MILLISECOND
@@ -237,20 +238,22 @@ export const updateBooking = zMutation({
       .filter((q) => q.neq(q.field("orderId"), orderId)) // exclude orderId from the args
       .collect()
 
-    const listOfRentalTime = listOfPoolRental
-      .filter(async (rental) => {
-        const order = await ctx.db
-          .query("orders")
-          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-          .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-          .first()
-        return rental.orderId === order?._id
-      })
-      .map((rental) => ({
-        timeStart: rental.timeStart,
-        timeEnd: rental.timeEnd,
-      }))
-      .sort((p, q) => p.timeStart - q.timeStart)
+    const listOfRentalTime = await Promise.all(
+      listOfPoolRental
+        .filter(async (rental) => {
+          const order = await ctx.db
+            .query("orders")
+            .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+            .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+            .first()
+          return rental.orderId === order?._id
+        })
+        .map((rental) => ({
+          timeStart: rental.timeStart,
+          timeEnd: rental.timeEnd,
+        }))
+        .sort((p, q) => p.timeStart - q.timeStart),
+    )
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     const endTime = startTime + duration * HOUR_TO_MILLISECOND

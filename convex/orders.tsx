@@ -184,6 +184,31 @@ export const findByPoolTableId = query({
   },
 })
 
+export const countPendingStatus = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, { poolTableId }) => {
+    await protectedProcedure(ctx, {})
+
+    const listOfPoolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
+      .collect()
+
+    const filteredBasedOnPendingStatusPaymentOrder = await Promise.all(
+      listOfPoolRental.filter(async (rental) => {
+        const order = await ctx.db
+          .query("orders")
+          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+          .filter((q) => q.eq(q.field("statusPayment"), "PENDING"))
+          .first()
+        return rental.orderId === order?._id
+      }),
+    )
+
+    return filteredBasedOnPendingStatusPaymentOrder.length
+  },
+})
+
 // === MUTATION ===
 
 export const startTimer = zMutation({
