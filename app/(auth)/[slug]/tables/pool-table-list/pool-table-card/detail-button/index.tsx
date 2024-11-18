@@ -9,46 +9,34 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
-import { convexQuery } from "@convex-dev/react-query"
-import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
-import { Phone, ScrollText, User2 } from "lucide-react"
+import { Phone, User2 } from "lucide-react"
 import { useState } from "react"
 import { TransferTable } from "./transfer-table"
 
-export function DetailButton({
-  isCashier,
-  orderStatus,
-  order,
-}: {
+type DetailButtonProps = {
   isCashier?: boolean
   orderStatus: "pending" | "error" | "success"
   order:
     | FunctionReturnType<typeof api.orders.findByPoolTableId>
     | FunctionReturnType<typeof api.orders.findById>
     | undefined
-}) {
-  const orderlines = useTanstackQuery(
-    convexQuery(api.orderlines.findAllByOrderId, { orderId: order?._id }),
-  )
+  children: React.ReactNode
+}
+export function DetailButton({
+  isCashier,
+  orderStatus,
+  order,
+  children,
+}: DetailButtonProps) {
   const [open, setOpen] = useState(false)
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button
-          disabled={!order}
-          variant="secondary"
-          className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <ScrollText size={20} />
-          <span>Detail</span>
-        </Button>
-      </DrawerTrigger>
+      {children}
       <DrawerContent className="mx-auto min-w-[360px] max-w-xl bg-card px-6">
         <DrawerHeader className="flex justify-between px-0">
           {!!order?.poolRental ? (
@@ -101,7 +89,7 @@ export function DetailButton({
               </TabsTrigger>
               <TabsTrigger
                 value="cafe"
-                disabled={!!orderlines.data?.length}
+                // disabled={!!orderlines?.length}
                 className="disabled:pointer-events-auto disabled:cursor-not-allowed"
               >
                 Cafe
@@ -138,9 +126,7 @@ export function DetailButton({
             )}
           </TabsContent>
           <TabsContent value="cafe">
-            {orderlines.status === "success" && (
-              <OrderlineDetail orderlines={orderlines.data} />
-            )}
+            <OrderlineDetail orderId={order?._id} />
           </TabsContent>
         </Tabs>
         <DrawerFooter>

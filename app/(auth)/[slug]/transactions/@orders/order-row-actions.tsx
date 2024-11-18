@@ -1,6 +1,8 @@
 "use client"
 
+import { PrintReceipt } from "@/components/print-receipt"
 import { Button } from "@/components/ui/button"
+import { DrawerTrigger } from "@/components/ui/drawer"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,17 +10,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Copy, Printer } from "lucide-react"
-import { useRef, useState } from "react"
-// import { DetailButton } from "../../tables/pool-table-tab/pool-table-card/list-button/detail-button"
-import { PrintReceipt } from "@/components/print-receipt"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { Copy, Printer, ScrollText } from "lucide-react"
+import { useRef, useState } from "react"
 import { useReactToPrint } from "react-to-print"
 import { DetailButton } from "../../tables/pool-table-list/pool-table-card/detail-button"
 import { ArchiveOrder } from "./archive-order"
@@ -99,7 +99,12 @@ export function OrderRowActions({
           className="group"
           onSelect={(e) => e.preventDefault()}
         >
-          <DetailButton orderStatus={orderStatus} order={order} />
+          <DetailButton orderStatus={orderStatus} order={order}>
+            <DrawerTrigger className="group flex w-full items-center text-sm disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground">
+              <ScrollText className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+              <span>Detail</span>
+            </DrawerTrigger>
+          </DetailButton>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {statusPayment === "PAID" && (

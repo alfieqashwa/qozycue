@@ -1,8 +1,11 @@
+import { Button } from "@/components/ui/button"
+import { DrawerTrigger } from "@/components/ui/drawer"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
+import { ScrollText } from "lucide-react"
 import { Booking } from "./booking"
 import { CafeButton } from "./cafe-button"
 import { DescriptionTable } from "./description-table"
@@ -84,7 +87,18 @@ export function PoolTableCard({
               isCashier={cashierAccessLevel}
               orderStatus={order.status}
               order={order.data}
-            />
+            >
+              <DrawerTrigger asChild>
+                <Button
+                  disabled={!order.data}
+                  variant="secondary"
+                  className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
+                >
+                  <ScrollText size={20} />
+                  <span>Detail</span>
+                </Button>
+              </DrawerTrigger>
+            </DetailButton>
             {poolTable.isActive === false &&
             !poolTable.startTime &&
             !poolTable.endTime ? (
