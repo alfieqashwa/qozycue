@@ -186,16 +186,15 @@ export const upsert = zMutation({
         quantity,
         amount,
       })
-    } else {
-      // otherwise, create
-      return await ctx.db.insert("orderlines", {
-        productId,
-        quantity,
-        amount,
-        orderId,
-        orderlineStatus: "ORDERED",
-      })
     }
+    // otherwise, create
+    return await ctx.db.insert("orderlines", {
+      productId,
+      quantity,
+      amount,
+      orderId,
+      orderlineStatus: "UNORDERED", // "UNORDERED" is default value
+    })
   },
 })
 
