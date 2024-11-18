@@ -24,12 +24,12 @@ import type * as messages from "../messages.js";
 import type * as orderlines from "../orderlines.js";
 import type * as orders from "../orders.js";
 import type * as packets from "../packets.js";
-import type * as poolrentals from "../poolrentals.js";
-import type * as pooltables from "../pooltables.js";
+import type * as poolRentals from "../poolRentals.js";
+import type * as poolTables from "../poolTables.js";
 import type * as products from "../products.js";
 import type * as sessions from "../sessions.js";
 import type * as taxes from "../taxes.js";
-import type * as unitofmeasures from "../unitofmeasures.js";
+import type * as unitOfMeasures from "../unitOfMeasures.js";
 import type * as users from "../users.js";
 
 /**
@@ -52,12 +52,12 @@ declare const fullApi: ApiFromModules<{
   orderlines: typeof orderlines;
   orders: typeof orders;
   packets: typeof packets;
-  poolrentals: typeof poolrentals;
-  pooltables: typeof pooltables;
+  poolRentals: typeof poolRentals;
+  poolTables: typeof poolTables;
   products: typeof products;
   sessions: typeof sessions;
   taxes: typeof taxes;
-  unitofmeasures: typeof unitofmeasures;
+  unitOfMeasures: typeof unitOfMeasures;
   users: typeof users;
 }>;
 export declare const api: FilterApi<
