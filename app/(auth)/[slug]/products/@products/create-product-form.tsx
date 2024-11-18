@@ -88,7 +88,11 @@ export function CreateProductForm({
   // disabled submitting whenever costPrice is greater than or equal to salePrice
   const disabledPriceComparison =
     Number(form.watch("costPrice")) >= Number(form.watch("salePrice"))
-
+  const disabled =
+    isPending ||
+    disabledPriceComparison ||
+    form.watch("unitOfMeasureId") === "" ||
+    form.watch("categoryId") === ""
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
@@ -225,10 +229,7 @@ export function CreateProductForm({
               Please wait
             </Button>
           ) : (
-            <Button
-              disabled={isPending || disabledPriceComparison}
-              type="submit"
-            >
+            <Button disabled={disabled} type="submit">
               Create Product
             </Button>
           )}
