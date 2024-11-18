@@ -31,7 +31,7 @@ export const findAll = query({
     return Promise.all(
       pooltables.map(async (pool) => {
         const company = await ctx.db.get(pool.companyId)
-        return { ...pool, isPublished: company?.isPublished }
+        return { ...pool, company: { isPublished: company?.isPublished } }
       }),
     )
   },
