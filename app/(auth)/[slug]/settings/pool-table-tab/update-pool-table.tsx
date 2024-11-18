@@ -47,7 +47,7 @@ export const UpdatePoolTable = ({
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.pooltables.update),
+    mutationFn: useConvexMutation(api.poolTables.update),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "The table has been updated.",

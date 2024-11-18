@@ -101,7 +101,7 @@ export function CreateBookingForm({
   }
 
   const countIsBooking = useTanstackQuery({
-    ...convexQuery(api.poolrentals.countIsBooking, { poolTableId }),
+    ...convexQuery(api.poolRentals.countIsBooking, { poolTableId }),
     enabled: Boolean(poolTableId),
   })
 
@@ -119,7 +119,7 @@ export function CreateBookingForm({
   })
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.poolrentals.createBooking),
+    mutationFn: useConvexMutation(api.poolRentals.createBooking),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: `Booking Table ${poolTableName} has been created.`,

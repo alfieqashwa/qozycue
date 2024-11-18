@@ -33,7 +33,7 @@ export const DeletePoolTable = ({
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.pooltables.remove),
+    mutationFn: useConvexMutation(api.poolTables.remove),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "The pool table has been deleted.",

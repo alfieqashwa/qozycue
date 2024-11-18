@@ -46,7 +46,7 @@ export function SetupGapDuration({
   const gapDurationWatch = form.watch("gapDuration")
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.pooltables.updateGapDuration),
+    mutationFn: useConvexMutation(api.poolTables.updateGapDuration),
 
     onSuccess: () =>
       toast.success("Succeed!", {

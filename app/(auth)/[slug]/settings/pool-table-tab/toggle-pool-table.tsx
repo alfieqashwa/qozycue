@@ -21,7 +21,7 @@ export const TogglePoolTable = ({
   status: Status
 }) => {
   const { mutate, isPending, variables } = useMutation({
-    mutationFn: useConvexMutation(api.pooltables.toggle),
+    mutationFn: useConvexMutation(api.poolTables.toggle),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: (

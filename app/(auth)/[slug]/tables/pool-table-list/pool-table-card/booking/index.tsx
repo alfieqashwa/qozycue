@@ -64,20 +64,20 @@ export function Booking({
     useTanstackQueries({
       queries: [
         {
-          ...convexQuery(api.poolrentals.findAllBookingByPoolTableId, {
+          ...convexQuery(api.poolRentals.findAllBookingByPoolTableId, {
             poolTableId,
           }),
           enabled: !!poolTableId,
         },
         {
-          ...convexQuery(api.poolrentals.countIsBooking, { poolTableId }),
+          ...convexQuery(api.poolRentals.countIsBooking, { poolTableId }),
           enabled: !!poolTableId,
         },
       ],
     })
 
   const { mutate } = useMutation({
-    mutationFn: useConvexMutation(api.poolrentals.startBookingTimer),
+    mutationFn: useConvexMutation(api.poolRentals.startBookingTimer),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "Booking has been started automatically.",

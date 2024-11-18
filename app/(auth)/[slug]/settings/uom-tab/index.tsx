@@ -19,7 +19,7 @@ import { UpdateUom } from "./update-uom"
 
 export function UoMTab() {
   const { data: unitOfMeasures, status } = useTanstackQuery(
-    convexQuery(api.unitofmeasures.findAll, {}),
+    convexQuery(api.unitOfMeasures.findAll, {}),
   )
 
   if (status === "pending") return <LoadingSpinner />

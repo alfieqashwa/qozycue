@@ -14,7 +14,7 @@ export function PoolTableList({
   cashierAccessLevel: boolean
 }) {
   const { data: sortedPoolTableList, status } = useQuery({
-    ...convexQuery(api.pooltables.findAll, {}),
+    ...convexQuery(api.poolTables.findAll, {}),
     select(data) {
       return data
         .filter((p) => p.status === "enabled")

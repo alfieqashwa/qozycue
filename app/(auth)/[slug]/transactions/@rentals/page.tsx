@@ -30,7 +30,7 @@ export default function RentalPage() {
   })
 
   const poolRentals = useTanstackQuery({
-    ...convexQuery(api.poolrentals.findAll, {
+    ...convexQuery(api.poolRentals.findAll, {
       from: date?.from?.getTime(),
       to: date?.to?.getTime(),
     }),

@@ -34,7 +34,7 @@ export function BookingRentalTable({
   seconds,
 }: {
   bookingList: FunctionReturnType<
-    typeof api.poolrentals.findAllBookingByPoolTableId
+    typeof api.poolRentals.findAllBookingByPoolTableId
   >
   poolTableId: Id<"poolTables">
   poolTableName: string

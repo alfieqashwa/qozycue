@@ -26,7 +26,7 @@ export function OrderTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0
 
   const { data, status } = useTanstackQuery({
-    ...convexQuery(api.pooltables.findAll, {}),
+    ...convexQuery(api.poolTables.findAll, {}),
     select(data) {
       const pools: Options[] = [...new Set(data.map((d) => d.name))]
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))

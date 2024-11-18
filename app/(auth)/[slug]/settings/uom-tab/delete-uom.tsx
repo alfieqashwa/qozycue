@@ -28,7 +28,7 @@ export function DeleteUom({
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.unitofmeasures.remove),
+    mutationFn: useConvexMutation(api.unitOfMeasures.remove),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "The UoM has been deleted.",

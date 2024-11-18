@@ -18,7 +18,7 @@ export const CreateBooking = ({
   const [open, setOpen] = useState(false)
 
   const { data, status } = useTanstackQuery({
-    ...convexQuery(api.pooltables.findGapDuration, { poolTableId }),
+    ...convexQuery(api.poolTables.findGapDuration, { poolTableId }),
     enabled: Boolean(poolTableId),
   })
 

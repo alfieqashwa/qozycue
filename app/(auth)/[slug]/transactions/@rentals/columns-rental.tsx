@@ -14,7 +14,7 @@ import { id } from "date-fns/locale"
 import { Hash, Star } from "lucide-react"
 
 export const columnsRental: ColumnDef<
-  FunctionReturnType<typeof api.poolrentals.findAll>[0]
+  FunctionReturnType<typeof api.poolRentals.findAll>[0]
 >[] = [
   {
     id: "select",

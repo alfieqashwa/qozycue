@@ -58,7 +58,7 @@ export function StartTimerButton({
   const [open, setOpen] = useState(false)
 
   const countIsBooking = useTanstackQuery({
-    ...convexQuery(api.poolrentals.countIsBooking, { poolTableId }),
+    ...convexQuery(api.poolRentals.countIsBooking, { poolTableId }),
     enabled: Boolean(poolTableId),
   })
 

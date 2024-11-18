@@ -113,7 +113,7 @@ export function UpdateBookingForm({
   })
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.poolrentals.updateBooking),
+    mutationFn: useConvexMutation(api.poolRentals.updateBooking),
 
     onSuccess: () =>
       toast.success("Succeed!", {

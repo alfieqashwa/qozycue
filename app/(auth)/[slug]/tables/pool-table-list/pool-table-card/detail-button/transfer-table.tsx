@@ -52,12 +52,12 @@ export function TransferTable({
   const [open, setOpen] = useState(false)
 
   const { data: transferPoolTableList, status } = useQuery({
-    ...convexQuery(api.pooltables.transferPoolTableList, { poolTableIdFrom }),
+    ...convexQuery(api.poolTables.transferPoolTableList, { poolTableIdFrom }),
     enabled: Boolean(poolTableIdFrom),
   })
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.pooltables.transfer),
+    mutationFn: useConvexMutation(api.poolTables.transfer),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "The table has been transfered successfully.",

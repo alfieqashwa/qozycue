@@ -140,7 +140,7 @@ function DeleteDialog({
             <span className="px-1.5 font-medium uppercase text-primary">
               {customerName}
             </span>
-            's booking.
+            &apos;s booking.
           </DialogDescription>
         </DialogHeader>
 
@@ -178,7 +178,7 @@ function DeleteDrawer({
             <span className="px-1.5 font-medium uppercase text-primary">
               {customerName}
             </span>
-            's booking.
+            &apos;s booking.
           </DrawerDescription>
         </DrawerHeader>
         {children}

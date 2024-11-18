@@ -19,7 +19,7 @@ import { UpdatePoolTable } from "./update-pool-table"
 
 export function PoolTableTab({ companyId }: { companyId: Id<"companies"> }) {
   const { data: poolTableList, status } = useTanstackQuery({
-    ...convexQuery(api.pooltables.findAll, {}),
+    ...convexQuery(api.poolTables.findAll, {}),
     enabled: Boolean(companyId),
     select(data) {
       return data.sort((a, b) =>

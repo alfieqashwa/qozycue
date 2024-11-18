@@ -36,7 +36,7 @@ export function CreateUom() {
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.unitofmeasures.create),
+    mutationFn: useConvexMutation(api.unitOfMeasures.create),
     onSuccess: () =>
       toast.success("Succeed", {
         description: "New UoM has been created.",

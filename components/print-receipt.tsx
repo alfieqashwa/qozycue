@@ -266,3 +266,6 @@ export const PrintReceipt = forwardRef(
     )
   },
 )
+
+//? source -> https://chatgpt.com/c/67371a5b-3118-8002-8897-64ddd5e71a95
+PrintReceipt.displayName = "PrintReceipt"

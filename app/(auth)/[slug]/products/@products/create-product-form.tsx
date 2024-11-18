@@ -42,7 +42,7 @@ export function CreateProductForm({
 }) {
   const [uoms, categories] = useTanstackQueries({
     queries: [
-      convexQuery(api.unitofmeasures.findAll, {}),
+      convexQuery(api.unitOfMeasures.findAll, {}),
       convexQuery(api.categories.findAll, {}),
     ],
   })

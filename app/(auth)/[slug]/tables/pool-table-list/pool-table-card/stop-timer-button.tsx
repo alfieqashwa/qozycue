@@ -82,7 +82,7 @@ export function StopTimerButton({
         <DialogHeader>
           <DialogTitle>Stop Table {poolTableName}</DialogTitle>
           <DialogDescription>
-            Click Stop Timer when you're done.
+            Click Stop Timer when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-8">

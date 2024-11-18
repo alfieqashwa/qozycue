@@ -42,7 +42,7 @@ export const UpdateUom = ({
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.unitofmeasures.update),
+    mutationFn: useConvexMutation(api.unitOfMeasures.update),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "The UoM has been updated.",

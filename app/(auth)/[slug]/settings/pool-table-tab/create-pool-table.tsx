@@ -42,7 +42,7 @@ export const CreatePoolTable = ({
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.pooltables.create),
+    mutationFn: useConvexMutation(api.poolTables.create),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "New Table has been created.",
