@@ -17,6 +17,7 @@ import { FunctionReturnType } from "convex/server"
 import { Phone, User2 } from "lucide-react"
 import { useState } from "react"
 import { TransferTable } from "./transfer-table"
+import { LoadingSpinner } from "@/components/loading-spinner"
 
 type DetailButtonProps = {
   isCashier?: boolean
@@ -34,6 +35,7 @@ export function DetailButton({
   children,
 }: DetailButtonProps) {
   const [open, setOpen] = useState(false)
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       {children}
@@ -64,10 +66,10 @@ export function DetailButton({
             <DrawerDescription className="flex space-x-2 capitalize">
               <User2 size={16} />
               <span className="font-medium text-foreground">
-                {order?.customer?.name}
+                {order?.customer.name}
               </span>
             </DrawerDescription>
-            {order?.customer?.phone && (
+            {order?.customer.phone && (
               <DrawerDescription className="flex space-x-2 text-xs capitalize">
                 <Phone size={16} />
                 <span className="font-medium tracking-wider text-muted-foreground">

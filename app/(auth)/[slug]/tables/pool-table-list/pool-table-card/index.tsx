@@ -29,7 +29,6 @@ export function PoolTableCard({
   const order = useTanstackQuery(
     convexQuery(api.orders.findByPoolTableId, { poolTableId: poolTable._id }),
   )
-
   return (
     <div className="group relative">
       <PendingStatusCounter
@@ -90,7 +89,7 @@ export function PoolTableCard({
             >
               <DrawerTrigger asChild>
                 <Button
-                  disabled={!order.data}
+                  disabled={!order.data?._id}
                   variant="secondary"
                   className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >

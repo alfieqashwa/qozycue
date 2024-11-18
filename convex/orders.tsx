@@ -123,7 +123,8 @@ export const findById = query({
       .first()
     const poolTable = await ctx.db.get(poolRental?.poolTableId!)
     const packet = await ctx.db.get(poolRental?.packetId!)
-    const customer = order !== null ? await ctx.db.get(order?.companyId) : null
+    const customer =
+      order !== null ? await ctx.db.get(order?.customerId!) : null
 
     const company = await ctx.db.get(order?.companyId!)
 
@@ -162,16 +163,11 @@ export const findByPoolTableId = query({
     const order = await ctx.db
       .query("orders")
       .withIndex("by_id", (q) => q.eq("_id", poolRental?.orderId!))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("companyId"), user?.companyId),
-          q.eq(q.field("statusPayment"), "OPEN"),
-        ),
-      )
+      .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
       .first()
 
     const packet = await ctx.db.get(poolRental?.packetId!)
-    const customer = order !== null ? await ctx.db.get(order?.companyId) : null
+    const customer = order !== null ? await ctx.db.get(order.customerId!) : null
     const createdBy =
       order !== null
         ? await ctx.db

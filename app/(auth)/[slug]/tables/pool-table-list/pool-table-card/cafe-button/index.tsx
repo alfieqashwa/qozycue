@@ -66,7 +66,7 @@ export function CafeButton({
     <Drawer>
       <DrawerTrigger asChild>
         <Button
-          disabled={!order}
+          disabled={!order?._id}
           variant="secondary"
           className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
