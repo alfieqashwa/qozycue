@@ -32,7 +32,7 @@ export function PendingStatusCounter({
           {session.status === "success" && !!session.data.slug && (
             <Link
               href={{
-                pathname: `/${encodeURIComponent(session.data.slug)}/tables/${encodeURIComponent(poolTableId)}`,
+                pathname: `/${encodeURIComponent(session.data.slug as string)}/tables/${encodeURIComponent(poolTableId)}`,
                 query: {
                   pool: poolTableName,
                 },
@@ -40,7 +40,7 @@ export function PendingStatusCounter({
               className="duration absolute right-0 top-0 z-10 size-7 animate-pulse rounded-md rounded-br-none rounded-tl-none rounded-tr-2xl bg-primary/30 shadow-xl transition-opacity hover:bg-primary/50 disabled:pointer-events-auto disabled:cursor-not-allowed"
             >
               <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-bold capitalize text-primary">
-                {countPendingStatus}
+                {/* {countPendingStatus} */}p
               </span>
             </Link>
           )}
