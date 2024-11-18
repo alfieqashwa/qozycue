@@ -26,11 +26,11 @@ export function PoolTableList({
   return (
     <div className="relative">
       <div className="grid w-full grid-cols-1 gap-6 font-mono sm:gap-8 lg:grid-cols-2 2xl:grid-cols-3">
-        {sortedPoolTableList?.map((poolTable) => {
+        {sortedPoolTableList?.map((t) => {
           if (status !== "success")
             return (
               <SkeletonDashboardCard
-                key={poolTable._id}
+                key={t._id}
                 className="h-44 w-full rounded-2xl"
               />
             )
@@ -38,8 +38,14 @@ export function PoolTableList({
             <PoolTableCard
               managerAccessLevel={managerAccessLevel}
               cashierAccessLevel={cashierAccessLevel}
-              poolTable={poolTable}
-              key={poolTable._id}
+              isPublished={t.company.isPublished}
+              isActive={t.isActive}
+              poolTableId={t._id}
+              poolTableName={t.name}
+              poolTableStartTime={t.startTime as number}
+              poolTableEndTime={t.endTime as number}
+              gapDuration={t.gapDuration as number}
+              key={t._id}
             />
           )
         })}
