@@ -149,10 +149,10 @@ export const findById = query({
 export const findByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
-    // await protectedProcedure(ctx, {})
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw new ConvexError("Please signed in!")
-    const user = userId !== null ? await ctx.db.get(userId) : null
+    await protectedProcedure(ctx, {})
+    // const userId = await getAuthUserId(ctx)
+    // if (!userId) throw new ConvexError("Please signed in!")
+    // const user = userId !== null ? await ctx.db.get(userId) : null
 
     const poolRental = await ctx.db
       .query("poolRentals")
@@ -166,7 +166,13 @@ export const findByPoolTableId = query({
       .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
       .first()
 
-    const packet = await ctx.db.get(poolRental?.packetId!)
+    const packet =
+      poolRental !== null
+        ? await ctx.db
+            .query("packets")
+            .withIndex("by_id", (q) => q.eq("_id", poolRental?.packetId))
+            .first()
+        : null
     const customer = order !== null ? await ctx.db.get(order.customerId!) : null
     const createdBy =
       order !== null
@@ -276,7 +282,7 @@ export const startTimer = zMutation({
 
     const createOrder = await ctx.db.insert("poolRentals", {
       orderId,
-      poolTableId: poolTableId,
+      poolTableId,
       packetId: packetId,
       duration: duration,
       totalCost,
