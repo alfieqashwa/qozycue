@@ -10,9 +10,9 @@ export function StartAutomatically({
   seconds,
 }: {
   stopCount: boolean
-  hours: number | undefined
-  minutes: number | undefined
-  seconds: number | undefined
+  hours: number | null
+  minutes: number | null
+  seconds: number | null
 }) {
   return (
     <Badge variant="secondary" className="w-28 py-1">

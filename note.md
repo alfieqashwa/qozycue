@@ -17,6 +17,7 @@
 ✅ (bug) Fix cafe order menu
 ✅ Move Button Edit and Delete Product and Packet into row list of table
 ✅ Restrict to delete enabled product(s) and packet(s)
+❌ Pool Table with the same company must have a unique name
 ❌ Restrict to disabled the product(s) and packet(s) when they are in OPEN and PENDING order
 ❌ Update library "react-to-print" version after learn their recent documentation
 

@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils"
 import { GiPoolTriangle } from "react-icons/gi"
 
 type TimeCardProps = {
-  hours: number | undefined
-  minutes: number | undefined
-  seconds: number | undefined
+  hours: number | null
+  minutes: number | null
+  seconds: number | null
   className?: string
 }
 
@@ -36,14 +36,14 @@ const FormatTime = ({
   time,
   label,
 }: {
-  time: number | undefined
+  time: number | null
   label?: string
 }) => {
   // const singularLabel = label.slice(0, -1)
   return (
     <>
       <span className="sr-only">{label}</span>
-      {typeof time !== "undefined" ? (
+      {typeof time !== null ? (
         <span>{time?.toString().padStart(2, "0")}</span>
       ) : (
         <GiPoolTriangle className="animate-pulse" />

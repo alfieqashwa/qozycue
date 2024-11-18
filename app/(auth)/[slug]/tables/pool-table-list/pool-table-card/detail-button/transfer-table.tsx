@@ -44,8 +44,8 @@ export function TransferTable({
   orderId: Id<"orders">
   poolTableIdFrom: Id<"poolTables">
   poolTableName: string
-  startTime: number | undefined
-  endTime: number | undefined
+  startTime: number | null
+  endTime: number | null
   poolRentalId: Id<"poolRentals">
   setOpenDetailDrawer: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -116,7 +116,9 @@ export function TransferTable({
         )}
         <SheetHeader>
           <SheetTitle>Transfer Table {poolTableName}</SheetTitle>
-          <SheetDescription>Click Transfer when you're ready.</SheetDescription>
+          <SheetDescription>
+            Click Transfer when you&apos;re ready.
+          </SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit} className="mt-4 space-y-8">
           <Select name="poolTableIdTo">

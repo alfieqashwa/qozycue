@@ -76,8 +76,8 @@ export default defineSchema({
     description: v.optional(v.string()),
     isActive: v.boolean(),
     status: v.union(v.literal("disabled"), v.literal("enabled")),
-    startTime: v.optional(v.float64()),
-    endTime: v.optional(v.float64()),
+    startTime: v.union(v.float64(), v.null()),
+    endTime: v.union(v.float64(), v.null()),
     gapDuration: v.number(),
     companyId: v.id("companies"),
   }).index("companyId", ["companyId"]),
@@ -123,7 +123,7 @@ export default defineSchema({
   poolRentals: defineTable({
     description: v.optional(v.string()),
     timeStart: v.float64(), // required
-    timeEnd: v.optional(v.float64()), // not required
+    timeEnd: v.union(v.float64(), v.null()), // not required
     duration: v.optional(v.number()),
     totalCost: v.optional(v.float64()),
     isBooking: v.boolean(),

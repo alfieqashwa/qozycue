@@ -262,7 +262,7 @@ export const startTimer = zMutation({
     const updatePoolTable = await ctx.db.patch(poolTableId, {
       isActive: true,
       startTime,
-      endTime: rate === "HOUR" ? endTime : undefined,
+      endTime: rate === "HOUR" ? endTime : null,
     })
 
     const totalCost = Math.round((cost * duration) / 100) * 100
@@ -287,7 +287,7 @@ export const startTimer = zMutation({
       duration: duration,
       totalCost,
       timeStart: startTime,
-      timeEnd: rate === "HOUR" ? endTime : undefined,
+      timeEnd: rate === "HOUR" ? endTime : null,
       isBooking: false,
     })
 
@@ -362,8 +362,8 @@ export const resetTimer = mutation({
     await cashierProcedure(ctx, {})
 
     const updatePoolTable = await ctx.db.patch(args.poolTableId, {
-      startTime: undefined,
-      endTime: undefined,
+      startTime: null,
+      endTime: null,
       isActive: false,
     })
 
@@ -456,8 +456,16 @@ export const payment = zMutation({
         paymentMethod,
         note,
       },
+      // ...fields
     },
   ) => {
+    const poolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId")
+      .first()
+
+    if (!poolRental) throw new ConvexError("No Pool Rental Porvided!")
+
     const updateOrder = await ctx.db.patch(orderId, {
       totalAmount,
       revenue,
@@ -468,15 +476,9 @@ export const payment = zMutation({
       note,
     })
 
-    const poolRental = await ctx.db
-      .query("poolRentals")
-      .withIndex("orderId")
-      .first()
-    const poolTable = await ctx.db.get(poolRental?.poolTableId!)
-
-    const updatePoolTable = await ctx.db.patch(poolTable?._id!, {
-      startTime: undefined,
-      endTime: undefined,
+    const updatePoolTable = await ctx.db.patch(poolRental.poolTableId, {
+      startTime: null,
+      endTime: null,
     })
 
     return { updateOrder, updatePoolTable }

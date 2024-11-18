@@ -69,7 +69,7 @@ export function ResetButton({
         <DialogHeader>
           <DialogTitle>Are you sure want to reset the timer?</DialogTitle>
           <DialogDescription>
-            Click Reset Timer when you're done.
+            Click Reset Timer when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="mt-12">

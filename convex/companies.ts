@@ -98,6 +98,8 @@ export const createTrial = zMutation({
       isActive: boolean
       gapDuration: number
       status: "enabled" | "disabled"
+      startTime: number | null
+      endTime: number | null
     }
 
     const data: TData[] = Array.from({ length: 10 }, (_, i) => ({
@@ -107,6 +109,8 @@ export const createTrial = zMutation({
       isActive: false,
       gapDuration: 10,
       status: "enabled",
+      startTime: null,
+      endTime: null,
     }))
     let insertedIds: Id<"poolTables">[] = [] // array to store the inserted IDs
 

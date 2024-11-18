@@ -11,10 +11,10 @@ import { TimeCard } from "./time-card"
 import { UpdateDuration } from "./update-duration"
 
 type CountdownProps = {
-  endTime?: number
+  endTime: number | null
   poolTableId: Id<"poolTables">
   poolTableName: string
-  startTime?: number
+  startTime: number | null
   poolRentalId?: Id<"poolRentals">
   packetRate?: Rate
   packetCost?: number
@@ -145,9 +145,9 @@ export function Countdown({
       </div>
       {!stopCount && (
         <TimeCard
-          hours={localTime?.hours}
-          minutes={localTime?.minutes}
-          seconds={localTime?.seconds}
+          hours={localTime?.hours as number}
+          minutes={localTime?.minutes as number}
+          seconds={localTime?.seconds as number}
           className={cn(
             "text-sky-400",
             localTime?.hours === 0 &&

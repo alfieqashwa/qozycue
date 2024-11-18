@@ -41,9 +41,9 @@ export function BookingRentalTable({
   gapDuration: number
   orderId: Id<"orders"> | undefined
   stopCount: boolean
-  hours: number | undefined
-  minutes: number | undefined
-  seconds: number | undefined
+  hours: number | null
+  minutes: number | null
+  seconds: number | null
 }) {
   return (
     <>
@@ -178,7 +178,7 @@ export function BookingRentalTable({
               </TableCell>
               <TableCell>
                 <div className="whitespace-nowrap">
-                  {format(booking.timeStart, "PP", { locale: id })}
+                  {format(booking.timeStart as number, "PP", { locale: id })}
                 </div>
               </TableCell>
               <TableCell>

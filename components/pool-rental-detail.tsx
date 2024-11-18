@@ -18,7 +18,7 @@ type PoolRentalDetailProps = {
   duration?: number
   totalCost?: number
   startTime?: number
-  endTime?: number
+  endTime?: number | null
   timeStart?: number
   timeEnd?: number
   poolRentalId?: Id<"poolRentals">

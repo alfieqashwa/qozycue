@@ -69,7 +69,7 @@ export const findAllBookingByPoolTableId = query({
 
     return await Promise.all(
       bookingRentalList
-        .sort((p, q) => p.timeStart - q.timeStart)
+        .sort((p, q) => p.timeStart! - q.timeStart!)
         .map(async (poolRental) => {
           const packet = !!poolRental.packetId
             ? await ctx.db.get(poolRental.packetId)
@@ -212,7 +212,7 @@ export const createBooking = zMutation({
           timeStart: rental.timeStart,
           timeEnd: rental.timeEnd,
         }))
-        .sort((p, q) => p.timeStart - q.timeStart),
+        .sort((p, q) => p.timeStart! - q.timeStart!),
     )
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     // const startTime = Date.now()
@@ -299,7 +299,7 @@ export const updateBooking = zMutation({
           timeStart: rental.timeStart,
           timeEnd: rental.timeEnd,
         }))
-        .sort((p, q) => p.timeStart - q.timeStart),
+        .sort((p, q) => p.timeStart! - q.timeStart!),
     )
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000

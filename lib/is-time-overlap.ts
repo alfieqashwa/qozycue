@@ -4,8 +4,8 @@ export function isTimeOverlap(
   newStartTime: number,
   newEndTime: number,
   existingBookings: {
-    timeStart: number | undefined
-    timeEnd: number | undefined
+    timeStart: number | null
+    timeEnd: number | null | undefined
   }[],
 ): boolean {
   // Gap duration in milliseconds (10 minutes = 600,00 ms)

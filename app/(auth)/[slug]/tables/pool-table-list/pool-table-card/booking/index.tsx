@@ -56,9 +56,9 @@ export function Booking({
     undefined,
   )
   const [endTime, setEndTime] = useState<number | null | undefined>(undefined)
-  const [hours, setHours] = useState<number | undefined>(undefined)
-  const [minutes, setMinutes] = useState<number | undefined>(undefined)
-  const [seconds, setSeconds] = useState<number | undefined>(undefined)
+  const [hours, setHours] = useState<number | null>(null)
+  const [minutes, setMinutes] = useState<number | null>(null)
+  const [seconds, setSeconds] = useState<number | null>(null)
 
   const [findAllBookingByCompanyId, { data: countIsBooking, status }] =
     useTanstackQueries({

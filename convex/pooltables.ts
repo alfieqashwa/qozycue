@@ -57,8 +57,8 @@ export const create = zMutation({
       isActive: false,
       status: "disabled",
       gapDuration: 10,
-      startTime: undefined,
-      endTime: undefined,
+      startTime: null,
+      endTime: null,
     })
   },
 })

@@ -95,9 +95,9 @@ export function Stopwatch({
     <>
       {!stopCount && (
         <TimeCard
-          hours={localTime?.hours}
-          minutes={localTime?.minutes}
-          seconds={localTime?.seconds}
+          hours={localTime?.hours!}
+          minutes={localTime?.minutes!}
+          seconds={localTime?.seconds!}
           className="text-amber-400"
         />
       )}
