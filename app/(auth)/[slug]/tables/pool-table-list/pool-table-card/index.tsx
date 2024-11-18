@@ -16,6 +16,8 @@ import { StartTimerButton } from "./start-timer-button"
 import { StopTimerButton } from "./stop-timer-button"
 import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
+import { Countdown } from "./timer/count-down"
+import { Stopwatch } from "./timer/stopwatch"
 
 export function PoolTableCard({
   managerAccessLevel,
@@ -64,13 +66,49 @@ export function PoolTableCard({
         <section className="flex justify-between">
           <Timer
             isCashier={cashierAccessLevel}
-            poolTable={poolTable}
-            order={order.data}
-          />
+            isActive={poolTable.isActive}
+            poolTableId={poolTable._id}
+            poolTableName={poolTable.name}
+            orderId={order.data?._id}
+            hasStartTime={!!poolTable.startTime}
+            hasEndTime={!!poolTable.endTime}
+          >
+            {order.status === "success" &&
+              order.data?.poolRental?.packet.rate === "HOUR" && (
+                <Countdown
+                  endTime={poolTable.endTime}
+                  poolTableId={poolTable._id}
+                  poolTableName={poolTable.name}
+                  poolRentalId={order.data.poolRental._id}
+                  startTime={poolTable.startTime}
+                  packetCost={order.data.poolRental.packet.cost}
+                  packetRate={order.data.poolRental.packet.rate}
+                  duration={order.data?.poolRental?.duration}
+                />
+              )}
+            {order.status === "success" &&
+              order.data?.poolRental?.packet.rate === "MINUTE" && (
+                <Stopwatch
+                  isActive={poolTable.isActive}
+                  poolTableId={poolTable._id}
+                  poolTableName={poolTable.name}
+                  poolRentalId={order.data.poolRental._id}
+                  startTime={poolTable.startTime}
+                  packetCost={order.data.poolRental.packet.cost}
+                  packetRate={order.data.poolRental.packet.rate}
+                />
+              )}
+          </Timer>
           <DescriptionTable
-            poolTable={poolTable}
-            orderStatusSucceed={order.status === "success"}
-            order={order.data}
+            isActive={poolTable.isActive}
+            startTime={poolTable.startTime!}
+            poolTableName={poolTable.name}
+            orderStatusSucceed={order.status === "success" && !!order.data._id}
+            packetName={order.data?.poolRental?.packet.name}
+            packetCost={order.data?.poolRental?.packet.cost}
+            packetRate={order.data?.poolRental?.packet.rate}
+            duration={order.data?.poolRental?.duration}
+            totalCost={order.data?.poolRental?.totalCost}
           />
           <TimeDisplay
             startTime={poolTable.startTime}

@@ -1,19 +1,29 @@
-import { api } from "@/convex/_generated/api"
 import { formattedPrice } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
-import { FunctionReturnType } from "convex/server"
+import { Rate } from "@/types"
 import { useEffect, useState } from "react"
 
 export function DescriptionTable({
-  poolTable,
+  isActive,
+  startTime,
+  poolTableName,
   orderStatusSucceed,
-  order,
+  packetCost,
+  packetRate,
+  packetName,
+  duration,
+  totalCost,
 }: {
-  poolTable: FunctionReturnType<typeof api.pooltables.findAll>[0]
+  isActive: boolean
+  startTime: number
+  poolTableName: string
   orderStatusSucceed: boolean
-  order: FunctionReturnType<typeof api.orders.findByPoolTableId> | undefined
+  packetName?: string
+  packetRate?: Rate
+  packetCost?: number
+  duration?: number | null
+  totalCost?: number
 }) {
-  const { isActive, startTime, name: poolTableName } = poolTable
   const [realtimeDuration, setRealtimeDuration] = useState<null | number>(null)
   const [realtimeTotalCost, setRealtimeTotalCost] = useState<null | number>(
     null,
@@ -34,28 +44,25 @@ export function DescriptionTable({
       // for Card-Description
       const realtimeDuration = Math.floor(difference / (1000 * 60))
       setRealtimeDuration(realtimeDuration)
-      if (order?.poolRental.packet?.cost == null) return
+      if (packetCost == null) return
       setRealtimeTotalCost(
-        Math.round((order.poolRental.packet.cost * realtimeDuration) / 100) *
-          100,
+        Math.round((packetCost * realtimeDuration) / 100) * 100,
       )
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isActive, order?.poolRental.packet?.cost, setRealtimeDuration, startTime])
+  }, [isActive, packetCost, setRealtimeDuration, startTime])
 
-  const formattedRate = order?.poolRental.packet?.rate === "HOUR" ? "hr" : "min"
+  const formattedRate = packetRate === "HOUR" ? "hr" : "min"
 
   return (
     <section className="-ml-4">
       <h1
         className={cn(
           "text-center font-bold uppercase",
-          isActive &&
-            orderStatusSucceed &&
-            order?.poolRental.packet?.rate === "HOUR"
+          isActive && orderStatusSucceed && packetRate === "HOUR"
             ? "text-sky-400"
-            : orderStatusSucceed && order?.poolRental.packet?.rate === "MINUTE"
+            : orderStatusSucceed && packetRate === "MINUTE"
               ? "text-amber-400"
               : "text-muted-foreground",
         )}
@@ -65,26 +72,24 @@ export function DescriptionTable({
 
       <article className="mt-1 grid grid-cols-2 gap-x-2 text-xs text-muted-foreground sm:text-sm">
         <p className="text-right">Packet:</p>
-        {orderStatusSucceed && !!order?._id ? (
-          <p className="capitalize text-foreground">
-            {order.poolRental.packet.name}
-          </p>
+        {orderStatusSucceed && !!packetName ? (
+          <p className="capitalize text-foreground">{packetName}</p>
         ) : (
           <InvisibleParagraph />
         )}
         <p className="text-right">Cost:</p>
-        {orderStatusSucceed && !!order?._id ? (
+        {orderStatusSucceed && !!packetCost ? (
           <p className="tracking-tight text-foreground">
-            {formattedPrice.format(Number(order.poolRental.packet.cost))}/
+            {formattedPrice.format(Number(packetCost))}/
             <span>{formattedRate}</span>
           </p>
         ) : (
           <InvisibleParagraph />
         )}
         <p className="text-right">Duration:</p>
-        {orderStatusSucceed && !!order?._id ? (
+        {orderStatusSucceed && !!duration ? (
           <p className="text-foreground">
-            {order.poolRental.duration}
+            {duration}
             <span className="ml-1">{formattedRate}</span>
           </p>
         ) : isActive && !!realtimeDuration ? (
@@ -96,9 +101,9 @@ export function DescriptionTable({
           <InvisibleParagraph />
         )}
         <p className="text-right">Price:</p>
-        {orderStatusSucceed && !!order?._id ? (
+        {orderStatusSucceed && !!totalCost ? (
           <p className="tracking-tight text-foreground">
-            {formattedPrice.format(Number(order.poolRental.totalCost))}
+            {formattedPrice.format(Number(totalCost))}
           </p>
         ) : isActive && !!realtimeDuration ? (
           <p className="text-amber-400">
