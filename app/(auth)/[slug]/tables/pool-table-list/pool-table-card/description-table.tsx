@@ -65,7 +65,7 @@ export function DescriptionTable({
 
       <article className="mt-1 grid grid-cols-2 gap-x-2 text-xs text-muted-foreground sm:text-sm">
         <p className="text-right">Packet:</p>
-        {orderStatusSucceed && !!order?.poolRental.packet?.name ? (
+        {orderStatusSucceed && !!order?._id ? (
           <p className="capitalize text-foreground">
             {order.poolRental.packet.name}
           </p>
@@ -73,7 +73,7 @@ export function DescriptionTable({
           <InvisibleParagraph />
         )}
         <p className="text-right">Cost:</p>
-        {orderStatusSucceed && !!order?.poolRental.packet?.cost ? (
+        {orderStatusSucceed && !!order?._id ? (
           <p className="tracking-tight text-foreground">
             {formattedPrice.format(Number(order.poolRental.packet.cost))}/
             <span>{formattedRate}</span>
@@ -82,7 +82,7 @@ export function DescriptionTable({
           <InvisibleParagraph />
         )}
         <p className="text-right">Duration:</p>
-        {orderStatusSucceed && !!order?.poolRental?.duration ? (
+        {orderStatusSucceed && !!order?._id ? (
           <p className="text-foreground">
             {order.poolRental.duration}
             <span className="ml-1">{formattedRate}</span>
@@ -96,7 +96,7 @@ export function DescriptionTable({
           <InvisibleParagraph />
         )}
         <p className="text-right">Price:</p>
-        {orderStatusSucceed && !!order?.poolRental?.totalCost ? (
+        {orderStatusSucceed && !!order?._id ? (
           <p className="tracking-tight text-foreground">
             {formattedPrice.format(Number(order.poolRental.totalCost))}
           </p>

@@ -61,7 +61,6 @@ export function PoolTableCard({
         )}
       />
       <div className="relative h-44 rounded-2xl bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow">
-        {/* <pre>{JSON.stringify(poolTable, null, 2)}</pre> */}
         <section className="flex justify-between">
           <Timer
             isCashier={cashierAccessLevel}
