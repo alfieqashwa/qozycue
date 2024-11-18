@@ -232,8 +232,7 @@ export const columnsRental: ColumnDef<
     },
   },
   {
-    accessorKey: "createdAt",
-    accessorFn: (row) => row._creationTime,
+    accessorKey: "_creationTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),

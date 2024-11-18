@@ -292,14 +292,13 @@ export const columnsOrder: ColumnDef<
     ),
   },
   {
-    accessorKey: "createdAt",
-    accessorFn: (row) => row._creationTime,
+    accessorKey: "_creationTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),
     cell: ({ row }) => {
       const timestamp = row.getValue("_creationTime")
-      const createdAt = format(new Date(timestamp as Date), "PPpp", {
+      const createdAt = format(timestamp as number, "PPpp", {
         locale: id,
       })
       return <div className="whitespace-nowrap">{createdAt}</div>
