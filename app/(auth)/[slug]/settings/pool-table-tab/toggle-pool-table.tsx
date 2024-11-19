@@ -1,8 +1,14 @@
 "use client"
 
 import { Switch } from "@/components/ui/switch"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { Status } from "@/types"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
@@ -41,17 +47,30 @@ export const TogglePoolTable = ({
   })
 
   return (
-    <Switch
-      disabled={isActive || isPending}
-      checked={status === "enabled" ? true : false}
-      onCheckedChange={() =>
-        mutate({
-          togglePoolSchema: {
-            id,
-            status,
-          },
-        })
-      }
-    />
+    <Tooltip>
+      <TooltipTrigger>
+        <Switch
+          disabled={isActive || isPending}
+          checked={status === "enabled" ? true : false}
+          onCheckedChange={() =>
+            mutate({
+              togglePoolSchema: {
+                id,
+                status,
+              },
+            })
+          }
+        />
+      </TooltipTrigger>
+      <TooltipContent
+        side="left"
+        className={cn(
+          "bg-muted normal-case text-muted-foreground",
+          isActive ? "block" : "hidden",
+        )}
+      >
+        Table {name} is active
+      </TooltipContent>
+    </Tooltip>
   )
 }
