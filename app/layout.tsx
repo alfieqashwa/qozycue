@@ -79,7 +79,7 @@ export default function RootLayout({
               {/* // Todos
                <Analytics/ >
             <SpeedInsights /> */}
-              <Toaster richColors />
+              <Toaster richColors position="top-right" />
             </ThemeProvider>
           </ConvexClientProvider>
         </body>
