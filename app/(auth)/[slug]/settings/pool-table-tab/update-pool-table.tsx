@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { Status } from "@/types"
 import {
   updatePoolTableSchema,
   type TUpdatePoolTable,
@@ -37,11 +38,13 @@ export const UpdatePoolTable = ({
   isActive,
   id,
   name,
+  status,
   companyId,
 }: {
   id: Id<"poolTables">
   name: string
   isActive: boolean
+  status: Status
   companyId: Id<"companies">
 }) => {
   const [open, setOpen] = useState(false)
@@ -82,7 +85,7 @@ export const UpdatePoolTable = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        disabled={isActive}
+        disabled={isActive || status === "enabled"}
         className={cn(
           buttonVariants({ variant: "secondary", size: "sm" }),
           "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",

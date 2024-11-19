@@ -65,6 +65,7 @@ export function PoolTableTab({ companyId }: { companyId: Id<"companies"> }) {
                   isActive={pool.isActive}
                   id={pool._id}
                   name={pool.name}
+                  status={pool.status}
                   companyId={companyId}
                 />
               </TableCell>
