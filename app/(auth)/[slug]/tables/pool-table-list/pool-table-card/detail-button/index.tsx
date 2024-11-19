@@ -38,14 +38,12 @@ export function DetailButton({
 }: DetailButtonProps) {
   const [open, setOpen] = useState(false)
 
-  const { data: poolTable, status } = useQuery({
+  const { data: poolTable } = useQuery({
     ...convexQuery(api.poolTables.findById, {
       poolTableId: order?.poolRental.poolTableId!,
     }),
     enabled: !!order?.poolRental.poolTableId,
   })
-
-  if (status !== "success") return <LoadingSpinner />
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
