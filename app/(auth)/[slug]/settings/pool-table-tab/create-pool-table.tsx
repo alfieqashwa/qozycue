@@ -1,10 +1,12 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,15 +23,19 @@ import {
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import {
   createPoolTableSchema,
   type TCreatePoolTable,
 } from "@/types/schema/pool-table-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { FilePlus2 } from "lucide-react"
+import { FilePlus2, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -65,6 +71,14 @@ export const CreatePoolTable = ({
       companyId,
     },
   })
+
+  const { data: hasPoolTableName } = useTanstackQuery({
+    ...convexQuery(api.poolTables.findAll, {}),
+    select(data) {
+      return data.some((pool) => pool.name === form.watch("name"))
+    },
+  })
+
   function onSubmit(values: TCreatePoolTable) {
     mutate({
       createPoolTableSchema: {
@@ -86,7 +100,7 @@ export const CreatePoolTable = ({
         <DialogHeader>
           <DialogTitle>Create Table</DialogTitle>
           <DialogDescription>
-            Klik Submit setelah selesai mengisi form.
+            Click <b>Submit</b> after fill the form.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -112,9 +126,27 @@ export const CreatePoolTable = ({
                 </FormItem>
               )}
             />
-            <Button disabled={isPending} type="submit">
-              Submit
-            </Button>
+            <DialogFooter>
+              <DialogClose
+                className={cn(buttonVariants({ variant: "secondary" }))}
+              >
+                Cancel
+              </DialogClose>
+              {isPending ? (
+                <Button
+                  disabled
+                  variant="destructive"
+                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button disabled={hasPoolTableName} type="submit">
+                  Submit
+                </Button>
+              )}
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

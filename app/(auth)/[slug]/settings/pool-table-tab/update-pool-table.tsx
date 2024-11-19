@@ -1,8 +1,10 @@
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -25,11 +27,14 @@ import {
   updatePoolTableSchema,
   type TUpdatePoolTable,
 } from "@/types/schema/pool-table-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Pencil } from "lucide-react"
+import { Loader2, Pencil } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -71,6 +76,14 @@ export const UpdatePoolTable = ({
       companyId,
     },
   })
+
+  const { data: hasPoolTableName } = useTanstackQuery({
+    ...convexQuery(api.poolTables.findAll, {}),
+    select(data) {
+      return data.some((pool) => pool.name === form.watch("name"))
+    },
+  })
+
   function onSubmit(values: TUpdatePoolTable) {
     const { id, name } = values
     mutate({
@@ -82,6 +95,8 @@ export const UpdatePoolTable = ({
     })
   }
 
+  const disabledUpdateButton =
+    form.watch("name") == name || hasPoolTableName || isActive
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
@@ -94,9 +109,12 @@ export const UpdatePoolTable = ({
         <Pencil size={16} className="mr-1" />
         <span className="text-sm">Edit</span>
       </DialogTrigger>
-      <DialogContent className="bg-card sm:max-w-[425px]">
+      <DialogContent
+        className="bg-card sm:max-w-[425px]"
+        onCloseAutoFocus={() => form.reset()}
+      >
         <DialogHeader>
-          <DialogTitle>Edit Table</DialogTitle>
+          <DialogTitle>Edit Table {name}</DialogTitle>
           <DialogDescription>
             Click <b>Update</b> when you&apos;re done.
           </DialogDescription>
@@ -125,13 +143,27 @@ export const UpdatePoolTable = ({
                 </FormItem>
               )}
             />
-            <Button
-              disabled={isActive || isPending}
-              type="submit"
-              className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-            >
-              Update
-            </Button>
+            <DialogFooter>
+              <DialogClose
+                className={cn(buttonVariants({ variant: "secondary" }))}
+              >
+                Cancel
+              </DialogClose>
+              {isPending ? (
+                <Button
+                  disabled
+                  variant="destructive"
+                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button disabled={disabledUpdateButton} type="submit">
+                  Update
+                </Button>
+              )}
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
