@@ -122,8 +122,8 @@ export const transfer = mutation({
 
     const resetPoolTableFrom = await ctx.db.patch(args.poolTableIdFrom, {
       isActive: false,
-      startTime: undefined,
-      endTime: undefined,
+      startTime: null,
+      endTime: null,
     })
 
     const findPoolRental = await ctx.db
@@ -146,22 +146,37 @@ export const transferPoolTableList = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
 
-    const pooltables = await ctx.db
+    const poolTableListByCompany = await ctx.db
       .query("poolTables")
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
       .filter((q) =>
         q.and(
           q.neq(q.field("_id"), args.poolTableIdFrom),
           q.eq(q.field("isActive"), false),
-          q.eq(q.field("startTime"), undefined),
+          q.eq(q.field("startTime"), null),
         ),
       )
       .collect()
 
-    /**
-     * TODO: filtering poolrental's none order where is booking is true
-     */
-    return pooltables
+    const poolTableList = await Promise.all(
+      (poolTableListByCompany ?? []).map(async (pool) => {
+        const poolRental = await ctx.db
+          .query("poolRentals")
+          .withIndex("poolTableId", (q) => q.eq("poolTableId", pool._id))
+          .first()
+
+        return {
+          ...pool,
+          poolRental,
+        }
+      }),
+    )
+
+    return poolTableList
+      .filter((pool) => pool.poolRental?.isBooking === false)
+      .sort((p, q) =>
+        p.name.localeCompare(q.name, undefined, { numeric: true }),
+      )
   },
 })
 
