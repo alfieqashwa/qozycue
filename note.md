@@ -12,8 +12,8 @@
     - Calculate InputValue into decimal based on InputName
     - If 100%, meaning it's free (config the UI only for Discount Table)
 
-❌ Cafe-Only
-❌ Pending-Payment
+✅ Cafe-Only
+✅ Pending-Payment
 ❌ Transfer-Table
 ❌ Booking-Schedule
 ❌ Dashboard
@@ -21,7 +21,7 @@
 ✅ (bug) Fix cafe order menu
 ✅ Move Button Edit and Delete Product and Packet into row list of table
 ✅ Restrict to edit and delete enabled product(s) and packet(s)
-❌ Restrict to delete enabled poolTable(s)
+✅ Restrict to delete enabled poolTable(s)
 
 ## Backlog (Future Plan)
 
