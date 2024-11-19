@@ -121,11 +121,8 @@ export const findById = query({
       .query("poolRentals")
       .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
       .first()
-    const poolTable = await ctx.db.get(poolRental?.poolTableId!)
     const packet = await ctx.db.get(poolRental?.packetId!)
-    const customer =
-      order !== null ? await ctx.db.get(order?.customerId!) : null
-
+    const customer = await ctx.db.get(order?.customerId!)
     const company = await ctx.db.get(order?.companyId!)
     const orderlines =
       order !== null
@@ -139,7 +136,6 @@ export const findById = query({
       ...order,
       poolRental: {
         ...poolRental,
-        poolTable,
         packet: { name: packet?.name, cost: packet?.cost, rate: packet?.rate },
       },
       company: {
@@ -168,7 +164,6 @@ export const findByPoolTableId = query({
     const orderList = await Promise.all(
       (poolRentals ?? []).map(async (rental) => {
         const order = await ctx.db.get(rental.orderId)
-        // const poolTable = await ctx.db.get(rental.poolTableId)
         const packet = await ctx.db.get(rental.packetId)
         const customer = await ctx.db.get(order?.customerId!)
         const createdBy = await ctx.db.get(order?.createdBy!)

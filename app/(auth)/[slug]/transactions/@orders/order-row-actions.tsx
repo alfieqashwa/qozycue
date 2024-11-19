@@ -27,12 +27,14 @@ import { UpdateCustomer } from "./update-customer"
 export function OrderRowActions({
   orderId,
   statusPayment,
+  poolTableName,
   customerName,
   customerPhone,
   createdBy,
 }: {
   orderId: Id<"orders">
   statusPayment: StatusPayment
+  poolTableName?: string
   customerName?: string
   customerPhone?: string | null
   createdBy?: string | null
@@ -114,6 +116,7 @@ export function OrderRowActions({
           >
             <div className="hidden">
               <PrintReceipt
+                poolTableName={poolTableName!}
                 orderId={orderId}
                 customerName={customerName}
                 ref={componentRef}

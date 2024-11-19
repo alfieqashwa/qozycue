@@ -48,6 +48,7 @@ export function PaymentButton({
         {status === "success" && (
           <PaymentForm
             orderId={orderId!}
+            poolTableName={poolTableName}
             customerName={customerName}
             customerPhone={customerPhone}
             totalCost={totalCost!}
@@ -72,6 +73,7 @@ export function PaymentButton({
       {status === "success" && (
         <PaymentForm
           orderId={orderId!}
+          poolTableName={poolTableName}
           customerName={customerName}
           customerPhone={customerPhone}
           totalCost={totalCost!}

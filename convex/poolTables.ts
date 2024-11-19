@@ -37,6 +37,15 @@ export const findAll = query({
   },
 })
 
+export const findById = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, { poolTableId }) => {
+    await protectedProcedure(ctx, {})
+
+    return await ctx.db.get(poolTableId)
+  },
+})
+
 export const create = zMutation({
   args: { createPoolTableSchema },
   handler: async (ctx, { createPoolTableSchema: { name, companyId } }) => {

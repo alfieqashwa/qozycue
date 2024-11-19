@@ -56,6 +56,7 @@ import { useDebouncedCallback } from "use-debounce"
 
 export function PaymentForm({
   orderId,
+  poolTableName,
   customerName,
   customerPhone,
   totalCost,
@@ -64,6 +65,7 @@ export function PaymentForm({
   setOpen,
 }: {
   orderId: Id<"orders">
+  poolTableName: string
   customerName?: string
   customerPhone?: string | null
   totalCost: number
@@ -109,6 +111,7 @@ export function PaymentForm({
             <div className="hidden">
               <PrintReceipt
                 orderId={orderId}
+                poolTableName={poolTableName}
                 customerName={customerName}
                 ref={receiptRef}
               />
@@ -251,6 +254,7 @@ export function PaymentForm({
         <div className="hidden">
           <PrintReceipt
             orderId={orderId}
+            poolTableName={poolTableName}
             customerName={customerName}
             printStatus="bill"
             ref={billRef}

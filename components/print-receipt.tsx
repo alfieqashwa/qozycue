@@ -10,12 +10,18 @@ import { forwardRef, type LegacyRef } from "react"
 
 type PrintReceiptProps = {
   orderId: Id<"orders">
+  poolTableName: string
   customerName?: string
   printStatus?: "receipt" | "bill"
 }
 export const PrintReceipt = forwardRef(
   (
-    { orderId, customerName, printStatus = "receipt" }: PrintReceiptProps,
+    {
+      orderId,
+      poolTableName,
+      customerName,
+      printStatus = "receipt",
+    }: PrintReceiptProps,
     ref,
   ) => {
     const [{ data: order, status }, { data: orderlines }] = useTanstackQueries({
@@ -106,7 +112,7 @@ export const PrintReceipt = forwardRef(
                 <h3 className="-ml-4 uppercase">Pool Rental</h3>
                 <div className="flex items-center justify-between">
                   <p>Table:</p>
-                  <p> {order.poolRental.poolTable?.name}</p>
+                  <p> {poolTableName}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Packet:</p>

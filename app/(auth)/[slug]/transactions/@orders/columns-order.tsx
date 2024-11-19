@@ -308,12 +308,14 @@ export const columnsOrder: ColumnDef<
     id: "actions",
     cell: ({ row }) => {
       // const { id, poolTableId, statusPayment, customer, createdBy } =
-      const { _id, statusPayment, customer, createdBy } = row.original
+      const { _id, statusPayment, customer, createdBy, poolRental } =
+        row.original
 
       return (
         <div className="relative">
           <OrderRowActions
             orderId={_id}
+            poolTableName={poolRental.poolTable.name}
             statusPayment={statusPayment}
             customerName={customer?.name}
             customerPhone={customer?.phone}
