@@ -14,19 +14,22 @@ import { useEffect } from "react"
 import { CafeButton } from "../pool-table-list/pool-table-card/cafe-button"
 import { PaymentButton } from "../pool-table-list/pool-table-card/payment-button"
 
-export function PendingPayment({
+type PendingOrderListProps = {
+  poolTableId: Id<"poolTables">
+  poolTableName: string
+  slug: string
+  isManager: boolean
+  isCashier: boolean
+}
+export function PendingOrderList({
   poolTableId,
   poolTableName,
   slug,
   isManager,
   isCashier,
-}: {
-  poolTableId: Id<"poolTables">
-  poolTableName: string
-  slug?: string
-  isManager: boolean
-  isCashier: boolean
-}) {
+}: PendingOrderListProps) {
+  const router = useRouter()
+
   const pendingOrderList = useQuery({
     ...convexQuery(api.orders.findAllPendingStatusByPoolTableId, {
       poolTableId,
@@ -34,10 +37,9 @@ export function PendingPayment({
     enabled: Boolean(poolTableId),
   })
 
-  const router = useRouter()
   useEffect(() => {
     if (!pendingOrderList.data?.length) {
-      router.push(`/${encodeURIComponent(slug as string)}/tables/`)
+      router.push(`/${encodeURIComponent(slug)}/tables/`)
     }
   }, [pendingOrderList.data?.length, router, slug])
 
@@ -58,21 +60,18 @@ export function PendingPayment({
   )
 }
 
+type PendingOrderCardProps = Omit<PendingOrderListProps, "slug"> & {
+  order: FunctionReturnType<
+    typeof api.orders.findAllPendingStatusByPoolTableId
+  >[0]
+}
 const PendingOrderCard = ({
   poolTableId,
   poolTableName,
   isManager,
   isCashier,
   order,
-}: {
-  poolTableId: Id<"poolTables">
-  poolTableName: string
-  isManager: boolean
-  isCashier: boolean
-  order: FunctionReturnType<
-    typeof api.orders.findAllPendingStatusByPoolTableId
-  >[0]
-}) => (
+}: PendingOrderCardProps) => (
   <section
     className="rounded-2xl border-2 bg-card p-4 shadow-lg"
     key={order._id}

@@ -5,7 +5,7 @@ import { fetchQuery } from "convex/nextjs"
 import { unstable_noStore } from "next/cache"
 import { redirect } from "next/navigation"
 import { BackButton } from "./back-button"
-import { PendingPayment } from "./pending-payment"
+import { PendingOrderList } from "./pending-order-list"
 
 export default async function PoolTableIdPage({
   params,
@@ -36,10 +36,10 @@ export default async function PoolTableIdPage({
   return (
     <div>
       <BackButton />
-      <PendingPayment
+      <PendingOrderList
         poolTableId={poolTableId}
         poolTableName={pool}
-        slug={session.companySlug}
+        slug={session.companySlug!}
         isManager={managerAccessLevel}
         isCashier={cashierAccessLevel}
       />
