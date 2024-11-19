@@ -127,6 +127,13 @@ export const findById = query({
       order !== null ? await ctx.db.get(order?.customerId!) : null
 
     const company = await ctx.db.get(order?.companyId!)
+    const orderlines =
+      order !== null
+        ? await ctx.db
+            .query("orderlines")
+            .withIndex("orderId", (q) => q.eq("orderId", order._id))
+            .collect()
+        : []
 
     return {
       ...order,
@@ -142,6 +149,7 @@ export const findById = query({
       },
       customer: { name: customer?.name, phone: customer?.phone },
       createdBy: { name: createdBy?.name },
+      orderlinesLen: orderlines.length,
     }
   },
 })
@@ -150,52 +158,43 @@ export const findByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
     await protectedProcedure(ctx, {})
-    // const userId = await getAuthUserId(ctx)
-    // if (!userId) throw new ConvexError("Please signed in!")
-    // const user = userId !== null ? await ctx.db.get(userId) : null
 
-    const poolRental = await ctx.db
+    const poolRentals = await ctx.db
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
       .filter((q) => q.eq(q.field("isBooking"), false))
-      .first()
-    const poolTable = await ctx.db.get(poolRental?.poolTableId!)
-    const order = await ctx.db
-      .query("orders")
-      .withIndex("by_id", (q) => q.eq("_id", poolRental?.orderId!))
-      .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-      .first()
+      .collect()
 
-    const packet =
-      poolRental !== null
-        ? await ctx.db
-            .query("packets")
-            .withIndex("by_id", (q) => q.eq("_id", poolRental?.packetId))
-            .first()
-        : null
-    const customer = order !== null ? await ctx.db.get(order.customerId!) : null
-    const createdBy =
-      order !== null
-        ? await ctx.db
-            .query("users")
-            .withIndex("by_id", (q) => q.eq("_id", order?.createdBy))
-            .unique()
-        : null
+    const orderList = await Promise.all(
+      (poolRentals ?? []).map(async (rental) => {
+        const order = await ctx.db.get(rental.orderId)
+        // const poolTable = await ctx.db.get(rental.poolTableId)
+        const packet = await ctx.db.get(rental.packetId)
+        const customer = await ctx.db.get(order?.customerId!)
+        const createdBy = await ctx.db.get(order?.createdBy!)
+        const orderlines = await ctx.db
+          .query("orderlines")
+          .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+          .collect()
 
-    return {
-      ...order,
-      poolRental: {
-        ...poolRental,
-        poolTable,
-        packet: {
-          name: packet?.name,
-          cost: packet?.cost,
-          rate: packet?.rate,
-        },
-      },
-      customer: { name: customer?.name, phone: customer?.phone },
-      createdBy: { name: createdBy?.name },
-    }
+        return {
+          ...order,
+          poolRental: {
+            ...rental,
+            packet: {
+              name: packet?.name,
+              cost: packet?.cost,
+              rate: packet?.rate,
+            },
+          },
+          customer: { name: customer?.name, phone: customer?.phone },
+          createdBy: { name: createdBy?.name },
+          orderlinesLen: orderlines.length,
+        }
+      }),
+    )
+
+    return orderList.find((order) => order.statusPayment === "OPEN")
   },
 })
 
@@ -207,6 +206,7 @@ export const findAllPendingStatusByPoolTableId = query({
     const poolRentals = await ctx.db
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
+      .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
 
     return Promise.all(
@@ -222,11 +222,14 @@ export const findAllPendingStatusByPoolTableId = query({
           .first()
         const packet = await ctx.db.get(poolRental?.packetId!)
         const customer = await ctx.db.get(order?.customerId!)
-        const createdBy = await ctx.db
-          .query("users")
-          .withIndex("by_id", (q) => q.eq("_id", order?.createdBy!))
-          .first()
-
+        const createdBy = await ctx.db.get(order?.createdBy!)
+        const orderlines =
+          order !== null
+            ? await ctx.db
+                .query("orderlines")
+                .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+                .collect()
+            : []
         return {
           ...order,
           poolRental: {
@@ -239,6 +242,7 @@ export const findAllPendingStatusByPoolTableId = query({
           },
           customer: { name: customer?.name, phone: customer?.phone },
           createdBy: { name: createdBy?.name },
+          orderlinesLen: orderlines.length,
         }
       }),
     )

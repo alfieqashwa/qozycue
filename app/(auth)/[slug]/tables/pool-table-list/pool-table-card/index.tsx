@@ -41,7 +41,9 @@ export function PoolTableCard({
   gapDuration: number
 }) {
   const order = useTanstackQuery({
-    ...convexQuery(api.orders.findByPoolTableId, { poolTableId }),
+    ...convexQuery(api.orders.findByPoolTableId, {
+      poolTableId,
+    }),
     enabled: Boolean(poolTableId),
   })
   return (
@@ -114,7 +116,7 @@ export function PoolTableCard({
             isActive={isActive}
             startTime={poolTableStartTime}
             poolTableName={poolTableName}
-            orderStatusSucceed={order.status === "success" && !!order.data._id}
+            orderStatusSucceed={order.status === "success"}
             packetName={order.data?.poolRental?.packet.name}
             packetCost={order.data?.poolRental?.packet.cost}
             packetRate={order.data?.poolRental?.packet.rate}
@@ -137,7 +139,8 @@ export function PoolTableCard({
             >
               <DrawerTrigger asChild>
                 <Button
-                  disabled={!order.data?._id}
+                  // TODOS: FUCKIN' DISABLED
+                  disabled={!order.data}
                   variant="secondary"
                   className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >
