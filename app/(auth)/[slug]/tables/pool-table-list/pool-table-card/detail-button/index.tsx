@@ -1,3 +1,4 @@
+import { LoadingSpinner } from "@/components/loading-spinner"
 import { OrderlineDetail } from "@/components/orderline-detail"
 import { PoolRentalDetail } from "@/components/pool-rental-detail"
 import { Button } from "@/components/ui/button"
@@ -13,11 +14,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
 import { Phone, User2 } from "lucide-react"
 import { useState } from "react"
 import { TransferTable } from "./transfer-table"
-import { LoadingSpinner } from "@/components/loading-spinner"
 
 type DetailButtonProps = {
   isCashier?: boolean
@@ -36,6 +38,15 @@ export function DetailButton({
 }: DetailButtonProps) {
   const [open, setOpen] = useState(false)
 
+  const { data: poolTable, status } = useQuery({
+    ...convexQuery(api.poolTables.findById, {
+      poolTableId: order?.poolRental.poolTableId!,
+    }),
+    enabled: !!order?.poolRental.poolTableId,
+  })
+
+  if (status !== "success") return <LoadingSpinner />
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       {children}
@@ -51,7 +62,7 @@ export function DetailButton({
                     : "text-amber-300",
                 )}
               >
-                Table {order.poolRental.poolTable?.name}
+                Table {poolTable?.name}
               </DrawerTitle>
               <DrawerDescription className="text-xs font-medium">
                 Order ID: {order._id?.slice(-8)}
@@ -91,20 +102,20 @@ export function DetailButton({
               </TabsTrigger>
               <TabsTrigger
                 value="cafe"
-                // disabled={!!orderlines?.length}
+                disabled={!order?.orderlinesLen}
                 className="disabled:pointer-events-auto disabled:cursor-not-allowed"
               >
                 Cafe
               </TabsTrigger>
             </TabsList>
-            {!!order?.poolRental && order.poolRental.poolTable?.isActive && (
+            {!!order?.poolRental && poolTable?.isActive && (
               <TransferTable
                 isCashier={isCashier!}
                 orderId={order._id!}
-                poolTableIdFrom={order.poolRental.poolTable._id}
-                poolTableName={order.poolRental.poolTable.name}
-                startTime={order.poolRental.poolTable.startTime}
-                endTime={order.poolRental.poolTable.endTime}
+                poolTableIdFrom={poolTable._id}
+                poolTableName={poolTable.name}
+                startTime={poolTable.startTime}
+                endTime={poolTable.endTime}
                 poolRentalId={order.poolRental._id!}
                 setOpenDetailDrawer={setOpen}
               />
@@ -113,7 +124,7 @@ export function DetailButton({
           <TabsContent value="table">
             {orderStatus === "success" && (
               <PoolRentalDetail
-                isActive={order?.poolRental.poolTable?.isActive!}
+                isActive={poolTable?.isActive!}
                 packetName={order?.poolRental.packet.name}
                 packetCost={order?.poolRental.packet.cost}
                 packetRate={order?.poolRental.packet.rate}
