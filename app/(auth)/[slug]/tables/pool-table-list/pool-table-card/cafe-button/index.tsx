@@ -22,19 +22,22 @@ import { OrderList } from "./order-list"
 import { ProductMenuCard } from "./product-menu-card"
 import { SearchProductInput } from "./search-product-input"
 
+type CafeButtonProps = {
+  isManager: boolean
+  isCashier: boolean
+  order?:
+    | FunctionReturnType<typeof api.orders.findByPoolTableId>
+    | FunctionReturnType<typeof api.orders.findAllPendingStatusByPoolTableId>[0]
+  poolTableId: Id<"poolTables">
+  poolTableName: string
+}
 export function CafeButton({
   isManager,
   isCashier,
   order,
   poolTableId,
   poolTableName,
-}: {
-  isManager: boolean
-  isCashier: boolean
-  order?: FunctionReturnType<typeof api.orders.findByPoolTableId>
-  poolTableId: Id<"poolTables">
-  poolTableName: string
-}) {
+}: CafeButtonProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
   const { data: orderlines } = useTanstackQuery({

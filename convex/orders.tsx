@@ -199,6 +199,52 @@ export const findByPoolTableId = query({
   },
 })
 
+export const findAllPendingStatusByPoolTableId = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, args) => {
+    await protectedProcedure(ctx, {})
+
+    const poolRentals = await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
+      .collect()
+
+    return Promise.all(
+      (poolRentals ?? []).map(async (rental) => {
+        const order = await ctx.db
+          .query("orders")
+          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+          .filter((q) => q.eq(q.field("statusPayment"), "PENDING"))
+          .first()
+        const poolRental = await ctx.db
+          .query("poolRentals")
+          .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+          .first()
+        const packet = await ctx.db.get(poolRental?.packetId!)
+        const customer = await ctx.db.get(order?.customerId!)
+        const createdBy = await ctx.db
+          .query("users")
+          .withIndex("by_id", (q) => q.eq("_id", order?.createdBy!))
+          .first()
+
+        return {
+          ...order,
+          poolRental: {
+            ...poolRental,
+            packet: {
+              name: packet?.name,
+              cost: packet?.cost,
+              rate: packet?.rate,
+            },
+          },
+          customer: { name: customer?.name, phone: customer?.phone },
+          createdBy: { name: createdBy?.name },
+        }
+      }),
+    )
+  },
+})
+
 export const countPendingStatus = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, { poolTableId }) => {
