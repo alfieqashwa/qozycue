@@ -43,7 +43,7 @@ const FormatTime = ({
   return (
     <>
       <span className="sr-only">{label}</span>
-      {typeof time !== null ? (
+      {time != null ? (
         <span>{time?.toString().padStart(2, "0")}</span>
       ) : (
         <GiPoolTriangle className="animate-pulse" />
