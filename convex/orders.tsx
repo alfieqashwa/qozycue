@@ -210,18 +210,14 @@ export const findAllPendingStatusByPoolTableId = query({
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
 
-    return Promise.all(
+    const orderList = await Promise.all(
       (poolRentals ?? []).map(async (rental) => {
         const order = await ctx.db
           .query("orders")
           .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-          .filter((q) => q.eq(q.field("statusPayment"), "PENDING"))
+          // .filter((q) => q.eq(q.field("statusPayment"), "PENDING"))
           .first()
-        const poolRental = await ctx.db
-          .query("poolRentals")
-          .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
-          .first()
-        const packet = await ctx.db.get(poolRental?.packetId!)
+        const packet = await ctx.db.get(rental.packetId!)
         const customer = await ctx.db.get(order?.customerId!)
         const createdBy = await ctx.db.get(order?.createdBy!)
         const orderlines =
@@ -233,20 +229,22 @@ export const findAllPendingStatusByPoolTableId = query({
             : []
         return {
           ...order,
+          customer: { name: customer?.name, phone: customer?.phone },
+          createdBy: { name: createdBy?.name },
+          orderlinesLen: orderlines.length,
           poolRental: {
-            ...poolRental,
+            ...rental,
             packet: {
               name: packet?.name,
               cost: packet?.cost,
               rate: packet?.rate,
             },
           },
-          customer: { name: customer?.name, phone: customer?.phone },
-          createdBy: { name: createdBy?.name },
-          orderlinesLen: orderlines.length,
         }
       }),
     )
+
+    return orderList.filter((order) => order.statusPayment === "PENDING")
   },
 })
 

@@ -33,30 +33,16 @@ export default async function PoolTableIdPage({
     session.user.role ?? "",
   )
 
-  const orders = await fetchQuery(
-    api.orders.findAllPendingStatusByPoolTableId,
-    { poolTableId },
-    { token: convexAuthNextjsToken() },
-  )
-
-  if (!!session.companySlug && !orders.length)
-    redirect(`/${encodeURIComponent(session.companySlug)}/`)
-
   return (
     <div>
       <BackButton />
-      <div className="mt-4 grid min-w-max grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 xl:grid-cols-3">
-        {orders.map((order) => (
-          <PendingPayment
-            poolTableId={poolTableId}
-            poolTableName={pool}
-            isManager={managerAccessLevel}
-            isCashier={cashierAccessLevel}
-            order={order}
-            key={order._id}
-          />
-        ))}
-      </div>
+      <PendingPayment
+        poolTableId={poolTableId}
+        poolTableName={pool}
+        slug={session.companySlug}
+        isManager={managerAccessLevel}
+        isCashier={cashierAccessLevel}
+      />
     </div>
   )
 }
