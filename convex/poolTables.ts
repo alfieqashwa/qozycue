@@ -9,6 +9,7 @@ import {
 import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
+  cashierProcedure,
   protectedProcedure,
   subscriptions,
   validateSubscriptionLimits,
@@ -111,9 +112,11 @@ export const transfer = mutation({
     poolTableIdFrom: v.id("poolTables"),
     poolTableIdTo: v.id("poolTables"),
     startTime: v.float64(),
-    endTime: v.float64(),
+    endTime: v.union(v.null(), v.float64()),
   },
   handler: async (ctx, args) => {
+    await cashierProcedure(ctx, {})
+
     const startPoolTableTo = await ctx.db.patch(args.poolTableIdTo, {
       startTime: args.startTime,
       endTime: args.endTime,
@@ -142,7 +145,7 @@ export const transfer = mutation({
 export const transferPoolTableList = query({
   args: { poolTableIdFrom: v.id("poolTables") },
   handler: async (ctx, args) => {
-    // await protectedProcedure(ctx, {})
+    // protectedProcedure
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
 
@@ -152,6 +155,7 @@ export const transferPoolTableList = query({
       .filter((q) =>
         q.and(
           q.neq(q.field("_id"), args.poolTableIdFrom),
+          q.neq(q.field("status"), "disabled"),
           q.eq(q.field("isActive"), false),
           q.eq(q.field("startTime"), null),
         ),
@@ -173,7 +177,7 @@ export const transferPoolTableList = query({
     )
 
     return poolTableList
-      .filter((pool) => pool.poolRental?.isBooking === false)
+      .filter((pool) => pool.poolRental?.isBooking !== true)
       .sort((p, q) =>
         p.name.localeCompare(q.name, undefined, { numeric: true }),
       )

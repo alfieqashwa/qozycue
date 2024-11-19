@@ -44,7 +44,7 @@ export function TransferTable({
   orderId: Id<"orders">
   poolTableIdFrom: Id<"poolTables">
   poolTableName: string
-  startTime: number | null
+  startTime: number
   endTime: number | null
   poolRentalId: Id<"poolRentals">
   setOpenDetailDrawer: React.Dispatch<React.SetStateAction<boolean>>
@@ -84,7 +84,7 @@ export function TransferTable({
       poolTableIdFrom,
       poolTableIdTo,
       startTime: startTime as number,
-      endTime: endTime as number,
+      endTime: endTime,
     })
   }
 
@@ -111,9 +111,9 @@ export function TransferTable({
         </Tooltip>
       </SheetTrigger>
       <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
-        {status === "success" && (
+        {/* {status === "success" && (
           <pre>{JSON.stringify(transferPoolTableList, null, 2)}</pre>
-        )}
+        )} */}
         <SheetHeader>
           <SheetTitle>Transfer Table {poolTableName}</SheetTitle>
           <SheetDescription>

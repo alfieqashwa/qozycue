@@ -14,7 +14,7 @@
 
 ✅ Cafe-Only
 ✅ Pending-Payment
-❌ Transfer-Table
+✅ Transfer-Table
 ❌ Booking-Schedule
 ❌ Dashboard
 

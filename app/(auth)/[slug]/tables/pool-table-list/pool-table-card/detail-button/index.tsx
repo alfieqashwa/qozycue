@@ -1,4 +1,3 @@
-import { LoadingSpinner } from "@/components/loading-spinner"
 import { OrderlineDetail } from "@/components/orderline-detail"
 import { PoolRentalDetail } from "@/components/pool-rental-detail"
 import { Button } from "@/components/ui/button"
@@ -112,7 +111,7 @@ export function DetailButton({
                 orderId={order._id!}
                 poolTableIdFrom={poolTable._id}
                 poolTableName={poolTable.name}
-                startTime={poolTable.startTime}
+                startTime={poolTable.startTime!}
                 endTime={poolTable.endTime}
                 poolRentalId={order.poolRental._id!}
                 setOpenDetailDrawer={setOpen}
