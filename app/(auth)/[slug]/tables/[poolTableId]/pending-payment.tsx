@@ -45,6 +45,7 @@ export function PendingPayment({
           </TabsTrigger>
           <TabsTrigger
             value="cafe"
+            disabled={!order.orderlinesLen}
             className="disabled:pointer-events-auto disabled:cursor-not-allowed"
           >
             Cafe
