@@ -96,7 +96,10 @@ export const CreatePoolTable = ({
           <span>Create</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-card sm:max-w-[425px]">
+      <DialogContent
+        onCloseAutoFocus={() => form.reset()}
+        className="bg-card sm:max-w-[425px]"
+      >
         <DialogHeader>
           <DialogTitle>Create Table</DialogTitle>
           <DialogDescription>
