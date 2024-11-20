@@ -23,14 +23,14 @@ export function isTimeOverlap(
     const existingEndTime = booking.timeEnd
 
     // Add buffer to both start and end times of existing bookings
-    const bufferedEndTime = existingEndTime + gapDurationInMilliseconds
-    const bufferedStartTime = existingStartTime - gapDurationInMilliseconds
+    const bufferedEndTime = existingEndTime + gapDurationInMilliseconds // expect -> 10 minutes AFTER existingEndTime
+    const bufferedStartTime = existingStartTime - gapDurationInMilliseconds // expect -> 10 minutes BEFORE existingStartTime
 
     // Check for overlap or violation of the 10-minute gap on both sides
     return (
-      (newStartTime >= bufferedStartTime && newStartTime < bufferedEndTime) || // Overlap or less than gap at the start
-      (newEndTime > bufferedStartTime && newEndTime <= bufferedEndTime) || // Overlap or less than gap at the end
-      (newStartTime <= bufferedStartTime && newEndTime >= bufferedEndTime) // Encloses an existing booking
+      (newStartTime > bufferedStartTime && newStartTime < bufferedEndTime) || // Overlap or less than gap at the start
+      (newEndTime > bufferedStartTime && newEndTime < bufferedEndTime) || // Overlap or less than gap at the end
+      (newStartTime < bufferedStartTime && newEndTime > bufferedEndTime) // Encloses an existing booking
     )
   })
 }
@@ -63,4 +63,8 @@ export function isTimeOverlap(
   * This function is copied from billiard-app repository. 
   * It has been modified Date() -> number because convex use milliseconds instead of Date
   * But it will use this function to validate on the client-side instead of on the server-side
+
+
+  * Explanation: (20 Nove 2024)
+  * change '<=' to '<' and '>=' to '>'
 */
