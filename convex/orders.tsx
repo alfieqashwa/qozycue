@@ -170,7 +170,11 @@ export const findByPoolTableId = query({
           .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
           .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
           .first()
-        const packet = await ctx.db.get(rental.packetId)
+        const poolRental = await ctx.db
+          .query("poolRentals")
+          .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+          .first()
+        const packet = await ctx.db.get(poolRental?.packetId!)
         const customer = await ctx.db.get(order?.customerId!)
         const createdBy = await ctx.db.get(order?.createdBy!)
         const orderlines = await ctx.db
@@ -184,7 +188,7 @@ export const findByPoolTableId = query({
           createdBy: { name: createdBy?.name },
           orderlinesLen: orderlines.length,
           poolRental: {
-            ...rental,
+            ...poolRental,
             packet: {
               name: packet?.name,
               cost: packet?.cost,
@@ -382,13 +386,13 @@ export const startTimer = zMutation({
       throw new ConvexError("The selected time overlaps with another booking.")
     }
 
+    const totalCost = Math.round((cost * duration) / 100) * 100
+
     const updatePoolTable = await ctx.db.patch(poolTableId, {
       isActive: true,
       startTime,
       endTime: rate === "HOUR" ? endTime : null,
     })
-
-    const totalCost = Math.round((cost * duration) / 100) * 100
 
     const customerId = await ctx.db.insert("customers", {
       name: customerName ?? "anonymous",
