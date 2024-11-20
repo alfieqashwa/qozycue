@@ -19,7 +19,6 @@ import { OrderProduct } from "./order-product"
 export function ProductMenuCard({
   isCashier,
   isDesktop,
-  poolTableId,
   orderlines,
   orderId,
   productId,
@@ -30,7 +29,6 @@ export function ProductMenuCard({
 }: {
   isCashier: boolean
   isDesktop: boolean
-  poolTableId: Id<"poolTables">
   orderlines?: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   orderId: Id<"orders">
   productId: Id<"products">
@@ -79,7 +77,6 @@ export function ProductMenuCard({
       </ProductTitleTooltip>
       <OrderProduct
         isCashier={isCashier}
-        poolTableId={poolTableId}
         orderId={orderId}
         orderline={orderline}
         productId={productId}

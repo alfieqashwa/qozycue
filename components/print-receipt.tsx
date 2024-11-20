@@ -10,7 +10,7 @@ import { forwardRef, type LegacyRef } from "react"
 
 type PrintReceiptProps = {
   orderId: Id<"orders">
-  poolTableName: string
+  poolTableName?: string
   customerName?: string
   printStatus?: "receipt" | "bill"
 }

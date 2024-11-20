@@ -1,7 +1,6 @@
 import { useMediaQuery } from "@/app/hooks/use-media-query"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { useState } from "react"
@@ -18,7 +17,7 @@ export function PaymentButton({
 }: {
   isCashier: boolean
   orderId: Id<"orders"> | undefined
-  poolTableName: string
+  poolTableName?: string
   customerName?: string
   customerPhone?: string
   totalCost?: number
@@ -51,7 +50,7 @@ export function PaymentButton({
             poolTableName={poolTableName}
             customerName={customerName}
             customerPhone={customerPhone}
-            totalCost={totalCost!}
+            totalCost={totalCost}
             orderlines={orderlines}
             defaultTax={defaultTax?.value}
             setOpen={setOpen}
@@ -76,7 +75,7 @@ export function PaymentButton({
           poolTableName={poolTableName}
           customerName={customerName}
           customerPhone={customerPhone}
-          totalCost={totalCost!}
+          totalCost={totalCost}
           orderlines={orderlines}
           defaultTax={defaultTax?.value}
           setOpen={setOpen}

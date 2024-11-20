@@ -11,7 +11,6 @@ import { toast } from "sonner"
 
 export function OrderProduct({
   isCashier,
-  poolTableId,
   orderId,
   orderline,
   productId,
@@ -21,7 +20,6 @@ export function OrderProduct({
   setQty,
 }: {
   isCashier: boolean
-  poolTableId: string
   orderline:
     | FunctionReturnType<typeof api.orderlines.findAllByOrderId>[0]
     | undefined

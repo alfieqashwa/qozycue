@@ -59,16 +59,16 @@ export function PaymentForm({
   poolTableName,
   customerName,
   customerPhone,
-  totalCost,
+  totalCost = 0,
   orderlines,
   defaultTax,
   setOpen,
 }: {
   orderId: Id<"orders">
-  poolTableName: string
+  poolTableName?: string
   customerName?: string
   customerPhone?: string | null
-  totalCost: number
+  totalCost?: number
   orderlines?: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   defaultTax: number | undefined
   setOpen: React.Dispatch<React.SetStateAction<boolean>>

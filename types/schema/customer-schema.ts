@@ -10,6 +10,12 @@ export const customerSchema = z.object({
   orderId: zid("orders"),
 })
 
+export const createCustomerSchema = customerSchema.pick({
+  name: true,
+  phone: true,
+})
+export type TCreateCustomer = z.infer<typeof createCustomerSchema>
+
 export const updateCustomerByOrderIdSchema = customerSchema.omit({
   id: true,
   email: true,
@@ -18,15 +24,3 @@ export const updateCustomerByOrderIdSchema = customerSchema.omit({
 export type TUpdateCustomerByOrderId = z.infer<
   typeof updateCustomerByOrderIdSchema
 >
-
-/**
- *  customers: defineTable({
- *   name: v.string(),
- *   phone: v.optional(v.string()),
- *   email: v.optional(v.string()),
- *   gender: v.optional(v.union(v.literal("FEMALE"), v.literal("MALE"))),
- *   companyId: v.id("companies"),
- * })
- *   .index("companyId", ["companyId"])
- *   .index("by_name", ["name"]),
- */

@@ -1,5 +1,9 @@
+import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError } from "convex/values"
-import { updateCustomerByOrderIdSchema } from "../types/schema/customer-schema"
+import {
+  createCustomerSchema,
+  updateCustomerByOrderIdSchema,
+} from "../types/schema/customer-schema"
 import { protectedProcedure, zMutation } from "./helpers"
 
 export const update = zMutation({
@@ -16,5 +20,22 @@ export const update = zMutation({
       name,
       phone,
     })
+  },
+})
+
+export const create = zMutation({
+  args: { createCustomerSchema },
+  handler: async (ctx, { createCustomerSchema: { name, phone } }) => {
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (!user?.companyId) throw new ConvexError("You do not have access!")
+
+    return await ctx.db.insert("customers", {
+      companyId: user?.companyId,
+      name,
+      phone,
+    })
+
+    return
   },
 })

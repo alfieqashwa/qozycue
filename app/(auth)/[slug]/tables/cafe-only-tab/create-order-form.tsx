@@ -1,11 +1,5 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { DialogClose } from "@radix-ui/react-dialog"
-import { Loader2, Plus } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -25,57 +19,58 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { wait } from "@/lib/wait"
-import { api } from "@/trpc/react"
+import { api } from "@/convex/_generated/api"
 import {
-  createOrderSchema,
-  type TCreateOrder,
-} from "@/types/schema/order-schema"
+  createCustomerSchema,
+  TCreateCustomer,
+} from "@/types/schema/customer-schema"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { DialogClose } from "@radix-ui/react-dialog"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2, Plus } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
-  const { mutate, isPending } = api.customer.create.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.customers.create),
+
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: "Create new order.",
-      })
-      await utils.order.invalidate()
-      await wait().then(() => setOpen(false))
-      router.refresh()
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
+      setOpen(false)
       form.reset()
     },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
   })
 
-  const form = useForm<TCreateOrder>({
-    resolver: zodResolver(createOrderSchema),
+  const form = useForm<TCreateCustomer>({
+    resolver: zodResolver(createCustomerSchema),
     defaultValues: {
-      customerName: "",
-      customerPhone: "",
+      name: "",
+      phone: "",
     },
   })
 
-  function onSubmit(values: TCreateOrder) {
-    const { customerName, customerPhone } = values
+  function onSubmit(values: TCreateCustomer) {
+    const { name, phone } = values
 
     mutate({
-      customerName,
-      customerPhone,
+      createCustomerSchema: {
+        name: name.toLowerCase(),
+        phone,
+      },
     })
   }
 
@@ -100,10 +95,10 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <FormField
               control={form.control}
-              name="customerName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="sr-only">Customer Name</FormLabel>
+                  <FormLabel className="sr-only">Name</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Name"
@@ -117,10 +112,10 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
             />
             <FormField
               control={form.control}
-              name="customerPhone"
+              name="phone"
               render={({ field }) => (
                 <FormItem className="pt-1">
-                  <FormLabel className="sr-only">Customer Phone</FormLabel>
+                  <FormLabel className="sr-only">Phone</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

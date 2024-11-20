@@ -11,7 +11,6 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
-import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
@@ -28,14 +27,13 @@ type CafeButtonProps = {
   order?:
     | FunctionReturnType<typeof api.orders.findByPoolTableId>
     | FunctionReturnType<typeof api.orders.findAllPendingStatusByPoolTableId>[0]
-  poolTableId: Id<"poolTables">
-  poolTableName: string
+    | FunctionReturnType<typeof api.orders.findAllCafeOnlyByCompanyId>[0]
+  poolTableName?: string
 }
 export function CafeButton({
   isManager,
   isCashier,
   order,
-  poolTableId,
   poolTableName,
 }: CafeButtonProps) {
   const [searchTerm, setSearchTerm] = useState("")
@@ -117,7 +115,6 @@ export function CafeButton({
                       <ProductMenuCard
                         isCashier={isCashier}
                         isDesktop={isDesktop}
-                        poolTableId={poolTableId}
                         orderlines={orderlines}
                         orderId={order?._id!}
                         productId={p._id}
@@ -138,7 +135,6 @@ export function CafeButton({
                       <ProductMenuCard
                         isCashier={isCashier}
                         isDesktop={isDesktop}
-                        poolTableId={poolTableId}
                         orderlines={orderlines}
                         orderId={order?._id!}
                         productId={p._id}
@@ -162,7 +158,6 @@ export function CafeButton({
                       <ProductMenuCard
                         isCashier={isCashier}
                         isDesktop={isDesktop}
-                        poolTableId={poolTableId}
                         orderlines={orderlines}
                         orderId={order?._id!}
                         productId={p._id}

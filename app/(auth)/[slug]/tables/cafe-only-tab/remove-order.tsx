@@ -1,8 +1,3 @@
-"use client"
-
-import { Loader2, Trash2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
@@ -14,7 +9,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2, Trash2 } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 export function RemoveOrder({
   isCashier,
@@ -22,34 +25,23 @@ export function RemoveOrder({
   customerName,
 }: {
   isCashier: boolean
-  orderId: string
+  orderId: Id<"orders">
   customerName: string
 }) {
   const [open, setOpen] = useState(false)
 
-  const router = useRouter()
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.order.remove.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.removeCafeOnly),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: `${customerName} has been successfully removed.`,
-      })
-      await utils.order.invalidate()
-      await wait().then(() => setOpen(false))
-      router.refresh()
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

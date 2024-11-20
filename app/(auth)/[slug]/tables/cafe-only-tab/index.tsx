@@ -1,11 +1,15 @@
+"use client"
+
 import { LoadingSpinner } from "@/components/loading-spinner"
-import { CreateOrderForm } from "./create-order-form"
-import { Phone, User2 } from "lucide-react"
 import { OrderlineDetail } from "@/components/orderline-detail"
-import { PaymentCafeOnlyButton } from "./payment-cafe-only-button"
-import { RemoveOrder } from "./remove-order"
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { Phone, User2 } from "lucide-react"
 import { CafeButton } from "../pool-table-tab/pool-table-card/cafe-button"
-import { OrderList } from "../pool-table-tab/pool-table-card/cafe-button/order-list"
+import { PaymentButton } from "../pool-table-tab/pool-table-card/payment-button"
+import { CreateOrderForm } from "./create-order-form"
+import { RemoveOrder } from "./remove-order"
 
 export default function CafeOnlyTab({
   managerAccessLevel,
@@ -14,15 +18,9 @@ export default function CafeOnlyTab({
   managerAccessLevel: boolean
   cashierAccessLevel: boolean
 }) {
-  const { data: filteredOrders, status } =
-    api.order.findAllCafeOnlyByCompanyId.useQuery(undefined, {
-      select(data) {
-        return data.filter(
-          (order) => order.statusPayment === StatusPayment.OPEN,
-        )
-      },
-      refetchInterval: 1000 * 10,
-    })
+  const { data: filteredOrders, status } = useTanstackQuery(
+    convexQuery(api.orders.findAllCafeOnlyByCompanyId, {}),
+  )
   if (status !== "success") return <LoadingSpinner />
   return (
     <>
@@ -32,7 +30,7 @@ export default function CafeOnlyTab({
           {filteredOrders.map((order) => (
             <div
               className="rounded-xl border-2 bg-card px-5 py-4"
-              key={order.id}
+              key={order._id}
             >
               <article className="flex items-center justify-between truncate py-2 text-xs md:text-sm">
                 <h1 className="truncate font-semibold capitalize text-foreground">
@@ -52,38 +50,29 @@ export default function CafeOnlyTab({
                   </p>
                 )}
               </article>
-              {!!order.orderLines.length && (
-                <OrderlineDetail orderlines={order.orderLines} />
-              )}
+              <OrderlineDetail orderId={order._id} />
               <div className="flex items-center justify-between space-x-2 py-2">
-                {!!order.orderLines.length ? (
-                  <PaymentCafeOnlyButton
+                {!!order.orderlinesLen ? (
+                  <PaymentButton
                     isCashier={cashierAccessLevel}
-                    orderId={order.id}
+                    orderId={order._id}
                     customerName={order.customer?.name}
                     customerPhone={order.customer?.phone}
-                    hasOrderlines={!!order?.orderLines.length}
-                    orderlines={order.orderLines}
                   />
                 ) : (
                   <RemoveOrder
                     isCashier={cashierAccessLevel}
-                    orderId={order.id}
+                    orderId={order._id}
                     customerName={order.customer?.name as string}
                   />
                 )}
 
                 {/* === STARTS Cafe Button === */}
-                <CafeButton isCashier={cashierAccessLevel} order={order}>
-                  {!!order.orderLines.length && (
-                    <OrderList
-                      isManager={managerAccessLevel}
-                      isCashier={cashierAccessLevel}
-                      orderlines={order.orderLines}
-                      customerName={order.customer?.name}
-                    />
-                  )}
-                </CafeButton>
+                <CafeButton
+                  isManager={managerAccessLevel}
+                  isCashier={cashierAccessLevel}
+                  order={order}
+                />
                 {/* === ENDS Cafe Button === */}
               </div>
             </div>

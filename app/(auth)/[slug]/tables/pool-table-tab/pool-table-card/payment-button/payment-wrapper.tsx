@@ -21,7 +21,7 @@ type Props = {
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
   disabled?: boolean
-  poolTableName: string
+  poolTableName?: string
   children: React.ReactNode
 }
 
@@ -47,7 +47,7 @@ export const PaymentSheet = ({
     <SheetContent className="h-svh min-w-full bg-card sm:min-w-[480px]">
       <SheetHeader>
         <SheetTitle className="whitespace-nowrap">
-          Table {poolTableName}
+          {poolTableName ? `Table ${poolTableName}` : "Cafe Only"}
         </SheetTitle>
         <SheetDescription>Proceed to calculate payment</SheetDescription>
       </SheetHeader>
@@ -78,7 +78,7 @@ export const PaymentDrawer = ({
     <DrawerContent className="bg-card px-6 sm:min-w-[480px]">
       <DrawerHeader>
         <DrawerTitle className="whitespace-nowrap">
-          Table {poolTableName}
+          {poolTableName ? `Table ${poolTableName}` : "Cafe Only"}
         </DrawerTitle>
         <DrawerDescription>Proceed to calculate payment</DrawerDescription>
       </DrawerHeader>

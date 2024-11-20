@@ -272,6 +272,49 @@ export const countPendingStatus = query({
   },
 })
 
+export const findAllCafeOnlyByCompanyId = query({
+  args: {},
+  handler: async (ctx) => {
+    // protectedProcedure
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
+      .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+      .order("desc")
+      .collect()
+
+    const filteredCafeOnlyOrders = await Promise.all(
+      (orders ?? [])
+        .filter(async (order) => {
+          const poolRental = await ctx.db
+            .query("poolRentals")
+            .withIndex("orderId", (q) => q.eq("orderId", order._id))
+            .first()
+
+          return order._id !== poolRental?.orderId
+        })
+        .map(async (order) => {
+          const createdBy = await ctx.db.get(order.createdBy)
+          const customer = await ctx.db.get(order.customerId!)
+          const orderlines = await ctx.db
+            .query("orderlines")
+            .withIndex("orderId", (q) => q.eq("orderId", order._id))
+            .order("desc")
+            .collect()
+          return {
+            ...order,
+            createdBy: { name: createdBy?.name, role: createdBy?.role },
+            customer,
+            orderlinesLen: orderlines.length,
+          }
+        }),
+    )
+    return filteredCafeOnlyOrders
+  },
+})
 // === MUTATION ===
 
 export const startTimer = zMutation({
@@ -577,6 +620,20 @@ export const archive = mutation({
     return await ctx.db.patch(args.orderId, {
       statusPayment: "ARCHIVE",
     })
+  },
+})
+
+/**
+ * Remove the order only for "Cafe-Only-Tab",
+ * to remove an order where the customer has not order any menu yet.
+ * So, Cashier & Manager can access to remove the order.
+ */
+export const removeCafeOnly = mutation({
+  args: { id: v.id("orders") },
+  handler: async (ctx, { id }) => {
+    await protectedProcedure(ctx, {})
+
+    return await ctx.db.delete(id)
   },
 })
 

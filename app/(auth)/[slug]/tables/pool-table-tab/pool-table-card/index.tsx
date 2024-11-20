@@ -180,7 +180,6 @@ export function PoolTableCard({
               isManager={managerAccessLevel}
               isCashier={cashierAccessLevel}
               order={order.data}
-              poolTableId={poolTableId}
               poolTableName={poolTableName}
             />
           </div>

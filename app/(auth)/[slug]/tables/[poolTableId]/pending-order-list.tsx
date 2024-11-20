@@ -48,7 +48,6 @@ export function PendingOrderList({
       {pendingOrderList.status === "success" &&
         pendingOrderList.data.map((order) => (
           <PendingOrderCard
-            poolTableId={poolTableId}
             poolTableName={poolTableName}
             isManager={isManager}
             isCashier={isCashier}
@@ -60,13 +59,15 @@ export function PendingOrderList({
   )
 }
 
-type PendingOrderCardProps = Omit<PendingOrderListProps, "slug"> & {
+type PendingOrderCardProps = Omit<
+  PendingOrderListProps,
+  "slug" | "poolTableId"
+> & {
   order: FunctionReturnType<
     typeof api.orders.findAllPendingStatusByPoolTableId
   >[0]
 }
 const PendingOrderCard = ({
-  poolTableId,
   poolTableName,
   isManager,
   isCashier,
@@ -129,7 +130,6 @@ const PendingOrderCard = ({
         isManager={isManager}
         isCashier={isCashier}
         order={order}
-        poolTableId={poolTableId}
         poolTableName={poolTableName}
       />
       {/* === ENDS Cafe Button === */}
