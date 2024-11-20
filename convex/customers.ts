@@ -30,12 +30,16 @@ export const create = zMutation({
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (!user?.companyId) throw new ConvexError("You do not have access!")
 
-    return await ctx.db.insert("customers", {
+    const customerId = await ctx.db.insert("customers", {
       companyId: user?.companyId,
       name,
       phone,
     })
-
-    return
+    return await ctx.db.insert("orders", {
+      companyId: user.companyId,
+      statusPayment: "OPEN",
+      createdBy: user._id,
+      customerId: customerId,
+    })
   },
 })

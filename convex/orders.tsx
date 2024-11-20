@@ -287,32 +287,28 @@ export const findAllCafeOnlyByCompanyId = query({
       .collect()
 
     const filteredCafeOnlyOrders = await Promise.all(
-      (orders ?? [])
-        .filter(async (order) => {
-          const poolRental = await ctx.db
-            .query("poolRentals")
-            .withIndex("orderId", (q) => q.eq("orderId", order._id))
-            .first()
-
-          return order._id !== poolRental?.orderId
-        })
-        .map(async (order) => {
-          const createdBy = await ctx.db.get(order.createdBy)
-          const customer = await ctx.db.get(order.customerId!)
-          const orderlines = await ctx.db
-            .query("orderlines")
-            .withIndex("orderId", (q) => q.eq("orderId", order._id))
-            .order("desc")
-            .collect()
-          return {
-            ...order,
-            createdBy: { name: createdBy?.name, role: createdBy?.role },
-            customer,
-            orderlinesLen: orderlines.length,
-          }
-        }),
+      (orders ?? []).map(async (order) => {
+        const createdBy = await ctx.db.get(order.createdBy)
+        const customer = await ctx.db.get(order.customerId!)
+        const poolRental = await ctx.db
+          .query("poolRentals")
+          .withIndex("orderId", (q) => q.eq("orderId", order._id))
+          .first()
+        const orderlines = await ctx.db
+          .query("orderlines")
+          .withIndex("orderId", (q) => q.eq("orderId", order._id))
+          .order("desc")
+          .collect()
+        return {
+          ...order,
+          createdBy: { name: createdBy?.name, role: createdBy?.role },
+          customer,
+          poolRental,
+          orderlinesLen: orderlines.length,
+        }
+      }),
     )
-    return filteredCafeOnlyOrders
+    return filteredCafeOnlyOrders.filter((f) => f.poolRental == null)
   },
 })
 // === MUTATION ===
@@ -633,7 +629,11 @@ export const removeCafeOnly = mutation({
   handler: async (ctx, { id }) => {
     await protectedProcedure(ctx, {})
 
-    return await ctx.db.delete(id)
+    const order = await ctx.db.get(id)
+    const removeOrder = await ctx.db.delete(id)
+    const removeCustomer = await ctx.db.delete(order?.customerId!)
+
+    return { removeOrder, removeCustomer }
   },
 })
 
