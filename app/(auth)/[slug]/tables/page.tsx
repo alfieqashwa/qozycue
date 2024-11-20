@@ -3,8 +3,8 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import type { Metadata } from "next"
-import { CafeOnlyTab } from "./cafe-only-tab"
 import { PoolTableTab } from "./pool-table-tab"
+import CafeOnlyTab from "./cafe-only-tab"
 
 export const metadata: Metadata = {
   title: "Tables",
