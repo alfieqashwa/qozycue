@@ -3,7 +3,7 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import type { Metadata } from "next"
-import { CafeOnly } from "./cafe-only"
+import { CafeOnlyTab } from "./cafe-only-tab"
 import { PoolTableTab } from "./pool-table-tab"
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default async function Page() {
         />
       </TabsContent>
       <TabsContent value="cafe-only" className="relative">
-        <CafeOnly
+        <CafeOnlyTab
           managerAccessLevel={managerAccessLevel}
           cashierAccessLevel={cashierAccessLevel}
         />

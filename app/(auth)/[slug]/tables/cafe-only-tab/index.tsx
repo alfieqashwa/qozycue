@@ -1,4 +1,4 @@
-export function CafeOnly({
+export function CafeOnlyTab({
   managerAccessLevel,
   cashierAccessLevel,
 }: {
