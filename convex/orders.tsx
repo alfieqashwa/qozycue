@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError, v } from "convex/values"
+import { isTimeOverlap } from "../lib/is-time-overlap"
 import {
   startTimerSchema,
   stopTimerSchema,
@@ -301,12 +302,46 @@ export const startTimer = zMutation({
       user?.role !== "CASHIER"
     )
       throw new ConvexError("You do not have access!")
-
     if (!user.companyId) throw new ConvexError("No company provided!")
+
+    const listOfPoolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
+      .collect()
+
+    const listOfRentalTime = await Promise.all(
+      listOfPoolRental
+        .filter(async (rental) => {
+          const order = await ctx.db
+            .query("orders")
+            .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+            .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+            .first()
+
+          // filtered only the open statusPayment orders
+          return rental.orderId === order?._id
+        })
+        .map((rental) => ({
+          timeStart: rental.timeStart,
+          timeEnd: rental.timeEnd,
+        }))
+        .sort((p, q) => p.timeStart! - q.timeStart!),
+    )
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     const startTime = Date.now()
     const endTime = startTime + duration * HOUR_TO_MILLISECOND
+
+    const hasConflict = isTimeOverlap(
+      gapDuration,
+      startTime,
+      endTime,
+      listOfRentalTime,
+    )
+
+    if (hasConflict) {
+      throw new ConvexError("The selected time overlaps with another booking.")
+    }
 
     const updatePoolTable = await ctx.db.patch(poolTableId, {
       isActive: true,
