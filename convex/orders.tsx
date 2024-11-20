@@ -439,7 +439,7 @@ export const stopTimer = zMutation({
     })
 
     //? Calculate duration in minute-rate
-    const ONE_HOUR_IN_MILLISECONDS = 1_000 * 60 * 30
+    const ONE_HOUR_IN_MILLISECONDS = 1_000 * 60 * 60
 
     const elapsedTime = endTime - startTime
     const elapsedInMinutes = Math.floor(elapsedTime / (1000 * 60))
@@ -459,19 +459,11 @@ export const stopTimer = zMutation({
 
     //? For MINUTE rate only
 
-    let updatePoolRental
-
-    if (rate === "MINUTE") {
-      updatePoolRental = await ctx.db.patch(poolRentalId, {
-        duration: elapsedInMinutes,
-        totalCost,
-        timeEnd: endTime,
-      })
-    } else {
-      updatePoolRental = await ctx.db.patch(poolRentalId, {
-        timeEnd: endTime,
-      })
-    }
+    const updatePoolRental = await ctx.db.patch(poolRentalId, {
+      duration: rate === "MINUTE" ? elapsedInMinutes : undefined,
+      totalCost: rate === "MINUTE" ? totalCost : undefined,
+      timeEnd: endTime,
+    })
     return { updatePoolTable, updatePoolRental }
   },
 })
