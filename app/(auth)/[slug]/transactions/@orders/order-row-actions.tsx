@@ -20,7 +20,7 @@ import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Copy, Printer, ScrollText } from "lucide-react"
 import { useRef, useState } from "react"
 import { useReactToPrint } from "react-to-print"
-import { DetailButton } from "../../tables/pool-table-list/pool-table-card/detail-button"
+import { DetailButton } from "../../tables/pool-table-tab/pool-table-card/detail-button"
 import { ArchiveOrder } from "./archive-order"
 import { UpdateCustomer } from "./update-customer"
 

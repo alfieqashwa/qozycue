@@ -11,8 +11,8 @@ import { FunctionReturnType } from "convex/server"
 import { User2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { CafeButton } from "../pool-table-list/pool-table-card/cafe-button"
-import { PaymentButton } from "../pool-table-list/pool-table-card/payment-button"
+import { CafeButton } from "../pool-table-tab/pool-table-card/cafe-button"
+import { PaymentButton } from "../pool-table-tab/pool-table-card/payment-button"
 
 type PendingOrderListProps = {
   poolTableId: Id<"poolTables">

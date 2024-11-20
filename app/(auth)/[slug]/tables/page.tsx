@@ -4,7 +4,7 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import type { Metadata } from "next"
 import { CafeOnly } from "./cafe-only"
-import { PoolTableList } from "./pool-table-list"
+import { PoolTableTab } from "./pool-table-tab"
 
 export const metadata: Metadata = {
   title: "Tables",
@@ -34,7 +34,7 @@ export default async function Page() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="pool">
-        <PoolTableList
+        <PoolTableTab
           managerAccessLevel={managerAccessLevel}
           cashierAccessLevel={cashierAccessLevel}
         />

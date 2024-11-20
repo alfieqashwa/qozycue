@@ -6,7 +6,7 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
 import { PoolTableCard } from "./pool-table-card"
 
-export function PoolTableList({
+export function PoolTableTab({
   managerAccessLevel,
   cashierAccessLevel,
 }: {
