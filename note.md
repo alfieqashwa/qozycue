@@ -38,3 +38,4 @@
 
 - When Payment, the pooltable endTime is not back to null
   ✅ when creating startTimer in pool table where has/have ordered, the timer not display properly (assuming the bug is on api.orders.findByPoolTable )
+  ❌ Button Update Duration: Situation: if set to 4 hours, and the time is clocking 3 hours, it should cannot to update to less than the clocking time (eg. to 2 hrs)
