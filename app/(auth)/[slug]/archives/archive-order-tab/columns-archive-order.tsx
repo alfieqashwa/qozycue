@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { api } from "@/convex/_generated/api"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
 import { PaymentMethod } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
@@ -111,9 +112,13 @@ export const columnsArchiveOrder: ColumnDef<
 
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceWithRupiah.format(Number(costPrice))}
-          </span>
+          {!!costPrice ? (
+            <span className="max-w-[500px] truncate capitalize">
+              {formattedPriceWithRupiah.format(Number(costPrice))}
+            </span>
+          ) : (
+            <span className="text-muted-foreground">Rp</span>
+          )}
         </Badge>
       )
     },
@@ -152,6 +157,8 @@ export const columnsArchiveOrder: ColumnDef<
             break
         }
       }
+
+      if (!paymentMethod) return
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           {icon(paymentMethod as PaymentMethod)}
@@ -176,13 +183,10 @@ export const columnsArchiveOrder: ColumnDef<
         <Badge variant="secondary" className="px-3 py-1.5">
           <Tags className="mr-2 h-4 w-4 text-muted-foreground" />
           <span className="max-w-[500px] truncate uppercase">
-            {discount ?? 0} %
+            {!!discount ? discount + "%" : ""}
           </span>
         </Badge>
       )
-    },
-    filterFn: (row, id, value: string) => {
-      return value.includes(row.getValue(id))
     },
   },
   {
@@ -195,7 +199,9 @@ export const columnsArchiveOrder: ColumnDef<
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <Tags className="mr-2 h-4 w-4 text-muted-foreground" />
-          <span className="max-w-[500px] truncate uppercase">{tax ?? 0} %</span>
+          <span className="max-w-[500px] truncate uppercase">
+            {!!tax ? tax + "%" : ""}
+          </span>
         </Badge>
       )
     },
@@ -209,11 +215,34 @@ export const columnsArchiveOrder: ColumnDef<
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Orderlines" />
     ),
+    cell: ({ row }) => {
+      const orderlineLen = Number(row.getValue("orderlines"))
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <span
+            className={cn(
+              orderlineLen === 0 && "text-muted-foreground",
+              "max-w-[500px] truncate",
+            )}
+          >
+            {orderlineLen}
+          </span>
+        </Badge>
+      )
+    },
+  },
+  {
+    accessorKey: "createdBy",
+    accessorFn: (row) => row.createdBy?.name,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created By" />
+    ),
     cell: ({ row }) => (
       <Badge variant="secondary" className="px-3 py-1.5">
-        <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+        <User2 className="mr-2 h-4 w-4 text-muted-foreground" />
         <span className="max-w-[500px] truncate">
-          {row.getValue("orderlines")}
+          {row.getValue("createdBy")}
         </span>
       </Badge>
     ),
@@ -230,6 +259,9 @@ export const columnsArchiveOrder: ColumnDef<
         <span className="max-w-[500px] truncate">{row.getValue("role")}</span>
       </Badge>
     ),
+    filterFn: (row, id, value: string) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: "customer",
@@ -241,28 +273,10 @@ export const columnsArchiveOrder: ColumnDef<
       <Badge variant="secondary" className="px-3 py-1.5">
         <UserRoundCheck className="mr-2 h-4 w-4 text-muted-foreground" />
         <span className="max-w-[500px] truncate capitalize">
-          {!!row.getValue("customer") ? row.getValue("customer") : "Anonymous"}
+          {row.getValue("customer")}
         </span>
       </Badge>
     ),
-  },
-  {
-    accessorKey: "createdBy",
-    accessorFn: (row) => row.createdBy?.name,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created By" />
-    ),
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="px-3 py-1.5">
-        <User2 className="mr-2 h-4 w-4 text-muted-foreground" />
-        <span className="max-w-[500px] truncate">
-          {row.getValue("createdBy")}
-        </span>
-      </Badge>
-    ),
-    filterFn: (row, id, value: string) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     accessorKey: "_creationTime",
@@ -271,11 +285,10 @@ export const columnsArchiveOrder: ColumnDef<
     ),
     cell: ({ row }) => {
       const timestamp = row.getValue("_creationTime")
-      return (
-        <div className="whitespace-nowrap">
-          {format(new Date(timestamp as number), "PPpp", { locale: id })}
-        </div>
-      )
+      const createdAt = format(timestamp as number, "PPpp", {
+        locale: id,
+      })
+      return <div className="whitespace-nowrap">{createdAt}</div>
     },
   },
   {
