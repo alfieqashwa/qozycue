@@ -128,7 +128,7 @@ export function Countdown({
               duration={duration}
             />
           )}
-          <p className="absolute top-4 -translate-x-1/2">
+          <p className="absolute top-7 -translate-x-1/2">
             <span
               className={cn(
                 "text-sm font-semibold tracking-wider text-amber-300",

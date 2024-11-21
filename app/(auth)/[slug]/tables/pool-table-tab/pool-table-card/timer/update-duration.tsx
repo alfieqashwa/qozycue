@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
@@ -56,7 +57,7 @@ export function UpdateDuration({
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.orders.updatedDuration),
     onSuccess: () => {
-      toast("Succeed!", {
+      toast.success("Succeed!", {
         description: <p>Table {poolTableName} has been updated.</p>,
       })
     },
@@ -90,15 +91,17 @@ export function UpdateDuration({
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="absolute -top-11 hidden size-7 -translate-x-1/2 text-xs font-bold text-muted-foreground shadow-xl transition-all duration-500 ease-in-out hover:bg-sky-950 hover:text-foreground group-hover:inline-flex"
-        >
-          H
-        </Button>
-      </DialogTrigger>
+      <WrapperTooltip side="right" content="Update Duration">
+        <DialogTrigger asChild>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="absolute -top-8 hidden size-7 -translate-x-1/2 text-xs font-bold text-muted-foreground shadow-xl transition-all duration-500 ease-in-out hover:bg-sky-950 hover:text-foreground group-hover:inline-flex"
+          >
+            H
+          </Button>
+        </DialogTrigger>
+      </WrapperTooltip>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Duration</DialogTitle>

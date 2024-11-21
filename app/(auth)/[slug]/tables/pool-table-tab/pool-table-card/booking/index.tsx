@@ -243,7 +243,7 @@ const TooltipIsBookingNotification = ({
   <Tooltip>
     <TooltipTrigger asChild>{children}</TooltipTrigger>
     <TooltipContent side={side} className="bg-muted">
-      <p className="space-x-1 font-sans text-xs font-medium text-muted-foreground">
+      <p className="space-x-1 font-sans text-xs font-medium tracking-wider text-muted-foreground">
         <span>{count}</span>
         <span>{title}</span>
       </p>
