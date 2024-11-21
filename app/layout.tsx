@@ -7,6 +7,7 @@ import ConvexClientProvider from "@/components/ConvexClientProvider"
 import { ThemeProvider } from "@/components/providers"
 import { cn } from "@/lib/utils"
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server"
+import { CircleCheck, CircleX } from "lucide-react"
 import type { Metadata } from "next"
 import { Toaster } from "sonner"
 
@@ -79,7 +80,50 @@ export default function RootLayout({
               {/* // Todos
                <Analytics/ >
             <SpeedInsights /> */}
-              <Toaster richColors position="top-right" />
+              <Toaster
+                // richColors
+                // bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70%
+                position="top-right"
+                toastOptions={{
+                  unstyled: true,
+                  classNames: {
+                    error:
+                      "bg-gradient-to-tr from-red-950 from-50% to-red-900 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                    // info: "bg-blue-400",
+                    success:
+                      "bg-gradient-to-tr from-emerald-950 from-50% to-emerald-900 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                    // warning: "bg-orange-400",
+                    // toast: "bg-blue-400",
+                    title: "pl-8 text-foreground font-medium tracking-wide",
+                    description: "pl-8 text-muted-foreground text-sm",
+                    // actionButton: "bg-zinc-400",
+                    // cancelButton: "bg-orange-400",
+                    // closeButton: "bg-lime-400",
+                  },
+                }}
+                icons={{
+                  success: (
+                    <CircleCheck
+                      size={28}
+                      className="ml-2.5 rounded-full text-emerald-400 ring-4 ring-emerald-900"
+                    />
+                    // <CircleCheck
+                    //   size={28}
+                    //   strokeWidth={2.3}
+                    //   className="ml-3 shrink-0 stroke-emerald-500"
+                    // />
+                  ),
+                  // info: <InfoIcon />,
+                  // warning: <WarningIcon />,
+                  error: (
+                    <CircleX
+                      size={28}
+                      className="ml-2.5 rounded-full text-red-600 ring-4 ring-red-900"
+                    />
+                  ),
+                  // loading: <LoadingIcon />,
+                }}
+              />
             </ThemeProvider>
           </ConvexClientProvider>
         </body>
