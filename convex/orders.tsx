@@ -657,12 +657,14 @@ export const payment = zMutation({
       // ...fields
     },
   ) => {
+    await cashierProcedure(ctx, {})
+
     const poolRental = await ctx.db
       .query("poolRentals")
-      .withIndex("orderId")
-      .first()
+      .withIndex("orderId", (q) => q.eq("orderId", orderId))
+      .unique()
 
-    if (!poolRental) throw new ConvexError("No Pool Rental Porvided!")
+    if (!poolRental) throw new ConvexError("No Pool Rental Provided!")
 
     const updateOrder = await ctx.db.patch(orderId, {
       totalAmount,
