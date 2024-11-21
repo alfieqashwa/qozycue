@@ -15,6 +15,8 @@
 ✅ Cafe-Only
 ✅ Pending-Payment
 ✅ Transfer-Table
+✅ Update Duration (Hourly)
+❌ Order & Archive Table List (Rollover & Remove All selected columns)
 ❌ Booking-Schedule
 ❌ Dashboard
 
@@ -25,6 +27,7 @@
 
 ## Backlog (Future Plan)
 
+❌ Setup Cancelled Feature
 ❌ Pool Table with the same company must have a unique name
 ❌ Restrict to disabled the product(s) and packet(s) when they are in OPEN and PENDING order
 ❌ Update library "react-to-print" version after learn their recent documentation
