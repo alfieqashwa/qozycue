@@ -30,3 +30,8 @@
 ❌ Update library "react-to-print" version after learn their recent documentation
 ❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
 ❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
+
+### Bugs ASAP
+
+- When Payment, the pooltable endTime is not back to null
+  ✅ when creating startTimer in pool table where has/have ordered, the timer not display properly (assuming the bug is on api.orders.findByPoolTable )

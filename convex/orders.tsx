@@ -1,6 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError, v } from "convex/values"
-import { isTimeOverlap } from "../lib/is-time-overlap"
 import {
   startTimerSchema,
   stopTimerSchema,
@@ -164,18 +163,19 @@ export const findByPoolTableId = query({
 
     const orderList = await Promise.all(
       (poolRentals ?? []).map(async (rental) => {
-        // const order = await ctx.db.get(rental.orderId)
-        const order = await ctx.db
-          .query("orders")
-          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-          .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-          .first()
-        const poolRental = await ctx.db
-          .query("poolRentals")
-          .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
-          .first()
-        const packet = await ctx.db.get(poolRental?.packetId!)
-        const customer = await ctx.db.get(order?.customerId!)
+        /*
+         ? bug fixed: instead query thing, use ctx.db.get("tables_name") on map
+         * const order = await ctx.db
+         * .query("orders")
+         * .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+         * .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+         * .first()
+         * console.log(`ORDER-APIIII`, order)
+         */
+        const order = await ctx.db.get(rental.orderId)
+        const packet = await ctx.db.get(rental.packetId!)
+        const customer =
+          order !== null ? await ctx.db.get(order?.customerId!) : null
         const createdBy = await ctx.db.get(order?.createdBy!)
         const orderlines = await ctx.db
           .query("orderlines")
@@ -188,7 +188,7 @@ export const findByPoolTableId = query({
           createdBy: { name: createdBy?.name },
           orderlinesLen: orderlines.length,
           poolRental: {
-            ...poolRental,
+            ...rental,
             packet: {
               name: packet?.name,
               cost: packet?.cost,
@@ -199,8 +199,8 @@ export const findByPoolTableId = query({
       }),
     )
 
-    // return orderList.find((order) => order.statusPayment === "OPEN")
-    return orderList[0]
+    return orderList.find((order) => order.statusPayment === "OPEN")
+    // return orderList[0]
   },
 })
 
@@ -347,44 +347,45 @@ export const startTimer = zMutation({
       throw new ConvexError("You do not have access!")
     if (!user.companyId) throw new ConvexError("No company provided!")
 
-    const listOfPoolRental = await ctx.db
-      .query("poolRentals")
-      .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
-      .collect()
+    // TODOS: config is not right
+    // const listOfPoolRental = await ctx.db
+    //   .query("poolRentals")
+    //   .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
+    //   .collect()
 
-    const listOfRentalTime = await Promise.all(
-      listOfPoolRental
-        .filter(async (rental) => {
-          const order = await ctx.db
-            .query("orders")
-            .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-            .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-            .first()
+    // const listOfRentalTime = await Promise.all(
+    //   listOfPoolRental
+    //     .filter(async (rental) => {
+    //       const order = await ctx.db
+    //         .query("orders")
+    //         .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+    //         .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+    //         .first()
 
-          // filtered only the open statusPayment orders
-          return rental.orderId === order?._id
-        })
-        .map((rental) => ({
-          timeStart: rental.timeStart,
-          timeEnd: rental.timeEnd,
-        }))
-        .sort((p, q) => p.timeStart! - q.timeStart!),
-    )
+    //       // filtered only the open statusPayment orders
+    //       return rental.orderId === order?._id
+    //     })
+    //     .map((rental) => ({
+    //       timeStart: rental.timeStart,
+    //       timeEnd: rental.timeEnd,
+    //     }))
+    //     .sort((p, q) => p.timeStart! - q.timeStart!),
+    // )
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     const startTime = Date.now()
     const endTime = startTime + duration * HOUR_TO_MILLISECOND
 
-    const hasConflict = isTimeOverlap(
-      gapDuration,
-      startTime,
-      endTime,
-      listOfRentalTime,
-    )
+    // const hasConflict = isTimeOverlap(
+    //   gapDuration,
+    //   startTime,
+    //   endTime,
+    //   listOfRentalTime,
+    // )
 
-    if (hasConflict) {
-      throw new ConvexError("The selected time overlaps with another booking.")
-    }
+    // if (hasConflict) {
+    //   throw new ConvexError("The selected time overlaps with another booking.")
+    // }
 
     const totalCost = Math.round((cost * duration) / 100) * 100
 
@@ -463,12 +464,19 @@ export const stopTimer = zMutation({
 
     //? For MINUTE rate only
 
-    const updatePoolRental = await ctx.db.patch(poolRentalId, {
-      duration: rate === "MINUTE" ? elapsedInMinutes : undefined,
-      totalCost: rate === "MINUTE" ? totalCost : undefined,
-      timeEnd: endTime,
-    })
-    return { updatePoolTable, updatePoolRental }
+    if (rate === "MINUTE") {
+      const updatePoolRental = await ctx.db.patch(poolRentalId, {
+        duration: elapsedInMinutes,
+        totalCost,
+        timeEnd: endTime,
+      })
+      return { updatePoolRental, updatePoolTable }
+    } else {
+      const updatePoolRental = await ctx.db.patch(poolRentalId, {
+        timeEnd: endTime,
+      })
+      return { updatePoolRental, updatePoolTable }
+    }
   },
 })
 
