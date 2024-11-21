@@ -88,10 +88,10 @@ export default function RootLayout({
                   unstyled: true,
                   classNames: {
                     error:
-                      "bg-gradient-to-tr from-red-950 from-50% to-red-900 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                      "bg-red-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
                     // info: "bg-blue-400",
                     success:
-                      "bg-gradient-to-tr from-emerald-950 from-50% to-emerald-900 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                      "bg-emerald-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
                     // warning: "bg-orange-400",
                     // toast: "bg-blue-400",
                     title: "pl-8 text-foreground font-medium tracking-wide",

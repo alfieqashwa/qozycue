@@ -16,6 +16,7 @@
 ✅ Pending-Payment
 ✅ Transfer-Table
 ✅ Update Duration (Hourly)
+❌ Use `toast.info` to remove the product
 ❌ Order & Archive Table List (Rollover & Remove All selected columns)
 ❌ Booking-Schedule
 ❌ Dashboard
