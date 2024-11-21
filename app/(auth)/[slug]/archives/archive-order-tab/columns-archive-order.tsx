@@ -1,7 +1,13 @@
 "use client"
 
-import { PaymentMethod } from "@prisma/client"
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { api } from "@/convex/_generated/api"
+import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { PaymentMethod } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import {
@@ -16,15 +22,10 @@ import {
   UtensilsCrossed,
   Wallet2,
 } from "lucide-react"
-import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
-import { type RouterOutputs } from "@/trpc/react"
 import { ArchiveOrderRowActions } from "./archive-order-row-actions"
 
 export const columnsArchiveOrder: ColumnDef<
-  RouterOutputs["order"]["findAllByCompanyId"][0]
+  FunctionReturnType<typeof api.orders.findAllArchiveOrderSortedByDate>[0]
 >[] = [
   {
     id: "select",
@@ -51,12 +52,12 @@ export const columnsArchiveOrder: ColumnDef<
     enableHiding: false,
   },
   {
-    accessorKey: "id",
+    accessorKey: "_id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
     ),
     cell: ({ row }) => {
-      const id: string = row.getValue("id")
+      const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
@@ -141,11 +142,11 @@ export const columnsArchiveOrder: ColumnDef<
       const paymentMethod = row.getValue("paymentMethod")
       const icon = (paymentMethod: PaymentMethod) => {
         switch (paymentMethod) {
-          case PaymentMethod.CASH:
+          case "CASH":
             return <Banknote className="mr-2 h-4 w-4 text-emerald-400" />
-          case PaymentMethod.CREDIT:
+          case "CREDIT":
             return <CreditCard className="mr-2 h-4 w-4 text-rose-400" />
-          case PaymentMethod.DEBIT:
+          case "DEBIT":
             return <Wallet2 className="mr-2 h-4 w-4 text-amber-400" />
           default:
             break
@@ -204,7 +205,7 @@ export const columnsArchiveOrder: ColumnDef<
   },
   {
     accessorKey: "orderlines",
-    accessorFn: (row) => row._count.orderLines,
+    accessorFn: (row) => row.orderlines.length,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Orderlines" />
     ),
@@ -264,23 +265,26 @@ export const columnsArchiveOrder: ColumnDef<
     },
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "_creationTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
     ),
-    cell: ({ row }) => (
-      <div className="whitespace-nowrap">
-        {format(row.getValue("createdAt"), "PPpp", { locale: id })}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const timestamp = row.getValue("_creationTime")
+      return (
+        <div className="whitespace-nowrap">
+          {format(new Date(timestamp as number), "PPpp", { locale: id })}
+        </div>
+      )
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id } = row.original
+      const { _id } = row.original
       return (
         <div className="relative">
-          <ArchiveOrderRowActions id={id} />
+          <ArchiveOrderRowActions id={_id} />
         </div>
       )
     },

@@ -9,29 +9,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { Button } from "@/components/ui/button"
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Copy } from "lucide-react"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { api } from "@/trpc/react"
 import { DeleteOrder } from "./delete-order"
 import { RollbackOrder } from "./rollback-order"
+import { Id } from "@/convex/_generated/dataModel"
 
-export function ArchiveOrderRowActions({ id }: { id: string }) {
+export function ArchiveOrderRowActions({ id }: { id: Id<"orders"> }) {
   const [open, setOpen] = useState(false)
-  const { data: me, status } = api.user.me.useQuery()
+  const { data: me, status } = useTanstackQuery(convexQuery(api.users.me, {}))
 
   /*
     Manager & Cashier can rollback the archive-order's back into the transaction list,
     but only Manager can delete them.
   */
-  const managerAccessLevel =
-    me?.role === "MANAGER" || me?.role === "ADMIN" || me?.role === "DEWA"
-
-  const managerAndCashierAccessLevel =
-    me?.role === "MANAGER" ||
-    me?.role === "CASHIER" ||
-    me?.role === "ADMIN" ||
-    me?.role === "DEWA"
+  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+    me?.role ?? "",
+  )
+  const managerAndCashierAccessLevel = [
+    "DEWA",
+    "ADMIN",
+    "MANAGER",
+    "CASHIER",
+  ].includes(me?.role ?? "")
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>

@@ -1,5 +1,3 @@
-import { Loader2, RefreshCcwDot } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,13 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api } from "@/trpc/react"
-
+import { api } from "@/convex/_generated/api"
 import { type Table } from "@tanstack/react-table"
-import { type RouterOutputs } from "@/trpc/react"
-
+import { FunctionReturnType } from "convex/server"
+import { Loader2, RefreshCcwDot } from "lucide-react"
+import { useState } from "react"
 interface RollbackOrderListProps<TData> {
   table: Table<TData>
   disabledBasedOnAccessLevel: boolean
@@ -28,46 +24,45 @@ export function RollbackOrderList<TData>({
 }: RollbackOrderListProps<TData>) {
   const [open, setOpen] = useState(false)
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
   const selectedRows = table
     .getFilteredSelectedRowModel()
-    .rows.map(
-      (row) => row.original,
-    ) as RouterOutputs["order"]["findAllByCompanyId"]
+    .rows.map((row) => row.original) as FunctionReturnType<
+    typeof api.orders.findAllArchiveOrderSortedByDate
+  >
 
   const selectedOrders = selectedRows.map((row) => ({
-    id: row.id,
+    id: row._id,
   }))
 
-  const { mutate, isPending } = api.order.rollbackSelected.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: "All selected order(s) have been rolled back.",
-      })
-      await utils.order.invalidate()
-      table.resetRowSelection() // reset row selection after succeed
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
-  })
+  // const { mutate, isPending } = api.order.rollbackSelected.useMutation({
+  //   async onSuccess() {
+  //     toast({
+  //       title: "Succeed!",
+  //       variant: "default",
+  //       description: "All selected order(s) have been rolled back.",
+  //     })
+  //     await utils.order.invalidate()
+  //     table.resetRowSelection() // reset row selection after succeed
+  //     /* auto-closed after succeed submit the dialog form */
+  //     setOpen(false)
+  //   },
+  //   onError(err) {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Uh oh! Something went wrong.",
+  //       description: err.message || "There was a problem with your request.",
+  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //     })
+  //   },
+  // })
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    mutate({ selectedOrders })
+    // mutate({ selectedOrders })
+    console.log("submitted!")
   }
 
+  const isPending = false // temporary var
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

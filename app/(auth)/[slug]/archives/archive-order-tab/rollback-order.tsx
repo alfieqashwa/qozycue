@@ -1,4 +1,3 @@
-import { Loader2, RefreshCcwDot } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,47 +9,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
-import { api } from "@/trpc/react"
+import { Loader2, RefreshCcwDot } from "lucide-react"
 
 type RolebackOrderProps = {
-  id: string
+  id: Id<"orders">
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function RollbackOrder({ id, setOpen }: RolebackOrderProps) {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.order.rollback.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: `Order ${id} has been successfully rolled back.`,
-      })
-      await utils.order.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
-  })
+  // const { mutate, isPending } = api.order.rollback.useMutation({
+  //   async onSuccess() {
+  //     toast({
+  //       title: "Succeed!",
+  //       variant: "default",
+  //       description: `Order ${id} has been successfully rolled back.`,
+  //     })
+  //     await utils.order.invalidate()
+  //     /* auto-closed after succeed submit the dialog form */
+  //     setOpen(false)
+  //   },
+  //   onError(err) {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Uh oh! Something went wrong.",
+  //       description: err.message || "There was a problem with your request.",
+  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //     })
+  //   },
+  // })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    console.log("submitted!!")
 
-    mutate({ id })
+    // mutate({ id })
   }
 
+  const isPending = false // temporary var
   return (
     <Dialog>
       <DialogTrigger className="flex w-full items-center">

@@ -1,6 +1,3 @@
-import { type Table } from "@tanstack/react-table"
-import { FileArchive, Loader2 } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -11,8 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { FunctionReturnType } from "convex/server"
 import { api } from "@/convex/_generated/api"
+import { type Table } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
+import { FileArchive, Loader2 } from "lucide-react"
+import { useState } from "react"
 
 interface ArchiveOrderListProps<TData> {
   table: Table<TData>

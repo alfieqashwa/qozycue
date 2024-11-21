@@ -1,4 +1,3 @@
-import { Loader2, Trash2 } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,26 +9,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
-import { wait } from "@/lib/wait"
-import { api } from "@/trpc/react"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { Loader2, Trash2 } from "lucide-react"
+import { toast } from "sonner"
 
 type DeleteOrderProps = {
-  id: string
+  id: Id<"orders">
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
-
 export function DeleteOrder({ id, setOpen }: DeleteOrderProps) {
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
-  const { mutate, isPending } = api.order.delete.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.remove),
+    onSuccess: () =>
+      toast.success("Succeed!", {
         description: (
           <p>
             Order{" "}
@@ -37,24 +34,17 @@ export function DeleteOrder({ id, setOpen }: DeleteOrderProps) {
             been successfully deleted.
           </p>
         ),
-      })
-      await utils.order.invalidate()
-      /* auto-closed after succeed submit the dialog form */
-      await wait().then(() => setOpen(false))
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     mutate({ id })
   }
 
@@ -69,14 +59,12 @@ export function DeleteOrder({ id, setOpen }: DeleteOrderProps) {
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                Anda tidak dapat membatalkan perubahan ini. Klik Delete untuk
-                menghapus Order ID
-                <span className="px-1.5 font-medium uppercase text-primary">
-                  {id.slice(-10, id.length)}.
-                </span>
-              </p>
+            <DialogDescription>
+              You can&apos;t undo this change. Click <b>Delete</b> to remove
+              Order ID
+              <span className="px-1.5 font-medium uppercase text-primary">
+                {id.slice(-10, id.length)}.
+              </span>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">

@@ -1,5 +1,3 @@
-import { Loader2, Trash2 } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,11 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ToastAction } from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
-import { api, type RouterOutputs } from "@/trpc/react"
-
+import { api } from "@/convex/_generated/api"
 import { type Table } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
+import { Loader2, Trash2 } from "lucide-react"
+import { useState } from "react"
 
 interface DeleteOrderListProps<TData> {
   table: Table<TData>
@@ -27,46 +25,45 @@ export function DeleteOrderList<TData>({
 }: DeleteOrderListProps<TData>) {
   const [open, setOpen] = useState(false)
 
-  const utils = api.useUtils()
-  const { toast } = useToast()
-
   const selectedRows = table
     .getFilteredSelectedRowModel()
-    .rows.map(
-      (row) => row.original,
-    ) as RouterOutputs["order"]["findAllByCompanyId"]
+    .rows.map((row) => row.original) as FunctionReturnType<
+    typeof api.orders.findAllArchiveOrderSortedByDate
+  >
 
-  const selectedOrders = selectedRows.map((row) => ({
-    id: row.id,
-  }))
+  // const selectedOrders = selectedRows.map((row) => ({
+  //   id: row.id,
+  // }))
 
-  const { mutate, isPending } = api.order.deleteSelected.useMutation({
-    async onSuccess() {
-      toast({
-        title: "Succeed!",
-        variant: "default",
-        description: "All selected order(s) have been deleted.",
-      })
-      await utils.order.invalidate()
-      table.resetRowSelection() // reset row selection after succeed
-      /* auto-closed after succeed submit the dialog form */
-      setOpen(false)
-    },
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message || "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
-    },
-  })
+  // const { mutate, isPending } = api.order.deleteSelected.useMutation({
+  //   async onSuccess() {
+  //     toast({
+  //       title: "Succeed!",
+  //       variant: "default",
+  //       description: "All selected order(s) have been deleted.",
+  //     })
+  //     await utils.order.invalidate()
+  //     table.resetRowSelection() // reset row selection after succeed
+  //     /* auto-closed after succeed submit the dialog form */
+  //     setOpen(false)
+  //   },
+  //   onError(err) {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Uh oh! Something went wrong.",
+  //       description: err.message || "There was a problem with your request.",
+  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //     })
+  //   },
+  // })
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    mutate({ selectedOrders })
+    console.log("submitted!")
+    // mutate({ selectedOrders })
   }
 
+  const isPending = false // temprorary var
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
