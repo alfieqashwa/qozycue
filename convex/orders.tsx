@@ -609,7 +609,7 @@ export const updatedDuration = zMutation({
     }
     // (previous-code): newEndTime.setHours(newEndTime.getHours() + updatedDuration)
     // convert gapDuration to time_in_milliseconds
-    const updatedDurationInMilliseconds = updatedDuration * 60 * 1000
+    const updatedDurationInMilliseconds = updatedDuration * 60 * 60 * 1000 // hour -> milliseconds (3_600_000)
     const newEndTime = poolTable.startTime + updatedDurationInMilliseconds
 
     // If there's no firstBooking, we can skip the overlap check
