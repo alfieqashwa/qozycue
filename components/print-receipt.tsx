@@ -135,9 +135,13 @@ export const PrintReceipt = forwardRef(
                 <div className="flex items-center justify-between">
                   <p>End:</p>
                   <p>
-                    {format(order.poolRental.timeEnd!, "pp", {
-                      locale: id,
-                    })}
+                    {format(
+                      new Date(order.poolRental.timeEnd as number),
+                      "pp",
+                      {
+                        locale: id,
+                      },
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center justify-between">
