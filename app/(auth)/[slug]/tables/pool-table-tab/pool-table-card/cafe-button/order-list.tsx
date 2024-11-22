@@ -33,11 +33,10 @@ export function OrderList({
       const productName = orderlines.find(
         (orderline) => orderline._id === variables?.id,
       )?.product.name
-      toast.success("Succeed!", {
+      toast.info("Remove!", {
         description: (
-          <p>
-            <span className="font-semibold capitalize">{productName}</span> has
-            been <span className="text-rose-500">deleted</span>.
+          <p className="font-medium capitalize text-foreground">
+            {productName}
           </p>
         ),
       })

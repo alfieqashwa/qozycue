@@ -35,19 +35,9 @@ export function OrderProduct({
     mutationFn: useConvexMutation(api.orderlines.upsert),
     onSuccess() {
       setQty(variables?.upsertOrderlineSchema.quantity as number)
-      toast.success("Succeed!", {
+      toast.info(`${!!orderline?._id ? "Update!" : "Order!"}`, {
         description: (
-          <p>
-            <span className="font-semibold capitalize">{name}</span> has been{" "}
-            <span
-              className={cn(
-                !!orderline?._id ? "text-amber-400" : "text-emerald-400",
-              )}
-            >
-              {!!orderline?._id ? "updated" : "created"}
-            </span>
-            .
-          </p>
+          <p className="font-medium capitalize text-foreground">{name}</p>
         ),
       })
     },

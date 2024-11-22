@@ -7,7 +7,7 @@ import ConvexClientProvider from "@/components/ConvexClientProvider"
 import { ThemeProvider } from "@/components/providers"
 import { cn } from "@/lib/utils"
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server"
-import { CircleCheck, CircleX } from "lucide-react"
+import { CircleCheck, CircleX, Info } from "lucide-react"
 import type { Metadata } from "next"
 import { Toaster } from "sonner"
 
@@ -89,7 +89,7 @@ export default function RootLayout({
                   classNames: {
                     error:
                       "bg-red-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
-                    // info: "bg-blue-400",
+                    info: "bg-yellow-600 border-2 border-yellow-900 flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
                     success:
                       "bg-emerald-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
                     // warning: "bg-orange-400",
@@ -105,7 +105,7 @@ export default function RootLayout({
                   success: (
                     <CircleCheck
                       size={28}
-                      className="ml-2.5 rounded-full text-emerald-400 ring-4 ring-emerald-900"
+                      className="ml-2.5 animate-pulse rounded-full text-emerald-400 ring-4 ring-emerald-900"
                     />
                     // <CircleCheck
                     //   size={28}
@@ -113,12 +113,17 @@ export default function RootLayout({
                     //   className="ml-3 shrink-0 stroke-emerald-500"
                     // />
                   ),
-                  // info: <InfoIcon />,
+                  info: (
+                    <Info
+                      size={28}
+                      className="ml-2.5 animate-pulse rounded-full text-yellow-50 ring-4 ring-yellow-400"
+                    />
+                  ),
                   // warning: <WarningIcon />,
                   error: (
                     <CircleX
                       size={28}
-                      className="ml-2.5 rounded-full text-red-600 ring-4 ring-red-900"
+                      className="ml-2.5 animate-pulse rounded-full text-red-600 ring-4 ring-red-900"
                     />
                   ),
                   // loading: <LoadingIcon />,
