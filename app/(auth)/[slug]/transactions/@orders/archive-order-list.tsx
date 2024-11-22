@@ -9,65 +9,72 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { type Table } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
+import { ConvexError } from "convex/values"
 import { FileArchive, Loader2 } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
 
 interface ArchiveOrderListProps<TData> {
   table: Table<TData>
 }
-
 export function ArchiveOrderList<TData>({
   table,
 }: ArchiveOrderListProps<TData>) {
   const [open, setOpen] = useState(false)
+
+  const { data: me, status } = useTanstackQuery(convexQuery(api.users.me, {}))
+  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+    me?.role ?? "",
+  )
 
   const selectedRows = table
     .getFilteredSelectedRowModel()
     .rows.map((row) => row.original) as FunctionReturnType<
     typeof api.orders.findAllSortedByDate
   >
-
-  const ids = selectedRows.map((row) => ({
-    id: row._id,
-  }))
-
+  const selectedOrders = selectedRows.map((row) => ({ id: row._id }))
   /*
     Disabled Archive Selected Button if there's order
     where has Status Payment to not equal to "PAID".
     Which means, only PAID order can be sent to Archives Page.
   */
-  const disabled = selectedRows.some((row) => row.statusPayment !== "PAID")
-  // || disabledBasedOnAccessLevel
+  const disabled =
+    selectedRows.some((row) => row.statusPayment !== "PAID") ||
+    (status === "success" && !managerAccessLevel)
 
-  // const { mutate, isPending } = api.order.archiveSelected.useMutation({
-  //   async onSuccess() {
-  //     toast({
-  //       title: "Succeed!",
-  //       variant: "default",
-  //       description: "All selected order(s) have been archived.",
-  //     })
-  //     table.resetRowSelection() // reset row selection after succeed
-  //     /* auto-closed after succeed submit the dialog form */
-  //     setOpen(false)
-  //   },
-  //   onError(err) {
-  //     toast({
-  //       variant: "destructive",
-  //       title: "Uh oh! Something went wrong.",
-  //       description: err.message || "There was a problem with your request.",
-  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //     })
-  //   },
-  // })
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.updateSelectedOrders),
+    async onSuccess() {
+      toast.success("Succeed!", {
+        description: "All selected order(s) have been archived.",
+      })
+    },
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
+      table.resetRowSelection() // reset row selection whether succeed or error occured
+      setOpen(false)
+    },
+  })
 
-  // function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  //   e.preventDefault()
-  //   mutate({ ids })
-  // }
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    mutate({
+      selectedOrders,
+      updateTo: "ARCHIVE",
+    })
+  }
 
-  const isPending = false // temporary var
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -83,7 +90,7 @@ export function ArchiveOrderList<TData>({
       </DialogTrigger>
 
       <DialogContent className="bg-card">
-        <form onSubmit={() => console.log(`submitted`)}>
+        <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
             <DialogDescription>

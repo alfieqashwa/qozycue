@@ -9,15 +9,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { type Table } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
+import { ConvexError } from "convex/values"
 import { Loader2, RefreshCcwDot } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
 interface RollbackOrderListProps<TData> {
   table: Table<TData>
   disabledBasedOnAccessLevel: boolean
 }
-
 export function RollbackOrderList<TData>({
   table,
   disabledBasedOnAccessLevel,
@@ -29,40 +32,30 @@ export function RollbackOrderList<TData>({
     .rows.map((row) => row.original) as FunctionReturnType<
     typeof api.orders.findAllArchiveOrderSortedByDate
   >
+  const selectedOrders = selectedRows.map((row) => ({ id: row._id }))
 
-  const selectedOrders = selectedRows.map((row) => ({
-    id: row._id,
-  }))
-
-  // const { mutate, isPending } = api.order.rollbackSelected.useMutation({
-  //   async onSuccess() {
-  //     toast({
-  //       title: "Succeed!",
-  //       variant: "default",
-  //       description: "All selected order(s) have been rolled back.",
-  //     })
-  //     await utils.order.invalidate()
-  //     table.resetRowSelection() // reset row selection after succeed
-  //     /* auto-closed after succeed submit the dialog form */
-  //     setOpen(false)
-  //   },
-  //   onError(err) {
-  //     toast({
-  //       variant: "destructive",
-  //       title: "Uh oh! Something went wrong.",
-  //       description: err.message || "There was a problem with your request.",
-  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //     })
-  //   },
-  // })
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.updateSelectedOrders),
+    onSuccess: () =>
+      toast.success("Succeed!", {
+        description: "All selected order(s) have been rolled back.",
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => {
+      table.resetRowSelection() // reset row selection whether succeed or error occured
+      setOpen(false)
+    },
+  })
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    // mutate({ selectedOrders })
-    console.log("submitted!")
+    mutate({ selectedOrders, updateTo: "PAID" })
   }
 
-  const isPending = false // temporary var
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

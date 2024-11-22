@@ -8,6 +8,7 @@ import {
 import { submitPaymentSchema } from "../types/schema/payment-schema"
 import { mutation, query } from "./_generated/server"
 import {
+  adminProcedure,
   cashierProcedure,
   managerProcedure,
   protectedProcedure,
@@ -685,10 +686,10 @@ export const payment = zMutation({
   },
 })
 
-export const changeStatusPaymentTo = mutation({
+export const updateStatusPaymentTo = mutation({
   args: {
     orderId: v.id("orders"),
-    changeTo: v.union(
+    updateTo: v.union(
       v.literal("OPEN"),
       v.literal("PENDING"),
       v.literal("PAID"),
@@ -700,8 +701,37 @@ export const changeStatusPaymentTo = mutation({
     await protectedProcedure(ctx, {})
 
     return await ctx.db.patch(args.orderId, {
-      statusPayment: args.changeTo,
+      statusPayment: args.updateTo,
     })
+  },
+})
+
+export const updateSelectedOrders = mutation({
+  args: {
+    selectedOrders: v.array(v.object({ id: v.id("orders") })),
+    updateTo: v.union(
+      v.literal("OPEN"),
+      v.literal("PENDING"),
+      v.literal("PAID"),
+      v.literal("CANCELLED"),
+      v.literal("ARCHIVE"),
+    ),
+  },
+  handler: async (ctx, { selectedOrders, updateTo }) => {
+    await adminProcedure(ctx, {})
+
+    const updateAll = await Promise.all(
+      selectedOrders.map(async (o) => {
+        const order = await ctx.db.get(o.id)
+        if (!order) throw new ConvexError("Order not found!")
+
+        return await ctx.db.patch(order._id, {
+          statusPayment: updateTo,
+        })
+      }),
+    )
+
+    return { ...updateAll }
   },
 })
 

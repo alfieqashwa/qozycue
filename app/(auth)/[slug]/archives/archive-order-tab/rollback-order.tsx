@@ -25,7 +25,7 @@ type RolebackOrderProps = {
 
 export function RollbackOrder({ id, setOpen }: RolebackOrderProps) {
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.orders.changeStatusPaymentTo),
+    mutationFn: useConvexMutation(api.orders.updateStatusPaymentTo),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: `Order ${id.slice(-8)} has been successfully rolled back.`,
@@ -42,7 +42,7 @@ export function RollbackOrder({ id, setOpen }: RolebackOrderProps) {
     e.preventDefault()
     console.log("submitted!!")
 
-    mutate({ orderId: id, changeTo: "PAID" })
+    mutate({ orderId: id, updateTo: "PAID" })
   }
 
   return (
