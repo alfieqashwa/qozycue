@@ -17,7 +17,8 @@
 ✅ Transfer-Table
 ✅ Update Duration (Hourly)
 ✅ Use `toast.info` to remove the product
-❌ Order & Archive Table List (Rollover & Remove All selected columns)
+✅ Update SelectedOrders status payment from & to "ARCHIVE" <-> "PAID" (Rollback Button & ArchiveSelected Button)
+❌ Remove All Archive SelectedOrders (Make sure all the related table also remove)
 ❌ Booking-Schedule
 ❌ Dashboard
 
@@ -37,6 +38,5 @@
 
 ### Bugs ASAP
 
-- When Payment, the pooltable endTime is not back to null
-  ✅ when creating startTimer in pool table where has/have ordered, the timer not display properly (assuming the bug is on api.orders.findByPoolTable )
-  ❌ Button Update Duration: Situation: if set to 4 hours, and the time is clocking 3 hours, it should cannot to update to less than the clocking time (eg. to 2 hrs)
+✅ when creating startTimer in pool table where has/have ordered, the timer not display properly (assuming the bug is on api.orders.findByPoolTable )
+❌ Button Update Duration: Situation: if set to 4 hours, and the time is clocking 3 hours, it should cannot to update to less than the clocking time (eg. to 2 hrs)
