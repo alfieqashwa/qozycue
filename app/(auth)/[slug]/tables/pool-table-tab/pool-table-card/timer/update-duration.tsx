@@ -131,16 +131,16 @@ export function UpdateDuration({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Array.from({ length: 5 }, (_, i) => 1 + i).map(
-                        (i, _) => (
+                      {Array.from({ length: 6 }, (_, i) => 1 + i)
+                        .filter((i, _) => i >= duration) // restricted to decrement duration (eg. 3hr -> 2hr) // TODO: will setup complex calc in the future
+                        .map((i, _) => (
                           <SelectItem value={i.toString()} key={i}>
                             {i}
                             <span className="ml-1.5 text-sky-400">
                               {i <= 1 ? "hour" : "hours"}
                             </span>
                           </SelectItem>
-                        ),
-                      )}
+                        ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
