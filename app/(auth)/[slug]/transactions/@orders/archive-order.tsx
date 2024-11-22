@@ -31,10 +31,10 @@ export function ArchiveOrder({
   setOpen,
 }: ArchiveOrderProps) {
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.orders.archive),
+    mutationFn: useConvexMutation(api.orders.changeStatusPaymentTo),
     onSuccess: () =>
       toast.success("Succeed!", {
-        description: `Order ${orderId} has been successfully archived.`,
+        description: `Order ${orderId.slice(-8)} has been successfully archived.`,
       }),
     onError: (err) =>
       toast.error("Something went wrong.", {
@@ -47,7 +47,7 @@ export function ArchiveOrder({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    mutate({ orderId })
+    mutate({ orderId, changeTo: "ARCHIVE" })
   }
 
   return (

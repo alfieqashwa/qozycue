@@ -282,14 +282,22 @@ export const columnsOrder: ColumnDef<
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Customer" />
     ),
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="px-3 py-1.5">
-        <UserRoundCheck className="mr-2 h-4 w-4 text-muted-foreground" />
-        <span className="max-w-[500px] truncate capitalize">
-          {row.getValue("customer")}
-        </span>
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const customer = row.getValue("customer") as string
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <UserRoundCheck className="mr-2 h-4 w-4 text-muted-foreground" />
+          <span
+            className={cn(
+              customer === "anonymous" && "text-muted-foreground",
+              "max-w-[500px] truncate capitalize",
+            )}
+          >
+            {customer}
+          </span>
+        </Badge>
+      )
+    },
   },
   {
     accessorKey: "_creationTime",
@@ -308,8 +316,7 @@ export const columnsOrder: ColumnDef<
     id: "actions",
     cell: ({ row }) => {
       // const { id, poolTableId, statusPayment, customer, createdBy } =
-      const { _id, statusPayment, customer, createdBy, poolRental } =
-        row.original
+      const { _id, statusPayment, customer, poolRental } = row.original
 
       return (
         <div className="relative">
@@ -319,7 +326,6 @@ export const columnsOrder: ColumnDef<
             statusPayment={statusPayment}
             customerName={customer?.name}
             customerPhone={customer?.phone}
-            createdBy={createdBy?.name}
           />
         </div>
       )

@@ -685,13 +685,22 @@ export const payment = zMutation({
   },
 })
 
-export const archive = mutation({
-  args: { orderId: v.id("orders") },
+export const changeStatusPaymentTo = mutation({
+  args: {
+    orderId: v.id("orders"),
+    changeTo: v.union(
+      v.literal("OPEN"),
+      v.literal("PENDING"),
+      v.literal("PAID"),
+      v.literal("CANCELLED"),
+      v.literal("ARCHIVE"),
+    ),
+  },
   handler: async (ctx, args) => {
     await protectedProcedure(ctx, {})
 
     return await ctx.db.patch(args.orderId, {
-      statusPayment: "ARCHIVE",
+      statusPayment: args.changeTo,
     })
   },
 })

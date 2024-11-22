@@ -30,14 +30,12 @@ export function OrderRowActions({
   poolTableName,
   customerName,
   customerPhone,
-  createdBy,
 }: {
   orderId: Id<"orders">
   statusPayment: StatusPayment
   poolTableName?: string
   customerName?: string
   customerPhone?: string | null
-  createdBy?: string | null
 }) {
   const [open, setOpen] = useState(false)
 

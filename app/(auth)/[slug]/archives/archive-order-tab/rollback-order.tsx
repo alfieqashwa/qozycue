@@ -9,9 +9,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
 import { Loader2, RefreshCcwDot } from "lucide-react"
+import { toast } from "sonner"
 
 type RolebackOrderProps = {
   id: Id<"orders">
@@ -19,35 +24,27 @@ type RolebackOrderProps = {
 }
 
 export function RollbackOrder({ id, setOpen }: RolebackOrderProps) {
-  // const { mutate, isPending } = api.order.rollback.useMutation({
-  //   async onSuccess() {
-  //     toast({
-  //       title: "Succeed!",
-  //       variant: "default",
-  //       description: `Order ${id} has been successfully rolled back.`,
-  //     })
-  //     await utils.order.invalidate()
-  //     /* auto-closed after succeed submit the dialog form */
-  //     setOpen(false)
-  //   },
-  //   onError(err) {
-  //     toast({
-  //       variant: "destructive",
-  //       title: "Uh oh! Something went wrong.",
-  //       description: err.message || "There was a problem with your request.",
-  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //     })
-  //   },
-  // })
+  const { mutate, isPending } = useMutation({
+    mutationFn: useConvexMutation(api.orders.changeStatusPaymentTo),
+    onSuccess: () =>
+      toast.success("Succeed!", {
+        description: `Order ${id.slice(-8)} has been successfully rolled back.`,
+      }),
+    onError: (err) =>
+      toast.error("Something went wrong.", {
+        description:
+          err instanceof ConvexError ? err.data : "Unexpected error occurred",
+      }),
+    onSettled: () => setOpen(false),
+  })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log("submitted!!")
 
-    // mutate({ id })
+    mutate({ orderId: id, changeTo: "PAID" })
   }
 
-  const isPending = false // temporary var
   return (
     <Dialog>
       <DialogTrigger className="flex w-full items-center">
