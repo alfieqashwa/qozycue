@@ -17,8 +17,10 @@
 ✅ Transfer-Table
 ✅ Update Duration (Hourly)
 ✅ Use `toast.info` to remove the product
-✅ Update SelectedOrders status payment from & to "ARCHIVE" <-> "PAID" (Rollback Button & ArchiveSelected Button)
-❌ Remove All Archive SelectedOrders (Make sure all the related table also remove)
+✅ Update SelectedOrders status payment from & to "ARCHIVE" <-> "PAID" (Rollback Button & ArchiveSelected Button, MANAGER ONLY)
+✅ Remove Archive Order (Manager Only): Remove Order and its relation-tables (customer, poolRentals, & list of orderlines if any)
+❌ Remove All Archive SelectedOrders (Make sure all the related table also remove, ADMIN ONY)
+
 ❌ Booking-Schedule
 ❌ Dashboard
 

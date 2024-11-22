@@ -718,7 +718,7 @@ export const updateSelectedOrders = mutation({
     ),
   },
   handler: async (ctx, { selectedOrders, updateTo }) => {
-    await adminProcedure(ctx, {})
+    await managerProcedure(ctx, {})
 
     const updateAll = await Promise.all(
       selectedOrders.map(async (o) => {
@@ -758,6 +758,42 @@ export const remove = mutation({
   handler: async (ctx, { id }) => {
     await managerProcedure(ctx, {})
 
-    return await ctx.db.delete(id)
+    const order = await ctx.db.get(id)
+    if (!order) throw new ConvexError("No Order provided!")
+
+    const poolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId", (q) => q.eq("orderId", order._id))
+      .first()
+    const orderlines = await ctx.db
+      .query("orderlines")
+      .withIndex("orderId", (q) => q.eq("orderId", order._id))
+      .collect()
+
+    const deleteCustomer = await ctx.db.delete(order.customerId!)
+    const deletePoolRental =
+      poolRental !== null ? await ctx.db.delete(poolRental._id) : null
+    const deleteOrderlines = !!orderlines
+      ? await Promise.all(
+          orderlines.map(async (ol) => await ctx.db.delete(ol._id)),
+        )
+      : null
+    const deleteOrder = await ctx.db.delete(id)
+
+    return {
+      deleteCustomer,
+      deletePoolRental,
+      ...deleteOrderlines,
+      deleteOrder,
+    }
   },
 })
+
+// TODO: Remove Selected Orders Admin Only
+// export const removeSelectedOrders = mutation({
+//   args: {},
+//   handler: async (ctx) => {
+//     await adminProcedure(ctx, {}),
+//     return
+//   }
+// })
