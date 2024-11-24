@@ -95,7 +95,7 @@ export const updateDurationSchema = z.object({
   orderId: zid("orders"),
   poolTableId: zid("poolTables"),
   poolRentalId: zid("poolRentals"),
-  updatedDuration: z.coerce.number().nonnegative().min(1).max(5),
+  updatedDuration: z.coerce.number().nonnegative().min(1).max(6),
   packetCost: z.coerce
     .number({
       required_error: "Cost is required.",
