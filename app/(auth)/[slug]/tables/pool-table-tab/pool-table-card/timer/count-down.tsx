@@ -130,9 +130,10 @@ export function Countdown({
               poolRentalId={poolRentalId}
               packetCost={packetCost!}
               duration={duration}
+              currentDurationInHour={localTime?.hours!}
             />
           )}
-          <p className="absolute top-7 -translate-x-1/2">
+          <p className="absolute top-5 -translate-x-1/2">
             <span
               className={cn(
                 "text-sm font-semibold tracking-wider text-amber-300",
