@@ -89,6 +89,7 @@ export function PoolTableCard({
             {order.status === "success" &&
               order.data?.poolRental?.packet.rate === "HOUR" && (
                 <Countdown
+                  orderId={order.data._id}
                   endTime={poolTableEndTime}
                   poolTableId={poolTableId}
                   poolTableName={poolTableName}

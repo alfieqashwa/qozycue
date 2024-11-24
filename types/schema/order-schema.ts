@@ -92,8 +92,15 @@ export const stopTimerSchema = z.object({
 export type TStopTimer = z.infer<typeof stopTimerSchema>
 
 export const updateDurationSchema = z.object({
+  orderId: zid("orders"),
   poolTableId: zid("poolTables"),
   poolRentalId: zid("poolRentals"),
   updatedDuration: z.coerce.number().nonnegative().min(1).max(5),
+  packetCost: z.coerce
+    .number({
+      required_error: "Cost is required.",
+      invalid_type_error: "Cost must be a number.",
+    })
+    .nonnegative({ message: "Cost must be zero or a positive number." }),
 })
 export type TUpdateDuration = z.infer<typeof updateDurationSchema>

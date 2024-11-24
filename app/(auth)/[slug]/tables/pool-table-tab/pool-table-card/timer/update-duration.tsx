@@ -42,14 +42,18 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 export function UpdateDuration({
+  orderId,
   poolTableId,
   poolTableName,
   poolRentalId,
+  packetCost,
   duration,
 }: {
+  orderId: Id<"orders">
   poolTableId: Id<"poolTables">
   poolTableName: string
-  poolRentalId?: Id<"poolRentals">
+  poolRentalId: Id<"poolRentals">
+  packetCost: number
   duration: number
 }) {
   const [open, setOpen] = useState(false)
@@ -72,8 +76,10 @@ export function UpdateDuration({
   const form = useForm<TUpdateDuration>({
     resolver: zodResolver(updateDurationSchema),
     defaultValues: {
-      poolTableId,
+      orderId,
       poolRentalId,
+      poolTableId,
+      packetCost,
       updatedDuration: duration,
     },
   })
@@ -83,9 +89,11 @@ export function UpdateDuration({
   function onSubmit(values: TUpdateDuration) {
     mutate({
       updateDurationSchema: {
+        orderId,
         poolTableId,
-        poolRentalId: poolRentalId!,
+        poolRentalId,
         updatedDuration: Number(values.updatedDuration),
+        packetCost,
       },
     })
   }

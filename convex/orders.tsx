@@ -578,24 +578,24 @@ export const updatedDuration = zMutation({
   args: { updateDurationSchema },
   handler: async (
     ctx,
-    { updateDurationSchema: { poolTableId, poolRentalId, updatedDuration } },
+    {
+      updateDurationSchema: {
+        orderId,
+        poolTableId,
+        poolRentalId,
+        updatedDuration,
+        packetCost,
+      },
+    },
   ) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw new ConvexError("Please signed in!")
-    const user = userId !== null ? await ctx.db.get(userId) : null
-
-    const order = await ctx.db
-      .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .filter((q) => q.and(q.eq(q.field("statusPayment"), "OPEN")))
-      .first()
+    await protectedProcedure(ctx, {})
 
     const firstBooking = await ctx.db
       .query("poolRentals")
-      .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
       .filter((q) =>
         q.and(
-          q.eq(q.field("poolTableId"), poolTableId),
+          q.neq(q.field("orderId"), orderId),
           q.eq(q.field("isBooking"), true),
         ),
       )
@@ -626,11 +626,14 @@ export const updatedDuration = zMutation({
         )
       }
     }
+    const updateTotalCost =
+      Math.round((packetCost * updatedDuration) / 100) * 100
 
     // Proceed to update the rental and pool table
     const updatePoolRental = await ctx.db.patch(poolRentalId, {
       duration: updatedDuration,
       timeEnd: newEndTime,
+      totalCost: updateTotalCost,
     })
 
     const updatePoolTable = await ctx.db.patch(poolTableId, {
@@ -747,7 +750,9 @@ export const removeCafeOnly = mutation({
 
     const order = await ctx.db.get(id)
     const removeOrder = await ctx.db.delete(id)
-    const removeCustomer = await ctx.db.delete(order?.customerId!)
+
+    if (!order?.customerId) throw new ConvexError("No customer ID found!!")
+    const removeCustomer = await ctx.db.delete(order.customerId)
 
     return { removeOrder, removeCustomer }
   },

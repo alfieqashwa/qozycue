@@ -11,6 +11,7 @@ import { TimeCard } from "./time-card"
 import { UpdateDuration } from "./update-duration"
 
 type CountdownProps = {
+  orderId?: Id<"orders">
   endTime: number | null
   poolTableId: Id<"poolTables">
   poolTableName: string
@@ -22,6 +23,7 @@ type CountdownProps = {
 }
 
 export function Countdown({
+  orderId,
   endTime,
   poolTableId,
   poolTableName,
@@ -120,11 +122,13 @@ export function Countdown({
         }
       >
         <div className="relative">
-          {!!duration && (
+          {!!orderId && !!poolRentalId && duration && (
             <UpdateDuration
+              orderId={orderId}
               poolTableId={poolTableId}
               poolTableName={poolTableName}
               poolRentalId={poolRentalId}
+              packetCost={packetCost!}
               duration={duration}
             />
           )}
