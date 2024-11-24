@@ -130,7 +130,7 @@ export function Countdown({
               poolRentalId={poolRentalId}
               packetCost={packetCost!}
               duration={duration}
-              currentDurationInHour={localTime?.hours!}
+              currentTimeInHour={localTime?.hours!}
             />
           )}
           <p className="absolute top-5 -translate-x-1/2">

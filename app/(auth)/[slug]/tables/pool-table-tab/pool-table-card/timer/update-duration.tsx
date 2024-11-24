@@ -48,7 +48,7 @@ export function UpdateDuration({
   poolRentalId,
   packetCost,
   duration,
-  currentDurationInHour,
+  currentTimeInHour,
 }: {
   orderId: Id<"orders">
   poolTableId: Id<"poolTables">
@@ -56,7 +56,7 @@ export function UpdateDuration({
   poolRentalId: Id<"poolRentals">
   packetCost: number
   duration: number
-  currentDurationInHour: number
+  currentTimeInHour: number
 }) {
   const [open, setOpen] = useState(false)
 
@@ -142,7 +142,7 @@ export function UpdateDuration({
                     </FormControl>
                     <SelectContent>
                       {Array.from({ length: 6 }, (_, i) => 1 + i)
-                        .filter((i, _) => i >= duration - currentDurationInHour) // restricted to decrement duration (eg. 3hr -> 2hr) // TODO: will setup complex calc in the future
+                        .filter((i, _) => i >= duration - currentTimeInHour) // restricted to decrement duration (eg. 3hr -> 2hr) // TODO: will setup complex calc in the future
                         .map((i, _) => (
                           <SelectItem value={i.toString()} key={i}>
                             {i}
