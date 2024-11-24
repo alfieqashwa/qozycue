@@ -45,7 +45,13 @@ export function DeleteBookingForm({
     mutationFn: useConvexMutation(api.orders.remove),
     async onSuccess() {
       toast("Succeed!", {
-        description: `Booking ${customerName} has been deleted.`,
+        description: (
+          <p>
+            Booking{" "}
+            <span className="font-medium capitalize">{customerName}</span> has
+            been deleted.
+          </p>
+        ),
       })
     },
     onError: (err) =>
