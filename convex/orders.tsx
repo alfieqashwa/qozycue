@@ -580,7 +580,6 @@ export const updatedDuration = zMutation({
     ctx,
     {
       updateDurationSchema: {
-        orderId,
         poolTableId,
         poolRentalId,
         updatedDuration,
@@ -593,12 +592,7 @@ export const updatedDuration = zMutation({
     const firstBooking = await ctx.db
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
-      .filter((q) =>
-        q.and(
-          q.neq(q.field("orderId"), orderId),
-          q.eq(q.field("isBooking"), true),
-        ),
-      )
+      .filter((q) => q.and(q.eq(q.field("isBooking"), true)))
       .order("asc")
       .first()
 

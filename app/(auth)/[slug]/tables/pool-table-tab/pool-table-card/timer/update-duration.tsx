@@ -42,7 +42,6 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 export function UpdateDuration({
-  orderId,
   poolTableId,
   poolTableName,
   poolRentalId,
@@ -50,7 +49,6 @@ export function UpdateDuration({
   duration,
   currentTimeInHour,
 }: {
-  orderId: Id<"orders">
   poolTableId: Id<"poolTables">
   poolTableName: string
   poolRentalId: Id<"poolRentals">
@@ -78,7 +76,6 @@ export function UpdateDuration({
   const form = useForm<TUpdateDuration>({
     resolver: zodResolver(updateDurationSchema),
     defaultValues: {
-      orderId,
       poolRentalId,
       poolTableId,
       packetCost,
@@ -91,7 +88,6 @@ export function UpdateDuration({
   function onSubmit(values: TUpdateDuration) {
     mutate({
       updateDurationSchema: {
-        orderId,
         poolTableId,
         poolRentalId,
         updatedDuration: Number(values.updatedDuration),
@@ -142,7 +138,7 @@ export function UpdateDuration({
                     </FormControl>
                     <SelectContent>
                       {Array.from({ length: 6 }, (_, i) => 1 + i)
-                        .filter((i, _) => i >= duration - currentTimeInHour) // restricted to decrement duration (eg. 3hr -> 2hr) // TODO: will setup complex calc in the future
+                        .filter((i, _) => i >= duration - currentTimeInHour) // restricted to decrement duration (eg. 3hr -> 2hr based on currentTimeInHour)
                         .map((i, _) => (
                           <SelectItem value={i.toString()} key={i}>
                             {i}

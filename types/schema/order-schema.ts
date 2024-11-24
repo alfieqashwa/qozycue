@@ -92,7 +92,6 @@ export const stopTimerSchema = z.object({
 export type TStopTimer = z.infer<typeof stopTimerSchema>
 
 export const updateDurationSchema = z.object({
-  orderId: zid("orders"),
   poolTableId: zid("poolTables"),
   poolRentalId: zid("poolRentals"),
   updatedDuration: z.coerce.number().nonnegative().min(1).max(6),
