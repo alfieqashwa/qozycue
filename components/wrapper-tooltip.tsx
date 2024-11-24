@@ -10,7 +10,7 @@ export const WrapperTooltip = (props: {
   children: React.ReactNode
 }) => (
   <Tooltip>
-    <TooltipTrigger>{props.children}</TooltipTrigger>
+    <TooltipTrigger asChild>{props.children}</TooltipTrigger>
     <TooltipContent
       side={props.side}
       className={cn(
