@@ -48,7 +48,7 @@ export const TogglePoolTable = ({
 
   return (
     <Tooltip>
-      <TooltipTrigger>
+      <TooltipTrigger asChild>
         <Switch
           disabled={isActive || isPending}
           checked={status === "enabled" ? true : false}
