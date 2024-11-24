@@ -238,10 +238,13 @@ export const columnsRental: ColumnDef<
     ),
     cell: ({ row }) => {
       const timestamp = row.getValue("_creationTime")
-      const formattedCreatedAt = format(timestamp as number, "PP", {
-        locale: id,
-      })
-      return <div className="whitespace-nowrap">{formattedCreatedAt}</div>
+      return (
+        <div className="whitespace-nowrap">
+          {format(new Date(timestamp as number), "PP", {
+            locale: id,
+          })}
+        </div>
+      )
     },
   },
 ]

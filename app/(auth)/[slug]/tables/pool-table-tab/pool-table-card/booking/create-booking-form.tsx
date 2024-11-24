@@ -141,6 +141,7 @@ export function CreateBookingForm({
     const costCalc = packets.data?.find((p) => p._id === packetId)
       ?.cost as number
 
+    // console.log({ startTime })
     mutate({
       createBookingSchema: {
         gapDuration,
@@ -203,7 +204,7 @@ export function CreateBookingForm({
                         type="time"
                         value={field.value ? format(field.value, "HH:mm") : ""}
                         onChange={(e) => {
-                          const date = field.value || new Date()
+                          const date = field.value || Date.now()
                           const [hoursStr, minutesStr] =
                             e.target.value.split(":")
                           const hours = hoursStr ? parseInt(hoursStr, 10) : 0
@@ -223,7 +224,7 @@ export function CreateBookingForm({
                               minutes: new Date(currentTime).getMinutes(),
                             })
                           }
-                          field.onChange(newDate)
+                          field.onChange(newDate.getTime())
                         }}
                         className="w-full"
                         min={

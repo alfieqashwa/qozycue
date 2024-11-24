@@ -71,18 +71,10 @@ export const findAllBookingByPoolTableId = query({
       bookingRentalList
         .sort((p, q) => p.timeStart! - q.timeStart!)
         .map(async (poolRental) => {
-          const packet = !!poolRental.packetId
-            ? await ctx.db.get(poolRental.packetId)
-            : null
-          const poolTable = !!poolRental.poolTableId
-            ? await ctx.db.get(poolRental.poolTableId)
-            : null
-          const order = !!poolRental.orderId
-            ? await ctx.db.get(poolRental.orderId)
-            : null
-          const customer = !!order?.customerId
-            ? await ctx.db.get(order.customerId)
-            : null
+          const packet = await ctx.db.get(poolRental.packetId)
+          const poolTable = await ctx.db.get(poolRental.poolTableId)
+          const order = await ctx.db.get(poolRental.orderId)
+          const customer = await ctx.db.get(order?.customerId!)
 
           return {
             ...poolRental,
@@ -154,9 +146,12 @@ export const startBookingTimer = zMutation({
 
     // if there's an open order but has false is_booking pool_rental:
     if (!!openAndNotBookingOrderId) {
-      const resetLatestOpenOrder = await ctx.db.patch(orderId, {
-        statusPayment: "PENDING",
-      })
+      const resetLatestOpenOrder = await ctx.db.patch(
+        openAndNotBookingOrderId,
+        {
+          statusPayment: "PENDING",
+        },
+      )
 
       return {
         resetLatestOpenOrder,
@@ -239,6 +234,7 @@ export const createBooking = zMutation({
       companyId: user.companyId,
       createdBy: user._id,
       statusPayment: "OPEN",
+      customerId,
     })
     const poolRentalId = await ctx.db.insert("poolRentals", {
       isBooking: true,

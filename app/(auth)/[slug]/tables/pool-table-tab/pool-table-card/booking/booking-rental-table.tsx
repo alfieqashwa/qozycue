@@ -87,7 +87,7 @@ export function BookingRentalTable({
                 <Badge variant="secondary" className="px-3 py-1.5">
                   <UserRoundCheck className="mr-2 h-4 w-4 text-primary" />
                   <span className="whitespace-nowrap capitalize">
-                    {booking.order?.customer?.name}
+                    {booking.order.customer.name}
                   </span>
                 </Badge>
               </TableCell>
