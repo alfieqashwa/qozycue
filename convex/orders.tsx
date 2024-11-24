@@ -780,9 +780,11 @@ export const remove = mutation({
       .withIndex("orderId", (q) => q.eq("orderId", order._id))
       .collect()
 
-    const deleteCustomer = await ctx.db.delete(order.customerId!)
+    const deleteCustomer =
+      order.customerId != null ? await ctx.db.delete(order.customerId) : null
+
     const deletePoolRental =
-      poolRental !== null ? await ctx.db.delete(poolRental._id) : null
+      poolRental != null ? await ctx.db.delete(poolRental._id) : null
     const deleteOrderlines = !!orderlines
       ? await Promise.all(
           orderlines.map(async (ol) => await ctx.db.delete(ol._id)),
