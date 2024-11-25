@@ -23,7 +23,7 @@
 ✅ Remove All Archive SelectedOrders (Make sure all the related table also remove, ADMIN ONLY)
 ✅ Button Update Duration: Situation: if set to 4 hours, and the time is clocking 3 hours, it should cannot to update to less than the clocking time (eg. to 2 hrs)
 
-❌ Booking-Schedule
+✅ Booking-Schedule
 ❌ Dashboard
 
 ✅ (bug) Fix cafe order menu
