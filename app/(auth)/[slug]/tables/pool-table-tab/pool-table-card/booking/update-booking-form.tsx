@@ -66,11 +66,11 @@ export function UpdateBookingForm({
   customerPhone?: string | null
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState(Date.now())
 
   // Update current time every minute
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 60_000)
+    const timer = setInterval(() => setCurrentTime(Date.now()), 60_000)
     return () => clearInterval(timer)
   }, [])
 
@@ -221,7 +221,7 @@ export function UpdateBookingForm({
                         type="time"
                         value={field.value ? format(field.value, "HH:mm") : ""}
                         onChange={(e) => {
-                          const date = field.value || new Date()
+                          const date = field.value || Date.now()
                           const [hoursStr, minutesStr] =
                             e.target.value.split(":")
                           const hours = hoursStr ? parseInt(hoursStr, 10) : 0
@@ -235,11 +235,11 @@ export function UpdateBookingForm({
                           // If the selected date is today, ensure the time is not before current time
                           if (isToday(date) && isBefore(newDate, currentTime)) {
                             newDate = set(date, {
-                              hours: currentTime.getHours(),
-                              minutes: currentTime.getMinutes(),
+                              hours: new Date(currentTime).getHours(),
+                              minutes: new Date(currentTime).getMinutes(),
                             })
                           }
-                          field.onChange(newDate)
+                          field.onChange(newDate.getTime())
                         }}
                         className="w-full"
                         min={
