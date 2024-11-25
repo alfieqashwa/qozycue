@@ -9,39 +9,27 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
 import { User2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 import { CafeButton } from "../pool-table-tab/pool-table-card/cafe-button"
 import { PaymentButton } from "../pool-table-tab/pool-table-card/payment-button"
 
 type PendingOrderListProps = {
   poolTableId: Id<"poolTables">
   poolTableName: string
-  slug: string
   isManager: boolean
   isCashier: boolean
 }
 export function PendingOrderList({
   poolTableId,
   poolTableName,
-  slug,
   isManager,
   isCashier,
 }: PendingOrderListProps) {
-  const router = useRouter()
-
   const pendingOrderList = useQuery({
     ...convexQuery(api.orders.findAllPendingStatusByPoolTableId, {
       poolTableId,
     }),
     enabled: Boolean(poolTableId),
   })
-
-  useEffect(() => {
-    if (!pendingOrderList.data?.length) {
-      router.push(`/${encodeURIComponent(slug)}/tables/`)
-    }
-  }, [pendingOrderList.data?.length, router, slug])
 
   return (
     <div className="mt-4 grid min-w-max grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 xl:grid-cols-3">

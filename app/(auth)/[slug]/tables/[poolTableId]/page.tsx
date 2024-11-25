@@ -33,13 +33,20 @@ export default async function PoolTableIdPage({
     session.user.role ?? "",
   )
 
+  const orders = await fetchQuery(
+    api.orders.findAllPendingStatusByPoolTableId,
+    { poolTableId },
+  )
+
+  if (!!session.companySlug && !orders.length)
+    redirect(`/${encodeURIComponent(session.companySlug)}/tables/`)
+
   return (
     <div>
       <BackButton />
       <PendingOrderList
         poolTableId={poolTableId}
         poolTableName={pool}
-        slug={session.companySlug!}
         isManager={managerAccessLevel}
         isCashier={cashierAccessLevel}
       />
