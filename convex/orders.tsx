@@ -388,6 +388,7 @@ export const findAllCafeOnlyByCompanyId = query({
     return filteredCafeOnlyOrders.filter((f) => f.poolRental == null)
   },
 })
+
 // === MUTATION ===
 
 export const startTimer = zMutation({
@@ -444,15 +445,6 @@ export const startTimer = zMutation({
         }))
         .sort((p, q) => p.timeStart! - q.timeStart!),
     )
-
-    // const listOfRentalTime = listOfPoolRental
-    //   .map((rental) => ({
-    //     timeStart: rental.timeStart,
-    //     timeEnd: rental.timeEnd,
-    //   }))
-    //   .sort((p, q) => p.timeStart - q.timeStart)
-
-    console.log(`LORT::: `, listOfRentalTime)
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     const startTime = Date.now()

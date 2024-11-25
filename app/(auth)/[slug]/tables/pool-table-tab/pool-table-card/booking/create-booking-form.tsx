@@ -157,7 +157,7 @@ export function CreateBookingForm({
   }
 
   return (
-    <DialogContent onCloseAutoFocus={handleOnCloseAutoFocus} className="">
+    <DialogContent onCloseAutoFocus={handleOnCloseAutoFocus}>
       <DialogHeader>
         <DialogTitle>New Booking Table {poolTableName}</DialogTitle>
         <DialogDescription className="text-xs font-medium tracking-widest text-amber-300">

@@ -129,7 +129,17 @@ export const startBookingTimer = zMutation({
     },
   ) => {
     await protectedProcedure(ctx, {})
+    // if there's an open order but has false is_booking pool_rental:
+    const resetLatestOpenOrder =
+      openAndNotBookingOrderId != null
+        ? await ctx.db.patch(openAndNotBookingOrderId, {
+            statusPayment: "PENDING",
+          })
+        : null
 
+    const updateBookingOrder = await ctx.db.patch(orderId, {
+      statusPayment: "OPEN",
+    })
     const updatePoolTable = await ctx.db.patch(poolTableId, {
       isActive: true,
       startTime,
@@ -144,23 +154,12 @@ export const startBookingTimer = zMutation({
       isBooking: false,
     })
 
-    // if there's an open order but has false is_booking pool_rental:
-    if (!!openAndNotBookingOrderId) {
-      const resetLatestOpenOrder = await ctx.db.patch(
-        openAndNotBookingOrderId,
-        {
-          statusPayment: "PENDING",
-        },
-      )
-
-      return {
-        resetLatestOpenOrder,
-        updatePoolTable,
-        updatePoolRental,
-      }
+    return {
+      resetLatestOpenOrder,
+      updatePoolTable,
+      updatePoolRental,
+      updateBookingOrder,
     }
-
-    return { updatePoolTable, updatePoolRental }
   },
 })
 

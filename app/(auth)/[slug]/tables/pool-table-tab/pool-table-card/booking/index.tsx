@@ -80,7 +80,7 @@ export function Booking({
     mutationFn: useConvexMutation(api.poolRentals.startBookingTimer),
     onSuccess: () =>
       toast.success("Succeed!", {
-        description: "Booking has been started automatically.",
+        description: `Booking Table ${poolTableName} has been started automatically.`,
       }),
     onError: (err) =>
       toast.error("Something went wrong.", {
