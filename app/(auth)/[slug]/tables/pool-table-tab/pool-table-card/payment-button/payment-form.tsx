@@ -121,7 +121,7 @@ export function PaymentForm({
               />
             </div>
             <Button size="sm" onClick={handleReceiptPrint}>
-              <Printer className="mr-2 size-4" />
+              <Printer className="mr-4 size-4" />
               <span>Receipt</span>
             </Button>
           </>
