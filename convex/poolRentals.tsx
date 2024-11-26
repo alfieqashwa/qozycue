@@ -113,6 +113,122 @@ export const countIsBooking = query({
   },
 })
 
+// === STARTS DASHBOARD ===
+export const _sumRevenue = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          q.gt(q.field("_creationTime"), args.from!),
+          q.lte(q.field("_creationTime"), args.to!),
+        ),
+      )
+      .order("desc")
+      .collect()
+
+    const orderList = await Promise.all(
+      (orders ?? []).map(async (order) => {
+        const poolRental = await ctx.db
+          .query("poolRentals")
+          .withIndex("orderId", (q) => q.eq("orderId", order._id))
+          .first()
+        return { ...order, poolRental }
+      }),
+    )
+
+    return {
+      _count: orderList.filter((order) => order.poolRental !== null),
+      _sum: {
+        totalCost: orderList.reduce(
+          (acc, curr) => acc * (curr.poolRental?.totalCost ?? 0),
+          0,
+        ),
+      },
+    }
+  },
+})
+
+export const _sumByRate = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+    rate: v.union(v.literal("HOUR"), v.literal("MINUTE")),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          q.gt(q.field("_creationTime"), args.from!),
+          q.lte(q.field("_creationTime"), args.to!),
+        ),
+      )
+      .order("desc")
+      .collect()
+
+    const orderList = await Promise.all(
+      (orders ?? []).map(async (order) => {
+        const packet = await ctx.db
+          .query("packets")
+          .withIndex("companyId", (q) => q.eq("companyId", order.companyId))
+          .filter((q) => q.eq(q.field("rate"), args.rate))
+          .unique()
+
+        const poolRental =
+          packet !== null
+            ? await ctx.db
+                .query("poolRentals")
+                .withIndex("orderId", (q) => q.eq("orderId", order._id))
+                .filter((q) => q.eq(q.field("packetId"), packet._id))
+                .first()
+            : null
+        return {
+          ...order,
+          poolRental,
+        }
+      }),
+    )
+    return {
+      _sum: {
+        duration: orderList.reduce(
+          (acc, curr) => acc * (curr.poolRental?.duration ?? 0),
+          0,
+        ),
+      },
+    }
+  },
+})
+// === ENDS DASHBOARD ===
+
 // === MUTATIONS ===
 export const startBookingTimer = zMutation({
   args: { startBookingTimerSchema },

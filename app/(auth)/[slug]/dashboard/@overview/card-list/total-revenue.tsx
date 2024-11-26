@@ -10,7 +10,7 @@ import {
 import { api } from "@/convex/_generated/api"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Activity } from "lucide-react"
 import { useState } from "react"
 import { DateRange } from "react-day-picker"
@@ -18,7 +18,7 @@ import { DateRange } from "react-day-picker"
 export function TotalRevenue({ date }: { date: DateRange | undefined }) {
   const [isIncludeTaxes, setIsIncludeTaxes] = useState(true)
 
-  const { data: totalRevenue, status } = useQuery({
+  const { data: totalRevenue, status } = useTanstackQuery({
     ...convexQuery(api.orders._sumRevenue, {
       from: date?.from?.getTime(),
       to: date?.to?.getTime(),
