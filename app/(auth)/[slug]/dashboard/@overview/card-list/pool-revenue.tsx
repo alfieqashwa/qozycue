@@ -8,48 +8,44 @@ import { DateRange } from "react-day-picker"
 import { GiPoolTriangle } from "react-icons/gi"
 
 export function PoolRevenue({ date }: { date: DateRange | undefined }) {
-  const [
-    { data: poolRentalRevenue, status: poolRentalRevenueStatus },
-    { data: _sumByHourRate, status: _sumByHourRateStatus },
-    { data: _sumByMinuteRate, status: _sumByMinuteRateStatus },
-  ] = useTanstackQueries({
+  const { from, to } = {
+    from: date?.from?.getTime(),
+    to: date?.to?.getTime(),
+  }
+
+  const [revenue, byHourRate, byMinuteRate] = useTanstackQueries({
     queries: [
       {
-        ...convexQuery(api.poolRentals._sumRevenue, {
-          from: date?.from?.getTime(),
-          to: date?.to?.getTime(),
-        }),
+        ...convexQuery(api.poolRentals._sumRevenue, { from, to }),
         enabled: !!date?.from && !!date.to,
       },
       {
-        ...convexQuery(api.poolRentals._sumByRate, {
-          rate: "HOUR",
-          from: date?.from?.getTime(),
-          to: date?.to?.getTime(),
-        }),
+        ...convexQuery(api.poolRentals._sumByRate, { rate: "HOUR", from, to }),
         enabled: !!date?.from && !!date.to,
       },
       {
         ...convexQuery(api.poolRentals._sumByRate, {
           rate: "MINUTE",
-          from: date?.from?.getTime(),
-          to: date?.to?.getTime(),
+          from,
+          to,
         }),
         enabled: !!date?.from && !!date.to,
       },
     ],
   })
 
-  const sumByHourRate = _sumByHourRate?._sum.duration as number
-  const sumByMinuteRate = _sumByMinuteRate?._sum.duration as number
-  const totalDurationInHour = sumByHourRate + sumByMinuteRate / 60
-
   if (
-    poolRentalRevenueStatus !== "success" ||
-    _sumByHourRateStatus !== "success" ||
-    _sumByMinuteRateStatus !== "success"
+    revenue.status !== "success" ||
+    byHourRate.status !== "success" ||
+    byMinuteRate.status !== "success"
   )
     return <SkeletonDashboardCard className="h-36" />
+
+  const totalRevenue = revenue.data?._sum.totalCost ?? 0
+  const durationHour =
+    (byHourRate.data._sum.duration ?? 0) +
+    (byMinuteRate.data._sum.duration ?? 0)
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -60,14 +56,11 @@ export function PoolRevenue({ date }: { date: DateRange | undefined }) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
-          {formattedPriceWithRupiah.format(
-            Number(poolRentalRevenue?._sum.totalCost ?? 0),
-          )}
+          {formattedPriceWithRupiah.format(totalRevenue)}
         </div>
         <p className="text-sm font-semibold tracking-wider text-muted-foreground">
           Total duration{" "}
-          <span className="text-primary">{totalDurationInHour.toFixed(2)}</span>{" "}
-          hours
+          <span className="text-primary">{durationHour.toFixed(2)}</span> hours
         </p>
       </CardContent>
     </Card>

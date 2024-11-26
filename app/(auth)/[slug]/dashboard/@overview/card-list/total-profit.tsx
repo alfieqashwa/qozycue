@@ -27,6 +27,8 @@ export function TotalProfit({ date }: { date: DateRange | undefined }) {
     ],
   })
 
+  /*
+  ?? OLD CODE JUST FOR REFERENCE
   const totalOrderlineProfit = _calculateProfit.data?.reduce(
     (acc, curr) =>
       acc + curr.amount - (curr.product.costPrice ?? 0) * curr.quantity,
@@ -36,6 +38,16 @@ export function TotalProfit({ date }: { date: DateRange | undefined }) {
   const totalProfit =
     (poolRentalRevenue.data?._sum.totalCost as number) +
     (totalOrderlineProfit as number)
+  */
+
+  // Calculate profit from orderlines
+  const totalOrderlineProfit =
+    (_calculateProfit.data?.totalAmount ?? 0) -
+    (_calculateProfit.data?.totalCost ?? 0)
+
+  // Calculate total profit (pool rentals + orderline profits)
+  const totalProfit =
+    (poolRentalRevenue.data?._sum.totalCost as number) + totalOrderlineProfit
 
   if (
     poolRentalRevenue.status !== "success" ||

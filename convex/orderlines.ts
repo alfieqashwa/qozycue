@@ -192,6 +192,63 @@ export const _sumRevenue = query({
     }
   },
 })
+// export const _calculateProfit = query({
+//   args: {
+//     from: v.optional(v.float64()),
+//     to: v.optional(v.float64()),
+//   },
+//   handler: async (ctx, args) => {
+//     // ownerProcedure()
+//     const userId = await getAuthUserId(ctx)
+//     const user = userId !== null ? await ctx.db.get(userId) : null
+//     if (
+//       user?.role !== "DEWA" &&
+//       user?.role !== "ADMIN" &&
+//       user?.role !== "OWNER"
+//     )
+//       throw new ConvexError("You do not have access!")
+
+//     const orderlines = await ctx.db
+//       .query("orderlines")
+//       .filter((q) =>
+//         q.and(
+//           q.gt(q.field("_creationTime"), args.from!),
+//           q.lte(q.field("_creationTime"), args.to!),
+//         ),
+//       )
+//       .order("desc")
+//       .collect()
+
+//     return await Promise.all(
+//       (orderlines ?? [])
+//         .filter(async (ol) => {
+//           const order = await ctx.db
+//             .query("orders")
+//             .withIndex("companyId")
+//             .filter((q) =>
+//               q.and(
+//                 q.eq(q.field("companyId"), user.companyId),
+//                 q.eq(q.field("statusPayment"), "PAID"),
+//               ),
+//             )
+//             .first()
+//           return ol.orderId === order?._id
+//         })
+//         .map(async (ol) => {
+//           const product = await ctx.db.get(ol.productId)
+//           return {
+//             amount: ol.amount,
+//             quantity: ol.quantity,
+//             product: {
+//               costPrice: product?.costPrice,
+//               salePrice: product?.salePrice,
+//             },
+//           }
+//         }),
+//     )
+//   },
+// })
+
 export const _calculateProfit = query({
   args: {
     from: v.optional(v.float64()),
@@ -208,10 +265,12 @@ export const _calculateProfit = query({
     )
       throw new ConvexError("You do not have access!")
 
-    const orderlines = await ctx.db
-      .query("orderlines")
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
       .filter((q) =>
         q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
           q.gt(q.field("_creationTime"), args.from!),
           q.lte(q.field("_creationTime"), args.to!),
         ),
@@ -219,33 +278,33 @@ export const _calculateProfit = query({
       .order("desc")
       .collect()
 
-    return await Promise.all(
-      (orderlines ?? [])
-        .filter(async (ol) => {
-          const order = await ctx.db
-            .query("orders")
-            .withIndex("companyId")
-            .filter((q) =>
-              q.and(
-                q.eq(q.field("companyId"), user.companyId),
-                q.eq(q.field("statusPayment"), "PAID"),
-              ),
-            )
-            .first()
-          return ol.orderId === order?._id
-        })
-        .map(async (ol) => {
-          const product = await ctx.db.get(ol.productId)
-          return {
-            amount: ol.amount,
-            quantity: ol.quantity,
-            product: {
-              costPrice: product?.costPrice,
-              salePrice: product?.salePrice,
-            },
-          }
-        }),
-    )
+    let totalAmount = 0
+    let totalCost = 0
+    let totalQuantity = 0
+
+    for (const order of orders) {
+      const orderlines = await ctx.db
+        .query("orderlines")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .collect()
+
+      for (const ol of orderlines) {
+        const product = await ctx.db.get(ol.productId)
+
+        if (product) {
+          const { costPrice = 0 } = product
+
+          totalAmount += ol.amount
+          totalCost += ol.quantity * costPrice
+          totalQuantity += ol.quantity
+        }
+      }
+    }
+    return {
+      totalAmount, // Total revenue from all orderlines
+      totalCost, // Total cost of products sold
+      totalQuantity, // Total products sold
+    }
   },
 })
 // === ENDS DASHBOARD ===
