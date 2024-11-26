@@ -114,17 +114,17 @@ export function UpdateBookingForm({
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.poolRentals.updateBooking),
-
-    onSuccess: () =>
+    onSuccess: () => {
+      setOpen(false)
       toast.success("Succeed!", {
         description: `Booking Table ${poolTableName} has been updated.`,
-      }),
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   function onSubmit(values: TBooking) {

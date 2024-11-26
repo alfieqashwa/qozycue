@@ -120,16 +120,17 @@ export function CreateBookingForm({
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.poolRentals.createBooking),
-    onSuccess: () =>
-      toast.success("Succeed!", {
-        description: `Booking Table ${poolTableName} has been created.`,
-      }),
+    onSuccess: () => {
+      setOpen(false),
+        toast.success("Succeed!", {
+          description: `Booking Table ${poolTableName} has been created.`,
+        })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   function onSubmit(values: TCreateBooking) {

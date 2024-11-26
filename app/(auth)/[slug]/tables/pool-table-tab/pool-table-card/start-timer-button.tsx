@@ -100,16 +100,17 @@ export function StartTimerButton({
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.orders.startTimer),
-    onSuccess: () =>
+    onSuccess: () => {
+      setOpen(false)
       toast.success("Succeed!", {
         description: `Table ${poolTableName} has been started.`,
-      }),
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   // 2. Define a submit handler.
