@@ -48,6 +48,7 @@ import {
 import { FunctionReturnType } from "convex/server"
 import { ConvexError } from "convex/values"
 import { CircleHelp, Loader2, Printer } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { type Control, useForm, useWatch } from "react-hook-form"
 import { useReactToPrint } from "react-to-print"
@@ -76,6 +77,7 @@ export function PaymentForm({
   const receiptRef = useRef(null)
   const billRef = useRef(null)
   const [changeMoney, setChangeMoney] = useState("")
+  const router = useRouter()
 
   const form = useForm<TSubmitPayment>({
     resolver: zodResolver(submitPaymentSchema),
@@ -104,6 +106,8 @@ export function PaymentForm({
     mutationFn: useConvexMutation(api.orders.payment),
     onSuccess() {
       setOpen(false)
+      router.refresh()
+
       toast.success("Succeed!", {
         description: "Payment process is succeed.",
         action: (

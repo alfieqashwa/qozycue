@@ -36,6 +36,7 @@ export default async function PoolTableIdPage({
   const orders = await fetchQuery(
     api.orders.findAllPendingStatusByPoolTableId,
     { poolTableId },
+    { token: convexAuthNextjsToken() },
   )
 
   if (!!session.companySlug && !orders.length)
