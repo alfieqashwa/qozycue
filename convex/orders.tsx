@@ -596,7 +596,7 @@ export const updatedDuration = zMutation({
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
       .filter((q) => q.and(q.eq(q.field("isBooking"), true)))
-      .order("asc")
+      .order("desc")
       .first()
 
     const poolTable = await ctx.db.get(poolTableId)
