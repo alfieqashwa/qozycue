@@ -24,9 +24,6 @@ export default function OrderPage() {
       notEqual: "ARCHIVE",
     }),
     enabled: !!date?.from && !!date.to,
-    select(data) {
-      return data.filter((order) => order.statusPayment !== "ARCHIVE")
-    },
   })
 
   return (
