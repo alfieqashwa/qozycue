@@ -1,8 +1,10 @@
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,11 +25,14 @@ import {
   createUomSchema,
   type TCreateUom,
 } from "@/types/schema/unit-of-measure-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { FilePlus2 } from "lucide-react"
+import { FilePlus2, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -54,6 +59,13 @@ export function CreateUom() {
     defaultValues: {
       name: "",
       description: "",
+    },
+  })
+
+  const { data: hasUomName } = useTanstackQuery({
+    ...convexQuery(api.unitOfMeasures.findAll, {}),
+    select(data) {
+      return data.some((uom) => uom.name === form.watch("name"))
     },
   })
 
@@ -105,9 +117,27 @@ export function CreateUom() {
                 </FormItem>
               )}
             />
-            <Button disabled={isPending} type="submit">
-              Create UoM
-            </Button>
+            <DialogFooter>
+              <DialogClose
+                className={cn(buttonVariants({ variant: "secondary" }))}
+              >
+                Cancel
+              </DialogClose>
+              {isPending ? (
+                <Button
+                  disabled
+                  variant="destructive"
+                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button disabled={hasUomName} type="submit">
+                  Create UoM
+                </Button>
+              )}
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

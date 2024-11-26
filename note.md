@@ -36,6 +36,7 @@
 ## Backlog (Future Plan)
 
 ❌ Setup Cancelled Feature
+❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
 ✅ Pool Table with the same company must have a unique name
 ❌ Update library "react-to-print" version after learn their recent documentation
 ❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n

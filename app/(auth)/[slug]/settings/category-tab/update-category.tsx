@@ -1,8 +1,10 @@
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,11 +23,14 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { categorySchema, type TCategory } from "@/types/schema/category-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Pencil } from "lucide-react"
+import { Loader2, Pencil } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -63,6 +68,14 @@ export const UpdateCategory = ({
       description,
     },
   })
+
+  const { data: hasCategoryName } = useTanstackQuery({
+    ...convexQuery(api.categories.findAll, {}),
+    select(data) {
+      return data.some((cat) => cat.name === form.watch("name"))
+    },
+  })
+
   function onSubmit(values: TCategory) {
     const { id, name, description } = values
     mutate({ categorySchema: { id, name: name.toLowerCase(), description } })
@@ -126,9 +139,27 @@ export const UpdateCategory = ({
                 </FormItem>
               )}
             />
-            <Button disabled={isPending} type="submit">
-              Update
-            </Button>
+            <DialogFooter>
+              <DialogClose
+                className={cn(buttonVariants({ variant: "secondary" }))}
+              >
+                Cancel
+              </DialogClose>
+              {isPending ? (
+                <Button
+                  disabled
+                  variant="destructive"
+                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button disabled={hasCategoryName} type="submit">
+                  Update
+                </Button>
+              )}
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

@@ -1,8 +1,10 @@
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,11 +23,14 @@ import { Id } from "@/convex/_generated/dataModel"
 import { decimalToPercent } from "@/convex/helpers"
 import { cn } from "@/lib/utils"
 import { type TUpdateTax, updateTaxSchema } from "@/types/schema/tax-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Pencil } from "lucide-react"
+import { Loader2, Pencil } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -67,6 +72,16 @@ export const UpdateTax = ({
       id,
       value: val,
       companyId,
+    },
+  })
+
+  const { data: hasTaxValue } = useTanstackQuery({
+    ...convexQuery(api.taxes.findAll, {}),
+    select(data) {
+      return data.some(
+        (tax) =>
+          (tax.value * 100).toFixed(0) === form.watch("value").toString(),
+      )
     },
   })
 
@@ -115,9 +130,27 @@ export const UpdateTax = ({
                 </FormItem>
               )}
             />
-            <Button disabled={isPending} type="submit">
-              Update
-            </Button>
+            <DialogFooter>
+              <DialogClose
+                className={cn(buttonVariants({ variant: "secondary" }))}
+              >
+                Cancel
+              </DialogClose>
+              {isPending ? (
+                <Button
+                  disabled
+                  variant="destructive"
+                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button disabled={hasTaxValue} type="submit">
+                  Update
+                </Button>
+              )}
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

@@ -3,8 +3,10 @@
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -26,11 +28,14 @@ import {
   updateDiscountSchema,
   type TUpdateDiscount,
 } from "@/types/schema/discount-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Pencil } from "lucide-react"
+import { Loader2, Pencil } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -72,6 +77,17 @@ export const UpdateDiscount = ({
       companyId,
     },
   })
+
+  const { data: hasDiscValue } = useTanstackQuery({
+    ...convexQuery(api.discounts.findAll, {}),
+    select(data) {
+      return data.some(
+        (disc) =>
+          (disc.value * 100).toFixed(0) === form.watch("value").toString(),
+      )
+    },
+  })
+
   function onSubmit(values: TUpdateDiscount) {
     const { id, value } = values
     mutate({
@@ -118,9 +134,27 @@ export const UpdateDiscount = ({
                 </FormItem>
               )}
             />
-            <Button disabled={isPending} type="submit">
-              Update
-            </Button>
+            <DialogFooter>
+              <DialogClose
+                className={cn(buttonVariants({ variant: "secondary" }))}
+              >
+                Cancel
+              </DialogClose>
+              {isPending ? (
+                <Button
+                  disabled
+                  variant="destructive"
+                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button disabled={hasDiscValue} type="submit">
+                  Update
+                </Button>
+              )}
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
