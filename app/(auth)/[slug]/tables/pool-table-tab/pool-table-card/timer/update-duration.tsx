@@ -61,6 +61,7 @@ export function UpdateDuration({
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.orders.updatedDuration),
     onSuccess: () => {
+      setOpen(false)
       toast.success("Succeed!", {
         description: <p>Table {poolTableName} has been updated.</p>,
       })
@@ -70,7 +71,6 @@ export function UpdateDuration({
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   const form = useForm<TUpdateDuration>({
