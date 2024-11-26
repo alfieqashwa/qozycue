@@ -2,11 +2,22 @@ import { Button } from "@/components/ui/button"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
-import { useConvexMutation } from "@convex-dev/react-query"
-import { useMutation } from "@tanstack/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
 import { ConvexError } from "convex/values"
-import { Loader2, Minus, Plus, Send } from "lucide-react"
+import {
+  Coffee,
+  Loader2,
+  Minus,
+  Plus,
+  Send,
+  ShoppingBasket,
+  Soup,
+} from "lucide-react"
 import { toast } from "sonner"
 
 export function OrderProduct({
@@ -31,14 +42,56 @@ export function OrderProduct({
   qty: number
   setQty: React.Dispatch<React.SetStateAction<number>>
 }) {
+  const { data: category, status } = useTanstackQuery({
+    ...convexQuery(api.categories.findByProductId, { productId }),
+    enabled: Boolean(productId),
+  })
+
+  const classNames = {
+    toast: cn(
+      "flex items-center border-2 w-full pl-2 py-3 rounded-lg shadow-lg",
+      {
+        "bg-emerald-200/70 border-emerald-900": category?.name === "food",
+        "bg-fuchsia-200/70 border-fuchsia-900": category?.name === "drink",
+        "bg-lime-200/70 border-lime-900": category?.name === "others",
+      },
+    ),
+    title: "pl-8 text-muted font-medium tracking-wide",
+  }
+
+  const icon =
+    category?.name === "food" ? (
+      <Soup
+        size={28}
+        strokeWidth={2.5}
+        className="ml-2.5 animate-pulse text-emerald-900"
+      />
+    ) : category?.name === "drink" ? (
+      <Coffee
+        size={28}
+        strokeWidth={2.5}
+        className="ml-2.5 animate-pulse text-fuchsia-900"
+      />
+    ) : (
+      <ShoppingBasket
+        size={28}
+        strokeWidth={2.5}
+        className="ml-2.5 animate-pulse text-lime-900"
+      />
+    )
+
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.orderlines.upsert),
     onSuccess() {
       setQty(variables?.upsertOrderlineSchema.quantity as number)
-      toast.info(`${!!orderline?._id ? "Update!" : "Order!"}`, {
+
+      toast(`${!!orderline?._id ? "Re-order!" : "Order!"}`, {
+        unstyled: true,
         description: (
-          <p className="font-medium capitalize text-foreground">{name}</p>
+          <p className="font-semibold capitalize text-muted/70">{name}</p>
         ),
+        classNames,
+        icon,
       })
     },
     onError: (err) =>

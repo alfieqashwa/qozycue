@@ -33,11 +33,25 @@ export function OrderList({
       const productName = orderlines.find(
         (orderline) => orderline._id === variables?.id,
       )?.product.name
-      toast.info("Remove!", {
+      toast("Remove!", {
+        unstyled: true,
+
         description: (
-          <p className="font-medium capitalize text-foreground">
+          <p className="font-semibold capitalize text-muted/70">
             {productName}
           </p>
+        ),
+        classNames: {
+          toast:
+            "flex items-center border-2 border-red-900 w-full pl-2 py-3 rounded-lg shadow-lg bg-red-200",
+          title: "pl-8 text-muted font-medium tracking-wide",
+        },
+        icon: (
+          <Trash2
+            size={28}
+            strokeWidth={2.5}
+            className="ml-2.5 animate-pulse text-destructive"
+          />
         ),
       })
     },

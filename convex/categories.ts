@@ -1,4 +1,4 @@
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import {
   categorySchema,
   createCategorySchema,
@@ -14,6 +14,17 @@ export const findAll = query({
     return await ctx.db.query("categories").collect()
   },
 })
+
+export const findByProductId = query({
+  args: { productId: v.id("products") },
+  handler: async (ctx, args) => {
+    const product = await ctx.db.get(args.productId)
+    if (!product) throw new ConvexError("No Product Found!")
+
+    return ctx.db.get(product?.categoryId)
+  },
+})
+
 export const create = zMutation({
   args: { createCategorySchema },
   handler: async (ctx, { createCategorySchema: { name, description } }) => {
