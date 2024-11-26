@@ -154,10 +154,10 @@ export const _sumRevenue = query({
     )
 
     return {
-      _count: orderList.filter((order) => order.poolRental !== null),
+      _count: orderList.filter((order) => order.poolRental !== null).length,
       _sum: {
         totalCost: orderList.reduce(
-          (acc, curr) => acc * (curr.poolRental?.totalCost ?? 0),
+          (acc, curr) => acc + (curr.poolRental?.totalCost ?? 0),
           0,
         ),
       },
@@ -220,7 +220,7 @@ export const _sumByRate = query({
     return {
       _sum: {
         duration: orderList.reduce(
-          (acc, curr) => acc * (curr.poolRental?.duration ?? 0),
+          (acc, curr) => acc + (curr.poolRental?.duration ?? 0),
           0,
         ),
       },

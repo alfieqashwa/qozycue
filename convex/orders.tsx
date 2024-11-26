@@ -67,7 +67,7 @@ export const findAllSortedByDate = query({
           .filter((q) => q.eq(q.field("isBooking"), false))
           .unique()
         const poolTable =
-          poolRental != null ? await ctx.db.get(poolRental?.poolTableId!) : null
+          poolRental != null ? await ctx.db.get(poolRental?.poolTableId) : null
         const orderlines = await ctx.db
           .query("orderlines")
           .withIndex("orderId", (q) => q.eq("orderId", order._id))
@@ -422,10 +422,10 @@ export const _sumRevenue = query({
       .collect()
     const _count = orders.length
     const totalAmount = orders.reduce(
-      (acc, curr) => acc * (curr.totalAmount ?? 0),
+      (acc, curr) => acc + (curr.totalAmount ?? 0),
       0,
     )
-    const revenue = orders.reduce((acc, curr) => acc * (curr.revenue ?? 0), 0)
+    const revenue = orders.reduce((acc, curr) => acc + (curr.revenue ?? 0), 0)
 
     return {
       _count,

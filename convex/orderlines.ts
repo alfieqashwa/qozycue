@@ -134,6 +134,122 @@ export const findAllByIds = query({
   },
 })
 
+// === STARTS DASHBOARD ===
+export const _sumRevenue = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          q.gt(q.field("_creationTime"), args.from!),
+          q.lte(q.field("_creationTime"), args.to!),
+        ),
+      )
+      .order("desc")
+      .collect()
+    const orderList = await Promise.all(
+      (orders ?? []).map(async (order) => {
+        const orderlines = await ctx.db
+          .query("orderlines")
+          .withIndex("orderId", (q) => q.eq("orderId", order._id))
+          .collect()
+        return {
+          length: orderlines.length,
+          quantity: orderlines.reduce((acc, curr) => acc + curr.quantity, 0),
+          amount: orderlines.reduce((acc, curr) => acc + curr.amount, 0),
+        }
+      }),
+    )
+    const _count = orderList.reduce((acc, curr) => acc + curr.length, 0)
+    const quantity = orderList.reduce(
+      (acc, curr) => acc + (curr.quantity ?? 0),
+      0,
+    )
+    const amount = orderList.reduce((acc, curr) => acc + (curr.amount ?? 0), 0)
+
+    return {
+      _count,
+      _sum: {
+        quantity,
+        amount,
+      },
+    }
+  },
+})
+export const _calculateProfit = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    const orderlines = await ctx.db
+      .query("orderlines")
+      .filter((q) =>
+        q.and(
+          q.gt(q.field("_creationTime"), args.from!),
+          q.lte(q.field("_creationTime"), args.to!),
+        ),
+      )
+      .order("desc")
+      .collect()
+
+    return await Promise.all(
+      (orderlines ?? [])
+        .filter(async (ol) => {
+          const order = await ctx.db
+            .query("orders")
+            .withIndex("companyId")
+            .filter((q) =>
+              q.and(
+                q.eq(q.field("companyId"), user.companyId),
+                q.eq(q.field("statusPayment"), "PAID"),
+              ),
+            )
+            .first()
+          return ol.orderId === order?._id
+        })
+        .map(async (ol) => {
+          const product = await ctx.db.get(ol.productId)
+          return {
+            amount: ol.amount,
+            quantity: ol.quantity,
+            product: {
+              costPrice: product?.costPrice,
+              salePrice: product?.salePrice,
+            },
+          }
+        }),
+    )
+  },
+})
+// === ENDS DASHBOARD ===
+
 // === MUTATIONS ===
 
 export const updateOrderlineStatusList = mutation({
