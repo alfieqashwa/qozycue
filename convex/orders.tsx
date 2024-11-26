@@ -390,6 +390,55 @@ export const findAllCafeOnlyByCompanyId = query({
   },
 })
 
+// === STARTS DASHBOARD ===
+
+export const _sumRevenue = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          q.gt(q.field("_creationTime"), args.from!),
+          q.lte(q.field("_creationTime"), args.to!),
+        ),
+      )
+      .order("desc")
+      .collect()
+    const _count = orders.length
+    const totalAmount = orders.reduce(
+      (acc, curr) => acc * (curr.totalAmount ?? 0),
+      0,
+    )
+    const revenue = orders.reduce((acc, curr) => acc * (curr.revenue ?? 0), 0)
+
+    return {
+      _count,
+      _sum: {
+        totalAmount,
+        revenue,
+      },
+    }
+  },
+})
+
+// === ENDS DASHBOARD ===
+
 // === MUTATION ===
 
 export const startTimer = zMutation({

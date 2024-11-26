@@ -28,10 +28,10 @@ export default function DashboardPage() {
     },
   })
   return (
-    <div className="">
+    <div className="relative">
       <OverviewDatePicker date={date} setDate={setDate} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-4">
-        <CardList />
+        <CardList date={date} setDate={setDate} />
       </div>
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <ChartList />
