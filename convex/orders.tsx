@@ -437,6 +437,62 @@ export const _sumRevenue = query({
   },
 })
 
+export const _groupByPaymentMethod = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) => q.eq(q.field("statusPayment"), "PAID"))
+      .order("desc")
+      .collect()
+
+    // src -> https://chatgpt.com/c/6745f1d2-bc58-8002-adf2-8257016d66a0
+    // Group by paymentMethod
+    const grouped = orders.reduce(
+      (acc, order) => {
+        const paymentMethod = order.paymentMethod as string
+
+        if (!acc[paymentMethod]) {
+          acc[paymentMethod] = {
+            _count: 0,
+            _sum: { totalAmount: 0 },
+          }
+        }
+
+        acc[paymentMethod]._count += 1
+        acc[paymentMethod]._sum.totalAmount += order.totalAmount || 0
+
+        return acc
+      },
+      {} as Record<string, { _count: number; _sum: { totalAmount: number } }>,
+    )
+
+    // Convert the grouped object to an array and sort by paymentMethod (descending)
+    const sorted = Object.entries(grouped)
+      .map(([paymentMethod, data]) => ({
+        paymentMethod,
+        ...data,
+      }))
+      .sort((a, b) => (a.paymentMethod < b.paymentMethod ? 1 : -1))
+
+    return sorted
+  },
+})
+
 // === ENDS DASHBOARD ===
 
 // === MUTATION ===

@@ -11,7 +11,7 @@ export function OverviewDatePicker({
   setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>
 }) {
   return (
-    <div className="hidden md:absolute md:-top-14 md:right-0 md:block">
+    <div className="hidden md:absolute md:-top-16 md:right-0 md:block">
       <div className="flex w-full flex-col items-end space-y-2 md:w-auto md:flex-row md:justify-end md:space-x-2 md:space-y-0">
         <div className="flex space-x-2">
           <Button
