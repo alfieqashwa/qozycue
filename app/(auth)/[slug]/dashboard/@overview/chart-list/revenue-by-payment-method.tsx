@@ -21,7 +21,7 @@ export function RevenueByPaymentMethod({
   })
 
   if (status !== "success")
-    return <SkeletonDashboardCard className="h-[26.05rem]" />
+    return <SkeletonDashboardCard className="h-[28.85rem]" />
   const dataGroupByPaymentMethod = groupByPaymentMethod?.map((order) => ({
     name: order.paymentMethod,
     total: order._sum.totalAmount,

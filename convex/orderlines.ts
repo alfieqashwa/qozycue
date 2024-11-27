@@ -192,62 +192,96 @@ export const _sumRevenue = query({
     }
   },
 })
-// export const _calculateProfit = query({
-//   args: {
-//     from: v.optional(v.float64()),
-//     to: v.optional(v.float64()),
-//   },
-//   handler: async (ctx, args) => {
-//     // ownerProcedure()
-//     const userId = await getAuthUserId(ctx)
-//     const user = userId !== null ? await ctx.db.get(userId) : null
-//     if (
-//       user?.role !== "DEWA" &&
-//       user?.role !== "ADMIN" &&
-//       user?.role !== "OWNER"
-//     )
-//       throw new ConvexError("You do not have access!")
+export const _sumByCategory = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+    categoryName: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
 
-//     const orderlines = await ctx.db
-//       .query("orderlines")
-//       .filter((q) =>
-//         q.and(
-//           q.gt(q.field("_creationTime"), args.from!),
-//           q.lte(q.field("_creationTime"), args.to!),
-//         ),
-//       )
-//       .order("desc")
-//       .collect()
+    // Step 1: Get the category ID for the given category name
+    const category = await ctx.db
+      .query("categories")
+      .filter((q) => q.eq(q.field("name"), args.categoryName))
+      .first()
 
-//     return await Promise.all(
-//       (orderlines ?? [])
-//         .filter(async (ol) => {
-//           const order = await ctx.db
-//             .query("orders")
-//             .withIndex("companyId")
-//             .filter((q) =>
-//               q.and(
-//                 q.eq(q.field("companyId"), user.companyId),
-//                 q.eq(q.field("statusPayment"), "PAID"),
-//               ),
-//             )
-//             .first()
-//           return ol.orderId === order?._id
-//         })
-//         .map(async (ol) => {
-//           const product = await ctx.db.get(ol.productId)
-//           return {
-//             amount: ol.amount,
-//             quantity: ol.quantity,
-//             product: {
-//               costPrice: product?.costPrice,
-//               salePrice: product?.salePrice,
-//             },
-//           }
-//         }),
-//     )
-//   },
-// })
+    if (!category) {
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } } // return default if category not found
+    }
+
+    // Step 2: Get all product IDs that belong to the category
+    const products = await ctx.db
+      .query("products")
+      .withIndex("categoryId", (q) => q.eq("categoryId", category._id))
+      .filter((q) => q.eq(q.field("companyId"), user.companyId))
+      .collect()
+
+    if (products.length === 0) {
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } } // Return default if no products in the category
+    }
+
+    const productIds = products.map((product) => product._id)
+
+    // Step 3: Get all orders with statusPayment === "PAID"
+    const paidOrders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          q.gt(q.field("_creationTime"), args.from ?? 0),
+          q.lte(q.field("_creationTime"), args.to ?? Date.now()),
+        ),
+      )
+      .collect()
+
+    if (paidOrders.length === 0) {
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } } // Return default if no paid orders
+    }
+
+    const orderIds = paidOrders.map((order) => order._id)
+
+    // Step 4: Query matching orderlines for each productId and orderId
+    const orderlines = []
+    for (const productId of productIds) {
+      for (const orderId of orderIds) {
+        const lines = await ctx.db
+          .query("orderlines")
+          .filter((q) =>
+            q.and(
+              q.eq(q.field("productId"), productId),
+              q.eq(q.field("orderId"), orderId),
+            ),
+          )
+          .collect()
+        orderlines.push(...lines)
+      }
+    }
+
+    // Step 5: Aggregate the data
+    const aggreggation = orderlines.reduce(
+      (acc, line) => {
+        acc._count += 1
+        acc._sum.quantity += line.quantity
+        acc._sum.amount += line.amount
+        return acc
+      },
+      { _count: 0, _sum: { quantity: 0, amount: 0 } },
+    )
+
+    return aggreggation
+  },
+})
 
 export const _calculateProfit = query({
   args: {
@@ -271,8 +305,8 @@ export const _calculateProfit = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("statusPayment"), "PAID"),
-          q.gt(q.field("_creationTime"), args.from!),
-          q.lte(q.field("_creationTime"), args.to!),
+          q.gt(q.field("_creationTime"), args.from ?? 0),
+          q.lte(q.field("_creationTime"), args.to ?? Date.now()),
         ),
       )
       .order("desc")
