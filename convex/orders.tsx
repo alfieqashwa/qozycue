@@ -414,8 +414,8 @@ export const _sumRevenue = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("statusPayment"), "PAID"),
-          q.gt(q.field("_creationTime"), args.from!),
-          q.lte(q.field("_creationTime"), args.to!),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
       .order("desc")
@@ -456,7 +456,13 @@ export const _groupByPaymentMethod = query({
     const orders = await ctx.db
       .query("orders")
       .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-      .filter((q) => q.eq(q.field("statusPayment"), "PAID"))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
+        ),
+      )
       .order("desc")
       .collect()
 

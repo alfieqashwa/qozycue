@@ -28,6 +28,7 @@ export const findAll = query({
     const products = await ctx.db
       .query("products")
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
+      .order("asc")
       .collect()
 
     return Promise.all(

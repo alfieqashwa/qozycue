@@ -134,8 +134,8 @@ export const _sumRevenue = query({
             .filter((q) =>
               q.and(
                 q.eq(q.field("statusPayment"), "PAID"),
-                q.gt(q.field("_creationTime"), args.from ?? 0),
-                q.lte(q.field("_creationTime"), args.to ?? Date.now()),
+                args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+                args.to ? q.lte(q.field("_creationTime"), args.to) : true,
               ),
             )
             .order("desc")
@@ -205,8 +205,8 @@ export const _sumByRate = query({
             .filter((q) =>
               q.and(
                 q.eq(q.field("statusPayment"), "PAID"),
-                q.gt(q.field("_creationTime"), args.from!),
-                q.lte(q.field("_creationTime"), args.to!),
+                args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+                args.to ? q.lte(q.field("_creationTime"), args.to) : true,
               ),
             )
             .order("desc")
@@ -257,7 +257,13 @@ export const _groupByPoolTableId = query({
         : await ctx.db
             .query("orders")
             .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-            .filter((q) => q.eq(q.field("statusPayment"), "PAID"))
+            .filter((q) =>
+              q.and(
+                q.eq(q.field("statusPayment"), "PAID"),
+                args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+                args.to ? q.lte(q.field("_creationTime"), args.to) : true,
+              ),
+            )
             .order("desc")
             .collect()
 
@@ -272,12 +278,6 @@ export const _groupByPoolTableId = query({
       const rentals = await ctx.db
         .query("poolRentals")
         .withIndex("orderId", (q) => q.eq("orderId", orderId))
-        .filter((q) =>
-          q.and(
-            args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-            args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-          ),
-        )
         .collect()
       poolRentals.push(...rentals)
     }

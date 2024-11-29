@@ -157,8 +157,8 @@ export const _sumRevenue = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("statusPayment"), "PAID"),
-          q.gt(q.field("_creationTime"), args.from!),
-          q.lte(q.field("_creationTime"), args.to!),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
       .order("desc")
@@ -239,8 +239,8 @@ export const _sumByCategory = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("statusPayment"), "PAID"),
-          q.gt(q.field("_creationTime"), args.from ?? 0),
-          q.lte(q.field("_creationTime"), args.to ?? Date.now()),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
       .collect()
@@ -305,8 +305,8 @@ export const _calculateProfit = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("statusPayment"), "PAID"),
-          q.gt(q.field("_creationTime"), args.from ?? 0),
-          q.lte(q.field("_creationTime"), args.to ?? Date.now()),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
       .order("desc")
@@ -339,6 +339,79 @@ export const _calculateProfit = query({
       totalCost, // Total cost of products sold
       totalQuantity, // Total products sold
     }
+  },
+})
+
+export const _groupByProductId = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    // Step 1: Fetch all paid orders for the user's company
+    const paidOrders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
+        ),
+      )
+      .collect()
+
+    if (paidOrders.length === 0) return []
+
+    const orderIds = paidOrders.map((order) => order._id)
+
+    // Step 2: Fetch order lines within the time range for these orders
+    const orderlines = []
+    for (const order of orderIds) {
+      const lines = await ctx.db
+        .query("orderlines")
+        .withIndex("orderId", (q) => q.eq("orderId", order))
+        .collect()
+      orderlines.push(...lines)
+    }
+
+    if (orderlines.length === 0) return []
+
+    // Step 3: Group by productId and aggregate
+    const groupedData = orderlines.reduce(
+      (acc, line) => {
+        const productId = line.productId.toString()
+
+        if (!acc[productId]) {
+          acc[productId] = {
+            productId: line.productId,
+            _sum: { amount: 0, quantity: 0 },
+          }
+        }
+
+        acc[productId]._sum.amount += line.amount || 0
+        acc[productId]._sum.quantity += line.quantity || 0
+
+        return acc
+      },
+      {} as Record<
+        string,
+        { productId: string; _sum: { amount: number; quantity: number } }
+      >,
+    )
+
+    // Convert grouped data into an array
+    return Object.values(groupedData)
   },
 })
 // === ENDS DASHBOARD ===
