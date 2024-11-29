@@ -1,5 +1,6 @@
 import { DateRange } from "react-day-picker"
 import { RevenueByPaymentMethod } from "./revenue-by-payment-method"
+import { RevenueByPoolTable } from "./revenue-by-pool-table"
 import { RevenueByProductCategory } from "./revenue-by-product-category"
 
 export function ChartList({ date }: { date: DateRange | undefined }) {
@@ -8,9 +9,12 @@ export function ChartList({ date }: { date: DateRange | undefined }) {
     to: date?.to?.getTime(),
   }
   return (
-    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-      <RevenueByPaymentMethod from={from} to={to} />
-      <RevenueByProductCategory from={from} to={to} />
-    </div>
+    <>
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <RevenueByPaymentMethod from={from} to={to} />
+        <RevenueByProductCategory from={from} to={to} />
+      </div>
+      <RevenueByPoolTable from={from} to={to} />
+    </>
   )
 }
