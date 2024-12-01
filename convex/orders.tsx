@@ -668,19 +668,17 @@ export const stopTimer = zMutation({
       },
     },
   ) => {
-    const updatePoolTable = await ctx.db.patch(poolTableId, {
-      isActive: false,
-      endTime,
-    })
+    if (!startTime || !endTime || startTime >= endTime) {
+      throw new ConvexError("Invalid startTime and endTime")
+    }
 
     //? Calculate duration in minute-rate
     const ONE_HOUR_IN_MILLISECONDS = 1_000 * 60 * 60
-
     const elapsedTime = endTime - startTime
     const elapsedInMinutes = Math.floor(elapsedTime / (1000 * 60))
     const oneHourInMinutes = Math.floor(ONE_HOUR_IN_MILLISECONDS / (1000 * 60))
 
-    //? Calculate totalCost in minute-rate and Math.round() it
+    //? Calculate totalCost in minute-rate
     let totalCostInMinutes: number
 
     //? If duration is less than one hour, than cust must pay as 1hr totalCost
@@ -692,20 +690,27 @@ export const stopTimer = zMutation({
 
     const totalCost = Math.round(totalCostInMinutes / 100) * 100
 
-    //? For MINUTE rate only
+    try {
+      const updatePoolTable = await ctx.db.patch(poolTableId, {
+        isActive: false,
+        endTime,
+      })
 
-    if (rate === "MINUTE") {
-      const updatePoolRental = await ctx.db.patch(poolRentalId, {
-        duration: elapsedInMinutes,
-        totalCost,
-        timeEnd: endTime,
-      })
-      return { updatePoolRental, updatePoolTable }
-    } else {
-      const updatePoolRental = await ctx.db.patch(poolRentalId, {
-        timeEnd: endTime,
-      })
-      return { updatePoolRental, updatePoolTable }
+      if (rate === "MINUTE") {
+        const updatePoolRental = await ctx.db.patch(poolRentalId, {
+          duration: elapsedInMinutes,
+          totalCost,
+          timeEnd: endTime,
+        })
+        return { updatePoolRental, updatePoolTable }
+      } else {
+        const updatePoolRental = await ctx.db.patch(poolRentalId, {
+          timeEnd: endTime,
+        })
+        return { updatePoolRental, updatePoolTable }
+      }
+    } catch (error) {
+      throw new ConvexError("Failed to update database")
     }
   },
 })
