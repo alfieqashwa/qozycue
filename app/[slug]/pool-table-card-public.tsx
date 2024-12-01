@@ -1,0 +1,114 @@
+"use client"
+
+import { usePathname } from "next/navigation"
+import { DescriptionTable } from "~/app/(auth)/[slug]/tables/pool-table-tab/pool-table-card/description-table"
+import { TimeDisplay } from "~/app/(auth)/[slug]/tables/pool-table-tab/pool-table-card/time-display"
+import { cn } from "~/lib/utils"
+import { api } from "~/trpc/react"
+import { PublicCountdown } from "./public-count-down"
+import { PublicStopwatch } from "./public-stopwatch"
+import { PublicTimer } from "./public-timer"
+import { WaitingListDrawer } from "./waiting-list-drawer"
+
+export function PoolTableCardPublic({
+  companyId,
+  companyName,
+  companyPhone,
+  poolTableId,
+  poolTableName,
+  poolTableStartTime,
+  poolTableEndTime,
+  isActive,
+}: {
+  companyId: string
+  companyName: string
+  companyPhone: string
+  poolTableId: string
+  poolTableName: string
+  poolTableStartTime: Date
+  poolTableEndTime: Date
+  isActive: boolean
+}) {
+  const pathname = usePathname()
+  const order = api.order.findByPoolTableIdPublic.useQuery(
+    { poolTableId, companyId },
+    {
+      enabled: Boolean(poolTableId) && Boolean(companyId),
+      refetchInterval: 1000 * 10,
+    },
+  )
+
+  return (
+    <div className="group/card relative">
+      <div
+        className={cn(
+          "group-transition-colors absolute -inset-[1px] h-44 w-full rounded-2xl duration-500 ease-in-out",
+          !isActive &&
+            !poolTableStartTime &&
+            !poolTableEndTime &&
+            "bg-zinc-900 blur-md group-hover/card:bg-zinc-800 group-hover/card:shadow-lg group-hover/card:blur-lg",
+          isActive &&
+            poolTableStartTime &&
+            "bg-sky-400 blur-md group-hover/card:blur-lg",
+          !isActive &&
+            !!poolTableStartTime &&
+            "bg-amber-300 blur-sm group-hover/card:blur-md",
+        )}
+      />
+      <div className="relative h-44 rounded-2xl bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow">
+        <section className="flex justify-between">
+          <PublicTimer
+            companyName={companyName}
+            companyPhone={companyPhone}
+            websitelink={`https://qozycue.com${pathname}`} // pathname has included the "/"
+            isActive={isActive}
+            poolTableName={poolTableName}
+            hasEndTime={!!poolTableEndTime}
+          >
+            {order.status === "success" &&
+              order.data?.poolRental?.packet.rate === "HOUR" && (
+                <PublicCountdown
+                  endTime={poolTableEndTime}
+                  poolTableId={poolTableId}
+                  poolRentalId={order.data.poolRental.id}
+                  startTime={poolTableStartTime}
+                  packetCost={order.data.poolRental.packet.cost}
+                  packetRate={order.data.poolRental.packet.rate}
+                />
+              )}
+            {order.status === "success" &&
+              order.data?.poolRental?.packet.rate === "MINUTE" && (
+                <PublicStopwatch
+                  isActive={isActive}
+                  poolTableId={poolTableId}
+                  poolRentalId={order.data.poolRental.id}
+                  startTime={poolTableStartTime}
+                  packetCost={order.data.poolRental.packet.cost}
+                  packetRate={order.data.poolRental.packet.rate}
+                />
+              )}
+          </PublicTimer>
+          <DescriptionTable
+            isActive={isActive}
+            startTime={poolTableStartTime}
+            poolTableName={poolTableName}
+            orderStatusSucceed={order.status === "success"}
+            packetName={order.data?.poolRental?.packet.name}
+            packetCost={order.data?.poolRental?.packet.cost}
+            packetRate={order.data?.poolRental?.packet.rate}
+            duration={order.data?.poolRental?.duration}
+            totalCost={order.data?.poolRental?.totalCost}
+          />
+          <TimeDisplay
+            startTime={poolTableStartTime}
+            endTime={poolTableEndTime}
+          />
+        </section>
+        <WaitingListDrawer
+          poolTableId={poolTableId}
+          poolTableName={poolTableName}
+        />
+      </div>
+    </div>
+  )
+}
