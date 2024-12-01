@@ -59,15 +59,17 @@ export const findAllSortedByDate = query({
       .order("desc")
       .collect()
 
-    return Promise.all(
-      (orders ?? []).map(async (order) => {
-        const poolRental = await ctx.db
-          .query("poolRentals")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .filter((q) => q.eq(q.field("isBooking"), false))
-          .unique()
-        const poolTable =
-          poolRental != null ? await ctx.db.get(poolRental?.poolTableId) : null
+    const filteredOrders = []
+
+    for (const order of orders) {
+      const poolRental = await ctx.db
+        .query("poolRentals")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .filter((q) => q.eq(q.field("isBooking"), false))
+        .first()
+
+      if (poolRental) {
+        const poolTable = await ctx.db.get(poolRental?.poolTableId)
         const orderlines = await ctx.db
           .query("orderlines")
           .withIndex("orderId", (q) => q.eq("orderId", order._id))
@@ -76,7 +78,7 @@ export const findAllSortedByDate = query({
           ? await ctx.db.get(order.customerId)
           : undefined
 
-        return {
+        filteredOrders.push({
           ...order,
           poolRental: {
             poolTable: {
@@ -93,9 +95,10 @@ export const findAllSortedByDate = query({
             name: customer?.name,
             phone: customer?.phone,
           },
-        }
-      }),
-    )
+        })
+      }
+    }
+    return filteredOrders
   },
 })
 

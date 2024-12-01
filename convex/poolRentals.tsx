@@ -32,27 +32,28 @@ export const findAll = query({
       .order("desc")
       .collect()
 
-    return await Promise.all(
-      orderListByCompanyId.map(async (order) => {
-        const poolRental = await ctx.db
-          .query("poolRentals")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .filter((q) => q.eq(q.field("isBooking"), false))
-          .first()
-        const packet =
-          poolRental !== null ? await ctx.db.get(poolRental?.packetId) : null
+    const filteredOrders = []
 
-        const poolTable =
-          poolRental !== null ? await ctx.db.get(poolRental?.poolTableId) : null
+    for (const order of orderListByCompanyId) {
+      const poolRental = await ctx.db
+        .query("poolRentals")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .filter((q) => q.eq(q.field("isBooking"), false))
+        .first()
+      if (poolRental) {
+        const packet = await ctx.db.get(poolRental?.packetId)
+        const poolTable = await ctx.db.get(poolRental?.poolTableId)
 
-        return {
+        filteredOrders.push({
           ...poolRental,
           packet,
           poolTable: { name: poolTable?.name },
           order: { id: order._id, statusPayment: order.statusPayment },
-        }
-      }),
-    )
+        })
+      }
+    }
+
+    return filteredOrders
   },
 })
 
