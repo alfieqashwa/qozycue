@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import { StatusPayment } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
-import { format } from "date-fns"
+import { format, isValid } from "date-fns"
 import { id } from "date-fns/locale"
 import { Hash, Star } from "lucide-react"
 
@@ -202,13 +202,11 @@ export const columnsRental: ColumnDef<
     ),
     cell: ({ row }) => {
       const timeStart = row.getValue("timeStart")
-      if (!timeStart) return "-"
-      const formattedTimeStart = format(timeStart as number, "pp", {
-        locale: id,
-      })
       return (
         <div className="whitespace-nowrap text-sky-400">
-          {formattedTimeStart}
+          {timeStart && isValid(new Date(timeStart as number))
+            ? format(timeStart as number, "pp", { locale: id })
+            : "-"}
         </div>
       )
     },
@@ -240,9 +238,11 @@ export const columnsRental: ColumnDef<
       const timestamp = row.getValue("_creationTime")
       return (
         <div className="whitespace-nowrap">
-          {format(new Date(timestamp as number), "PP", {
-            locale: id,
-          })}
+          {timestamp && isValid(new Date(timestamp as number))
+            ? format(timestamp as number, "PP", {
+                locale: id,
+              })
+            : "-"}
         </div>
       )
     },
