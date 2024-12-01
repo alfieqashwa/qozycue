@@ -26,8 +26,9 @@
 ✅ Setup custom toast for order, re-order, and remove cafe-menu from cart
 ✅ Booking-Schedule
 ✅ Dashboard
-❌ Client's Home Page
+✅ Client's Home Page
 ❌ Home Page
+❌ New registered user create company/tenant
 
 ✅ (bug) Fix cafe order menu
 ✅ Move Button Edit and Delete Product and Packet into row list of table
