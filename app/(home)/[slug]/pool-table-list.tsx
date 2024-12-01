@@ -1,7 +1,10 @@
 "use client"
 
-import { SkeletonDashboardCard } from "~/app/_components/skeleton-dashboard-card"
-import { api } from "~/trpc/react"
+import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { PoolTableCardPublic } from "./pool-table-card-public"
 
 export function PoolTableList({
@@ -9,22 +12,24 @@ export function PoolTableList({
   companyName,
   companyPhone,
 }: {
-  companyId: string
+  companyId: Id<"companies">
   companyName: string
   companyPhone: string
 }) {
-  const { data: poolTables, status } =
-    api.poolTable.findAllByCompanyIdPublic.useQuery(
-      { companyId },
-      { enabled: Boolean(companyId), refetchInterval: 1000 * 10 },
-    )
+  const { data: poolTables, status } = useTanstackQuery({
+    ...convexQuery(api.poolTables.findAllPublicProcedure, {
+      companyId,
+    }),
+    enabled: Boolean(companyId),
+  })
+
   return (
     <div className="grid w-full grid-cols-1 gap-6 p-2 font-mono sm:gap-8 md:p-8 lg:grid-cols-2 2xl:grid-cols-3">
       {poolTables?.map((t) => {
         if (status !== "success") {
           return (
             <SkeletonDashboardCard
-              key={t.id}
+              key={t._id}
               className="h-44 w-full rounded-2xl"
             />
           )
@@ -32,15 +37,14 @@ export function PoolTableList({
 
         return (
           <PoolTableCardPublic
-            companyId={companyId}
             companyName={companyName}
             companyPhone={companyPhone}
             isActive={t.isActive}
-            poolTableId={t.id}
+            poolTableId={t._id}
             poolTableName={t.name}
-            poolTableStartTime={t.startTime as Date}
-            poolTableEndTime={t.endTime as Date}
-            key={t.id}
+            poolTableStartTime={t.startTime as number}
+            poolTableEndTime={t.endTime as number}
+            key={t._id}
           />
         )
       })}

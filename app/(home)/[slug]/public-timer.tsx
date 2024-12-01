@@ -1,12 +1,12 @@
 "use client"
 
-import Image from "next/image"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~/components/ui/tooltip"
-import { cn } from "~/lib/utils"
+} from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 export function PublicTimer({
   companyName,

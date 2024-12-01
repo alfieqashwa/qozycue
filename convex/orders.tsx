@@ -278,6 +278,49 @@ export const findByPoolTableId = query({
   },
 })
 
+export const findByPoolTableIdPublicProcedure = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, args) => {
+    await protectedProcedure(ctx, {})
+
+    const poolRentals = await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
+      .filter((q) => q.eq(q.field("isBooking"), false))
+      .collect()
+
+    const orderList = await Promise.all(
+      (poolRentals ?? []).map(async (rental) => {
+        /*
+         ? bug fixed: instead query thing, use ctx.db.get("tables_name") on map
+         * const order = await ctx.db
+         * .query("orders")
+         * .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+         * .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+         * .first()
+         * console.log(`ORDER-APIIII`, order)
+         */
+        const order = await ctx.db.get(rental.orderId)
+        const packet = await ctx.db.get(rental.packetId!)
+
+        return {
+          ...order,
+          poolRental: {
+            ...rental,
+            packet: {
+              name: packet?.name,
+              cost: packet?.cost,
+              rate: packet?.rate,
+            },
+          },
+        }
+      }),
+    )
+
+    return orderList.find((order) => order.statusPayment === "OPEN")
+  },
+})
+
 export const findAllPendingStatusByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {

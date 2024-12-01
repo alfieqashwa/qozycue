@@ -1,12 +1,12 @@
+import { Separator } from "@/components/ui/separator"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
-import { Separator } from "~/components/ui/separator"
 
 type WaitingListProps = {
   idx: number
-  startTime: Date | null
-  endTime: Date | null
-  duration: number | null
+  startTime: number | null
+  endTime: number | null
+  duration: number | undefined
 }
 
 export function WaitingList({

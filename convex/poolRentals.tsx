@@ -97,6 +97,26 @@ export const findAllBookingByPoolTableId = query({
     )
   },
 })
+export const findAllBookingByPoolTableIdPublicProcedure = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, args) => {
+    await protectedProcedure(ctx, {})
+
+    const bookingRentalList = await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
+      .filter((q) => q.eq(q.field("isBooking"), true))
+      .collect()
+
+    return bookingRentalList
+      .sort((p, q) => p.timeStart - q.timeStart)
+      .map((rental) => ({
+        timeStart: rental.timeStart,
+        timeEnd: rental.timeEnd,
+        duration: rental.duration,
+      }))
+  },
+})
 
 export const countIsBooking = query({
   args: { poolTableId: v.id("poolTables") },

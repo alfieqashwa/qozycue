@@ -1,31 +1,33 @@
-import { NotepadText } from "lucide-react"
-import { Button } from "~/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "~/components/ui/drawer"
-import { ScrollArea } from "~/components/ui/scroll-area"
-import { api } from "~/trpc/react"
+} from "@/components/ui/drawer"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { NotepadText } from "lucide-react"
 import { WaitingList } from "./waiting-list"
 
 export function WaitingListDrawer({
   poolTableId,
   poolTableName,
 }: {
-  poolTableId: string
+  poolTableId: Id<"poolTables">
   poolTableName: string
 }) {
-  const { data: bookingList, status } =
-    api.poolRental.findAllBookingByCompanyIdPublic.useQuery(
-      { poolTableId },
-      {
-        enabled: Boolean(poolTableId),
-        refetchInterval: 1000 * 10, // 10 secs
-      },
-    )
+  const { data: bookingList, status } = useTanstackQuery({
+    ...convexQuery(api.poolRentals.findAllBookingByPoolTableIdPublicProcedure, {
+      poolTableId,
+    }),
+    enabled: Boolean(poolTableId),
+  })
+
   return (
     <section className="mt-2 flex items-center justify-center">
       {status === "success" && !!bookingList.length && (

@@ -1,17 +1,19 @@
 "use client"
 
+import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { usePathname } from "next/navigation"
-import { DescriptionTable } from "~/app/(auth)/[slug]/tables/pool-table-tab/pool-table-card/description-table"
-import { TimeDisplay } from "~/app/(auth)/[slug]/tables/pool-table-tab/pool-table-card/time-display"
-import { cn } from "~/lib/utils"
-import { api } from "~/trpc/react"
+import { DescriptionTable } from "../../(auth)/[slug]/tables/pool-table-tab/pool-table-card/description-table"
+import { TimeDisplay } from "../../(auth)/[slug]/tables/pool-table-tab/pool-table-card/time-display"
 import { PublicCountdown } from "./public-count-down"
 import { PublicStopwatch } from "./public-stopwatch"
 import { PublicTimer } from "./public-timer"
 import { WaitingListDrawer } from "./waiting-list-drawer"
 
 export function PoolTableCardPublic({
-  companyId,
   companyName,
   companyPhone,
   poolTableId,
@@ -20,23 +22,22 @@ export function PoolTableCardPublic({
   poolTableEndTime,
   isActive,
 }: {
-  companyId: string
   companyName: string
   companyPhone: string
-  poolTableId: string
+  poolTableId: Id<"poolTables">
   poolTableName: string
-  poolTableStartTime: Date
-  poolTableEndTime: Date
+  poolTableStartTime: number
+  poolTableEndTime: number
   isActive: boolean
 }) {
   const pathname = usePathname()
-  const order = api.order.findByPoolTableIdPublic.useQuery(
-    { poolTableId, companyId },
-    {
-      enabled: Boolean(poolTableId) && Boolean(companyId),
-      refetchInterval: 1000 * 10,
-    },
-  )
+  const order = useTanstackQuery({
+    ...convexQuery(api.orders.findByPoolTableIdPublicProcedure, {
+      poolTableId,
+    }),
+
+    enabled: Boolean(poolTableId),
+  })
 
   return (
     <div className="group/card relative">
@@ -69,22 +70,14 @@ export function PoolTableCardPublic({
               order.data?.poolRental?.packet.rate === "HOUR" && (
                 <PublicCountdown
                   endTime={poolTableEndTime}
-                  poolTableId={poolTableId}
-                  poolRentalId={order.data.poolRental.id}
                   startTime={poolTableStartTime}
-                  packetCost={order.data.poolRental.packet.cost}
-                  packetRate={order.data.poolRental.packet.rate}
                 />
               )}
             {order.status === "success" &&
               order.data?.poolRental?.packet.rate === "MINUTE" && (
                 <PublicStopwatch
                   isActive={isActive}
-                  poolTableId={poolTableId}
-                  poolRentalId={order.data.poolRental.id}
                   startTime={poolTableStartTime}
-                  packetCost={order.data.poolRental.packet.cost}
-                  packetRate={order.data.poolRental.packet.rate}
                 />
               )}
           </PublicTimer>

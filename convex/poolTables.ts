@@ -16,6 +16,20 @@ import {
   zMutation,
 } from "./helpers"
 
+export const findAllPublicProcedure = query({
+  args: { companyId: v.id("companies") },
+  handler: async (ctx, args) => {
+    const pooltables = await ctx.db
+      .query("poolTables")
+      .withIndex("companyId", (q) => q.eq("companyId", args.companyId))
+      .collect()
+
+    return pooltables.sort((p, q) =>
+      p.name.localeCompare(q.name, undefined, { numeric: true }),
+    )
+  },
+})
+
 export const findAll = query({
   args: {},
   handler: async (ctx) => {

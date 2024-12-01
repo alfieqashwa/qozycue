@@ -1,29 +1,33 @@
 "use client"
 
-import { Building2, Phone } from "lucide-react"
-import { type Session } from "next-auth"
-import Link from "next/link"
-import { buttonVariants } from "~/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~/components/ui/tooltip"
-import { cn } from "~/lib/utils"
-import { api } from "~/trpc/react"
+} from "@/components/ui/tooltip"
+import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { Preloaded, usePreloadedQuery } from "convex/react"
+import { Building2, Phone } from "lucide-react"
+import Link from "next/link"
 import { PoolTableList } from "./pool-table-list"
 
 export function CompanySite({
   slug,
-  session,
+  preloadedSession,
 }: {
   slug: string
-  session: Session | null
+  preloadedSession: Preloaded<typeof api.sessions.find>
 }) {
-  const { data: company, status } = api.company.findPublic.useQuery(
-    { slug },
-    { enabled: Boolean(slug), refetchInterval: 1000 * 10 },
-  )
+  const session = usePreloadedQuery(preloadedSession)
+
+  const { data: company, status } = useTanstackQuery({
+    ...convexQuery(api.companies.findPublicProcedure, { slug }),
+    enabled: Boolean(slug),
+  })
 
   return (
     <>
@@ -76,7 +80,7 @@ export function CompanySite({
           </div>
           {company?.isPublished && (
             <PoolTableList
-              companyId={company.id}
+              companyId={company._id}
               companyName={company.name}
               companyPhone={company.phone}
             />
