@@ -777,8 +777,6 @@ export const payment = zMutation({
       .withIndex("orderId", (q) => q.eq("orderId", orderId))
       .unique()
 
-    if (!poolRental) throw new ConvexError("No Pool Rental Provided!")
-
     const updateOrder = await ctx.db.patch(orderId, {
       totalAmount,
       revenue,
@@ -788,6 +786,11 @@ export const payment = zMutation({
       tax,
       note,
     })
+
+    // for cafe-only use case
+    if (!poolRental) {
+      return { updateOrder }
+    }
 
     const updatePoolTable = await ctx.db.patch(poolRental.poolTableId, {
       startTime: null,
