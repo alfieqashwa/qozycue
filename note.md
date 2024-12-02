@@ -27,7 +27,7 @@
 ✅ Booking-Schedule
 ✅ Dashboard
 ✅ Client's Home Page
-❌ Home Page
+✅ Home Page
 ❌ New registered user create company/tenant
 
 ✅ (bug) Fix cafe order menu
