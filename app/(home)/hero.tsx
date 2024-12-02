@@ -21,20 +21,20 @@ export const Hero = () => (
       ))}
     </p>
     <section className="mt-8 flex w-full items-center justify-around space-x-1.5 sm:space-x-6">
-      <GiPoolTriangle className="size-14 animate-pulse text-cyan-300 sm:size-16 lg:size-24" />
+      <GiPoolTriangle className="size-14 animate-pulse-slow text-sky-500 sm:size-16 lg:size-24" />
       <article className="text-center">
         <p className="whitespace-nowrap bg-gradient-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-2xl font-black tracking-widest text-transparent lg:text-4xl">
           Billiard & Cafe
         </p>
         <p className="whitespace-nowrap bg-gradient-to-t from-foreground/80 to-foreground bg-clip-text font-semibold tracking-widest text-transparent lg:text-xl">
           Online and{" "}
-          <span className="bg-gradient-to-t from-pink-700 from-20% to-fuchsia-600 to-50% bg-clip-text font-bold text-transparent shadow-lg motion-safe:animate-pulse-slow">
+          <span className="bg-gradient-to-t from-pink-700 from-20% to-fuchsia-600 to-50% bg-clip-text text-transparent shadow-lg motion-safe:animate-pulse-slow">
             Real Time
           </span>{" "}
           Application
         </p>
       </article>
-      <Utensils className="size-12 animate-pulse text-cyan-300 sm:size-14 lg:size-[5rem]" />
+      <Utensils className="size-12 animate-pulse-slow text-sky-500 sm:size-14 lg:size-[5rem]" />
     </section>
   </div>
 )

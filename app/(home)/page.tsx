@@ -17,7 +17,7 @@ export default async function HomePage() {
   )
 
   return (
-    <Vortex rangeY={350} className="z-50">
+    <Vortex rangeY={400} className="z-50">
       <Hero />
       <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row md:gap-8 lg:gap-16">
         <DocumentationButton
