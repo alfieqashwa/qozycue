@@ -1,9 +1,13 @@
-import { ResetAll } from "@/components/reset-all"
+import { ShimmerButton } from "@/components/shimmer-button"
+import { Vortex } from "@/components/vortex"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { preloadQuery } from "convex/nextjs"
+import { Tv } from "lucide-react"
+import { GiPoolTriangle } from "react-icons/gi"
 import { AuthButtons } from "./auth-buttons"
-import { ConvexLogo } from "./convex-logo"
+import { DocumentationButton } from "./documentation-button"
+import { Hero } from "./hero"
 
 export default async function HomePage() {
   const preloadSlug = await preloadQuery(
@@ -13,20 +17,28 @@ export default async function HomePage() {
   )
 
   return (
-    <div className="flex grow flex-col">
-      <div className="container mb-20 flex grow flex-col justify-center">
-        <h1 className="mt-16 flex flex-col items-center gap-8 text-center text-6xl font-extrabold leading-none tracking-tight">
-          Qozy Cue
-        </h1>
-        <div className="my-6 text-center text-lg text-muted-foreground">
-          Powered by
-        </div>
-        <div className="flex justify-center">
-          <ConvexLogo width={377} height={44} />
-        </div>
-        <AuthButtons preloadSlug={preloadSlug} />
-        <ResetAll />
+    <Vortex rangeY={350} className="z-50">
+      <Hero />
+      <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row md:gap-8 lg:gap-16">
+        <DocumentationButton
+          icon={
+            <GiPoolTriangle
+              size={24}
+              className="animate-pulse text-fuchsia-500"
+            />
+          }
+          title="Documentation"
+        />
+        <ShimmerButton>
+          <Tv className="mr-1.5 animate-pulse text-fuchsia-500" />
+          Tutorial (soon)
+        </ShimmerButton>
       </div>
-    </div>
+      <section className="mt-20 flex flex-col items-center gap-2">
+        <div className="flex items-center justify-center gap-4">
+          <AuthButtons preloadSlug={preloadSlug} />
+        </div>
+      </section>
+    </Vortex>
   )
 }

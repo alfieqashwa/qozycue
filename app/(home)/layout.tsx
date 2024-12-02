@@ -5,5 +5,9 @@ export default function SplashPageLayout({
 }: {
   children: ReactNode
 }) {
-  return <main>{children}</main>
+  return (
+    <div className="grid min-h-screen w-full place-items-center">
+      {children}
+    </div>
+  )
 }
