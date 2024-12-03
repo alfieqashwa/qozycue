@@ -52,8 +52,8 @@ export const findAllSortedByDate = query({
       .filter((q) =>
         q.and(
           q.neq(q.field("statusPayment"), args.notEqual),
-          q.gt(q.field("_creationTime"), args.from!),
-          q.lte(q.field("_creationTime"), args.to!),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
       .order("desc")
@@ -127,49 +127,50 @@ export const findAllArchiveOrderSortedByDate = query({
       .filter((q) =>
         q.and(
           q.eq(q.field("statusPayment"), args.equal),
-          q.gt(q.field("_creationTime"), args.from!),
-          q.lte(q.field("_creationTime"), args.to!),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
       .order("desc")
       .collect()
 
-    return Promise.all(
-      (orders ?? []).map(async (order) => {
-        const poolRental = await ctx.db
-          .query("poolRentals")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .filter((q) => q.eq(q.field("isBooking"), false))
-          .unique()
-        const poolTable = await ctx.db.get(poolRental?.poolTableId!)
-        const orderlines = await ctx.db
-          .query("orderlines")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .collect()
-        const customer = order.customerId
-          ? await ctx.db.get(order.customerId)
-          : undefined
+    const filteredOrders = []
 
-        return {
-          ...order,
-          poolRental: {
-            poolTable: {
-              id: poolTable?._id,
-              name: poolTable?.name,
-            },
+    for (const order of orders) {
+      const poolRental = await ctx.db
+        .query("poolRentals")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .filter((q) => q.eq(q.field("isBooking"), false))
+        .unique()
+      const poolTable = await ctx.db.get(poolRental?.poolTableId!)
+      const orderlines = await ctx.db
+        .query("orderlines")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .collect()
+      const customer = order.customerId
+        ? await ctx.db.get(order.customerId)
+        : undefined
+      filteredOrders.push({
+        ...order,
+        poolRental: {
+          poolTable: {
+            id: poolTable?._id,
+            name: poolTable?.name,
           },
-          orderlines,
-          createdBy: {
-            name: user?.name,
-            role: user?.role,
-          },
-          customer: {
-            name: customer?.name,
-            phone: customer?.phone,
-          },
-        }
-      }),
-    )
+        },
+        orderlines,
+        createdBy: {
+          name: user?.name,
+          role: user?.role,
+        },
+        customer: {
+          name: customer?.name,
+          phone: customer?.phone,
+        },
+      })
+    }
+
+    return filteredOrders
   },
 })
 
@@ -198,7 +199,9 @@ export const findById = query({
       .query("poolRentals")
       .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
       .first()
-    const packet = await ctx.db.get(poolRental?.packetId!)
+    if (!poolRental) throw new Error("fdfd")
+
+    const packet = await ctx.db.get(poolRental?.packetId)
     const customer = await ctx.db.get(order?.customerId!)
     const company = await ctx.db.get(order?.companyId!)
     const orderlines =
@@ -238,46 +241,36 @@ export const findByPoolTableId = query({
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
 
-    const orderList = await Promise.all(
-      (poolRentals ?? []).map(async (rental) => {
-        /*
-         ? bug fixed: instead query thing, use ctx.db.get("tables_name") on map
-         * const order = await ctx.db
-         * .query("orders")
-         * .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-         * .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-         * .first()
-         * console.log(`ORDER-APIIII`, order)
-         */
-        const order = await ctx.db.get(rental.orderId)
-        const packet = await ctx.db.get(rental.packetId!)
-        const customer =
-          order !== null ? await ctx.db.get(order?.customerId!) : null
-        const createdBy = await ctx.db.get(order?.createdBy!)
-        const orderlines = await ctx.db
-          .query("orderlines")
-          .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
-          .collect()
+    const filteredOrderlist = []
 
-        return {
-          ...order,
-          customer: { name: customer?.name, phone: customer?.phone },
-          createdBy: { name: createdBy?.name },
-          orderlinesLen: orderlines.length,
-          poolRental: {
-            ...rental,
-            packet: {
-              name: packet?.name,
-              cost: packet?.cost,
-              rate: packet?.rate,
-            },
+    for (const rental of poolRentals) {
+      const order = await ctx.db.get(rental.orderId)
+      const packet = await ctx.db.get(rental.packetId)
+      const customer =
+        order !== null ? await ctx.db.get(order?.customerId!) : null
+      const createdBy = await ctx.db.get(order?.createdBy!)
+      const orderlines = await ctx.db
+        .query("orderlines")
+        .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+        .collect()
+
+      filteredOrderlist.push({
+        ...order,
+        customer: { name: customer?.name, phone: customer?.phone },
+        createdBy: { name: createdBy?.name },
+        orderlinesLen: orderlines.length,
+        poolRental: {
+          ...rental,
+          packet: {
+            name: packet?.name,
+            cost: packet?.cost,
+            rate: packet?.rate,
           },
-        }
-      }),
-    )
+        },
+      })
+    }
 
-    return orderList.find((order) => order.statusPayment === "OPEN")
-    // return orderList[0]
+    return filteredOrderlist.find((order) => order.statusPayment === "OPEN")
   },
 })
 
@@ -292,35 +285,25 @@ export const findByPoolTableIdPublicProcedure = query({
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
 
-    const orderList = await Promise.all(
-      (poolRentals ?? []).map(async (rental) => {
-        /*
-         ? bug fixed: instead query thing, use ctx.db.get("tables_name") on map
-         * const order = await ctx.db
-         * .query("orders")
-         * .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-         * .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-         * .first()
-         * console.log(`ORDER-APIIII`, order)
-         */
-        const order = await ctx.db.get(rental.orderId)
-        const packet = await ctx.db.get(rental.packetId!)
+    const filteredOrderlist = []
+    for (const rental of poolRentals) {
+      const order = await ctx.db.get(rental.orderId)
+      const packet = await ctx.db.get(rental.packetId!)
 
-        return {
-          ...order,
-          poolRental: {
-            ...rental,
-            packet: {
-              name: packet?.name,
-              cost: packet?.cost,
-              rate: packet?.rate,
-            },
+      filteredOrderlist.push({
+        ...order,
+        poolRental: {
+          ...rental,
+          packet: {
+            name: packet?.name,
+            cost: packet?.cost,
+            rate: packet?.rate,
           },
-        }
-      }),
-    )
+        },
+      })
+    }
 
-    return orderList.find((order) => order.statusPayment === "OPEN")
+    return filteredOrderlist.find((order) => order.statusPayment === "OPEN")
   },
 })
 
@@ -335,41 +318,43 @@ export const findAllPendingStatusByPoolTableId = query({
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
 
-    const orderList = await Promise.all(
-      (poolRentals ?? []).map(async (rental) => {
-        const order = await ctx.db
-          .query("orders")
-          .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-          // .filter((q) => q.eq(q.field("statusPayment"), "PENDING"))
-          .first()
-        const packet = await ctx.db.get(rental.packetId!)
-        const customer = await ctx.db.get(order?.customerId!)
-        const createdBy = await ctx.db.get(order?.createdBy!)
-        const orderlines =
-          order !== null
-            ? await ctx.db
-                .query("orderlines")
-                .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
-                .collect()
-            : []
-        return {
-          ...order,
-          customer: { name: customer?.name, phone: customer?.phone },
-          createdBy: { name: createdBy?.name },
-          orderlinesLen: orderlines.length,
-          poolRental: {
-            ...rental,
-            packet: {
-              name: packet?.name,
-              cost: packet?.cost,
-              rate: packet?.rate,
-            },
-          },
-        }
-      }),
-    )
+    const filteredOrderlist = []
+    for (const rental of poolRentals) {
+      const order = await ctx.db
+        .query("orders")
+        .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+        // .filter((q) => q.eq(q.field("statusPayment"), "PENDING"))
+        .first()
+      const packet = await ctx.db.get(rental.packetId!)
+      const customer = await ctx.db.get(order?.customerId!)
+      const createdBy = await ctx.db.get(order?.createdBy!)
+      const orderlines =
+        order !== null
+          ? await ctx.db
+              .query("orderlines")
+              .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+              .collect()
+          : []
 
-    return orderList.filter((order) => order.statusPayment === "PENDING")
+      filteredOrderlist.push({
+        ...order,
+        customer: { name: customer?.name, phone: customer?.phone },
+        createdBy: { name: createdBy?.name },
+        orderlinesLen: orderlines.length,
+        poolRental: {
+          ...rental,
+          packet: {
+            name: packet?.name,
+            cost: packet?.cost,
+            rate: packet?.rate,
+          },
+        },
+      })
+    }
+
+    return filteredOrderlist.filter(
+      (order) => order.statusPayment === "PENDING",
+    )
   },
 })
 
@@ -410,28 +395,28 @@ export const findAllCafeOnlyByCompanyId = query({
       .order("desc")
       .collect()
 
-    const filteredCafeOnlyOrders = await Promise.all(
-      (orders ?? []).map(async (order) => {
-        const createdBy = await ctx.db.get(order.createdBy)
-        const customer = await ctx.db.get(order.customerId!)
-        const poolRental = await ctx.db
-          .query("poolRentals")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .first()
-        const orderlines = await ctx.db
-          .query("orderlines")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .order("desc")
-          .collect()
-        return {
-          ...order,
-          createdBy: { name: createdBy?.name, role: createdBy?.role },
-          customer,
-          poolRental,
-          orderlinesLen: orderlines.length,
-        }
-      }),
-    )
+    const filteredCafeOnlyOrders = []
+    for (const order of orders) {
+      const createdBy = await ctx.db.get(order.createdBy)
+      const customer = await ctx.db.get(order.customerId!)
+      const poolRental = await ctx.db
+        .query("poolRentals")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .first()
+      const orderlines = await ctx.db
+        .query("orderlines")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .order("desc")
+        .collect()
+      filteredCafeOnlyOrders.push({
+        ...order,
+        createdBy: { name: createdBy?.name, role: createdBy?.role },
+        customer,
+        poolRental,
+        orderlinesLen: orderlines.length,
+      })
+    }
+
     return filteredCafeOnlyOrders.filter((f) => f.poolRental == null)
   },
 })
@@ -964,43 +949,39 @@ export const removeSelectedOrders = mutation({
   handler: async (ctx, { selectedOrders }) => {
     await adminProcedure(ctx, {})
 
-    const removeAll = await Promise.all(
-      selectedOrders.map(async (o) => {
-        const order = await ctx.db.get(o.id)
-        if (!order) throw new ConvexError("No Order found!")
+    const removeAll = []
+    for (const selectedOrder of selectedOrders) {
+      const order = await ctx.db.get(selectedOrder.id)
+      if (!order) throw new ConvexError("No Order found!")
 
-        const poolRental = await ctx.db
-          .query("poolRentals")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .first()
+      const poolRental = await ctx.db
+        .query("poolRentals")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .first()
 
-        const orderlines = await ctx.db
-          .query("orderlines")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .collect()
+      const orderlines = await ctx.db
+        .query("orderlines")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .collect()
 
-        const deleteCustomer =
-          order.customerId != null
-            ? await ctx.db.delete(order.customerId)
-            : null
-        const deletePoolRental =
-          poolRental != null ? await ctx.db.delete(poolRental?._id) : null
-        const deleteOrderlines =
-          orderlines != null
-            ? await Promise.all(
-                orderlines.map(async (ol) => await ctx.db.delete(ol._id)),
-              )
-            : null
-        const deleteOrder = await ctx.db.delete(order._id)
-
-        return {
-          deleteCustomer,
-          deletePoolRental,
-          ...deleteOrderlines,
-          deleteOrder,
-        }
-      }),
-    )
+      const deleteCustomer =
+        order.customerId != null ? await ctx.db.delete(order.customerId) : null
+      const deletePoolRental =
+        poolRental != null ? await ctx.db.delete(poolRental?._id) : null
+      const deleteOrderlines =
+        orderlines != null
+          ? await Promise.all(
+              orderlines.map(async (ol) => await ctx.db.delete(ol._id)),
+            )
+          : null
+      const deleteOrder = await ctx.db.delete(order._id)
+      removeAll.push({
+        deleteCustomer,
+        deletePoolRental,
+        ...deleteOrderlines,
+        deleteOrder,
+      })
+    }
 
     return { ...removeAll }
   },
