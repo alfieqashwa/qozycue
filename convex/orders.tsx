@@ -246,8 +246,6 @@ export const findByPoolTableId = query({
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
 
-    if (poolRentals.length === 0) return []
-
     const filteredOrderlist = []
     for (const rental of poolRentals) {
       const order = await ctx.db.get(rental.orderId)
@@ -290,8 +288,6 @@ export const findByPoolTableIdPublicProcedure = query({
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
-
-    if (poolRentals.length === 0) return []
 
     const filteredOrderlist = []
     for (const rental of poolRentals) {
