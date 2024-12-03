@@ -143,7 +143,9 @@ export const findAllArchiveOrderSortedByDate = query({
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
         .filter((q) => q.eq(q.field("isBooking"), false))
         .unique()
-      const poolTable = await ctx.db.get(poolRental?.poolTableId!)
+      const poolTable = poolRental
+        ? await ctx.db.get(poolRental?.poolTableId)
+        : null
       const orderlines = await ctx.db
         .query("orderlines")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
