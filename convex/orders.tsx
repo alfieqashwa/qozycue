@@ -68,36 +68,37 @@ export const findAllSortedByDate = query({
         .filter((q) => q.eq(q.field("isBooking"), false))
         .first()
 
-      if (poolRental) {
-        const poolTable = await ctx.db.get(poolRental?.poolTableId)
-        const orderlines = await ctx.db
-          .query("orderlines")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .collect()
-        const customer = order.customerId
-          ? await ctx.db.get(order.customerId)
-          : undefined
+      const poolTable = poolRental
+        ? await ctx.db.get(poolRental?.poolTableId)
+        : null
+      const orderlines = await ctx.db
+        .query("orderlines")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .collect()
+      const customer = order.customerId
+        ? await ctx.db.get(order.customerId)
+        : undefined
 
-        filteredOrders.push({
-          ...order,
-          poolRental: {
-            poolTable: {
-              id: poolTable?._id,
-              name: poolTable?.name,
-            },
+      filteredOrders.push({
+        ...order,
+        poolRental: {
+          poolTable: {
+            id: poolTable?._id,
+            name: poolTable?.name,
           },
-          orderlines,
-          createdBy: {
-            name: user?.name,
-            role: user?.role,
-          },
-          customer: {
-            name: customer?.name,
-            phone: customer?.phone,
-          },
-        })
-      }
+        },
+        orderlines,
+        createdBy: {
+          name: user?.name,
+          role: user?.role,
+        },
+        customer: {
+          name: customer?.name,
+          phone: customer?.phone,
+        },
+      })
     }
+
     return filteredOrders
   },
 })
