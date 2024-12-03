@@ -59,8 +59,9 @@ export const findAllSortedByDate = query({
       .order("desc")
       .collect()
 
-    const filteredOrders = []
+    if (orders.length === 0) return []
 
+    const filteredOrders = []
     for (const order of orders) {
       const poolRental = await ctx.db
         .query("poolRentals")
@@ -135,8 +136,9 @@ export const findAllArchiveOrderSortedByDate = query({
       .order("desc")
       .collect()
 
-    const filteredOrders = []
+    if (orders.length === 0) return []
 
+    const filteredOrders = []
     for (const order of orders) {
       const poolRental = await ctx.db
         .query("poolRentals")
@@ -244,8 +246,9 @@ export const findByPoolTableId = query({
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
 
-    const filteredOrderlist = []
+    if (poolRentals.length === 0) return []
 
+    const filteredOrderlist = []
     for (const rental of poolRentals) {
       const order = await ctx.db.get(rental.orderId)
       const packet = await ctx.db.get(rental.packetId)
@@ -288,6 +291,8 @@ export const findByPoolTableIdPublicProcedure = query({
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
 
+    if (poolRentals.length === 0) return []
+
     const filteredOrderlist = []
     for (const rental of poolRentals) {
       const order = await ctx.db.get(rental.orderId)
@@ -320,6 +325,8 @@ export const findAllPendingStatusByPoolTableId = query({
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
       .filter((q) => q.eq(q.field("isBooking"), false))
       .collect()
+
+    if (poolRentals.length === 0) return []
 
     const filteredOrderlist = []
     for (const rental of poolRentals) {
@@ -397,6 +404,8 @@ export const findAllCafeOnlyByCompanyId = query({
       .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
       .order("desc")
       .collect()
+
+    if (orders.length === 0) return []
 
     const filteredCafeOnlyOrders = []
     for (const order of orders) {
