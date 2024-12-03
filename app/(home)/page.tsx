@@ -8,6 +8,7 @@ import { GiPoolTriangle } from "react-icons/gi"
 import { AuthButtons } from "./auth-buttons"
 import { DocumentationButton } from "./documentation-button"
 import { Hero } from "./hero"
+import { ResetAll } from "@/components/reset-all"
 
 export default async function HomePage() {
   const preloadSlug = await preloadQuery(
@@ -38,6 +39,7 @@ export default async function HomePage() {
         <div className="flex items-center justify-center gap-4">
           <AuthButtons preloadSlug={preloadSlug} />
         </div>
+        <ResetAll />
       </section>
     </Vortex>
   )
