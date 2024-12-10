@@ -18,19 +18,25 @@ export default async function PoolTableIdPage({
   const { poolTableId } = params
   const { pool } = searchParams
 
-  const session = await fetchQuery(
-    api.sessions.find,
+  const user = await fetchQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  if (!session._id) redirect("/signin")
+  if (!user) redirect("/signin")
+
+  const company = await fetchQuery(
+    api.companies.find,
+    { id: user.companyId },
+    { token: convexAuthNextjsToken() },
+  )
 
   const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
-    session.user.role ?? "",
+    user.role ?? "",
   )
   const cashierAccessLevel = ["DEWA", "ADMIN", "CASHIER"].includes(
-    session.user.role ?? "",
+    user.role ?? "",
   )
 
   const orders = await fetchQuery(
@@ -39,8 +45,8 @@ export default async function PoolTableIdPage({
     { token: convexAuthNextjsToken() },
   )
 
-  if (!!session.companySlug && !orders.length)
-    redirect(`/${encodeURIComponent(session.companySlug)}/tables/`)
+  if (!orders.length)
+    redirect(`/${encodeURIComponent(company?.slug as string)}/tables/`)
 
   return (
     <div>

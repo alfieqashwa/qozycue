@@ -32,7 +32,7 @@ const ToggleThemes = dynamic(() => import("./toggle-themes"), {
 
 type WrapperDashboardProps = {
   linkList: TLinkList[]
-  session: FunctionReturnType<typeof api.sessions.find>
+  user: FunctionReturnType<typeof api.users.me>
   company: FunctionReturnType<typeof api.companies.find>
   className?: string
   children: React.ReactNode
@@ -40,7 +40,7 @@ type WrapperDashboardProps = {
 
 export function WrapperDashboard({
   linkList,
-  session,
+  user,
   company,
   className,
   children,
@@ -59,11 +59,9 @@ export function WrapperDashboard({
 
   if (!hasHydrated) return null
 
-  const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(
-    session.user.role ?? "",
-  )
+  const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(user?.role ?? "")
   const managerAccessLevel = ["DEWA", "ADMIN", "OWNER", "MANAGER"].includes(
-    session.user.role ?? "",
+    user?.role ?? "",
   )
 
   return (
@@ -73,7 +71,7 @@ export function WrapperDashboard({
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
           <ConnectionStatus />
           <ToggleThemes />
-          <UserAvatar session={session} slug={company?.slug!} />
+          <UserAvatar user={user} slug={company?.slug!} />
         </div>
       </div>
 
@@ -89,14 +87,14 @@ export function WrapperDashboard({
           <Nav
             ownerAccessLevel={ownerAccessLevel}
             managerAccessLevel={managerAccessLevel}
-            slug={session.companySlug!}
+            slug={company?.slug as string}
             links={linkList.filter((l) => l.isGeneral)}
           />
           <Separator className="py-[1px]" />
           <Nav
             ownerAccessLevel={ownerAccessLevel}
             managerAccessLevel={managerAccessLevel}
-            slug={session.companySlug!}
+            slug={company?.slug as string}
             links={linkList.filter((l) => !l.isGeneral)}
           />
           {/* //? set padding-bottom so the sidebar can be fully-scrolled on mobile-view's landscape */}
@@ -112,7 +110,7 @@ export function WrapperDashboard({
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
                     "relative size-12",
-                    session.user.role === "DEWA" ? "block" : "hidden",
+                    user?.role === "DEWA" ? "block" : "hidden",
                   )}
                 >
                   <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -147,7 +145,7 @@ export function WrapperDashboard({
           isOwner={ownerAccessLevel}
           slug={company?.slug as string}
           links={linkList}
-          dewaRole={session.user.role === "DEWA"}
+          dewaRole={user?.role === "DEWA"}
           className={className}
         />
       </footer>

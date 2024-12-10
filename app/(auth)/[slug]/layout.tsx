@@ -14,28 +14,28 @@ export default async function SlugLayout({
   children: React.ReactNode
 }>) {
   noStore()
-  const session = await fetchQuery(
-    api.sessions.find,
+  const user = await fetchQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
-  if (!session._id) redirect("/signin")
+  if (!user) redirect("/signin")
 
   const company = await fetchQuery(
     api.companies.find,
-    { id: session?.companyId },
+    { id: user?.companyId },
     { token: convexAuthNextjsToken() },
   )
 
-  if (session.user?.role === "USER") redirect("/portal/")
+  if (user?.role === "USER") redirect("/portal/")
 
   const { slug } = params
-  if (session.companySlug !== slug) notFound()
+  if (company?.slug !== slug) notFound()
 
   return (
     <WrapperDashboard
       linkList={DASHBOARD_LINK_LIST}
-      session={session}
+      user={user}
       company={company}
       className="size-9 shrink-0 animate-spin text-primary"
     >

@@ -14,20 +14,29 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-  const session = await fetchQuery(
-    api.sessions.find,
+  const me = await fetchQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  if (!!session._id && session.user.role !== "USER") {
-    if (session.user.role === "DEWA") redirect("/dewa/")
-    if (session.user.role === "ADMIN" || session.user.role === "OWNER")
-      redirect(`/${encodeURIComponent(session.companySlug!)}/dashboard/`)
-    if (session.user.role === "MANAGER")
-      redirect(`/${encodeURIComponent(session.companySlug!)}/transactions/`)
-    if (session.user.role === "CASHIER")
-      redirect(`/${encodeURIComponent(session.companySlug!)}/tables/`)
+  if (!me) redirect("/signin")
+
+  const company = await fetchQuery(
+    api.companies.find,
+    { id: me.companyId },
+    { token: convexAuthNextjsToken() },
+  )
+
+  console.log({ company })
+  if (me.role !== "USER" && !!company) {
+    if (me.role === "DEWA") redirect("/dewa/")
+    if (me.role === "ADMIN" || me.role === "OWNER")
+      redirect(`/${encodeURIComponent(company.slug)}/dashboard/`)
+    if (me.role === "MANAGER")
+      redirect(`/${encodeURIComponent(company.slug)}/transactions/`)
+    if (me.role === "CASHIER")
+      redirect(`/${encodeURIComponent(company.slug)}/tables/`)
   }
 
   return (
@@ -36,7 +45,7 @@ export default async function Page() {
       <h2 className="text-xl font-semibold">Welcome to Qozy Cue App.</h2>
       <p className="max-w-4xl pt-4 text-center">
         Tekan
-        <TriggerTrialButton userRole={session.user.role === "USER"} />
+        <TriggerTrialButton userRole={me.role === "USER"} />
         untuk mencoba aplikasi kami
         <span className="pl-1 text-primary">secara gratis</span>. Tekan ikon
         <a

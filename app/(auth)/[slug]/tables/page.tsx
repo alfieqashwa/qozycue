@@ -6,23 +6,26 @@ import type { Metadata } from "next"
 import CafeOnlyTab from "./cafe-only-tab"
 import { OpenStatusCounter } from "./open-status-counter"
 import { PoolTableTab } from "./pool-table-tab"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Tables",
 }
 
 export default async function Page() {
-  const session = await fetchQuery(
-    api.sessions.find,
+  const user = await fetchQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
 
+  if (!user) redirect("/signin")
+
   const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
-    session.user.role ?? "",
+    user.role ?? "",
   )
   const cashierAccessLevel = ["DEWA", "ADMIN", "CASHIER"].includes(
-    session.user.role ?? "",
+    user.role ?? "",
   )
 
   return (

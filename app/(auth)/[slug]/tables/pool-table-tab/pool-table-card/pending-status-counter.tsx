@@ -12,13 +12,15 @@ import Link from "next/link"
 export function PendingStatusCounter({
   poolTableId,
   poolTableName,
+  companyId,
 }: {
   poolTableId: Id<"poolTables">
   poolTableName: string
+  companyId: Id<"companies"> | undefined
 }) {
-  const session = useTanstackQuery({
-    ...convexQuery(api.sessions.find, {}),
-    select: (data) => ({ slug: data.companySlug }),
+  const company = useTanstackQuery({
+    ...convexQuery(api.companies.find, { id: companyId }),
+    enabled: Boolean(companyId),
   })
   const { data: countPendingStatus, status } = useTanstackQuery({
     ...convexQuery(api.orders.countPendingStatus, { poolTableId }),
@@ -29,10 +31,10 @@ export function PendingStatusCounter({
     <>
       {status === "success" && !!countPendingStatus && (
         <TooltipPendingNotification count={countPendingStatus}>
-          {session.status === "success" && !!session.data.slug && (
+          {company.status === "success" && !!company.data?.slug && (
             <Link
               href={{
-                pathname: `/${encodeURIComponent(session.data.slug as string)}/tables/${encodeURIComponent(poolTableId)}`,
+                pathname: `/${encodeURIComponent(company.data?.slug as string)}/tables/${encodeURIComponent(poolTableId)}`,
                 query: {
                   pool: poolTableName,
                 },

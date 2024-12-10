@@ -51,6 +51,7 @@ export function PoolTableCard({
       <PendingStatusCounter
         poolTableId={poolTableId}
         poolTableName={poolTableName}
+        companyId={order.data?.companyId}
       />
       {/*  Only show if the packet-rate is hourly or undefined */}
       {isPublished && order.data?.poolRental.packet.rate !== "MINUTE" && (

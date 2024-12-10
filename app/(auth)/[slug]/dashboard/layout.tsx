@@ -14,16 +14,23 @@ export const metadata: Metadata = {
 export default async function DashboardLayout({
   overview,
 }: Readonly<{ overview: React.ReactNode }>) {
-  const session = await fetchQuery(
-    api.sessions.find,
+  const user = await fetchQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
-  if (!session._id) redirect("/signin")
-  if (session.user.role === "MANAGER")
-    redirect(`/${encodeURIComponent(session.companySlug!)}/transactions/`)
-  if (session.user.role === "CASHIER")
-    redirect(`/${encodeURIComponent(session.companySlug!)}/tables/`)
+  if (!user) redirect("/signin")
+
+  const company = await fetchQuery(
+    api.companies.find,
+    { id: user.companyId },
+    { token: convexAuthNextjsToken() },
+  )
+
+  if (user.role === "MANAGER")
+    redirect(`/${encodeURIComponent(company?.slug as string)}/transactions/`)
+  if (user.role === "CASHIER")
+    redirect(`/${encodeURIComponent(company?.slug as string)}/tables/`)
 
   return (
     <Tabs defaultValue="overview" className="mt-2">

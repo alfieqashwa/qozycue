@@ -13,13 +13,13 @@ export default async function PublicSlugPage({
   noStore()
 
   const { slug } = params
-  const preloadedSession = await preloadQuery(
-    api.sessions.find,
+  const preloadedUser = await preloadQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
   const company = await fetchQuery(api.companies.findPublicProcedure, { slug })
   if (!company) redirect("/")
 
-  return <CompanySite slug={slug} preloadedSession={preloadedSession} />
+  return <CompanySite slug={slug} preloadedUser={preloadedUser} />
 }

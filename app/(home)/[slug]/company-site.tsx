@@ -17,12 +17,12 @@ import { PoolTableList } from "./pool-table-list"
 
 export function CompanySite({
   slug,
-  preloadedSession,
+  preloadedUser,
 }: {
   slug: string
-  preloadedSession: Preloaded<typeof api.sessions.find>
+  preloadedUser: Preloaded<typeof api.users.me>
 }) {
-  const session = usePreloadedQuery(preloadedSession)
+  const user = usePreloadedQuery(preloadedUser)
 
   const { data: company, status } = useTanstackQuery({
     ...convexQuery(api.companies.findPublicProcedure, { slug }),
@@ -45,7 +45,7 @@ export function CompanySite({
                   >
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link href={session ? `/${slug}/tables` : "/"}>
+                        <Link href={user ? `/${slug}/tables` : "/"}>
                           <Building2
                             size={32}
                             className={cn(
@@ -55,7 +55,7 @@ export function CompanySite({
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent className="bg-muted text-muted-foreground">
-                        {session ? "Go to Page Tables" : " Go to Home Page"}
+                        {user ? "Go to Page Tables" : " Go to Home Page"}
                       </TooltipContent>
                     </Tooltip>
 

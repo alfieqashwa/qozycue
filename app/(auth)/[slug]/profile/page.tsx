@@ -7,6 +7,7 @@ import { unstable_noStore as noStore } from "next/cache"
 import { ContactDeveloperWhatsapp } from "./contact-developer-whatsapp"
 import { TeamInfo } from "./team-info"
 import { UserInfo } from "./user-info"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -14,13 +15,15 @@ export const metadata: Metadata = {
 
 export default async function ProfilePage() {
   noStore()
-  const session = await fetchQuery(
-    api.sessions.find,
+  const user = await fetchQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
-  const adminAccessLevel =
-    session?.user.role === "ADMIN" || session?.user.role === "DEWA"
+
+  if (!user) redirect("/signin")
+
+  const adminAccessLevel = user.role === "ADMIN" || user.role === "DEWA"
 
   return (
     <div className="relative">
@@ -32,17 +35,17 @@ export default async function ProfilePage() {
         <TabsContent value="profile">
           <UserInfo
             adminAccessLevel={adminAccessLevel}
-            userId={session.userId}
-            companyId={session.companyId}
+            userId={user._id}
+            companyId={user.companyId}
           />
         </TabsContent>
         {adminAccessLevel && (
           <TabsContent value="team">
-            <TeamInfo companyId={session.user.companyId} />
+            <TeamInfo companyId={user.companyId} />
           </TabsContent>
         )}
       </Tabs>
-      {session?.user.role !== "DEWA" && <ContactDeveloperWhatsapp />}
+      {user.role !== "DEWA" && <ContactDeveloperWhatsapp />}
     </div>
   )
 }

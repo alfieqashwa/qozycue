@@ -23,17 +23,25 @@ export const metadata: Metadata = {
 
 export default async function SettingPage() {
   noStore()
-  const session = await fetchQuery(
-    api.sessions.find,
+  const user = await fetchQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
 
-  if (session.user.role === "CASHIER")
-    redirect(`/${encodeURIComponent(session.companySlug!)}/tables`)
+  if (!user) redirect("/signin")
 
-  const isSuperAdmin = session.user.role === "DEWA"
-  const isAdmin = session.user.role === "ADMIN"
+  const company = await fetchQuery(
+    api.companies.find,
+    { id: user.companyId },
+    { token: convexAuthNextjsToken() },
+  )
+
+  const isSuperAdmin = user.role === "DEWA"
+  const isAdmin = user.role === "ADMIN"
+
+  if (user.role === "CASHIER")
+    redirect(`/${encodeURIComponent(company?.slug as string)}/tables`)
 
   return (
     <Tabs
@@ -88,11 +96,11 @@ export default async function SettingPage() {
       {(isSuperAdmin || isAdmin) && (
         <TabsContent value="pool">
           <div className="text-right">
-            <CreatePoolTable companyId={session.companyId!} />
+            <CreatePoolTable companyId={user.companyId!} />
           </div>
           <Suspense fallback={<LoadingSpinner />}>
             <div className="text-right">{/* <CreatePoolTable /> */}</div>
-            <PoolTableTab companyId={session.companyId!} />
+            <PoolTableTab companyId={user.companyId!} />
           </Suspense>
         </TabsContent>
       )}
@@ -100,7 +108,7 @@ export default async function SettingPage() {
       <TabsContent value="tax">
         <Suspense fallback={<LoadingSpinner />}>
           <div className="text-right">
-            <CreateTax companyId={session.companyId!} />
+            <CreateTax companyId={user.companyId!} />
           </div>
           <TaxTab />
         </Suspense>
@@ -109,9 +117,9 @@ export default async function SettingPage() {
       <Suspense fallback={<LoadingSpinner />}>
         <TabsContent value="discount">
           <div className="text-right">
-            <CreateDiscount companyId={session.companyId!} />
+            <CreateDiscount companyId={user.companyId!} />
           </div>
-          <DiscountTab companyId={session.companyId!} />
+          <DiscountTab companyId={user.companyId!} />
         </TabsContent>
       </Suspense>
     </Tabs>

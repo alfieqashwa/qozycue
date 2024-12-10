@@ -4,24 +4,27 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import { type Metadata } from "next"
 import { ArchiveOrderTab } from "./archive-order-tab"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Archives",
 }
 
 export default async function ArchivePage() {
-  const session = await fetchQuery(
-    api.sessions.find,
+  const user = await fetchQuery(
+    api.users.me,
     {},
     { token: convexAuthNextjsToken() },
   )
+
+  if (!user) redirect("/signin")
 
   const managerAndCashierAccessLevel = [
     "ADMIN",
     "DEWA",
     "MANAGER",
     "CASHIER",
-  ].includes(session.user.role ?? "")
+  ].includes(user.role ?? "")
 
   return (
     <Tabs defaultValue="archive" className="mt-2">
