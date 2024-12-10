@@ -21,7 +21,7 @@ export const Hero = () => (
       ))}
     </p>
     <section className="mt-8 flex w-full items-center justify-around space-x-1.5 sm:space-x-6">
-      <GiPoolTriangle className="size-14 animate-pulse-slow text-sky-500 sm:size-16 lg:size-24" />
+      <GiPoolTriangle className="size-14 animate-pulse-slow text-fuchsia-600 sm:size-16 lg:size-24" />
       <article className="text-center">
         <p className="whitespace-nowrap bg-gradient-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-2xl font-black tracking-widest text-transparent lg:text-4xl">
           Billiard & Cafe
@@ -34,7 +34,7 @@ export const Hero = () => (
           Application
         </p>
       </article>
-      <Utensils className="size-12 animate-pulse-slow text-sky-500 sm:size-14 lg:size-[5rem]" />
+      <Utensils className="size-12 animate-pulse-slow text-fuchsia-600 sm:size-14 lg:size-[5rem]" />
     </section>
   </div>
 )
