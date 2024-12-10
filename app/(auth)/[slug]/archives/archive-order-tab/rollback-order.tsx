@@ -40,7 +40,6 @@ export function RollbackOrder({ id, setOpen }: RolebackOrderProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log("submitted!!")
 
     mutate({ orderId: id, updateTo: "PAID" })
   }

@@ -9,7 +9,7 @@ const isProtectedRoute = createRouteMatcher(["/portal(.*)"])
 
 export default convexAuthNextjsMiddleware((request, { convexAuth }) => {
   if (isSignInPage(request) && convexAuth.isAuthenticated()) {
-    console.log({ request })
+    // console.log({ request })
     return nextjsMiddlewareRedirect(request, "/portal")
   }
   if (isProtectedRoute(request) && !convexAuth.isAuthenticated()) {

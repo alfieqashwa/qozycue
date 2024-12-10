@@ -28,7 +28,6 @@ export default async function Page() {
     { token: convexAuthNextjsToken() },
   )
 
-  console.log({ company })
   if (me.role !== "USER" && !!company) {
     if (me.role === "DEWA") redirect("/dewa/")
     if (me.role === "ADMIN" || me.role === "OWNER")
