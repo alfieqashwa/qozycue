@@ -1,4 +1,4 @@
-import { getAuthSessionId } from "@convex-dev/auth/server"
+import { authTables, getAuthSessionId } from "@convex-dev/auth/server"
 import { v } from "convex/values"
 import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
@@ -45,12 +45,35 @@ export const deleteAllByUserId = mutation({
       .withIndex("userId", (q) => q.eq("userId", args.userId))
       .collect()
 
-    const removeAllSessions = Promise.all(
-      sessions.map(async (session) => {
-        return await ctx.db.delete(session._id)
-      }),
-    )
+    const removeAllRefreshTokens = []
+    const removeAllSessions = []
+    const removeAllAccounts = []
 
-    return removeAllSessions
+    for (const session of sessions) {
+      const refreshTokens = await ctx.db
+        .query("authRefreshTokens")
+        .withIndex("sessionId", (q) => q.eq("sessionId", session._id))
+        .collect()
+
+      for (const refreshToken of refreshTokens) {
+        const removeRefreshToken = await ctx.db.delete(refreshToken._id)
+        removeAllRefreshTokens.push(removeRefreshToken)
+      }
+
+      const removeSession = await ctx.db.delete(session._id)
+      removeAllSessions.push(removeSession)
+    }
+
+    const accounts = await ctx.db
+      .query("authAccounts")
+      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .collect()
+
+    for (const account of accounts) {
+      const removeAccount = await ctx.db.delete(account._id)
+      removeAllAccounts.push(removeAccount)
+    }
+
+    return { removeAllRefreshTokens, removeAllSessions, removeAllAccounts }
   },
 })
