@@ -9,7 +9,7 @@ import { Button } from "./ui/button"
 
 export function ResetAll() {
   const { mutate, isPending } = useMutation({
-    mutationFn: useConvexMutation(api.companies.resetAll),
+    mutationFn: useConvexMutation(api.sessions.resetAll),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: "All sessions have been resetted.",

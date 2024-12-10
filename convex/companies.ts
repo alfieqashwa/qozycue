@@ -12,7 +12,6 @@ import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
   protectedProcedure,
-  reset,
   superAdminProcedure,
   zMutation,
 } from "./helpers"
@@ -188,15 +187,5 @@ export const toggleIsPublished = zMutation({
   handler: async (ctx, { toggleIsPublishedSchema: { id, isPublished } }) => {
     await adminProcedure(ctx, {})
     return await ctx.db.patch(id, { isPublished: !isPublished })
-  },
-})
-
-// === Only for Development ===
-
-export const resetAll = mutation({
-  args: { forReal: v.string() },
-  handler: async (ctx, args) => {
-    await superAdminProcedure(ctx, {})
-    return await reset(ctx, { forReal: args.forReal })
   },
 })

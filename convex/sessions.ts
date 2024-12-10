@@ -1,8 +1,8 @@
-import { authTables, getAuthSessionId } from "@convex-dev/auth/server"
+import { getAuthSessionId } from "@convex-dev/auth/server"
 import { v } from "convex/values"
 import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
-import { adminProcedure, superAdminProcedure } from "./helpers"
+import { adminProcedure, reset, superAdminProcedure } from "./helpers"
 
 export const findAll = query({
   args: {},
@@ -75,5 +75,15 @@ export const deleteAllByUserId = mutation({
     }
 
     return { removeAllRefreshTokens, removeAllSessions, removeAllAccounts }
+  },
+})
+
+// === Only for Development ===
+
+export const resetAll = mutation({
+  args: { forReal: v.string() },
+  handler: async (ctx, args) => {
+    await superAdminProcedure(ctx, {})
+    return await reset(ctx, { forReal: args.forReal })
   },
 })
