@@ -1,6 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -20,20 +17,22 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { SheetFooter } from "@/components/ui/sheet"
-import { ToastAction } from "@/components/ui/toast"
+import { api } from "@/convex/_generated/api"
 import {
   createProductSchema,
   type TCreateProduct,
 } from "@/types/schema/product-schema"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   useMutation,
   useQueries as useTanstackQueries,
+  useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
-import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
-import { api } from "@/convex/_generated/api"
-import { toast } from "sonner"
 import { ConvexError } from "convex/values"
-import { useMemo } from "react"
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function CreateProductForm({
   setOpen,
@@ -72,6 +71,13 @@ export function CreateProductForm({
     },
   })
 
+  const { data: hasProductName } = useTanstackQuery({
+    ...convexQuery(api.products.findAll, {}),
+    select(data) {
+      return data.some((product) => product.name === form.watch("name"))
+    },
+  })
+
   function onSubmit(values: TCreateProduct) {
     const { name, costPrice, salePrice, unitOfMeasureId, categoryId } = values
     mutate({
@@ -89,10 +95,11 @@ export function CreateProductForm({
   const disabledPriceComparison =
     Number(form.watch("costPrice")) >= Number(form.watch("salePrice"))
   const disabled =
-    isPending ||
+    hasProductName ||
     disabledPriceComparison ||
     form.watch("unitOfMeasureId") === "" ||
-    form.watch("categoryId") === ""
+    form.watch("categoryId") === "" ||
+    isPending
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
