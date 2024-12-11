@@ -121,7 +121,7 @@ export const createTrialCompany = internalMutation({
     const poolTableList: TPoolTable[] = Array.from({ length: 10 }, (_, i) => ({
       companyId,
       name: `${i + 1}`,
-      description: `table-${i + 1} ${company?.name ?? ""}`,
+      description: `table ${i + 1} ${company?.name ?? ""}`,
       isActive: false,
       gapDuration: 10,
       status: "enabled",
