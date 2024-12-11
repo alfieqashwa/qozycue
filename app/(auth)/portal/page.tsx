@@ -41,7 +41,9 @@ export default async function Page() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 font-semibold">
       <FaceSmileIcon className="w-10 text-primary" />
-      <h2 className="text-xl font-semibold">Welcome to Qozy Cue App.</h2>
+      <h2 className="text-xl font-semibold md:text-3xl">
+        Welcome to Qozy Cue App.
+      </h2>
       <p className="max-w-4xl pt-4 text-center">
         Tekan
         <TriggerTrialButton userRole={me.role === "USER"} />

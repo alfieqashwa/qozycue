@@ -102,6 +102,7 @@ export const reset = internalMutation({
 export const createTrialCompany = internalMutation({
   args: { userId: v.id("users"), companyId: v.id("companies") },
   handler: async (ctx, { userId, companyId }) => {
+    const company = await ctx.db.get(companyId)
     const updateUserRole = await ctx.db.patch(userId, {
       role: "ADMIN",
       companyId,
@@ -120,7 +121,7 @@ export const createTrialCompany = internalMutation({
     const poolTableList: TPoolTable[] = Array.from({ length: 10 }, (_, i) => ({
       companyId,
       name: `${i + 1}`,
-      description: `table-${i + 1}`,
+      description: `table-${i + 1} ${company?.name ?? ""}`,
       isActive: false,
       gapDuration: 10,
       status: "enabled",
