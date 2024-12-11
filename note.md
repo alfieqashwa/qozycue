@@ -35,6 +35,7 @@
 ✅ Restrict to edit and delete enabled product(s) and packet(s)
 ✅ Restrict to delete enabled poolTable(s)
 ✅ When creating startTimer in pool table where has/have ordered, the timer not display properly (assuming the bug is on api.orders.findByPoolTable )
+❌ Setup Pdf Download Transactions based on Date Range
 
 ## Backlog (Future Plan)
 
