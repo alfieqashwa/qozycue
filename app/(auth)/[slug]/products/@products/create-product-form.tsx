@@ -98,8 +98,7 @@ export function CreateProductForm({
     hasProductName ||
     disabledPriceComparison ||
     form.watch("unitOfMeasureId") === "" ||
-    form.watch("categoryId") === "" ||
-    isPending
+    form.watch("categoryId") === ""
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">

@@ -23,9 +23,12 @@ import {
   createPacketSchema,
   type TCreatePacket,
 } from "@/types/schema/packet-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -59,6 +62,18 @@ export function CreatePacketForm({
       rate: "MINUTE",
     },
   })
+
+  const { data: hasPacketName } = useTanstackQuery({
+    ...convexQuery(api.packets.findAll, {}),
+    select(data) {
+      return data.some(
+        (packet) =>
+          packet.name === form.watch("name") &&
+          packet.rate === form.watch("rate"),
+      )
+    },
+  })
+
   function onSubmit(values: TCreatePacket) {
     const { name, description, cost, rate } = values
     mutate({
@@ -166,7 +181,7 @@ export function CreatePacketForm({
               Please wait
             </Button>
           ) : (
-            <Button disabled={isPending} type="submit">
+            <Button disabled={hasPacketName} type="submit">
               Create Packet
             </Button>
           )}
