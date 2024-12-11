@@ -7,10 +7,10 @@ import {
   updateCompanyByAdminSchema,
   updateCompanyDewaSchema,
 } from "../types/schema/company-schema"
-import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
+  createTrialCompany,
   protectedProcedure,
   superAdminProcedure,
   zMutation,
@@ -63,6 +63,7 @@ export const slug = query({
 })
 
 // === MUTATIONS ===
+
 export const createTrial = zMutation({
   args: { createTrialCompanySchema },
   handler: async (
@@ -82,45 +83,9 @@ export const createTrial = zMutation({
       isPublished: true,
       subscription: "TRIAL",
     })
-
     if (!companyId) throw new ConvexError("No companyId")
 
-    const updateUserRole = await ctx.db.patch(userId, {
-      role: "ADMIN",
-      companyId,
-    })
-
-    type TData = {
-      companyId: Id<"companies">
-      name: string
-      description: string
-      isActive: boolean
-      gapDuration: number
-      status: "enabled" | "disabled"
-      startTime: number | null
-      endTime: number | null
-    }
-
-    const data: TData[] = Array.from({ length: 10 }, (_, i) => ({
-      companyId,
-      name: `${i + 1}`,
-      description: `table-${i + 1}`,
-      isActive: false,
-      gapDuration: 10,
-      status: "enabled",
-      startTime: null,
-      endTime: null,
-    }))
-    let insertedIds: Id<"poolTables">[] = [] // array to store the inserted IDs
-
-    await Promise.all(
-      data.map(async (table) => {
-        const result = await ctx.db.insert("poolTables", table)
-        insertedIds.push(result)
-      }),
-    )
-
-    return { companyId, updateUserRole, insertedIds }
+    return await createTrialCompany(ctx, { userId, companyId })
   },
 })
 

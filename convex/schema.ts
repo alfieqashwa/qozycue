@@ -163,14 +163,14 @@ export default defineSchema({
   categories: defineTable({
     name: v.string(),
     description: v.string(), // required b'coz it's global model
-  }),
+  }).index("by_name", ["name"]),
 
   // Todos: set the fields to default and global as like as Categories
   unitOfMeasures: defineTable({
     name: v.string(),
     description: v.string(), // required b'coz it's global model
     // companyId: v.id("companies"),
-  }),
+  }).index("by_name", ["name"]),
 
   memberships: defineTable({
     level: v.string(),

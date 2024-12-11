@@ -33,7 +33,7 @@ export function CreateTrialCompanyForm({
     mutationFn: useConvexMutation(api.companies.createTrial),
     onSuccess: () => {
       toast.success("Succeed!", {
-        description: "Your new company/tenant has been created.",
+        description: "Your company/tenant has been created.",
       })
       setOpen(false)
       router.push(
