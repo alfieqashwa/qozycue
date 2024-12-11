@@ -39,10 +39,14 @@
 
 ## Backlog (Future Plan)
 
-❌ Setup Cancelled Feature
-❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
 ✅ Pool Table with the same company must have a unique name
-❌ Update library "react-to-print" version after learn their recent documentation
+✅ Product with the same company must have a unique name
+✅ Packet with the same company and the same rate must have a unique name
+✅ Tax with the same company must have a unique name
+✅ Discount with the same company must have a unique name
+❌ Setup Cancelled Feature (Refund use case)
+❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
+❌ "react-to-print" version after learn their recent documentation
 ❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
 ❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
 
