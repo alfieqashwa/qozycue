@@ -1,4 +1,5 @@
 import { useMediaQuery } from "@/app/hooks/use-media-query"
+import { TimePicker } from "@/components/time-picker"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -35,7 +36,7 @@ import {
 import { ConvexError } from "convex/values"
 import { format, isBefore, isToday, isValid, set } from "date-fns"
 import { id } from "date-fns/locale"
-import { Clock } from "lucide-react"
+import { Calendar } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -205,48 +206,42 @@ export function UpdateBookingForm({
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[280px] pl-3 text-left font-normal",
+                          "w-[280px] items-center justify-start text-left font-normal",
                           !field.value && "text-muted-foreground",
                         )}
                       >
-                        {formatTimeForDisplay(field.value)}
-                        <Clock className="ml-auto h-4 w-4 opacity-50" />
+                        <Calendar className="mr-2 h-4 w-4 opacity-50" />
+                        {field.value ? (
+                          <span>{formatTimeForDisplay(field.value)}</span>
+                        ) : (
+                          <span>Pick a time</span>
+                        )}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-[280px] p-4" align="start">
                     <div className="space-y-2">
                       <FormLabel>Select Time</FormLabel>
-                      <Input
-                        type="time"
-                        value={field.value ? format(field.value, "HH:mm") : ""}
-                        onChange={(e) => {
-                          const date = field.value || Date.now()
-                          const [hoursStr, minutesStr] =
-                            e.target.value.split(":")
-                          const hours = hoursStr ? parseInt(hoursStr, 10) : 0
-                          const minutes = minutesStr
-                            ? parseInt(minutesStr, 10)
-                            : 0
-                          let newDate = set(date, {
-                            hours,
-                            minutes,
-                          })
-                          // If the selected date is today, ensure the time is not before current time
-                          if (isToday(date) && isBefore(newDate, currentTime)) {
-                            newDate = set(date, {
-                              hours: new Date(currentTime).getHours(),
-                              minutes: new Date(currentTime).getMinutes(),
+                      <TimePicker
+                        date={new Date(field.value || currentTime)} // Pass a valid Date object
+                        setDate={(date) => {
+                          const now = new Date() // Get the current time
+                          const selectedDate = date ?? now // Fallback to now if no date is provided
+
+                          // Ensure time is valid: if today and time is in the past, adjust to current time
+                          if (
+                            isToday(selectedDate) &&
+                            isBefore(selectedDate, now)
+                          ) {
+                            const adjustedDate = set(selectedDate, {
+                              hours: now.getHours(),
+                              minutes: now.getMinutes(),
                             })
+                            field.onChange(adjustedDate.getTime())
+                          } else {
+                            field.onChange(selectedDate.getTime())
                           }
-                          field.onChange(newDate.getTime())
                         }}
-                        className="w-full"
-                        min={
-                          isToday(field.value)
-                            ? format(currentTime, "HH:mm")
-                            : undefined
-                        }
                       />
                     </div>
                   </PopoverContent>
