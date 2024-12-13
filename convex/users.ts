@@ -21,7 +21,8 @@ export const me = query({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
-    return userId !== null ? await ctx.db.get(userId) : null
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    return user
   },
 })
 
@@ -31,10 +32,10 @@ export const findUserWithCompany = query({
     companyId: v.optional(v.id("companies")),
   },
   handler: async (ctx, args) => {
-    if (!args.userId || !args.companyId)
-      throw new ConvexError("No User ID nor Company ID was provided!")
-
+    if (!args.userId) throw new ConvexError("No User ID was provided!")
     const user = await ctx.db.get(args.userId)
+
+    if (!args.companyId) throw new ConvexError("No Company ID was provided!")
     const company = await ctx.db.get(args.companyId)
 
     return { user, company }
