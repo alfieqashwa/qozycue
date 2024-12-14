@@ -239,7 +239,7 @@ export const _sumByRate = query({
         .query("packets")
         .withIndex("companyId", (q) => q.eq("companyId", order.companyId))
         .filter((q) => q.eq(q.field("rate"), args.rate))
-        .unique()
+        .first()
 
       const poolRental =
         packet !== null
