@@ -1,5 +1,6 @@
 "use client"
 
+import { CustomDatePicker } from "@/components/custom-date-picker"
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
@@ -7,7 +8,6 @@ import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { addDays } from "date-fns"
 import { useState } from "react"
 import { type DateRange } from "react-day-picker"
-import { TransactionDatePicker } from "../transactions-date-picker"
 import { columnsRental } from "./columns-rental"
 import { RentalTable } from "./rental-table"
 
@@ -42,7 +42,7 @@ export default function RentalPage() {
 
   return (
     <div className="relative">
-      <TransactionDatePicker date={date} setDate={setDate} />
+      <CustomDatePicker date={date} setDate={setDate} />
       {poolRentals.status !== "success" ? (
         <SkeletonDashboardCard className="h-[700px]" />
       ) : (

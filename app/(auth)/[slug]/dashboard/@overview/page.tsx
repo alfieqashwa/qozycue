@@ -1,11 +1,11 @@
 "use client"
 
+import { CustomDatePicker } from "@/components/custom-date-picker"
 import { addDays } from "date-fns"
 import { useState } from "react"
 import { DateRange } from "react-day-picker"
 import { CardList } from "./card-list"
 import { ChartList } from "./chart-list"
-import { OverviewDatePicker } from "./overview-date-picker"
 
 export default function DashboardPage() {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -14,10 +14,12 @@ export default function DashboardPage() {
   })
 
   return (
-    <div className="space-y-4">
-      <OverviewDatePicker date={date} setDate={setDate} />
-      <CardList date={date} />
-      <ChartList date={date} />
+    <div className="relative">
+      <CustomDatePicker date={date} setDate={setDate} />
+      <div className="space-y-4">
+        <CardList date={date} />
+        <ChartList date={date} />
+      </div>
     </div>
   )
 }

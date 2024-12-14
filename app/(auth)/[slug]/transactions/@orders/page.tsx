@@ -1,15 +1,15 @@
 "use client"
 
+import { CustomDatePicker } from "@/components/custom-date-picker"
+import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
+import { api } from "@/convex/_generated/api"
+import { convexQuery } from "@convex-dev/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { addDays } from "date-fns"
 import { useState } from "react"
 import { type DateRange } from "react-day-picker"
-import { TransactionDatePicker } from "../transactions-date-picker"
 import { columnsOrder } from "./columns-order"
 import { OrderTable } from "./order-table"
-import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
-import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { convexQuery } from "@convex-dev/react-query"
-import { api } from "@/convex/_generated/api"
 
 export default function OrderPage() {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -28,7 +28,7 @@ export default function OrderPage() {
 
   return (
     <div className="relative">
-      <TransactionDatePicker date={date} setDate={setDate} />
+      <CustomDatePicker date={date} setDate={setDate} />
       {orders.status !== "success" ? (
         <SkeletonDashboardCard className="h-[700px]" />
       ) : (

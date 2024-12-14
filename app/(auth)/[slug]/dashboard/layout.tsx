@@ -38,7 +38,7 @@ export default async function DashboardLayout({
         <TabsTrigger value="overview">Overview</TabsTrigger>
         <TabsTrigger value="detail">Detail</TabsTrigger>
       </TabsList>
-      <TabsContent value="overview" className="relative">
+      <TabsContent value="overview">
         <Suspense fallback={<SkeletonDashboardCard />}>{overview}</Suspense>
       </TabsContent>
     </Tabs>

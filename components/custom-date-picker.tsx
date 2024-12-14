@@ -3,7 +3,7 @@ import { type DateRange } from "react-day-picker"
 import { DatePickerWithRange } from "@/components/date-picker-with-range"
 import { Button } from "@/components/ui/button"
 
-export function TransactionDatePicker({
+export function CustomDatePicker({
   date,
   setDate,
 }: {
