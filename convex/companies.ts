@@ -43,13 +43,14 @@ export const find = query({
     // protectedProcedure
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (!user) throw new ConvexError("No user provided!")
 
     if (!id) {
-      const user = userId !== null ? await ctx.db.get(userId) : null
-      return user?.companyId ? await ctx.db.get(user?.companyId) : null
+      return await ctx.db.get(user.companyId!)
+    } else {
+      return await ctx.db.get(id)
     }
-    const company = await ctx.db.get(id)
-    return company
   },
 })
 
