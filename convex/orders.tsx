@@ -538,6 +538,84 @@ export const _groupByPaymentMethod = query({
   },
 })
 
+export const printTransaction = query({
+  args: {
+    from: v.optional(v.float64()),
+    to: v.optional(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    // ownerProcedure()
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "OWNER"
+    )
+      throw new ConvexError("You do not have access!")
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
+        ),
+      )
+      .order("desc")
+      .collect()
+
+    const orderList = []
+    for (const order of orders) {
+      const poolRental = await ctx.db
+        .query("poolRentals")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .first()
+      const poolTable = poolRental
+        ? await ctx.db.get(poolRental?.poolTableId)
+        : null
+
+      const createdBy = await ctx.db.get(order.createdBy)
+      const customer = order.customerId
+        ? await ctx.db.get(order.customerId)
+        : null
+
+      orderList.push({
+        ...order,
+        poolRental: {
+          poolTable: {
+            name: poolTable?.name,
+          },
+        },
+        createdBy: {
+          name: createdBy?.name,
+          role: createdBy?.role,
+        },
+        customer: {
+          name: customer?.name,
+          phone: customer?.phone,
+        },
+      })
+    }
+
+    const totalRevenue = orderList.reduce((acc, curr) => {
+      if (curr.totalAmount != null) {
+        return acc + curr.totalAmount
+      } else {
+        return acc
+      }
+    }, 0)
+    const totalTransaction = orderList.length
+    return {
+      orderList,
+      totalRevenue,
+      totalTransaction,
+    }
+  },
+})
+
 // === ENDS DASHBOARD ===
 
 // === MUTATION ===

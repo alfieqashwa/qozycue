@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 
 export default async function DashboardLayout({
   overview,
-}: Readonly<{ overview: React.ReactNode }>) {
+  detail,
+}: Readonly<{ overview: React.ReactNode; detail: React.ReactNode }>) {
   const user = await fetchQuery(
     api.users.me,
     {},
@@ -40,6 +41,9 @@ export default async function DashboardLayout({
       </TabsList>
       <TabsContent value="overview">
         <Suspense fallback={<SkeletonDashboardCard />}>{overview}</Suspense>
+      </TabsContent>
+      <TabsContent value="detail">
+        <Suspense fallback={<SkeletonDashboardCard />}>{detail}</Suspense>
       </TabsContent>
     </Tabs>
   )

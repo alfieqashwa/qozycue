@@ -1,17 +1,25 @@
-import { addDays } from "date-fns"
-import { type DateRange } from "react-day-picker"
 import { DatePickerWithRange } from "@/components/date-picker-with-range"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { addDays } from "date-fns"
+import { type DateRange } from "react-day-picker"
 
 export function CustomDatePicker({
   date,
   setDate,
+  className,
 }: {
   date: DateRange | undefined
   setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>
+  className?: string
 }) {
   return (
-    <div className="hidden md:absolute md:-top-14 md:right-0 md:block">
+    <div
+      className={cn(
+        "hidden md:absolute md:-top-14 md:right-0 md:block",
+        className,
+      )}
+    >
       <div className="flex w-full flex-col items-end space-y-2 md:w-auto md:flex-row md:justify-end md:space-x-2 md:space-y-0">
         <div className="flex space-x-2">
           <Button

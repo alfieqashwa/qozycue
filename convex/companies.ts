@@ -11,7 +11,6 @@ import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
   createTrialCompany,
-  protectedProcedure,
   superAdminProcedure,
   zMutation,
 } from "./helpers"
@@ -41,9 +40,14 @@ export const findAll = query({
 export const find = query({
   args: { id: v.optional(v.id("companies")) },
   handler: async (ctx, { id }) => {
-    await protectedProcedure(ctx, {})
+    // protectedProcedure
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new ConvexError("Please signed in!")
 
-    if (!id) return
+    if (!id) {
+      const user = userId !== null ? await ctx.db.get(userId) : null
+      return user?.companyId ? await ctx.db.get(user?.companyId) : null
+    }
     const company = await ctx.db.get(id)
     return company
   },
