@@ -18,7 +18,7 @@ export default async function Page() {
     {},
     { token: convexAuthNextjsToken() },
   )
-  console.log("User Data: ", user)
+  // console.log("User Data: ", user)
 
   if (!user) redirect("/signin")
 
