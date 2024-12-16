@@ -474,6 +474,7 @@ export const upsert = zMutation({
       productId,
       quantity,
       amount,
+      isFree: false,
       orderId,
       orderlineStatus: "UNORDERED", // "UNORDERED" is default value
     })

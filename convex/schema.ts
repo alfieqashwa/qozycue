@@ -154,6 +154,7 @@ export default defineSchema({
     orderlineStatus: v.union(v.literal("UNORDERED"), v.literal("ORDERED")),
     quantity: v.number(),
     amount: v.float64(),
+    isFree: v.boolean(),
     productId: v.id("products"),
     orderId: v.id("orders"),
   })
