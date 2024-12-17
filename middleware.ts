@@ -8,15 +8,18 @@ import {
 const isSignInPage = createRouteMatcher(["/signin"])
 const isProtectedRoute = createRouteMatcher(["/portal(.*)"])
 
-export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
-  if (isSignInPage(request) && (await convexAuth.isAuthenticated())) {
-    // console.log({ request })
-    return nextjsMiddlewareRedirect(request, "/portal")
-  }
-  if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, "/signin")
-  }
-})
+export default convexAuthNextjsMiddleware(
+  async (request, { convexAuth }) => {
+    if (isSignInPage(request) && (await convexAuth.isAuthenticated())) {
+      // console.log({ request })
+      return nextjsMiddlewareRedirect(request, "/portal")
+    }
+    if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
+      return nextjsMiddlewareRedirect(request, "/signin")
+    }
+  },
+  { cookieConfig: { maxAge: 60 * 60 * 24 * 30 } },
+) // 30 days
 
 export const config = {
   // The following matcher runs middleware on all routes
