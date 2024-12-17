@@ -36,6 +36,7 @@
 ✅ Restrict to delete enabled poolTable(s)
 ✅ When creating startTimer in pool table where has/have ordered, the timer not display properly (assuming the bug is on api.orders.findByPoolTable )
 ✅ Setup Pdf Download Transactions based on Date Range
+✅ New Feature: Free Orderline (Manager Access Level)
 
 ## Backlog (Future Plan)
 
