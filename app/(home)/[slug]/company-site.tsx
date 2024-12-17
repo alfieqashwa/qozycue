@@ -30,7 +30,7 @@ export function CompanySite({
   })
 
   return (
-    <div className="w-full">
+    <div className="min-h-screen w-full">
       {status === "success" && (
         <section>
           <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
