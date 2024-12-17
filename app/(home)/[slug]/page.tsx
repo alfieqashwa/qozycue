@@ -16,7 +16,7 @@ export default async function PublicSlugPage({
   const preloadedUser = await preloadQuery(
     api.users.me,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
   const company = await fetchQuery(api.companies.findPublicProcedure, { slug })
   if (!company) redirect("/")

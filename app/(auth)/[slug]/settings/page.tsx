@@ -26,7 +26,7 @@ export default async function SettingPage() {
   const user = await fetchQuery(
     api.users.me,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   if (!user) redirect("/signin")
@@ -34,7 +34,7 @@ export default async function SettingPage() {
   const company = await fetchQuery(
     api.companies.find,
     { id: user.companyId },
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   const isSuperAdmin = user.role === "DEWA"

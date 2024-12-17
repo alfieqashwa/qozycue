@@ -16,7 +16,7 @@ export default async function Page() {
   const user = await fetchQuery(
     api.users.me,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
   console.log("User Data: ", user)
 

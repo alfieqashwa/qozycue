@@ -15,7 +15,7 @@ export default async function DewaLayout({
   const me = await fetchQuery(
     api.users.me,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   if (!me) redirect("/signin")
@@ -25,7 +25,7 @@ export default async function DewaLayout({
   const company = await fetchQuery(
     api.companies.find,
     { id: me.companyId },
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   return (

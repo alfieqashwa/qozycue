@@ -18,7 +18,7 @@ export default async function ProfilePage() {
   const user = await fetchQuery(
     api.users.me,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   if (!user) redirect("/signin")

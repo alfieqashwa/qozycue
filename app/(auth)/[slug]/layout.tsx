@@ -17,14 +17,14 @@ export default async function SlugLayout({
   const user = await fetchQuery(
     api.users.me,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
   if (!user) redirect("/signin")
 
   const company = await fetchQuery(
     api.companies.find,
     { id: user?.companyId },
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   if (user?.role === "USER") redirect("/portal/")

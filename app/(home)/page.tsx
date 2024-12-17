@@ -14,7 +14,7 @@ export default async function HomePage() {
   const preloadSlug = await preloadQuery(
     api.companies.slug,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   return (

@@ -21,7 +21,7 @@ export default async function PoolTableIdPage({
   const user = await fetchQuery(
     api.users.me,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   if (!user) redirect("/signin")
@@ -29,7 +29,7 @@ export default async function PoolTableIdPage({
   const company = await fetchQuery(
     api.companies.find,
     { id: user.companyId },
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
@@ -42,7 +42,7 @@ export default async function PoolTableIdPage({
   const orders = await fetchQuery(
     api.orders.findAllPendingStatusByPoolTableId,
     { poolTableId },
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   if (!orders.length)

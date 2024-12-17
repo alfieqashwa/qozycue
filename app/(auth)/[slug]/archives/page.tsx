@@ -14,7 +14,7 @@ export default async function ArchivePage() {
   const user = await fetchQuery(
     api.users.me,
     {},
-    { token: convexAuthNextjsToken() },
+    { token: await convexAuthNextjsToken() },
   )
 
   if (!user) redirect("/signin")
