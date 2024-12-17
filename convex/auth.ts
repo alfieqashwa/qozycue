@@ -2,7 +2,7 @@ import Google from "@auth/core/providers/google"
 import { convexAuth } from "@convex-dev/auth/server"
 import { MutationCtx } from "./_generated/server"
 
-export const { auth, signIn, signOut, store } = convexAuth({
+export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [Google],
   callbacks: {
     // `args.type` is one of "oauth" | "email" | "phone" | "credentials" | "verification"

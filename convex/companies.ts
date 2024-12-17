@@ -47,7 +47,7 @@ export const find = query({
     if (!user) throw new ConvexError("No user provided!")
 
     if (!id) {
-      return await ctx.db.get(user.companyId!)
+      return user.companyId ? await ctx.db.get(user.companyId) : null
     } else {
       return await ctx.db.get(id)
     }

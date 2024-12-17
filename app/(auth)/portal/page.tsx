@@ -14,18 +14,16 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-  const me = await fetchQuery(
-    api.users.me,
-    {},
-    { token: await convexAuthNextjsToken() },
-  )
+  const token = await convexAuthNextjsToken()
+  const me = await fetchQuery(api.users.me, {}, { token })
 
+  // console.log({ me })
   if (!me) redirect("/signin")
 
   const company = await fetchQuery(
     api.companies.find,
     { id: me.companyId },
-    { token: await convexAuthNextjsToken() },
+    { token },
   )
 
   if (me.role !== "USER" && !!company) {

@@ -66,71 +66,69 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning className="dark scroll-smooth">
         <head />
         <body className={cn("font-sans antialiased", fontSans.variable)}>
-          <ConvexClientProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              themes={["light", "dark", "orange", "cherry", "fish"]}
-              disableTransitionOnChange
-            >
-              <main className="mx-auto min-h-screen min-w-[360px] max-w-[2048px] bg-black">
-                {children}
-              </main>
-              {/* // Todos
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            themes={["light", "dark", "orange", "cherry", "fish"]}
+            disableTransitionOnChange
+          >
+            <main className="mx-auto min-h-screen min-w-[360px] max-w-[2048px] bg-black">
+              <ConvexClientProvider>{children}</ConvexClientProvider>
+            </main>
+            {/* // Todos
                <Analytics/ >
             <SpeedInsights /> */}
-              <Toaster
-                // richColors
-                // bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70%
-                position="top-right"
-                toastOptions={{
-                  unstyled: true,
-                  classNames: {
-                    error:
-                      "bg-red-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
-                    info: "bg-yellow-600 border-2 border-yellow-900 flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
-                    success:
-                      "bg-emerald-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
-                    // warning: "bg-orange-400",
-                    // toast: "bg-blue-400",
-                    title: "pl-8 text-foreground font-medium tracking-wide",
-                    description: "pl-8 text-muted-foreground text-sm",
-                    // actionButton: "bg-zinc-400",
-                    // cancelButton: "bg-orange-400",
-                    // closeButton: "bg-lime-400",
-                  },
-                }}
-                icons={{
-                  success: (
-                    <CircleCheck
-                      size={28}
-                      className="ml-2.5 animate-pulse rounded-full text-emerald-400 ring-4 ring-emerald-900"
-                    />
-                    // <CircleCheck
-                    //   size={28}
-                    //   strokeWidth={2.3}
-                    //   className="ml-3 shrink-0 stroke-emerald-500"
-                    // />
-                  ),
-                  info: (
-                    <Info
-                      size={28}
-                      className="ml-2.5 animate-pulse rounded-full text-yellow-50 ring-4 ring-yellow-400"
-                    />
-                  ),
-                  // warning: <WarningIcon />,
-                  error: (
-                    <CircleX
-                      size={28}
-                      className="ml-2.5 animate-pulse rounded-full text-red-600 ring-4 ring-red-900"
-                    />
-                  ),
-                  // loading: <LoadingIcon />,
-                }}
-              />
-            </ThemeProvider>
-          </ConvexClientProvider>
+            <Toaster
+              // richColors
+              // bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70%
+              position="top-right"
+              toastOptions={{
+                unstyled: true,
+                classNames: {
+                  error:
+                    "bg-red-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                  info: "bg-yellow-600 border-2 border-yellow-900 flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                  success:
+                    "bg-emerald-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                  // warning: "bg-orange-400",
+                  // toast: "bg-blue-400",
+                  title: "pl-8 text-foreground font-medium tracking-wide",
+                  description: "pl-8 text-muted-foreground text-sm",
+                  // actionButton: "bg-zinc-400",
+                  // cancelButton: "bg-orange-400",
+                  // closeButton: "bg-lime-400",
+                },
+              }}
+              icons={{
+                success: (
+                  <CircleCheck
+                    size={28}
+                    className="ml-2.5 animate-pulse rounded-full text-emerald-400 ring-4 ring-emerald-900"
+                  />
+                  // <CircleCheck
+                  //   size={28}
+                  //   strokeWidth={2.3}
+                  //   className="ml-3 shrink-0 stroke-emerald-500"
+                  // />
+                ),
+                info: (
+                  <Info
+                    size={28}
+                    className="ml-2.5 animate-pulse rounded-full text-yellow-50 ring-4 ring-yellow-400"
+                  />
+                ),
+                // warning: <WarningIcon />,
+                error: (
+                  <CircleX
+                    size={28}
+                    className="ml-2.5 animate-pulse rounded-full text-red-600 ring-4 ring-red-900"
+                  />
+                ),
+                // loading: <LoadingIcon />,
+              }}
+            />
+          </ThemeProvider>
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>
