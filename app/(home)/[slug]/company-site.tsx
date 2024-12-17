@@ -30,7 +30,7 @@ export function CompanySite({
   })
 
   return (
-    <>
+    <div className="w-full">
       {status === "success" && (
         <section>
           <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
@@ -87,6 +87,6 @@ export function CompanySite({
           )}
         </section>
       )}
-    </>
+    </div>
   )
 }

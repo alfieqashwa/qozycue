@@ -52,8 +52,8 @@ export function PublicTimer({
                   <Image
                     src="/images/icon-whatsapp.svg"
                     alt="whatsapp-logo"
-                    width={35}
-                    height={35}
+                    width={30}
+                    height={30}
                     className="animate-pulse"
                   />
                 </a>
