@@ -1,3 +1,4 @@
+// source -> https://labs.convex.dev/auth/authz/nextjs
 import {
   convexAuthNextjsMiddleware,
   createRouteMatcher,
@@ -7,12 +8,12 @@ import {
 const isSignInPage = createRouteMatcher(["/signin"])
 const isProtectedRoute = createRouteMatcher(["/portal(.*)"])
 
-export default convexAuthNextjsMiddleware((request, { convexAuth }) => {
-  if (isSignInPage(request) && convexAuth.isAuthenticated()) {
+export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
+  if (isSignInPage(request) && (await convexAuth.isAuthenticated())) {
     // console.log({ request })
     return nextjsMiddlewareRedirect(request, "/portal")
   }
-  if (isProtectedRoute(request) && !convexAuth.isAuthenticated()) {
+  if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
     return nextjsMiddlewareRedirect(request, "/signin")
   }
 })
