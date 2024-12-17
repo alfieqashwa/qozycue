@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@auth/core": "^0.37.0",
-    "@convex-dev/auth": "^0.0.71",
+    "@convex-dev/auth": "^0.0.77",
     "@convex-dev/react-query": "^0.0.0-alpha.7",
     "@heroicons/react": "^2.1.5",
     "@hookform/resolvers": "^3.9.0",
@@ -48,7 +48,7 @@
     "date-fns": "^3.6.0",
     "framer-motion": "^11.11.10",
     "lucide-react": "^0.453.0",
-    "next": "14.2.5",
+    "next": "^14.2.20",
     "next-themes": "^0.3.0",
     "react": "^18",
     "react-day-picker": "^8.10.1",
