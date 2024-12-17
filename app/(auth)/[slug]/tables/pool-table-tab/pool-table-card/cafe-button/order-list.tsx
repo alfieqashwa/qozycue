@@ -13,6 +13,7 @@ import { Fragment } from "react"
 import { toast } from "sonner"
 import { PrintOrder } from "./print-order"
 import { ReprintOrder } from "./reprint-order"
+import { ToggleFree } from "./toggle-free"
 
 export function OrderList({
   isManager,
@@ -128,7 +129,7 @@ export function OrderList({
                     >
                       {icon}
                     </div>
-                    <div className="flex w-full items-center justify-between space-x-2 xl:mx-4 xl:w-9/12">
+                    <div className="relative flex w-full items-center justify-between space-x-2 xl:mx-4 xl:w-9/12">
                       <section className="w-full">
                         <h3 className={cn("font-medium capitalize", textColor)}>
                           {orderline.product.name}
@@ -142,6 +143,7 @@ export function OrderList({
                           </span>
                         </p>
                       </section>
+                      {isManager && <ToggleFree orderline={orderline} />}
                       <div className="relative min-h-9 min-w-10 rounded-md border bg-muted shadow-md">
                         <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-semibold">
                           {orderline.quantity}
@@ -149,7 +151,13 @@ export function OrderList({
                       </div>
                     </div>
                     <div className="mr-2 w-full xl:w-3/12 xl:max-w-24">
-                      <p className="text-right text-sm font-medium">
+                      <p
+                        className={cn(
+                          "text-right text-sm font-medium",
+                          orderline.isFree &&
+                            "text-muted-foreground line-through",
+                        )}
+                      >
                         {formattedPrice.format(Number(orderline.amount))}
                       </p>
                     </div>

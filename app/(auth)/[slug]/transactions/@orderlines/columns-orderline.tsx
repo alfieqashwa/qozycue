@@ -3,6 +3,11 @@
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { api } from "@/convex/_generated/api"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
@@ -224,13 +229,32 @@ export const columnsOrderline: ColumnDef<
     ),
     cell: ({ row }) => {
       const costPrice = row.getValue("amount")
+      const isFree = row.original.isFree
 
       return (
-        <Badge variant="secondary" className="px-3 py-1.5">
-          <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceWithRupiah.format(Number(costPrice))}
-          </span>
-        </Badge>
+        <Tooltip>
+          <TooltipTrigger>
+            <Badge variant="secondary" className="px-3 py-1.5">
+              <span
+                className={cn(
+                  "max-w-[500px] truncate capitalize",
+                  isFree && "text-muted-foreground line-through",
+                )}
+              >
+                {formattedPriceWithRupiah.format(Number(costPrice))}
+              </span>
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent
+            side="left"
+            className={cn(
+              "bg-muted capitalize text-muted-foreground",
+              isFree ? "visible" : "invisible",
+            )}
+          >
+            free order
+          </TooltipContent>
+        </Tooltip>
       )
     },
   },

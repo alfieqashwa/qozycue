@@ -112,7 +112,8 @@ export const PrintOrderButton = forwardRef(
                           </p>
                           <p className="flex w-9/12 flex-col">
                             <span className="capitalize">
-                              {orderline.product.name}
+                              {orderline.product.name}{" "}
+                              {orderline.isFree && "(free)"}
                             </span>
                           </p>
                         </li>

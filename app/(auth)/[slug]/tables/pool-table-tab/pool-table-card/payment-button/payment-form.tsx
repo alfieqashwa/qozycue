@@ -150,7 +150,11 @@ export function PaymentForm({
   // ENDS PRINT THE PAYMENT CONFIGURATiON
 
   const totalAmount = useMemo(() => {
-    return orderlines?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0
+    return (
+      orderlines
+        ?.filter((orderline) => !orderline.isFree) // filtered only not free orderline
+        .reduce((acc, curr) => acc + curr.amount, 0) ?? 0
+    )
   }, [orderlines])
 
   const getDiscountVal = useWatch({ control: form.control, name: "discount" })

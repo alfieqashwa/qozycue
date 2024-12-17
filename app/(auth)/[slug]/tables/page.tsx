@@ -3,10 +3,10 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 import CafeOnlyTab from "./cafe-only-tab"
 import { OpenStatusCounter } from "./open-status-counter"
 import { PoolTableTab } from "./pool-table-tab"
-import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Tables",
@@ -18,7 +18,7 @@ export default async function Page() {
     {},
     { token: convexAuthNextjsToken() },
   )
-  // console.log("User Data: ", user)
+  console.log("User Data: ", user)
 
   if (!user) redirect("/signin")
 

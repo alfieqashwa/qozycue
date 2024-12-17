@@ -23,7 +23,9 @@ export function OrderlineDetail({
   })
 
   const totalAmount = useMemo(() => {
-    return orderlines?.reduce((acc, curr) => acc + curr.amount, 0)
+    return orderlines
+      ?.filter((orderline) => !orderline.isFree) // filtered only not free order
+      .reduce((acc, curr) => acc + curr.amount, 0)
   }, [orderlines])
   const totalQty = useMemo(() => {
     return orderlines?.reduce((acc, curr) => acc + curr.quantity, 0)
@@ -58,8 +60,15 @@ export function OrderlineDetail({
 
                 return (
                   <Fragment key={orderline._id}>
-                    <li className="flex w-full items-center py-1 md:py-2">
-                      {icon}
+                    <li className="relative flex w-full items-center py-1 md:py-2">
+                      {orderline.isFree && (
+                        <div className="absolute right-0 top-0">
+                          <h6 className="rounded-sm bg-muted px-1 text-end text-xs font-medium tracking-widest text-amber-300">
+                            Free
+                          </h6>
+                        </div>
+                      )}
+                      <span>{icon}</span>
                       <div className="flex w-9/12 items-center justify-between pl-4">
                         <section>
                           <h3
@@ -92,7 +101,13 @@ export function OrderlineDetail({
                         </div>
                       </div>
                       <div className="w-3/12">
-                        <p className="text-right text-xs font-medium md:text-sm">
+                        <p
+                          className={cn(
+                            "text-right text-xs font-medium md:text-sm",
+                            orderline.isFree &&
+                              "text-muted-foreground line-through",
+                          )}
+                        >
                           {formattedPrice.format(Number(orderline.amount))}
                         </p>
                       </div>

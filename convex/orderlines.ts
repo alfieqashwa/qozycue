@@ -2,7 +2,12 @@ import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError, v } from "convex/values"
 import { upsertOrderlineSchema } from "../types/schema/orderline-schema"
 import { mutation, query } from "./_generated/server"
-import { cashierProcedure, protectedProcedure, zMutation } from "./helpers"
+import {
+  cashierProcedure,
+  managerProcedure,
+  protectedProcedure,
+  zMutation,
+} from "./helpers"
 
 export const findAll = query({
   args: {
@@ -477,6 +482,16 @@ export const upsert = zMutation({
       isFree: false,
       orderId,
       orderlineStatus: "UNORDERED", // "UNORDERED" is default value
+    })
+  },
+})
+
+export const toggleIsFree = mutation({
+  args: { orderlineId: v.id("orderlines"), isFree: v.boolean() },
+  handler: async (ctx, args) => {
+    await managerProcedure(ctx, {})
+    return await ctx.db.patch(args.orderlineId, {
+      isFree: !args.isFree,
     })
   },
 })
