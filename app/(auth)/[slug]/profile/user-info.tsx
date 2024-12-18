@@ -1,6 +1,5 @@
 "use client"
 
-import { LoadingSpinner } from "@/components/loading-spinner"
 import { Separator } from "@/components/ui/separator"
 import {
   Tooltip,
@@ -10,7 +9,8 @@ import {
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
-import { useQueries as useTanstackQueries } from "@tanstack/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { FunctionReturnType } from "convex/server"
 import { Building2, Layers, LayoutTemplate, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { TogglePublished } from "./toggle-published"
@@ -19,71 +19,56 @@ import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
 
 export function UserInfo({
   adminAccessLevel,
-  userId,
-  companyId,
+  user,
 }: {
   adminAccessLevel: boolean
-  userId: Id<"users"> | undefined
-  companyId: Id<"companies"> | undefined
+  user: FunctionReturnType<typeof api.sessions.find>["user"]
 }) {
-  // source -> https://tanstack.com/query/v4/docs/framework/react/reference/useQueries
-  const [{ data: userWithCompany, status }, orders] = useTanstackQueries({
-    queries: [
-      {
-        ...convexQuery(api.users.findUserWithCompany, { userId, companyId }),
-        enabled: Boolean(userId) && Boolean(companyId),
-      },
-      {
-        ...convexQuery(api.orders.findAll, { companyId: companyId! }),
-        enabled: Boolean(companyId),
-      },
-    ],
+  const orders = useTanstackQuery({
+    ...convexQuery(api.orders.findAll, { companyId: user.companyId! }),
+    enabled: Boolean(user.companyId),
   })
-
-  if (
-    status !== "success" ||
-    !userWithCompany?.user ||
-    !userWithCompany?.company
-  )
-    return <LoadingSpinner />
 
   return (
     <div className="flex flex-col">
       <div className="px-4">
-        <Image
-          src={userWithCompany.user?.image as string}
-          alt="Profile Image"
-          width={500}
-          height={500}
-          className="size-32 rounded-full object-cover p-1 ring-2 ring-primary"
-        />
+        {user.image ? (
+          <Image
+            src={user.image}
+            alt="Profile Image"
+            width={500}
+            height={500}
+            className="size-32 rounded-full object-cover p-1 ring-4 ring-primary"
+          />
+        ) : (
+          <div className="grid size-32 place-items-center rounded-full ring-4 ring-primary">
+            <h1 className="text-9xl font-bold capitalize text-primary">
+              {user.name ? user.name.at(0) : user.email!.at(0)}
+            </h1>
+          </div>
+        )}
         <section className="mt-6 space-y-2">
           <article>
             <h2 className="text-primary">Email</h2>
-            <p className="text-muted-foreground">
-              {userWithCompany.user?.email}
-            </p>
+            <p className="text-muted-foreground">{user.email}</p>
           </article>
-          <article>
-            <h2 className="text-primary">Name</h2>
-            <p className="capitalize text-muted-foreground">
-              {userWithCompany.user?.name}
-            </p>
-          </article>
+          {user.name && (
+            <article>
+              <h2 className="text-primary">Name</h2>
+              <p className="capitalize text-muted-foreground">{user.name}</p>
+            </article>
+          )}
           {/* // Only me can access this! */}
-          {userWithCompany.user?.email !==
-          process.env.NEXT_PUBLIC_SUPER_ADMIN ? (
+          {user.email !== process.env.NEXT_PUBLIC_SUPER_ADMIN ? (
             <article>
               <h2 className="text-primary">Role</h2>
-              <p className="text-muted-foreground">
-                {userWithCompany.user?.role}
-              </p>
+              <p className="text-muted-foreground">{user.role}</p>
             </article>
           ) : (
             <article>
               <UpdateUserRoleForMeOnly
-                id={userWithCompany.user?._id}
-                role={userWithCompany.user?.role}
+                id={user._id as Id<"users">}
+                role={user.role}
               />
             </article>
           )}
@@ -93,25 +78,23 @@ export function UserInfo({
           <div className="flex space-x-1">
             <Building2 className="mr-2 shrink-0 text-primary" />
             <p className="space-x-1 capitalize text-muted-foreground">
-              <span>{userWithCompany.company?.name}</span>
+              <span>{user.company?.name}</span>
             </p>
           </div>
           <div className="flex space-x-1">
             <Phone className="mr-2 shrink-0 text-primary" />
-            <p className="text-muted-foreground">
-              {userWithCompany.company?.phone}
-            </p>
+            <p className="text-muted-foreground">{user.company?.phone}</p>
           </div>
           <div className="flex space-x-1">
             <MapPin className="mr-2 shrink-0 text-primary" />
             <p className="space-x-1 text-balance capitalize text-muted-foreground">
-              {userWithCompany.company?.location}
+              {user.company?.location}
             </p>
           </div>
           <div className="flex space-x-1">
             <Layers className="mr-2 shrink-0 text-primary" />
             <p className="space-x-1 text-balance capitalize text-muted-foreground">
-              {userWithCompany.company?.subscription} Subscription
+              {user.company?.subscription} Subscription
             </p>
           </div>
           {adminAccessLevel && (
@@ -133,18 +116,18 @@ export function UserInfo({
                 </p>
                 {orders.status === "success" && (
                   <TogglePublished
-                    companyId={userWithCompany.company._id}
-                    companyName={userWithCompany.company.name}
-                    isPublished={userWithCompany.company.isPublished}
+                    companyId={user.companyId as Id<"companies">}
+                    companyName={user.company?.name as string}
+                    isPublished={user.company?.isPublished as boolean}
                     countAllBooking={!!orders.data.length}
                   />
                 )}
               </div>
               <UpdateCompanyInfo
                 adminAccessLevel={adminAccessLevel}
-                companyId={userWithCompany.company._id}
-                phone={userWithCompany.company.phone}
-                location={userWithCompany.company.location}
+                companyId={user.companyId as Id<"companies">}
+                phone={user.company?.phone as string}
+                location={user.company?.location as string}
                 className="mt-4"
               />
             </section>

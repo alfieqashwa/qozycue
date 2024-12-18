@@ -32,8 +32,7 @@ const ToggleThemes = dynamic(() => import("./toggle-themes"), {
 
 type WrapperDashboardProps = {
   linkList: TLinkList[]
-  user: FunctionReturnType<typeof api.users.me>
-  company: FunctionReturnType<typeof api.companies.find>
+  user: FunctionReturnType<typeof api.sessions.find>["user"]
   className?: string
   children: React.ReactNode
 }
@@ -41,7 +40,6 @@ type WrapperDashboardProps = {
 export function WrapperDashboard({
   linkList,
   user,
-  company,
   className,
   children,
 }: WrapperDashboardProps) {
@@ -59,19 +57,19 @@ export function WrapperDashboard({
 
   if (!hasHydrated) return null
 
-  const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(user?.role ?? "")
+  const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(user.role ?? "")
   const managerAccessLevel = ["DEWA", "ADMIN", "OWNER", "MANAGER"].includes(
-    user?.role ?? "",
+    user.role ?? "",
   )
 
   return (
     <div className="relative pb-12 sm:pb-4">
       <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
-        <CompanyInfo company={company} pathname={pathname} />
+        <CompanyInfo company={user.company} pathname={pathname} />
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
           <ConnectionStatus />
           <ToggleThemes />
-          <UserAvatar user={user} slug={company?.slug!} />
+          <UserAvatar user={user} slug={user.company?.slug} />
         </div>
       </div>
 
@@ -87,14 +85,14 @@ export function WrapperDashboard({
           <Nav
             ownerAccessLevel={ownerAccessLevel}
             managerAccessLevel={managerAccessLevel}
-            slug={company?.slug as string}
+            slug={user.company?.slug as string}
             links={linkList.filter((l) => l.isGeneral)}
           />
           <Separator className="py-[1px]" />
           <Nav
             ownerAccessLevel={ownerAccessLevel}
             managerAccessLevel={managerAccessLevel}
-            slug={company?.slug as string}
+            slug={user.company?.slug as string}
             links={linkList.filter((l) => !l.isGeneral)}
           />
           {/* //? set padding-bottom so the sidebar can be fully-scrolled on mobile-view's landscape */}
@@ -104,13 +102,13 @@ export function WrapperDashboard({
                 <Link
                   href={
                     pathname.includes("dewa")
-                      ? `/${encodeURIComponent(company?.slug!)}/dashboard`
+                      ? `/${encodeURIComponent(user.company?.slug as string)}/dashboard`
                       : `/dewa`
                   }
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
                     "relative size-12",
-                    user?.role === "DEWA" ? "block" : "hidden",
+                    user.role === "DEWA" ? "block" : "hidden",
                   )}
                 >
                   <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -123,7 +121,7 @@ export function WrapperDashboard({
                 className="flex items-center gap-4 bg-muted"
               >
                 <span className="text-sm capitalize tracking-wider text-primary">
-                  {pathname.includes("dewa") ? company?.name : "dewa"}
+                  {pathname.includes("dewa") ? user.company?.name : "dewa"}
                 </span>
               </TooltipContent>
             </Tooltip>
@@ -143,9 +141,9 @@ export function WrapperDashboard({
       <footer className="fixed bottom-2 left-1/2 -translate-x-1/2 sm:hidden">
         <MenuOnMobile
           isOwner={ownerAccessLevel}
-          slug={company?.slug as string}
+          slug={user.company?.slug as string}
           links={linkList}
-          dewaRole={user?.role === "DEWA"}
+          dewaRole={user.role === "DEWA"}
           className={className}
         />
       </footer>

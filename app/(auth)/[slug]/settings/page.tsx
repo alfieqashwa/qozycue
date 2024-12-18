@@ -4,7 +4,6 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import { type Metadata } from "next"
-import { unstable_noStore as noStore } from "next/cache"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { CategoryTab } from "./category-tab"
@@ -22,26 +21,21 @@ export const metadata: Metadata = {
 }
 
 export default async function SettingPage() {
-  noStore()
-  const user = await fetchQuery(
-    api.users.me,
+  const session = await fetchQuery(
+    api.sessions.find,
     {},
     { token: await convexAuthNextjsToken() },
   )
 
-  if (!user) redirect("/signin")
+  if (!session) redirect("/signin")
 
-  const company = await fetchQuery(
-    api.companies.find,
-    { id: user.companyId },
-    { token: await convexAuthNextjsToken() },
-  )
+  const isSuperAdmin = session.user.role === "DEWA"
+  const isAdmin = session.user.role === "ADMIN"
 
-  const isSuperAdmin = user.role === "DEWA"
-  const isAdmin = user.role === "ADMIN"
-
-  if (user.role === "CASHIER")
-    redirect(`/${encodeURIComponent(company?.slug as string)}/tables`)
+  if (session.user.role === "CASHIER")
+    redirect(
+      `/${encodeURIComponent(session.user.company?.slug as string)}/tables`,
+    )
 
   return (
     <Tabs
@@ -96,11 +90,11 @@ export default async function SettingPage() {
       {(isSuperAdmin || isAdmin) && (
         <TabsContent value="pool">
           <div className="text-right">
-            <CreatePoolTable companyId={user.companyId!} />
+            <CreatePoolTable companyId={session.user.companyId!} />
           </div>
           <Suspense fallback={<LoadingSpinner />}>
             <div className="text-right">{/* <CreatePoolTable /> */}</div>
-            <PoolTableTab companyId={user.companyId!} />
+            <PoolTableTab companyId={session.user.companyId!} />
           </Suspense>
         </TabsContent>
       )}
@@ -108,7 +102,7 @@ export default async function SettingPage() {
       <TabsContent value="tax">
         <Suspense fallback={<LoadingSpinner />}>
           <div className="text-right">
-            <CreateTax companyId={user.companyId!} />
+            <CreateTax companyId={session.user.companyId!} />
           </div>
           <TaxTab />
         </Suspense>
@@ -117,9 +111,9 @@ export default async function SettingPage() {
       <Suspense fallback={<LoadingSpinner />}>
         <TabsContent value="discount">
           <div className="text-right">
-            <CreateDiscount companyId={user.companyId!} />
+            <CreateDiscount companyId={session.user.companyId!} />
           </div>
-          <DiscountTab companyId={user.companyId!} />
+          <DiscountTab companyId={session.user.companyId!} />
         </TabsContent>
       </Suspense>
     </Tabs>

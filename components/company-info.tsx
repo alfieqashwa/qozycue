@@ -15,7 +15,7 @@ import { MdArrowRight } from "react-icons/md"
 
 type CompanyInfoProps = {
   pathname: string
-  company: FunctionReturnType<typeof api.companies.find>
+  company: FunctionReturnType<typeof api.sessions.find>["user"]["company"]
 }
 
 export function CompanyInfo({ pathname, company }: CompanyInfoProps) {

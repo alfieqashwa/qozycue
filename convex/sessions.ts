@@ -16,20 +16,27 @@ export const find = query({
   args: {},
   handler: async (ctx) => {
     const sessionId = await getAuthSessionId(ctx)
-    const session = sessionId !== null ? await ctx.db.get(sessionId) : null
+    // Safely retrieve session
+    const session = sessionId ? await ctx.db.get(sessionId) : null
 
-    const currentUser =
-      session !== null ? await ctx.db.get(session?.userId as Id<"users">) : null
-    const company =
-      currentUser !== null
-        ? await ctx.db.get(currentUser?.companyId as Id<"companies">)
-        : null
+    // Safely retrieve current user
+    const userId = session?.userId
+    const user = userId ? await ctx.db.get(userId as Id<"users">) : null
+
+    // Safely retrieve company
+    const companyId = user?.companyId
+    const company = companyId
+      ? await ctx.db.get(companyId as Id<"companies">)
+      : null
+
+    // console.log("sessionId:", sessionId)
+    // console.log("userId:", userId)
+    // console.log("companyId:", companyId)
     return {
       ...session,
-      companyId: company?._id,
-      companySlug: company?.slug,
       user: {
-        ...currentUser,
+        ...user,
+        company,
       },
     }
   },

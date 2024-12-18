@@ -21,7 +21,7 @@ export const me = query({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
-    const user = userId !== null ? await ctx.db.get(userId) : null
+    const user = userId !== null ? await ctx.db.get(userId) : undefined
     return user
   },
 })

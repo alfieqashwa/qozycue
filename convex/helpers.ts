@@ -7,12 +7,30 @@ import {
   internalQuery,
   mutation,
   query,
+  QueryCtx,
 } from "./_generated/server"
 import { Id } from "./_generated/dataModel"
 
 export const zQuery = zCustomQuery(query, NoOp)
 export const zMutation = zCustomMutation(mutation, NoOp)
 export const zInternalQuery = zCustomQuery(internalQuery, NoOp)
+
+export async function findUserByEmail(
+  ctx: QueryCtx,
+  email: string | undefined,
+) {
+  if (!email) {
+    throw new Error("Email is required to find a user.")
+  }
+
+  // Query the 'users' table to find a user with the matching email
+  const user = await ctx.db
+    .query("users")
+    .filter((q) => q.eq(q.field("email"), email))
+    .unique()
+
+  return user
+}
 
 export const superAdminProcedure = internalQuery({
   args: {},

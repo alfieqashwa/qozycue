@@ -153,7 +153,7 @@ export function UpdateUserForm({
                 </SelectContent>
               </Select>
               <FormDescription className="pt-2">
-                Select your user&apos;s company.
+                Select user&apos;s company.
               </FormDescription>
               <FormMessage />
             </FormItem>

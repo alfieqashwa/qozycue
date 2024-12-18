@@ -1,6 +1,7 @@
 import Google from "@auth/core/providers/google"
 import { convexAuth } from "@convex-dev/auth/server"
 import { MutationCtx } from "./_generated/server"
+import { findUserByEmail } from "./helpers"
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [Google],
@@ -8,14 +9,15 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
     // `args.type` is one of "oauth" | "email" | "phone" | "credentials" | "verification"
     // `args.provider` is the currently used provider config
     async createOrUpdateUser(ctx: MutationCtx, args) {
+      console.log(`existingUserId::: `, args.existingUserId)
       if (args.existingUserId) {
         // Optionally merge updated fields into the existing user object here
         return args.existingUserId
       }
 
-      // // Implement your own account linking logic:
-      // const existingUser = await findUserByEmail(ctx, args.profile.email);
-      // if (existingUser) return existingUser._id;
+      const existingUser = await findUserByEmail(ctx, args.profile.email)
+      console.log({ existingUser })
+      if (existingUser) return existingUser._id
 
       // Implement your own user creation:
       const isDewa = args.profile.email === process.env.DEWA_EMAIL!
