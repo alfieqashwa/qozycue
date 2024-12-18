@@ -148,13 +148,11 @@ export function UpdateCompanyForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {["TRIAL", "BASIC", "PRO", "ENTERPRISE"].map(
-                    (subscrtiption, i) => (
-                      <SelectItem value={subscription} key={i}>
-                        {subscription}
-                      </SelectItem>
-                    ),
-                  )}
+                  {["TRIAL", "BASIC", "PRO", "ENTERPRISE"].map((subs, i) => (
+                    <SelectItem value={subs} key={i}>
+                      {subs}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
