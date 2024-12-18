@@ -10,20 +10,21 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { FunctionReturnType } from "convex/server"
+import { Preloaded, usePreloadedQuery } from "convex/react"
 import { Building2, Layers, LayoutTemplate, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { TogglePublished } from "./toggle-published"
 import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
 
-export function UserInfo({
+export function UserProfile({
   adminAccessLevel,
-  user,
+  preloadedSession,
 }: {
   adminAccessLevel: boolean
-  user: FunctionReturnType<typeof api.sessions.find>["user"]
+  preloadedSession: Preloaded<typeof api.sessions.find>
 }) {
+  const { user } = usePreloadedQuery(preloadedSession)
   const orders = useTanstackQuery({
     ...convexQuery(api.orders.findAll, { companyId: user.companyId! }),
     enabled: Boolean(user.companyId),
