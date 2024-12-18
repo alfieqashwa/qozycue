@@ -31,6 +31,7 @@ import {
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -46,23 +47,25 @@ export function UpdateUserForm({
   setOpen,
   isSuperAdmin,
 }: UpdateUserFormProps) {
+  const router = useRouter()
+
   const companies = useTanstackQuery(convexQuery(api.companies.findAll, {}))
 
   const { mutate, isPending, reset } = useMutation({
     mutationFn: useConvexMutation(api.users.updateRoleAndCompanyId),
-    onSuccess: () =>
+    onSuccess: () => {
       toast.success("Succeed!", {
         description: "User has been updated.",
-      }),
+      })
+      setOpen(false)
+      reset()
+      router.refresh()
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => {
-      setOpen(false)
-      reset()
-    },
   })
 
   const form = useForm<TUpdateUser>({
