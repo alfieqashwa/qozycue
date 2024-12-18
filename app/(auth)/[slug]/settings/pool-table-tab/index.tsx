@@ -49,7 +49,9 @@ export function PoolTableTab({ companyId }: { companyId: Id<"companies"> }) {
               <TableCell className="w-[200px] font-medium capitalize">
                 {pool.name}
               </TableCell>
-              <TableCell className="capitalize">{pool.description}</TableCell>
+              <TableCell className="whitespace-nowrap capitalize">
+                {pool.description}
+              </TableCell>
 
               {/* START Actions */}
               <TableCell className="w-[100px] font-medium capitalize">
