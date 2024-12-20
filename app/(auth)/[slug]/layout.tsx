@@ -2,7 +2,7 @@ import { DASHBOARD_LINK_LIST } from "@/app/constants/link-list"
 import { WrapperDashboard } from "@/components/wrapper-dashboard"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
-import { fetchQuery } from "convex/nextjs"
+import { fetchQuery, preloadQuery } from "convex/nextjs"
 import { notFound, redirect } from "next/navigation"
 
 export default async function SlugLayout({
@@ -21,10 +21,12 @@ export default async function SlugLayout({
   const { slug } = params
   if (session.user.company?.slug !== slug) notFound()
 
+  const preloadedSession = await preloadQuery(api.sessions.find, {}, { token })
+
   return (
     <WrapperDashboard
       linkList={DASHBOARD_LINK_LIST}
-      user={session.user}
+      preloadedSession={preloadedSession}
       className="size-9 shrink-0 animate-spin text-primary"
     >
       {children}

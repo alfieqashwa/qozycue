@@ -2,7 +2,7 @@ import { DEWA_LINK_LIST } from "@/app/constants/link-list"
 import { WrapperDashboard } from "@/components/wrapper-dashboard"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
-import { fetchQuery } from "convex/nextjs"
+import { fetchQuery, preloadQuery } from "convex/nextjs"
 import { redirect } from "next/navigation"
 
 export default async function DewaLayout({
@@ -17,10 +17,12 @@ export default async function DewaLayout({
 
   if (session.user.role !== "DEWA") redirect("/portal/")
 
+  const preloadedSession = await preloadQuery(api.sessions.find, {}, { token })
+
   return (
     <WrapperDashboard
       linkList={DEWA_LINK_LIST}
-      user={session.user}
+      preloadedSession={preloadedSession}
       className="size-9 shrink-0 animate-spin text-foreground"
     >
       {children}
