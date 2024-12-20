@@ -5,17 +5,22 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { Preloaded, usePreloadedQuery } from "convex/react"
 import { columnsTeam } from "./columns-team"
 import { TeamTable } from "./team-table"
 
 export function TeamInfo({
-  companyId,
+  preloadedSession,
 }: {
-  companyId: Id<"companies"> | undefined
+  preloadedSession: Preloaded<typeof api.sessions.find>
 }) {
+  const session = usePreloadedQuery(preloadedSession)
+
   const users = useTanstackQuery({
-    ...convexQuery(api.users.findAllByCompanyId, { companyId: companyId! }),
-    enabled: Boolean(companyId),
+    ...convexQuery(api.users.findAllByCompanyId, {
+      companyId: session.user.companyId as Id<"companies">,
+    }),
+    enabled: Boolean(session.user.companyId),
     select: (users) => users.filter((user) => user.role !== "DEWA"),
   })
 

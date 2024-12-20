@@ -19,7 +19,6 @@ export default async function ProfilePage() {
   )
 
   const session = preloadedQueryResult(preloadedSession)
-
   const adminAccessLevel =
     session.user.role === "ADMIN" || session.user.role === "DEWA"
 
@@ -31,14 +30,11 @@ export default async function ProfilePage() {
           {adminAccessLevel && <TabsTrigger value="team">Team</TabsTrigger>}
         </TabsList>
         <TabsContent value="profile">
-          <UserProfile
-            adminAccessLevel={adminAccessLevel}
-            preloadedSession={preloadedSession}
-          />
+          <UserProfile preloadedSession={preloadedSession} />
         </TabsContent>
         {adminAccessLevel && (
           <TabsContent value="team">
-            <TeamInfo companyId={session.user.companyId} />
+            <TeamInfo preloadedSession={preloadedSession} />
           </TabsContent>
         )}
       </Tabs>

@@ -18,13 +18,13 @@ import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
 
 export function UserProfile({
-  adminAccessLevel,
   preloadedSession,
 }: {
-  adminAccessLevel: boolean
   preloadedSession: Preloaded<typeof api.sessions.find>
 }) {
   const { user } = usePreloadedQuery(preloadedSession)
+  const adminAccessLevel = ["DEWA", "ADMIN"].includes(user.role ?? "")
+
   const orders = useTanstackQuery({
     ...convexQuery(api.orders.findAll, { companyId: user.companyId! }),
     enabled: Boolean(user.companyId),
