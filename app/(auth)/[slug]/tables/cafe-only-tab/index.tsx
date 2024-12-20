@@ -5,6 +5,7 @@ import { OrderlineDetail } from "@/components/orderline-detail"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { Preloaded, usePreloadedQuery } from "convex/react"
 import { FunctionReturnType } from "convex/server"
 import { Phone, User2 } from "lucide-react"
 import { Fragment } from "react"
@@ -14,13 +15,17 @@ import { CreateOrderForm } from "./create-order-form"
 import { RemoveOrder } from "./remove-order"
 
 type CafeOnlyTabProps = {
-  managerAccessLevel: boolean
-  cashierAccessLevel: boolean
+  preloadedSession: Preloaded<typeof api.sessions.find>
 }
-export default function CafeOnlyTab({
-  managerAccessLevel,
-  cashierAccessLevel,
-}: CafeOnlyTabProps) {
+export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
+  const { user } = usePreloadedQuery(preloadedSession)
+  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+    user.role ?? "",
+  )
+  const cashierAccessLevel = ["DEWA", "ADMIN", "CASHIER"].includes(
+    user.role ?? "",
+  )
+
   const { data: filteredOrders, status } = useTanstackQuery(
     convexQuery(api.orders.findAllCafeOnlyByCompanyId, {}),
   )
@@ -50,13 +55,17 @@ export default function CafeOnlyTab({
   )
 }
 
+type CafeOnlyTabCardProps = {
+  managerAccessLevel: boolean
+  cashierAccessLevel: boolean
+  order: FunctionReturnType<typeof api.orders.findAllCafeOnlyByCompanyId>[0]
+}
+
 const CafeOnlyCard = ({
   order,
   managerAccessLevel,
   cashierAccessLevel,
-}: CafeOnlyTabProps & {
-  order: FunctionReturnType<typeof api.orders.findAllCafeOnlyByCompanyId>[0]
-}) => (
+}: CafeOnlyTabCardProps) => (
   <div className="rounded-xl border-2 bg-card px-5 py-4" key={order._id}>
     <article className="flex items-center justify-between truncate py-2 text-xs md:text-sm">
       <h1 className="truncate font-semibold capitalize text-foreground">

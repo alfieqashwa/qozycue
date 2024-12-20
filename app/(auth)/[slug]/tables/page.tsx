@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
-import { fetchQuery } from "convex/nextjs"
+import { preloadedQueryResult, preloadQuery } from "convex/nextjs"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import CafeOnlyTab from "./cafe-only-tab"
@@ -13,21 +13,11 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-  const user = await fetchQuery(
-    api.users.me,
-    {},
-    { token: await convexAuthNextjsToken() },
-  )
-  console.log("User Data: ", user)
+  const token = await convexAuthNextjsToken()
+  const preloadedSession = await preloadQuery(api.sessions.find, {}, { token })
 
-  if (!user) redirect("/signin")
-
-  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
-    user.role ?? "",
-  )
-  const cashierAccessLevel = ["DEWA", "ADMIN", "CASHIER"].includes(
-    user.role ?? "",
-  )
+  const session = preloadedQueryResult(preloadedSession)
+  if (!session) redirect("/signin")
 
   return (
     <Tabs defaultValue="pool" className="mt-2">
@@ -39,16 +29,10 @@ export default async function Page() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="pool">
-        <PoolTableTab
-          managerAccessLevel={managerAccessLevel}
-          cashierAccessLevel={cashierAccessLevel}
-        />
+        <PoolTableTab preloadedSession={preloadedSession} />
       </TabsContent>
       <TabsContent value="cafe-only" className="relative">
-        <CafeOnlyTab
-          managerAccessLevel={managerAccessLevel}
-          cashierAccessLevel={cashierAccessLevel}
-        />
+        <CafeOnlyTab preloadedSession={preloadedSession} />
       </TabsContent>
     </Tabs>
   )
