@@ -15,24 +15,18 @@ export default async function DashboardLayout({
   overview,
   detail,
 }: Readonly<{ overview: React.ReactNode; detail: React.ReactNode }>) {
-  const user = await fetchQuery(
-    api.users.me,
-    {},
-    { token: await convexAuthNextjsToken() },
-  )
-  if (!user) redirect("/signin")
+  const token = await convexAuthNextjsToken()
+  const session = await fetchQuery(api.sessions.find, {}, { token })
 
-  const company = await fetchQuery(
-    api.companies.find,
-    { id: user.companyId },
-    { token: await convexAuthNextjsToken() },
-  )
-
-  if (user.role === "MANAGER")
-    redirect(`/${encodeURIComponent(company?.slug as string)}/transactions/`)
-  if (user.role === "CASHIER")
-    redirect(`/${encodeURIComponent(company?.slug as string)}/tables/`)
-
+  if (!session) redirect("/signin")
+  if (session.user.role === "MANAGER")
+    redirect(
+      `/${encodeURIComponent(session.user.company?.slug as string)}/transactions/`,
+    )
+  if (session.user.role === "CASHIER")
+    redirect(
+      `/${encodeURIComponent(session.user.company?.slug as string)}/tables/`,
+    )
   return (
     <Tabs defaultValue="overview" className="mt-2">
       <TabsList className="mb-3">

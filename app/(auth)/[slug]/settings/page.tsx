@@ -1,6 +1,7 @@
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { fetchQuery } from "convex/nextjs"
 import { type Metadata } from "next"
@@ -21,14 +22,12 @@ export const metadata: Metadata = {
 }
 
 export default async function SettingPage() {
-  const session = await fetchQuery(
-    api.sessions.find,
-    {},
-    { token: await convexAuthNextjsToken() },
-  )
+  const token = await convexAuthNextjsToken()
+  const session = await fetchQuery(api.sessions.find, {}, { token })
 
   if (!session) redirect("/signin")
 
+  const companyId = session.user.companyId as Id<"companies">
   const isSuperAdmin = session.user.role === "DEWA"
   const isAdmin = session.user.role === "ADMIN"
 
@@ -90,11 +89,10 @@ export default async function SettingPage() {
       {(isSuperAdmin || isAdmin) && (
         <TabsContent value="pool">
           <div className="text-right">
-            <CreatePoolTable companyId={session.user.companyId!} />
+            <CreatePoolTable companyId={companyId} />
           </div>
           <Suspense fallback={<LoadingSpinner />}>
-            <div className="text-right">{/* <CreatePoolTable /> */}</div>
-            <PoolTableTab companyId={session.user.companyId!} />
+            <PoolTableTab companyId={companyId} />
           </Suspense>
         </TabsContent>
       )}
@@ -102,7 +100,7 @@ export default async function SettingPage() {
       <TabsContent value="tax">
         <Suspense fallback={<LoadingSpinner />}>
           <div className="text-right">
-            <CreateTax companyId={session.user.companyId!} />
+            <CreateTax companyId={companyId} />
           </div>
           <TaxTab />
         </Suspense>
@@ -111,9 +109,9 @@ export default async function SettingPage() {
       <Suspense fallback={<LoadingSpinner />}>
         <TabsContent value="discount">
           <div className="text-right">
-            <CreateDiscount companyId={session.user.companyId!} />
+            <CreateDiscount companyId={companyId} />
           </div>
-          <DiscountTab companyId={session.user.companyId!} />
+          <DiscountTab companyId={companyId} />
         </TabsContent>
       </Suspense>
     </Tabs>

@@ -5,6 +5,7 @@ import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { Preloaded, usePreloadedQuery } from "convex/react"
 import { addDays } from "date-fns"
 import { useState } from "react"
 import { type DateRange } from "react-day-picker"
@@ -12,10 +13,18 @@ import { columnsArchiveOrder } from "./columns-archive-order"
 import { OrderTable } from "./order-table"
 
 export function ArchiveOrderTab({
-  disabledBasedOnAccessLevel,
+  preloadSession,
 }: {
-  disabledBasedOnAccessLevel: boolean
+  preloadSession: Preloaded<typeof api.sessions.find>
 }) {
+  const { user } = usePreloadedQuery(preloadSession)
+  const managerAndCashierAccessLevel = [
+    "ADMIN",
+    "DEWA",
+    "MANAGER",
+    "CASHIER",
+  ].includes(user.role ?? "")
+
   const [date, setDate] = useState<DateRange | undefined>({
     from: addDays(new Date(new Date().setHours(0, 0, 0, 0)), -30),
     to: new Date(new Date().setHours(23, 59, 59, 0)),
@@ -40,7 +49,7 @@ export function ArchiveOrderTab({
         <OrderTable
           data={orders.data}
           columns={columnsArchiveOrder}
-          disabledBasedOnAccessLevel={disabledBasedOnAccessLevel}
+          disabledBasedOnAccessLevel={!managerAndCashierAccessLevel}
         />
       )}
     </div>

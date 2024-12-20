@@ -14,14 +14,6 @@ export default async function TransactionLayout({
   rentals: React.ReactNode
   orderlines: React.ReactNode
 }>) {
-  // ? not allowing owner to click button ???
-
-  // const managerAndCashierAccessLevel =
-  //   session?.user.role === "DEWA" ||
-  //   session?.user.role === "ADMIN" ||
-  //   session?.user.role === "MANAGER" ||
-  //   session?.user.role === "CASHIER"
-
   return (
     <Tabs defaultValue="order" className="mt-2">
       <TabsList className="mb-3">
