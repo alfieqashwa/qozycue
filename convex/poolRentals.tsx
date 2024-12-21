@@ -7,7 +7,7 @@ import {
   startBookingTimerSchema,
 } from "../types/schema/order-schema"
 import { query } from "./_generated/server"
-import { protectedProcedure, zMutation } from "./helpers"
+import { adminProcedure, protectedProcedure, zMutation } from "./helpers"
 
 export const findAll = query({
   args: {
@@ -116,6 +116,18 @@ export const findAllBookingByPoolTableIdPublicProcedure = query({
         timeEnd: rental.timeEnd,
         duration: rental.duration,
       }))
+  },
+})
+
+export const findByPacketId = query({
+  args: { packetId: v.id("packets") },
+  handler: async (ctx, { packetId }) => {
+    await adminProcedure(ctx, {})
+
+    return await ctx.db
+      .query("poolRentals")
+      .withIndex("packetId", (q) => q.eq("packetId", packetId))
+      .first()
   },
 })
 

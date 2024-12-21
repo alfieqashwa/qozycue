@@ -15,7 +15,7 @@ import { Status } from "@/types"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import {
   useMutation,
-  useQuery as useTanstackQuery,
+  useQueries as useTanstackQueries,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
@@ -30,7 +30,16 @@ type DeletePacketProps = {
 export function DeletePacket({ id, name, status }: DeletePacketProps) {
   const [open, setOpen] = useState(false)
 
-  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const [me, poolRental] = useTanstackQueries({
+    queries: [
+      convexQuery(api.users.me, {}),
+      {
+        ...convexQuery(api.poolRentals.findByPacketId, { packetId: id }),
+        enabled: Boolean(id),
+      },
+    ],
+  })
+
   const adminAccessLevel =
     me.status === "success" &&
     (me.data?.role === "DEWA" || me.data?.role === "ADMIN")
@@ -57,7 +66,11 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        disabled={status === "enabled" || !adminAccessLevel}
+        disabled={
+          status === "enabled" ||
+          !adminAccessLevel ||
+          (poolRental.status === "success" && Boolean(poolRental.data?._id))
+        }
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",

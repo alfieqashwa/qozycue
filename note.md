@@ -37,6 +37,8 @@
 ✅ When creating startTimer in pool table where has/have ordered, the timer not display properly (assuming the bug is on api.orders.findByPoolTable )
 ✅ Setup Pdf Download Transactions based on Date Range
 ✅ New Feature: Free Orderline (Manager Access Level)
+✅ Avoid Delete Product if it has already on orderline(s)
+✅ Avoid Delete Packet if it has already on poolRental(s)
 
 ## Backlog (Future Plan)
 

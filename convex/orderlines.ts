@@ -3,6 +3,7 @@ import { ConvexError, v } from "convex/values"
 import { upsertOrderlineSchema } from "../types/schema/orderline-schema"
 import { mutation, query } from "./_generated/server"
 import {
+  adminProcedure,
   cashierProcedure,
   managerProcedure,
   protectedProcedure,
@@ -136,6 +137,18 @@ export const findAllByIds = query({
         }
       }),
     )
+  },
+})
+
+export const findByProductId = query({
+  args: { productId: v.id("products") },
+  handler: async (ctx, { productId }) => {
+    await adminProcedure(ctx, {})
+
+    return await ctx.db
+      .query("orderlines")
+      .withIndex("productId", (q) => q.eq("productId", productId))
+      .first()
   },
 })
 

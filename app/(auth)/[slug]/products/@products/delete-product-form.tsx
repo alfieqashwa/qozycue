@@ -25,7 +25,7 @@ import { Status } from "@/types"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import {
   useMutation,
-  useQuery as useTanstackQuery,
+  useQueries as useTanstackQueries,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
@@ -43,7 +43,16 @@ type DeleteProductProps = {
 export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
   const [open, setOpen] = useState(false)
 
-  const me = useTanstackQuery(convexQuery(api.users.me, {}))
+  const [me, orderline] = useTanstackQueries({
+    queries: [
+      convexQuery(api.users.me, {}),
+      {
+        ...convexQuery(api.orderlines.findByProductId, { productId: id }),
+        enabled: Boolean(id),
+      },
+    ],
+  })
+
   const adminAccessLevel =
     me.status === "success" &&
     (me.data?.role === "DEWA" || me.data?.role === "ADMIN")
@@ -72,6 +81,9 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
     return (
       <DeleteDialog
         disabledBasedOnAccessLevel={!adminAccessLevel}
+        hasProductId={
+          orderline.status === "success" && Boolean(orderline?.data?._id) // if there's orderline data, cannot delete
+        }
         name={name}
         status={status}
         open={open}
@@ -95,6 +107,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
   return (
     <DeleteDrawer
       disabledBasedOnAccessLevel={!adminAccessLevel}
+      hasProductId={Boolean(orderline?.data?._id)}
       name={name}
       status={status}
       open={open}
@@ -118,6 +131,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
 
 function DeleteDialog({
   disabledBasedOnAccessLevel,
+  hasProductId,
   name,
   status,
   open,
@@ -125,6 +139,7 @@ function DeleteDialog({
   children,
 }: {
   disabledBasedOnAccessLevel: boolean
+  hasProductId: boolean
   name: string
   status: Status
   open: boolean
@@ -134,7 +149,9 @@ function DeleteDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        disabled={status === "enabled" || disabledBasedOnAccessLevel}
+        disabled={
+          status === "enabled" || disabledBasedOnAccessLevel || hasProductId
+        }
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
@@ -165,6 +182,7 @@ function DeleteDialog({
 
 function DeleteDrawer({
   disabledBasedOnAccessLevel,
+  hasProductId,
   name,
   status,
   open,
@@ -172,6 +190,7 @@ function DeleteDrawer({
   children,
 }: {
   disabledBasedOnAccessLevel: boolean
+  hasProductId: boolean
   name: string
   status: Status
   open: boolean
@@ -181,7 +200,9 @@ function DeleteDrawer({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger
-        disabled={status === "enabled" || disabledBasedOnAccessLevel}
+        disabled={
+          status === "enabled" || disabledBasedOnAccessLevel || hasProductId
+        }
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
