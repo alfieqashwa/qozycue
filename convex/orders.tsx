@@ -27,6 +27,7 @@ export const findAll = query({
       .collect()
   },
 })
+
 export const findAllSortedByDate = query({
   args: {
     from: v.optional(v.float64()),
@@ -176,6 +177,41 @@ export const findAllArchiveOrderSortedByDate = query({
     }
 
     return filteredOrders
+  },
+})
+
+export const findAllBookingByCompanyId = query({
+  args: { companyId: v.id("companies") },
+  handler: async (ctx, args) => {
+    await protectedProcedure(ctx, {})
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", args.companyId))
+      .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+      .collect()
+
+    const filteredBookingOrders = []
+    for (const order of orders) {
+      const poolRental = await ctx.db
+        .query("poolRentals")
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
+        .filter((q) => q.eq(q.field("isBooking"), true))
+        .first()
+      const createdBy = await ctx.db.get(order.createdBy)
+      const customer = order.customerId
+        ? await ctx.db.get(order.customerId)
+        : null
+
+      filteredBookingOrders.push({
+        ...order,
+        createdBy: { name: createdBy?.name, role: createdBy?.role },
+        customer: { name: customer?.name, phone: customer?.phone },
+        poolRental,
+      })
+    }
+
+    return filteredBookingOrders
   },
 })
 

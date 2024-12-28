@@ -25,9 +25,14 @@ export function UserProfile({
   const { user } = usePreloadedQuery(preloadedSession)
   const adminAccessLevel = ["DEWA", "ADMIN"].includes(user.role ?? "")
 
-  const orders = useTanstackQuery({
-    ...convexQuery(api.orders.findAll, { companyId: user.companyId! }),
+  const bookingOrders = useTanstackQuery({
+    ...convexQuery(api.orders.findAllBookingByCompanyId, {
+      companyId: user.companyId!,
+    }),
     enabled: Boolean(user.companyId),
+    select(data) {
+      return data.filter((order) => order.poolRental)
+    },
   })
 
   return (
@@ -115,12 +120,12 @@ export function UserProfile({
                 <p className="text-balance pr-2 capitalize text-muted-foreground">
                   Published?
                 </p>
-                {orders.status === "success" && (
+                {bookingOrders.status === "success" && (
                   <TogglePublished
                     companyId={user.companyId as Id<"companies">}
                     companyName={user.company?.name as string}
                     isPublished={user.company?.isPublished as boolean}
-                    countAllBooking={!!orders.data.length}
+                    countAllBooking={!!bookingOrders.data.length}
                   />
                 )}
               </div>
