@@ -39,6 +39,7 @@
 ✅ New Feature: Free Orderline (Manager Access Level)
 ✅ Avoid Delete Product if it has already on orderline(s)
 ✅ Avoid Delete Packet if it has already on poolRental(s)
+❌ Bug: Detail on Transaction Row Action: If Cafe-Only, order is undefined
 
 ## Backlog (Future Plan)
 
