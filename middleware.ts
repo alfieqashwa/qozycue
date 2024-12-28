@@ -18,8 +18,8 @@ export default convexAuthNextjsMiddleware(
       return nextjsMiddlewareRedirect(request, "/signin")
     }
   },
-  { cookieConfig: { maxAge: 60 * 60 * 24 * 30 } },
-) // 30 days
+  { cookieConfig: { maxAge: 60 * 60 * 24 * 7 } },
+) // 7 days / 1 week
 
 export const config = {
   // The following matcher runs middleware on all routes
