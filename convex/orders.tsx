@@ -216,33 +216,17 @@ export const findAllBookingByCompanyId = query({
 })
 
 export const findById = query({
-  args: {
-    id: v.id("orders"),
-    notEqual: v.union(
-      v.literal("OPEN"),
-      v.literal("CANCELLED"),
-      v.literal("PENDING"),
-      v.literal("PAID"),
-      v.literal("ARCHIVE"),
-    ),
-  },
+  args: { id: v.id("orders") },
   handler: async (ctx, args) => {
     await protectedProcedure(ctx, {})
 
-    const order = await ctx.db
-      .query("orders")
-      .withIndex("by_id", (q) => q.eq("_id", args.id))
-      .filter((q) => q.neq(q.field("statusPayment"), args.notEqual))
-      .first()
-
+    const order = await ctx.db.get(args.id)
     const createdBy = await ctx.db.get(order?.createdBy!)
     const poolRental = await ctx.db
       .query("poolRentals")
       .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
       .first()
-    if (!poolRental) throw new Error("fdfd")
 
-    const packet = await ctx.db.get(poolRental?.packetId)
     const customer = await ctx.db.get(order?.customerId!)
     const company = await ctx.db.get(order?.companyId!)
     const orderlines =
@@ -252,6 +236,7 @@ export const findById = query({
             .withIndex("orderId", (q) => q.eq("orderId", order._id))
             .collect()
         : []
+    const packet = await ctx.db.get(poolRental?.packetId!)
 
     return {
       ...order,

@@ -27,10 +27,7 @@ export const PrintReceipt = forwardRef(
     const [{ data: order, status }, { data: orderlines }] = useTanstackQueries({
       queries: [
         {
-          ...convexQuery(api.orders.findById, {
-            id: orderId,
-            notEqual: "ARCHIVE",
-          }),
+          ...convexQuery(api.orders.findById, { id: orderId }),
           enabled: Boolean(orderId),
         },
         {

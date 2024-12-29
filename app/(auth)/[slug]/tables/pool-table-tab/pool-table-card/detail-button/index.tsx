@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/drawer"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
@@ -22,6 +23,9 @@ import { TransferTable } from "./transfer-table"
 
 type DetailButtonProps = {
   isCashier?: boolean
+  orderId?: Id<"orders">
+  customerName?: string
+  customerPhone?: string | null
   orderStatus: "pending" | "error" | "success"
   order:
     | FunctionReturnType<typeof api.orders.findByPoolTableId>
@@ -31,6 +35,9 @@ type DetailButtonProps = {
 }
 export function DetailButton({
   isCashier,
+  orderId,
+  customerName,
+  customerPhone,
   orderStatus,
   order,
   children,
@@ -66,25 +73,28 @@ export function DetailButton({
               </DrawerDescription>
             </div>
           ) : (
-            <DrawerTitle className="whitespace-nowrap text-base md:text-lg">
-              Cafe Only
-            </DrawerTitle>
+            <div className="flex flex-col items-start">
+              <DrawerTitle className="whitespace-nowrap text-base text-fuchsia-300 md:text-lg">
+                Cafe Only
+              </DrawerTitle>
+              <DrawerDescription className="text-xs font-medium">
+                Order ID: {orderId?.slice(-8)}
+              </DrawerDescription>
+            </div>
           )}
           <div className="space-y-1">
             <DrawerDescription className="flex space-x-2 capitalize">
               <User2 size={16} />
               <span className="font-medium text-foreground">
-                {order?.customer.name}
+                {order?.customer.name ?? customerName}
               </span>
             </DrawerDescription>
-            {order?.customer.phone && (
-              <DrawerDescription className="flex space-x-2 text-xs capitalize">
-                <Phone size={16} />
-                <span className="font-medium tracking-wider text-muted-foreground">
-                  {order.customer.phone}
-                </span>
-              </DrawerDescription>
-            )}
+            <DrawerDescription className="flex space-x-2 text-xs capitalize">
+              <Phone size={16} />
+              <span className="font-medium tracking-wider text-muted-foreground">
+                {order?.customer.phone || customerPhone || "No phone"}
+              </span>
+            </DrawerDescription>
           </div>
         </DrawerHeader>
         <Tabs defaultValue={`${!!order?.poolRental ? "table" : "cafe"}`}>
@@ -136,7 +146,7 @@ export function DetailButton({
             )}
           </TabsContent>
           <TabsContent value="cafe">
-            <OrderlineDetail orderId={order?._id} />
+            <OrderlineDetail orderId={orderId} />
           </TabsContent>
         </Tabs>
         <DrawerFooter>

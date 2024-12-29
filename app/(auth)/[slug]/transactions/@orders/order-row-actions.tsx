@@ -40,7 +40,7 @@ export function OrderRowActions({
   const [open, setOpen] = useState(false)
 
   const { data: order, status: orderStatus } = useTanstackQuery({
-    ...convexQuery(api.orders.findById, { id: orderId, notEqual: "ARCHIVE" }),
+    ...convexQuery(api.orders.findById, { id: orderId }),
     enabled: Boolean(orderId),
   })
 
@@ -99,7 +99,13 @@ export function OrderRowActions({
           className="group"
           onSelect={(e) => e.preventDefault()}
         >
-          <DetailButton orderStatus={orderStatus} order={order}>
+          <DetailButton
+            orderId={orderId}
+            customerName={customerName}
+            customerPhone={customerPhone}
+            orderStatus={orderStatus}
+            order={order}
+          >
             <DrawerTrigger className="group flex w-full items-center text-sm disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground">
               <ScrollText className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
               <span>Detail</span>
