@@ -56,11 +56,9 @@ export function UpdateProduct({
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
-  const managerAccessLevel =
-    me.status === "success" &&
-    (me.data?.role === "DEWA" ||
-      me.data?.role === "ADMIN" ||
-      me.data?.role === "MANAGER")
+  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+    me.data?.role ?? "",
+  )
 
   if (isDesktop) {
     return (

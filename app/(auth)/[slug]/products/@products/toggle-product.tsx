@@ -21,10 +21,9 @@ export function ToggleProduct({
   status: Status
 }) {
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
-  const managerAccessLevel =
-    me.data?.role === "DEWA" ||
-    me.data?.role === "ADMIN" ||
-    me.data?.role === "MANAGER"
+  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+    me.data?.role ?? "",
+  )
 
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.products.toggle),

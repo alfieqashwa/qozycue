@@ -34,11 +34,12 @@ export function ArchiveOrder({ orderId, statusPayment }: ArchiveOrderProps) {
   const { data: me, status } = useTanstackQuery({
     ...convexQuery(api.users.me, {}),
   })
-  const managerAndCashierAccessLevel =
-    me?.role === "MANAGER" ||
-    me?.role === "CASHIER" ||
-    me?.role === "ADMIN" ||
-    me?.role === "DEWA"
+  const managerAndCashierAccessLevel = [
+    "MANAGER",
+    "CASHIER",
+    "ADMIN",
+    "DEWA",
+  ].includes(me?.role ?? "")
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.orders.updateStatusPaymentTo),

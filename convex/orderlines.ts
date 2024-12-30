@@ -143,7 +143,7 @@ export const findAllByIds = query({
 export const findByProductId = query({
   args: { productId: v.id("products") },
   handler: async (ctx, { productId }) => {
-    await adminProcedure(ctx, {})
+    await protectedProcedure(ctx, {})
 
     return await ctx.db
       .query("orderlines")
