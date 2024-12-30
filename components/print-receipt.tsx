@@ -40,7 +40,9 @@ export const PrintReceipt = forwardRef(
     const formattedCurrentDate = format(new Date(), "dd/MM/yyyy:HH:mm:ss", {
       locale: id,
     })
-    const totalCost = !!order?.poolRental ? order?.poolRental.totalCost : 0
+    const totalCost = order?.poolRental._id
+      ? (order.poolRental.totalCost as number)
+      : 0
     const totalAmount =
       orderlines?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0
 
@@ -53,7 +55,7 @@ export const PrintReceipt = forwardRef(
       Number(order?.poolRental.totalCost?.toFixed(0)),
     )
     const formattedTotalOrder = formattedPrice.format(Number(totalAmount))
-    const subTotal = totalCost! + totalAmount
+    const subTotal = totalCost + totalAmount
     const formattedSubTotal = formattedPrice.format(Number(subTotal))
 
     const discount = order?.discount
@@ -104,7 +106,7 @@ export const PrintReceipt = forwardRef(
             {/* ENDS INFO */}
 
             {/* STARTS POOL RENTAL */}
-            {!!order.poolRental && (
+            {!!order.poolRental._id && (
               <section className="pl-4 pt-2">
                 <h3 className="-ml-4 uppercase">Pool Rental</h3>
                 <div className="flex items-center justify-between">
@@ -211,7 +213,7 @@ export const PrintReceipt = forwardRef(
 
             {/* STARTS PAYMENTS */}
             <section className="pt-4">
-              {!!order.poolRental && (
+              {!!order.poolRental._id && (
                 <div className="flex items-center justify-between">
                   <p>Total Rental:</p>
                   <p>{formattedTotalCost}</p>
