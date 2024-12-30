@@ -97,12 +97,12 @@ export function DetailButton({
             </DrawerDescription>
           </div>
         </DrawerHeader>
-        <Tabs defaultValue={`${!!order?.poolRental ? "table" : "cafe"}`}>
+        <Tabs defaultValue={`${!!order?.poolRental._id ? "table" : "cafe"}`}>
           <div className="flex justify-between">
             <TabsList>
               <TabsTrigger
                 value="table"
-                disabled={!order?.poolRental}
+                disabled={!order?.poolRental._id}
                 className="disabled:pointer-events-auto disabled:cursor-not-allowed"
               >
                 Table
@@ -146,7 +146,7 @@ export function DetailButton({
             )}
           </TabsContent>
           <TabsContent value="cafe">
-            <OrderlineDetail orderId={orderId} />
+            <OrderlineDetail orderId={order?._id} />
           </TabsContent>
         </Tabs>
         <DrawerFooter>

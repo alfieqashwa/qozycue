@@ -221,22 +221,24 @@ export const findById = query({
     await protectedProcedure(ctx, {})
 
     const order = await ctx.db.get(args.id)
-    const createdBy = await ctx.db.get(order?.createdBy!)
+    if (!order) throw new ConvexError("Order not found!")
+
+    const createdBy = await ctx.db.get(order.createdBy)
     const poolRental = await ctx.db
       .query("poolRentals")
-      .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+      .withIndex("orderId", (q) => q.eq("orderId", order._id))
       .first()
 
-    const customer = await ctx.db.get(order?.customerId!)
-    const company = await ctx.db.get(order?.companyId!)
-    const orderlines =
-      order !== null
-        ? await ctx.db
-            .query("orderlines")
-            .withIndex("orderId", (q) => q.eq("orderId", order._id))
-            .collect()
-        : []
-    const packet = await ctx.db.get(poolRental?.packetId!)
+    const customer = order.customerId
+      ? await ctx.db.get(order.customerId)
+      : undefined
+    const company = await ctx.db.get(order.companyId)
+    const orderlines = await ctx.db
+      .query("orderlines")
+      .withIndex("orderId", (q) => q.eq("orderId", order._id))
+      .collect()
+    const packet =
+      poolRental !== null ? await ctx.db.get(poolRental.packetId) : null
 
     return {
       ...order,
