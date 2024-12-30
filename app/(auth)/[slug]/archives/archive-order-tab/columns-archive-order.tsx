@@ -24,6 +24,7 @@ import {
   Wallet2,
 } from "lucide-react"
 import { ArchiveOrderRowActions } from "./archive-order-row-actions"
+import { DeleteOrder } from "./delete-order"
 import { RollbackOrder } from "./rollback-order"
 
 export const columnsArchiveOrder: ColumnDef<
@@ -296,11 +297,14 @@ export const columnsArchiveOrder: ColumnDef<
     id: "rollback",
     cell: ({ row }) => {
       const { _id } = row.original
-      return (
-        <div className="relative">
-          <RollbackOrder id={_id} />
-        </div>
-      )
+      return <RollbackOrder id={_id} />
+    },
+  },
+  {
+    id: "delete",
+    cell: ({ row }) => {
+      const { _id } = row.original
+      return <DeleteOrder id={_id} />
     },
   },
   {

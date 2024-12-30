@@ -69,7 +69,7 @@ export function RollbackOrder({ id }: RolebackOrderProps) {
         disabled={status === "success" && !managerAndCashierAccessLevel}
         className={cn(
           buttonVariants({ variant: "secondary", size: "sm" }),
-          "flex w-full items-center bg-amber-600 hover:bg-amber-700",
+          "flex w-full items-center bg-amber-600 hover:bg-amber-700 disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <RefreshCcwDot className="mr-2 h-4 w-4" />
