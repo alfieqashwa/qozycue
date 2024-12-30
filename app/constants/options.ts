@@ -23,7 +23,7 @@ enum Role {
 }
 
 export type Options = {
-  value: string
+  value?: string
   label: string
   icon: LucideIcon
 }

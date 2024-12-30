@@ -32,16 +32,17 @@ export function ArchiveOrder({
 }: ArchiveOrderProps) {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.orders.updateStatusPaymentTo),
-    onSuccess: () =>
+    onSuccess: () => {
+      setOpen(false)
       toast.success("Succeed!", {
         description: `Order ${orderId.slice(-8)} has been successfully archived.`,
-      }),
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

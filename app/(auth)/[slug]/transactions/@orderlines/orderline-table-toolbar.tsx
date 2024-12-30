@@ -16,7 +16,7 @@ import { DataTableViewOptions } from "@/components/table/data-table-view-options
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { Star } from "lucide-react"
+import { Star, UtensilsCrossed } from "lucide-react"
 
 interface OrderlineTableToolbarProps<TData> {
   table: Table<TData>
@@ -29,13 +29,18 @@ export function OrderlineTableToolbar<TData>({
   const { data, status } = useTanstackQuery({
     ...convexQuery(api.poolTables.findAll, {}),
     select(data) {
-      const pools: Options[] = [...new Set(data.map((d) => d.name))]
+      let pools: Options[] = [...new Set(data.map((d) => d.name))]
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
         .map((pool) => ({
           value: pool,
           label: pool,
           icon: Star,
         }))
+      pools.push({
+        value: undefined,
+        label: "cafe-only",
+        icon: UtensilsCrossed,
+      })
       return { pools }
     },
   })

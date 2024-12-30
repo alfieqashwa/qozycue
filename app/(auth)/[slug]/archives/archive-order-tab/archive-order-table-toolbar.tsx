@@ -11,7 +11,7 @@ import { convexQuery } from "@convex-dev/react-query"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { type Table } from "@tanstack/react-table"
-import { Star } from "lucide-react"
+import { Star, UtensilsCrossed } from "lucide-react"
 import { DeleteOrderList } from "./delete-order-list"
 import { RollbackOrderList } from "./rollback-order-list"
 
@@ -35,13 +35,18 @@ export function ArchiveOrderTableToolbar<TData>({
   const { data, status } = useTanstackQuery({
     ...convexQuery(api.poolTables.findAll, {}),
     select(data) {
-      const pools: Options[] = [...new Set(data.map((d) => d.name))]
+      let pools: Options[] = [...new Set(data.map((d) => d.name))]
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
         .map((pool) => ({
           value: pool,
           label: pool,
           icon: Star,
         }))
+      pools.push({
+        value: undefined,
+        label: "cafe-only",
+        icon: UtensilsCrossed,
+      })
       return { pools }
     },
   })
