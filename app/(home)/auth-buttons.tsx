@@ -12,6 +12,7 @@ import {
 } from "convex/react"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
+import { FcGoogle } from "react-icons/fc"
 
 export const AuthButtons = ({
   preloadSlug,
@@ -22,13 +23,14 @@ export const AuthButtons = ({
   return (
     <div className="my-16 flex justify-center gap-4">
       <AuthLoading>
-        <Button size="lg">
+        <Button variant={"outline"} size="lg">
           <Loader2 size={20} className="mr-2 animate-spin" /> Loading
         </Button>
       </AuthLoading>
       <Unauthenticated>
-        <SignInButton size="lg" redirectTo="/portal">
-          Sign In
+        <SignInButton variant={"outline"} size={"lg"} redirectTo="/portal">
+          <FcGoogle size={20} className="mr-2" />
+          <span className="whitespace-nowrap">Sign In</span>
         </SignInButton>
       </Unauthenticated>
       <Authenticated>

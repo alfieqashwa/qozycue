@@ -10,21 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { useAuthActions } from "@convex-dev/auth/react"
 import { Power } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { SignOutButton } from "./sign-button"
 
 export function SignOutDialog() {
   const [open, setOpen] = useState(false)
-
-  const { signOut } = useAuthActions()
-  const router = useRouter()
-
-  const handleSignOut = () => {
-    void signOut()
-    router.push("/")
-  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -43,9 +34,7 @@ export function SignOutDialog() {
           <Button type="button" variant="ghost" onClick={() => setOpen(!open)}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleSignOut}>
-            Sign Out
-          </Button>
+          <SignOutButton variant="destructive" />
         </DialogFooter>
       </DialogContent>
     </Dialog>
