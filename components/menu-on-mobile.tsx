@@ -1,7 +1,3 @@
-import { Menu } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { GiFrozenOrb } from "react-icons/gi"
 import { type TLinkList } from "@/app/constants/link-list"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -20,15 +16,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { Menu } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { GiFrozenOrb } from "react-icons/gi"
 
 export function MenuOnMobile({
   isOwner,
+  isManager,
   slug,
   links,
   dewaRole,
   className,
 }: {
   isOwner: boolean
+  isManager: boolean
   slug: string
   links: TLinkList[]
   dewaRole: boolean
@@ -71,6 +73,8 @@ export function MenuOnMobile({
                       : pathname === link.href &&
                           "bg-muted text-primary hover:bg-muted",
                     link.href === "/dashboard" && !isOwner && "hidden",
+                    link.href === "/products" && !isManager && "hidden",
+                    link.href === "/settings" && !isManager && "hidden",
                   )}
                 >
                   <link.icon size={32} className="shrink-0" />

@@ -18,11 +18,16 @@ import { SignOutDialog } from "./sign-out-dialog"
 import { UserInfo } from "./user-info"
 
 type UserAvatarProps = {
+  managerAccessLevel: boolean
   user: FunctionReturnType<typeof api.sessions.find>["user"]
   slug: string | undefined
 }
 
-export function UserAvatar({ user, slug }: UserAvatarProps) {
+export function UserAvatar({
+  managerAccessLevel,
+  user,
+  slug,
+}: UserAvatarProps) {
   const pathname = usePathname()
 
   return (
@@ -55,7 +60,11 @@ export function UserAvatar({ user, slug }: UserAvatarProps) {
           />
           {DASHBOARD_LINK_LIST.filter((l) => l.title === "settings").map(
             (link) => (
-              <Link href={`/${slug}${link.href}`} key={link.title}>
+              <Link
+                className={cn(!managerAccessLevel && "hidden")} //? Hide settings link for cashier
+                href={`/${slug}${link.href}`}
+                key={link.title}
+              >
                 <MenubarItem
                   className={cn(
                     "capitalize text-muted-foreground hover:cursor-pointer",

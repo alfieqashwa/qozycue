@@ -70,7 +70,11 @@ export function WrapperDashboard({
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
           <ConnectionStatus />
           <ToggleThemes />
-          <UserAvatar user={user} slug={user.company?.slug} />
+          <UserAvatar
+            managerAccessLevel={managerAccessLevel}
+            user={user}
+            slug={user.company?.slug}
+          />
         </div>
       </div>
 
@@ -142,6 +146,7 @@ export function WrapperDashboard({
       <footer className="fixed bottom-2 left-1/2 -translate-x-1/2 sm:hidden">
         <MenuOnMobile
           isOwner={ownerAccessLevel}
+          isManager={managerAccessLevel}
           slug={user.company?.slug as string}
           links={linkList}
           dewaRole={user.role === "DEWA"}

@@ -101,6 +101,7 @@ export function Nav({
                   : pathname === link.href &&
                       "bg-muted text-primary hover:bg-muted",
                 link.href === "/dashboard" && !ownerAccessLevel && "hidden",
+                link.href === "/products" && !managerAccessLevel && "hidden",
                 link.href === "/settings" && !managerAccessLevel && "hidden",
               )}
             >
