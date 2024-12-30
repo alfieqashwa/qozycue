@@ -1,3 +1,4 @@
+import { Copyright } from "@/components/copyright"
 import { ReactNode } from "react"
 
 export default function SplashPageLayout({
@@ -6,8 +7,11 @@ export default function SplashPageLayout({
   children: ReactNode
 }) {
   return (
-    <div className="grid min-h-screen w-full place-items-center">
-      {children}
+    <div className="relative">
+      <main className="flex h-screen flex-col items-center justify-center">
+        {children}
+      </main>
+      <Copyright />
     </div>
   )
 }

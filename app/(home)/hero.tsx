@@ -5,7 +5,7 @@ import { GiPoolTriangle } from "react-icons/gi"
 const QOZY_CUE = ["Q", "o", "z", "y", " ", "C", "u", "e"]
 
 export const Hero = () => (
-  <div className="mt-40 md:mt-80">
+  <div className="mt-40">
     <p className="text-center text-6xl font-black tracking-wider text-white sm:text-7xl lg:text-8xl">
       {QOZY_CUE.map((q, i) => (
         <span
@@ -20,7 +20,7 @@ export const Hero = () => (
         </span>
       ))}
     </p>
-    <section className="mt-8 flex w-full items-center justify-around space-x-1.5 sm:space-x-6">
+    <section className="mt-8 flex w-full items-center justify-center space-x-1.5 sm:space-x-12 md:space-x-24 lg:space-x-32">
       <GiPoolTriangle className="size-14 animate-pulse-slow text-fuchsia-600 sm:size-16 lg:size-24" />
       <article className="text-center">
         <p className="whitespace-nowrap bg-gradient-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-2xl font-black tracking-widest text-transparent lg:text-4xl">
