@@ -24,6 +24,7 @@ import {
   Wallet2,
 } from "lucide-react"
 import { ArchiveOrderRowActions } from "./archive-order-row-actions"
+import { RollbackOrder } from "./rollback-order"
 
 export const columnsArchiveOrder: ColumnDef<
   FunctionReturnType<typeof api.orders.findAllArchiveOrderSortedByDate>[0]
@@ -289,6 +290,17 @@ export const columnsArchiveOrder: ColumnDef<
         locale: id,
       })
       return <div className="whitespace-nowrap">{createdAt}</div>
+    },
+  },
+  {
+    id: "rollback",
+    cell: ({ row }) => {
+      const { _id } = row.original
+      return (
+        <div className="relative">
+          <RollbackOrder id={_id} />
+        </div>
+      )
     },
   },
   {

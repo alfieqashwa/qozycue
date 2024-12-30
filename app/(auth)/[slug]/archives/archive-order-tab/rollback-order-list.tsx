@@ -63,7 +63,7 @@ export function RollbackOrderList<TData>({
           variant="secondary"
           size="sm"
           disabled={disabledBasedOnAccessLevel}
-          className="ml-2 h-8 whitespace-nowrap bg-amber-600 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="ml-2 h-8 whitespace-nowrap bg-amber-600 hover:bg-amber-700 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <RefreshCcwDot className="mr-2 h-4 w-4" />
           Rollback Selected ({table.getFilteredSelectedRowModel().rows.length})
@@ -100,7 +100,7 @@ export function RollbackOrderList<TData>({
                 type="submit"
                 variant="destructive"
                 size="sm"
-                className="bg-amber-600"
+                className="bg-amber-600 hover:bg-amber-700"
               >
                 Rollback All
               </Button>

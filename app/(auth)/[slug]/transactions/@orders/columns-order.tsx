@@ -23,6 +23,7 @@ import {
   UtensilsCrossed,
   Wallet2,
 } from "lucide-react"
+import { ArchiveOrder } from "./archive-order"
 import { OrderRowActions } from "./order-row-actions"
 
 export const columnsOrder: ColumnDef<
@@ -310,6 +311,13 @@ export const columnsOrder: ColumnDef<
         locale: id,
       })
       return <div className="whitespace-nowrap">{createdAt}</div>
+    },
+  },
+  {
+    id: "remove",
+    cell: ({ row }) => {
+      const { _id, statusPayment } = row.original
+      return <ArchiveOrder orderId={_id} statusPayment={statusPayment} />
     },
   },
   {

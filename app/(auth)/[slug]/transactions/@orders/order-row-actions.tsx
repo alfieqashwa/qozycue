@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { cn } from "@/lib/utils"
 import { StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
@@ -21,7 +20,6 @@ import { Copy, Printer, ScrollText } from "lucide-react"
 import { useRef, useState } from "react"
 import { useReactToPrint } from "react-to-print"
 import { DetailButton } from "../../tables/pool-table-tab/pool-table-card/detail-button"
-import { ArchiveOrder } from "./archive-order"
 import { UpdateCustomer } from "./update-customer"
 
 export function OrderRowActions({
@@ -43,15 +41,6 @@ export function OrderRowActions({
     ...convexQuery(api.orders.findById, { id: orderId }),
     enabled: Boolean(orderId),
   })
-
-  const { data: me, status } = useTanstackQuery({
-    ...convexQuery(api.users.me, {}),
-  })
-  const managerAndCashierAccessLevel =
-    me?.role === "MANAGER" ||
-    me?.role === "CASHIER" ||
-    me?.role === "ADMIN" ||
-    me?.role === "DEWA"
 
   const componentRef = useRef(null)
   const handlePrint = useReactToPrint({
@@ -133,21 +122,6 @@ export function OrderRowActions({
               <Printer className="mr-2 size-4 text-muted-foreground group-hover:text-primary" />
               <span>Receipt</span>
             </button>
-          </DropdownMenuItem>
-        )}
-        <DropdownMenuSeparator
-          className={cn(statusPayment !== "PAID" && "hidden")}
-        />
-        {status === "success" && !!managerAndCashierAccessLevel && (
-          <DropdownMenuItem
-            className="group"
-            onSelect={(e) => e.preventDefault()}
-          >
-            <ArchiveOrder
-              orderId={orderId}
-              statusPayment={statusPayment}
-              setOpen={setOpen}
-            />
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>
