@@ -41,6 +41,7 @@
 ✅ Avoid Delete Packet if it has already on poolRental(s)
 ✅ Bug: Detail on Transaction Row Action: If Cafe-Only, order is undefined
 ✅ Bug: Remove NaN on Receipt
+✅ Reconfig Bill Printed (Tax included)
 
 ## Backlog (Future Plan)
 

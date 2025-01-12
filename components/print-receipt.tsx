@@ -24,18 +24,20 @@ export const PrintReceipt = forwardRef(
     }: PrintReceiptProps,
     ref,
   ) => {
-    const [{ data: order, status }, { data: orderlines }] = useTanstackQueries({
-      queries: [
-        {
-          ...convexQuery(api.orders.findById, { id: orderId }),
-          enabled: Boolean(orderId),
-        },
-        {
-          ...convexQuery(api.orderlines.findAllByOrderId, { orderId }),
-          enabled: Boolean(orderId),
-        },
-      ],
-    })
+    const [{ data: order, status }, { data: orderlines }, defaultTax] =
+      useTanstackQueries({
+        queries: [
+          {
+            ...convexQuery(api.orders.findById, { id: orderId }),
+            enabled: Boolean(orderId),
+          },
+          {
+            ...convexQuery(api.orderlines.findAllByOrderId, { orderId }),
+            enabled: Boolean(orderId),
+          },
+          convexQuery(api.taxes.findDefaultValue, {}),
+        ],
+      })
 
     const formattedCurrentDate = format(new Date(), "dd/MM/yyyy:HH:mm:ss", {
       locale: id,
@@ -59,7 +61,9 @@ export const PrintReceipt = forwardRef(
     const formattedSubTotal = formattedPrice.format(Number(subTotal))
 
     const discount = order?.discount
-    const tax = order?.tax
+    const tax =
+      order?.tax ??
+      (defaultTax.status === "success" ? defaultTax.data?.value : 0)
 
     return (
       <div
@@ -238,7 +242,7 @@ export const PrintReceipt = forwardRef(
                   </p>
                 </div>
               )}
-              {printStatus === "receipt" && !!tax && tax > 0 && (
+              {!!tax && tax > 0 && (
                 <div className="flex items-center justify-between">
                   <p>PPN ({tax * 100}%):</p>
                   <p>{formattedPrice.format(Number(tax * subTotal))}</p>
@@ -254,16 +258,19 @@ export const PrintReceipt = forwardRef(
             {/* ENDS PAYMENTS */}
 
             {/* STARTS GRAND TOTAL */}
-            {printStatus === "receipt" && (
-              <section className="pt-2">
-                <div className="flex items-center justify-between">
-                  <p>Grand Total:</p>
-                  <p>
-                    {formattedPriceWithRupiah.format(Number(order.totalAmount))}
-                  </p>
-                </div>
-              </section>
-            )}
+            <section className="pt-2">
+              <div className="flex items-center justify-between">
+                <p>Grand Total:</p>
+                <p>
+                  {printStatus === "receipt"
+                    ? formattedPriceWithRupiah.format(Number(order.totalAmount))
+                    : !!tax &&
+                      formattedPriceWithRupiah.format(
+                        Number(subTotal + tax * subTotal),
+                      )}
+                </p>
+              </div>
+            </section>
             {/* ENDS GRAND TOTAL */}
 
             {/* STARTS FOOTER */}
@@ -271,7 +278,7 @@ export const PrintReceipt = forwardRef(
               <h3 className="uppercase">
                 {printStatus === "receipt"
                   ? "Thanks for visiting"
-                  : "Exclude Disc & PPN"}
+                  : "Bill Printed"}
               </h3>
             </section>
             {/* ENDS FOOTER */}
