@@ -43,6 +43,10 @@
 ✅ Bug: Remove NaN on Receipt
 ✅ Reconfig Bill Printed (Tax included)
 
+## Version 1.0.0
+
+❌ Production Deployment
+
 ## Backlog (Future Plan)
 
 ✅ Pool Table with the same company must have a unique name
