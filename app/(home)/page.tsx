@@ -35,7 +35,7 @@ export default async function HomePage() {
         />
         <ShimmerButton>
           <Tv className="mr-1.5 animate-pulse text-fuchsia-500" />
-          Tutorial (sooon)
+          Tutorial (soon)
         </ShimmerButton>
       </div>
       <section className="mt-20 flex flex-col items-center gap-2">
