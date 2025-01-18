@@ -38,12 +38,9 @@ export default async function HomePage() {
           Tutorial (soon)
         </ShimmerButton>
       </div>
-      <section className="mt-20 flex flex-col items-center gap-2">
-        <div className="flex items-center justify-center gap-4">
-          <AuthButtons preloadSlug={preloadSlug} />
-        </div>
-        {/* <ResetAll /> */}
-      </section>
+      <div className="flex items-center justify-center gap-4">
+        <AuthButtons preloadSlug={preloadSlug} />
+      </div>
     </Vortex>
   )
 }

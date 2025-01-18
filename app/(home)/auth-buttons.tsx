@@ -21,7 +21,7 @@ export const AuthButtons = ({
 }) => {
   const slug = usePreloadedQuery(preloadSlug)
   return (
-    <div className="my-16 flex justify-center gap-4">
+    <div className="mt-8 flex justify-center gap-4 md:mt-24">
       <AuthLoading>
         <Button variant={"outline"} size="lg">
           <Loader2 size={20} className="mr-2 animate-spin" /> Loading
@@ -35,14 +35,14 @@ export const AuthButtons = ({
       </Unauthenticated>
       <Authenticated>
         {/** Show Button if the user is signed-in. The link and the button's title depends on whether the signed-in user has already created the company or not (yet) */}
-        <Button asChild size="lg">
+        <Button asChild variant={"secondary"}>
           <Link
             href={slug ? `/${encodeURIComponent(slug)}/dashboard` : "/portal"}
           >
             {slug ? "Dashboard" : "Create Company"}
           </Link>
         </Button>
-        <SignOutButton size="lg" variant="outline" />
+        <SignOutButton variant="outline" />
       </Authenticated>
     </div>
   )
