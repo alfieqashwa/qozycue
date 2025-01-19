@@ -34,8 +34,15 @@ export default async function HomePage() {
           title="Documentation"
         />
         <ShimmerButton>
-          <Tv className="mr-1.5 animate-pulse text-fuchsia-500" />
-          Tutorial (soon)
+          <a
+            href="https://www.youtube.com/playlist?list=PLnWWQuvB-wxg2PHPh4aybEZaqREqcrVuN"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex justify-center text-center"
+          >
+            <Tv className="mr-1.5 animate-pulse text-fuchsia-500" />
+            Tutorial
+          </a>
         </ShimmerButton>
       </div>
       <div className="flex items-center justify-center gap-4">
