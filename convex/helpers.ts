@@ -426,17 +426,17 @@ export function validateSubscriptionLimits({
     poolTable: { TRIAL: 10, BASIC: 20, PRO: 40, ENTERPRISE: undefined },
     product: {
       TRIAL: 20,
-      BASIC: undefined,
-      PRO: undefined,
+      BASIC: 60,
+      PRO: 100,
       ENTERPRISE: undefined,
     }, // No limits for BASIC and PRO
     packet: {
-      TRIAL: 5,
-      BASIC: undefined,
-      PRO: undefined,
+      TRIAL: 6,
+      BASIC: 10,
+      PRO: 20,
       ENTERPRISE: undefined,
     }, // No limits for BASIC and PRO
-    user: { TRIAL: 4, BASIC: 5, PRO: 10, ENTERPRISE: undefined },
+    user: { TRIAL: 5, BASIC: 5, PRO: 10, ENTERPRISE: undefined },
   }
 
   // Validation logic
