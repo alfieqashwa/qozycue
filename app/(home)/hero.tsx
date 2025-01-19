@@ -5,7 +5,7 @@ import { GiPoolTriangle } from "react-icons/gi"
 const QOZY_CUE = ["Q", "o", "z", "y", " ", "C", "u", "e"]
 
 export const Hero = () => (
-  <div className="mt-40">
+  <div>
     <p className="text-center text-6xl font-black tracking-wider text-white sm:text-7xl lg:text-8xl">
       {QOZY_CUE.map((q, i) => (
         <span

@@ -8,7 +8,7 @@ export default function SplashPageLayout({
 }) {
   return (
     <div className="relative">
-      <main className="flex h-screen flex-col items-center justify-center">
+      <main className="flex min-h-screen flex-col items-center justify-center">
         {children}
       </main>
       <Copyright />
