@@ -1,6 +1,8 @@
 import "@/styles/globals.css"
 export const dynamic = "force-dynamic"
 
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Poppins as FontSans } from "next/font/google"
 
 import ConvexClientProvider from "@/components/ConvexClientProvider"
@@ -131,6 +133,8 @@ export default function RootLayout({
               />
             </ThemeProvider>
           </ConvexClientProvider>
+          <Analytics />
+          <SpeedInsights />
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>
