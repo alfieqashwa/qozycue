@@ -14,27 +14,25 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
 
       if (args.existingUserId) {
         // Optionally merge updated fields into the existing user object here
-        const existingUser = await findUserByEmail(ctx, args.profile.email)
-
-        if (existingUser) {
-          if (
-            existingUser.name === undefined &&
-            existingUser.image === undefined
-          ) {
-            await ctx.db.patch(existingUser._id, {
-              ...args.profile,
-              name: args.profile.name as string,
-              image: args.profile.image as string,
-            })
-          }
-
-          return existingUser._id
-        }
-
         return args.existingUserId
       }
 
-      // console.log({ existingUser })
+      const existingUser = await findUserByEmail(ctx, args.profile.email)
+
+      if (existingUser) {
+        if (
+          existingUser.name === undefined &&
+          existingUser.image === undefined
+        ) {
+          await ctx.db.patch(existingUser._id, {
+            ...args.profile,
+            name: args.profile.name as string,
+            image: args.profile.image as string,
+          })
+        }
+
+        return existingUser._id
+      }
 
       // Implement your own user creation:
       const isDewa = args.profile.email === process.env.DEWA_EMAIL!
