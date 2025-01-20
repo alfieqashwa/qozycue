@@ -1,5 +1,6 @@
 "use client"
 
+import { ResetSession } from "@/app/(auth)/[slug]/profile/team-info/reset-session"
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Checkbox } from "@/components/ui/checkbox"
 import { api } from "@/convex/_generated/api"
@@ -154,6 +155,16 @@ export const columnsUser: ColumnDef<
           {format(new Date(timestamp as Date), "PPpp", { locale: id })}
         </div>
       )
+    },
+  },
+  {
+    id: "reset",
+    cell: ({ row }) => {
+      const {
+        original: { _id, email },
+      } = row
+
+      return <ResetSession userId={_id} email={email} />
     },
   },
   {
