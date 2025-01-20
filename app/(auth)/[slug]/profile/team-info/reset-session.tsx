@@ -31,16 +31,17 @@ export function ResetSession({
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.sessions.deleteAllByUserId),
-    onSuccess: () =>
+    onSuccess: () => {
+      setOpen(false)
       toast.success("Succeed!", {
         description: "Your Team has been resetted.",
-      }),
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

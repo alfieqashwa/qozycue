@@ -63,11 +63,15 @@ export const deleteAllByUserId = mutation({
         .collect()
 
       for (const refreshToken of refreshTokens) {
-        const removeRefreshToken = await ctx.db.delete(refreshToken._id)
+        const removeRefreshToken =
+          refreshToken._id != null
+            ? await ctx.db.delete(refreshToken._id)
+            : null
         removeAllRefreshTokens.push(removeRefreshToken)
       }
 
-      const removeSession = await ctx.db.delete(session._id)
+      const removeSession =
+        session._id != null ? await ctx.db.delete(session._id) : null
       removeAllSessions.push(removeSession)
     }
 
@@ -77,11 +81,10 @@ export const deleteAllByUserId = mutation({
       .collect()
 
     for (const account of accounts) {
-      const removeAccount = await ctx.db.delete(account._id)
+      const removeAccount =
+        account._id != null ? await ctx.db.delete(account._id) : null
       removeAllAccounts.push(removeAccount)
     }
-
-    return { removeAllRefreshTokens, removeAllSessions, removeAllAccounts }
   },
 })
 
