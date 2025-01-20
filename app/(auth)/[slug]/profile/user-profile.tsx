@@ -44,6 +44,7 @@ export function UserProfile({
             alt="Profile Image"
             width={500}
             height={500}
+            priority
             className="size-32 rounded-full object-cover p-1 ring-4 ring-primary"
           />
         ) : (
