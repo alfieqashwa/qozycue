@@ -7,7 +7,7 @@ import { adminProcedure, reset, superAdminProcedure } from "./helpers"
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await superAdminProcedure(ctx, {})
+    await adminProcedure(ctx, {})
     return await ctx.db.query("authSessions").collect()
   },
 })
