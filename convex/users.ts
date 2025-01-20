@@ -127,7 +127,7 @@ export const upsertSuperAdminProcedure = zMutation({
 
     let upsert
 
-    if (!user) {
+    if (!user?._id) {
       // if no-user, then createTeam
       upsert = await ctx.db.insert("users", {
         email,
@@ -171,7 +171,7 @@ export const upsertAdminProcedure = zMutation({
 
     let upsert
 
-    if (!user) {
+    if (!user?._id) {
       // if no-user, then createTeam
       upsert = await ctx.db.insert("users", {
         email,
