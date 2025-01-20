@@ -4,8 +4,10 @@ import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { FaceSmileIcon } from "@heroicons/react/24/solid"
 import { fetchQuery } from "convex/nextjs"
+import { Link as LinkIcon } from "lucide-react"
 import { type Metadata } from "next"
 import Image from "next/image"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 import { TriggerTrialButton } from "./trigger-trial-button"
 
@@ -19,6 +21,7 @@ export default async function Page() {
 
   if (!session) redirect("/signin")
 
+  // if user is not a USER & has a company, then redirect to their respective page
   if (session.user.role !== "USER" && !!session.user.company?.slug) {
     if (session.user.role === "DEWA") redirect("/dewa/")
     if (session.user.role === "ADMIN" || session.user.role === "OWNER")
@@ -32,7 +35,7 @@ export default async function Page() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 font-semibold">
+    <main className="relative flex min-h-screen flex-col items-center justify-center gap-2 p-2 font-semibold">
       <FaceSmileIcon className="w-10 text-primary" />
       <h2 className="text-xl font-semibold md:text-3xl">
         Welcome to Qozy Cue App.
@@ -61,6 +64,15 @@ export default async function Page() {
         Tekan <SignOutButton size="sm" /> untuk keluar.
       </p>
       <p className="text-center">Terimakasih.</p>
+
+      {/* only show for dewa user when it has no company yet */}
+      {session.user.role === "DEWA" && (
+        <div className="absolute bottom-2 right-2">
+          <Link href="/dewa/">
+            <LinkIcon />
+          </Link>
+        </div>
+      )}
     </main>
   )
 }
