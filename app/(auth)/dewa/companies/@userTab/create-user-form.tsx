@@ -49,16 +49,17 @@ export function CreateUserForm({
 
   const upsertUser = useMutation({
     mutationFn: useConvexMutation(api.users.upsertSuperAdminProcedure),
-    onSuccess: () =>
+    onSuccess: () => {
+      setOpen(false)
       toast.success("Succeed!", {
         description: "Your new user has been created.",
-      }),
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   const form = useForm<TUpsertUser>({

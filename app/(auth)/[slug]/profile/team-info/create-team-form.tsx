@@ -42,17 +42,18 @@ export function CreateTeamForm({
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.users.upsertAdminProcedure),
-    onSuccess: () =>
+    onSuccess: () => {
+      setOpen(false)
       toast.success("Succeed!", {
         description: "Your new team has been created.",
-      }),
+      })
+    },
     // source => https://docs.convex.dev/functions/error-handling/application-errors#throwing-application-errors
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   const form = useForm<TUpsertTeam>({
