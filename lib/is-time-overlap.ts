@@ -28,9 +28,9 @@ export function isTimeOverlap(
 
     // Check for overlap or violation of the 10-minute gap on both sides
     return (
-      (newStartTime > bufferedStartTime && newStartTime < bufferedEndTime) || // Overlap or less than gap at the start
-      (newEndTime > bufferedStartTime && newEndTime < bufferedEndTime) || // Overlap or less than gap at the end
-      (newStartTime < bufferedStartTime && newEndTime > bufferedEndTime) // Encloses an existing booking
+      (newStartTime >= bufferedStartTime && newStartTime <= bufferedEndTime) || // Overlap or less than gap at the start
+      (newEndTime >= bufferedStartTime && newEndTime <= bufferedEndTime) || // Overlap or less than gap at the end
+      (newStartTime <= bufferedStartTime && newEndTime >= bufferedEndTime) // Encloses an existing booking
     )
   })
 }

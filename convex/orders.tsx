@@ -680,24 +680,28 @@ export const startTimer = zMutation({
       .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
       .collect()
 
-    const listOfRentalTime = await Promise.all(
-      listOfPoolRental
-        .filter(async (rental) => {
+    const listOfRentalTime = (
+      await Promise.all(
+        listOfPoolRental.map(async (rental) => {
           const order = await ctx.db
             .query("orders")
             .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
             .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-            .unique()
+            .first()
 
           // filtered only the open statusPayment orders
-          return rental.orderId === order?._id
-        })
-        .map((rental) => ({
-          timeStart: rental.timeStart,
-          timeEnd: rental.timeEnd,
-        }))
-        .sort((p, q) => p.timeStart! - q.timeStart!),
+          if (rental.orderId === order?._id) {
+            return {
+              timeStart: rental.timeStart,
+              timeEnd: rental.timeEnd,
+            }
+          }
+          return null
+        }),
+      )
     )
+      .filter((rental) => rental !== null)
+      .sort((p, q) => p!.timeStart! - q!.timeStart!)
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     const startTime = Date.now()
@@ -707,7 +711,7 @@ export const startTimer = zMutation({
       gapDuration,
       startTime,
       endTime,
-      listOfRentalTime,
+      listOfRentalTime as { timeStart: number; timeEnd: number }[],
     )
 
     if (hasConflict) {
