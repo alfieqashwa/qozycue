@@ -28,7 +28,7 @@ export function TriggerTrialButton({ userRole }: { userRole: boolean }) {
   const buttonTitle = "trial"
   const title = "Trial Subscription"
   const description =
-    "You have max of 10 pool tables, 20 products, 5 packets, and 3 users."
+    "You have max of 10 pool tables, 20 products, 6 packets, and 5 users."
 
   if (isDesktop) {
     return (
