@@ -942,12 +942,21 @@ export const payment = zMutation({
       return { updateOrder }
     }
 
-    const updatePoolTable = await ctx.db.patch(poolRental.poolTableId, {
-      startTime: null,
-      endTime: null,
-    })
+    const order = await ctx.db.get(orderId)
+    if (!order) throw new ConvexError("Order not found!")
 
-    return { updateOrder, updatePoolTable }
+    // No need to update the pool table if the order status payment is "PENDING"
+    if (order.statusPayment === "PENDING") {
+      return { updateOrder }
+    }
+
+    if (order.statusPayment === "OPEN") {
+      const updatePoolTable = await ctx.db.patch(poolRental.poolTableId, {
+        startTime: null,
+        endTime: null,
+      })
+      return { updateOrder, updatePoolTable }
+    }
   },
 })
 

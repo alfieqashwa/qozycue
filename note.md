@@ -46,6 +46,7 @@
 ## Version 1.0.0
 
 ✅ Production Deployment Testing
+✅ Bug: Payment for PendingOrder should not modify PoolTable startTime, endTime, and isActive
 
 ## Backlog (Future Plan)
 
