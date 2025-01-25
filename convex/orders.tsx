@@ -304,8 +304,6 @@ export const findByPoolTableId = query({
 export const findByPoolTableIdPublicProcedure = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
-
     const poolRentals = await ctx.db
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
@@ -315,7 +313,7 @@ export const findByPoolTableIdPublicProcedure = query({
     const filteredOrderlist = []
     for (const rental of poolRentals) {
       const order = await ctx.db.get(rental.orderId)
-      const packet = await ctx.db.get(rental.packetId!)
+      const packet = await ctx.db.get(rental.packetId)
 
       filteredOrderlist.push({
         ...order,
