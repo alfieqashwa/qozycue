@@ -8,6 +8,7 @@ import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { usePathname } from "next/navigation"
 import { DescriptionTable } from "../../(auth)/[slug]/tables/pool-table-tab/pool-table-card/description-table"
 import { TimeDisplay } from "../../(auth)/[slug]/tables/pool-table-tab/pool-table-card/time-display"
+import { ContactBooking } from "./contact-booking"
 import { PublicCountdown } from "./public-count-down"
 import { PublicStopwatch } from "./public-stopwatch"
 import { PublicTimer } from "./public-timer"
@@ -39,6 +40,10 @@ export function PoolTableCardPublic({
     enabled: Boolean(poolTableId),
   })
 
+  const websitelink = `https://qozycue.com${pathname}` // pathname has included the "/"
+  const SPACE = "%20"
+  const BOOKING = `https://wa.me/${companyPhone}?text=Hi${SPACE}${companyName.toLocaleUpperCase()}.${SPACE}Saya${SPACE}mau${SPACE}pesan${SPACE}meja${SPACE}${poolTableName}.${SPACE}Bagaimana${SPACE}cara${SPACE}pembayarannya?${SPACE}Thanks!${SPACE}${websitelink}`
+
   return (
     <div className="group/card relative">
       <div
@@ -59,12 +64,10 @@ export function PoolTableCardPublic({
       <div className="relative h-44 rounded-2xl bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow">
         <section className="flex justify-between">
           <PublicTimer
-            companyName={companyName}
-            companyPhone={companyPhone}
-            websitelink={`https://qozycue.com${pathname}`} // pathname has included the "/"
             isActive={isActive}
             poolTableName={poolTableName}
             hasEndTime={!!poolTableEndTime}
+            BOOKING={BOOKING}
           >
             {order.status === "success" &&
               order.data?.poolRental?.packet.rate === "HOUR" && (
@@ -102,6 +105,16 @@ export function PoolTableCardPublic({
           poolTableName={poolTableName}
         />
       </div>
+      {isActive && (
+        <div className="absolute bottom-3 right-3">
+          <ContactBooking
+            BOOKING={BOOKING}
+            poolTableName={poolTableName}
+            width={24}
+            height={24}
+          />
+        </div>
+      )}
     </div>
   )
 }

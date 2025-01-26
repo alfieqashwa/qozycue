@@ -47,6 +47,9 @@
 
 ✅ Production Deployment Testing
 ✅ Bug: Payment for PendingOrder should not modify PoolTable startTime, endTime, and isActive
+✅ Bug: Manager now has access to CRUD Booking
+✅ Bug: Make the API for Booking list as public
+✅ Create small WhatsApp icon if the table is active, so the potential customer knows he/she can also the booking table table althought it's in active
 
 ## Backlog (Future Plan)
 
