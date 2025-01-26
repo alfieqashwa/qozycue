@@ -10,11 +10,13 @@ export const ContactBooking = ({
   poolTableName,
   width = 30,
   height = 30,
+  side = "top",
 }: {
   BOOKING: string
   poolTableName: string
   width?: number
   height?: number
+  side?: "top" | "right" | "bottom" | "left"
 }) => (
   <Tooltip>
     <TooltipTrigger asChild>
@@ -33,7 +35,7 @@ export const ContactBooking = ({
         />
       </a>
     </TooltipTrigger>
-    <TooltipContent className="flex items-center gap-4 bg-muted">
+    <TooltipContent side={side} className="flex items-center gap-4 bg-muted">
       <span className="whitespace-nowrap text-xs capitalize text-muted-foreground">
         Booking Pool {poolTableName}
       </span>

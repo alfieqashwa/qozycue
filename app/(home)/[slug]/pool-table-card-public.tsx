@@ -112,6 +112,7 @@ export function PoolTableCardPublic({
             poolTableName={poolTableName}
             width={24}
             height={24}
+            side="left"
           />
         </div>
       )}
