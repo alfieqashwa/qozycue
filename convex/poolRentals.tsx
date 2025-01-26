@@ -101,8 +101,6 @@ export const findAllBookingByPoolTableId = query({
 export const findAllBookingByPoolTableIdPublicProcedure = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
-
     const bookingRentalList = await ctx.db
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
