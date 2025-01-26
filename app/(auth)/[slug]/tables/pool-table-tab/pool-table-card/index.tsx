@@ -56,7 +56,9 @@ export function PoolTableCard({
       {/*  Only show if the packet-rate is hourly or undefined */}
       {isPublished && order.data?.poolRental.packet.rate !== "MINUTE" && (
         <Booking
-          isCashier={cashierAccessLevel}
+          isCashierOrIsManagerAccessLevel={
+            cashierAccessLevel || managerAccessLevel
+          }
           poolTableId={poolTableId}
           poolTableName={poolTableName}
           gapDuration={gapDuration}

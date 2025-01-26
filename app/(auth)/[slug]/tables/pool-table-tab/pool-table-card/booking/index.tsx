@@ -34,13 +34,13 @@ import { CreateBookingForm } from "./create-booking-form"
 import { DisplayBookingTimer } from "./display-booking-timer"
 
 export function Booking({
-  isCashier,
+  isCashierOrIsManagerAccessLevel,
   poolTableId,
   poolTableName,
   gapDuration,
   openAndNotBookingOrderId,
 }: {
-  isCashier: boolean
+  isCashierOrIsManagerAccessLevel: boolean
   poolTableId: Id<"poolTables">
   poolTableName: string
   gapDuration: number
@@ -157,7 +157,10 @@ export function Booking({
         >
           <SheetTrigger asChild className="bg-muted text-muted-foreground">
             <Button
-              disabled={!isCashier || (!hours && !minutes && !seconds)}
+              disabled={
+                !isCashierOrIsManagerAccessLevel ||
+                (!hours && !minutes && !seconds)
+              }
               size="sm"
               className="duration absolute left-0 top-0 z-10 size-7 animate-pulse rounded-bl-none rounded-tl-2xl rounded-tr-none bg-primary/30 shadow-xl transition-opacity hover:bg-primary/50 disabled:pointer-events-auto disabled:cursor-not-allowed"
             >
@@ -211,7 +214,7 @@ export function Booking({
       <TooltipIsBookingNotification title="Booking?">
         <DrawerTrigger asChild className="bg-muted text-muted-foreground">
           <Button
-            disabled={!isCashier}
+            disabled={!isCashierOrIsManagerAccessLevel}
             size="sm"
             className="absolute left-0 top-0 z-10 size-7 rounded-bl-none rounded-tl-2xl rounded-tr-none shadow-xl transition-all duration-500 ease-in-out hover:bg-primary/50 hover:text-foreground disabled:pointer-events-auto disabled:cursor-not-allowed"
           >
