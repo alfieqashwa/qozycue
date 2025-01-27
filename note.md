@@ -50,6 +50,8 @@
 ✅ Bug: Manager now has access to CRUD Booking
 ✅ Bug: Make the API for Booking list as public
 ✅ Create small WhatsApp icon if the table is active, so the potential customer knows he/she can also the booking table table althought it's in active
+❌ Transfer table to the table where has waiting list should be restricted because it will create potential collision schedule
+❌ Created By should not from the session user
 
 ## Backlog (Future Plan)
 
