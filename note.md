@@ -57,6 +57,7 @@
     - Avoid to transfer table to the table where has any booking order if the rate is "HOUR" and the time is overlap
 
 ✅ Style the Star Icon on Table Column for isBooking Order on Transactions Tab Orders & Tab Rentals
+❌ Create new Schema: updatedBy on Payment Form
 
 ## Backlog (Future Plan)
 
@@ -65,7 +66,6 @@
 ✅ Packet with the same company and the same rate must have a unique name
 ✅ Tax with the same company must have a unique name
 ✅ Discount with the same company must have a unique name
-❌ Create new Schema: UpdatedBy on Payment Form
 ❌ Setup Cancelled Feature (Refund use case)
 ❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
 ❌ "react-to-print" version after learn their recent documentation
