@@ -56,7 +56,7 @@
     - Avoid to transfer table to the table where has any booking order if the rate is "MINUTE"
     - Avoid to transfer table to the table where has any booking order if the rate is "HOUR" and the time is overlap
 
-❌ Style the isBooking Order on Transactions Tab Orders
+✅ Style the Star Icon on Table Column for isBooking Order on Transactions Tab Orders & Tab Rentals
 
 ## Backlog (Future Plan)
 

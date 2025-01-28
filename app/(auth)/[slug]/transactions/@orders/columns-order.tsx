@@ -81,11 +81,18 @@ export const columnsOrder: ColumnDef<
     ),
     cell: ({ row }) => {
       const poolTable = row.getValue("poolTable")
+      const { poolRental } = row.original
+
       return (
         <>
           {!!poolTable ? (
             <Badge variant="secondary" className="px-3 py-1.5">
-              <Star className="mr-2 h-4 w-4 text-primary" />
+              <Star
+                className={cn(
+                  "mr-2 h-4 w-4 text-primary",
+                  poolRental.isBooking && "animate-pulse",
+                )}
+              />
               <span className="whitespace-nowrap capitalize">
                 Table {poolTable as string}
               </span>

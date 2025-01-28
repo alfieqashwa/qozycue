@@ -65,14 +65,22 @@ export const columnsRental: ColumnDef<
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Table" />
     ),
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="px-3 py-1.5">
-        <Star className="mr-2 h-4 w-4 text-primary" />
-        <span className="whitespace-nowrap capitalize">
-          Table {row.getValue("poolTable")}
-        </span>
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const { isBooking } = row.original
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <Star
+            className={cn(
+              "mr-2 h-4 w-4 text-primary",
+              isBooking && "animate-pulse",
+            )}
+          />
+          <span className="whitespace-nowrap capitalize">
+            Table {row.getValue("poolTable")}
+          </span>
+        </Badge>
+      )
+    },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id))
     },

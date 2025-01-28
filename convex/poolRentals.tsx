@@ -38,7 +38,7 @@ export const findAll = query({
       const poolRental = await ctx.db
         .query("poolRentals")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
-        .filter((q) => q.eq(q.field("isBooking"), false))
+        // .filter((q) => q.eq(q.field("isBooking"), false))
         .first()
       if (poolRental) {
         const packet = await ctx.db.get(poolRental?.packetId)

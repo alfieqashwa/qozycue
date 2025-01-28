@@ -88,6 +88,7 @@ export const findAllSortedByDate = query({
       filteredOrders.push({
         ...order,
         poolRental: {
+          isBooking: poolRental?.isBooking,
           poolTable: {
             id: poolTable?._id,
             name: poolTable?.name,
