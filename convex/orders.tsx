@@ -67,13 +67,11 @@ export const findAllSortedByDate = query({
       const poolRental = await ctx.db
         .query("poolRentals")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
-        .filter((q) => q.eq(q.field("isBooking"), false))
         .first()
 
       const poolTable = poolRental
         ? await ctx.db.get(poolRental?.poolTableId)
         : null
-
       const orderlines = await ctx.db
         .query("orderlines")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))

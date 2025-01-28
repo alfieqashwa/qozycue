@@ -52,6 +52,7 @@
 ✅ Create small WhatsApp icon if the table is active, so the potential customer knows he/she can also the booking table table althought it's in active
 ✅ CreatedBy should not from the session user
 ❌ Transfer table to the table where has waiting list should be restricted because it will create potential collision schedule
+❌ Style the isBooking Order on Transactions Tab Orders
 
 ## Backlog (Future Plan)
 
