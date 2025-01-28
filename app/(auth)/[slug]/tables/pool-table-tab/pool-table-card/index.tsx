@@ -137,6 +137,7 @@ export function PoolTableCard({
           <div className="mx-2 flex justify-between sm:mx-3">
             <DetailButton
               isCashier={cashierAccessLevel}
+              isManager={managerAccessLevel}
               orderStatus={order.status}
               order={order.data}
             >

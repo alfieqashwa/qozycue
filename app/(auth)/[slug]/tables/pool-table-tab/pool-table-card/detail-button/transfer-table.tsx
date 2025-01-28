@@ -33,6 +33,7 @@ import { toast } from "sonner"
 
 export function TransferTable({
   isCashier,
+  isManager,
   orderId,
   poolTableIdFrom,
   poolTableName,
@@ -41,6 +42,7 @@ export function TransferTable({
   setOpenDetailDrawer,
 }: {
   isCashier: boolean
+  isManager: boolean
   orderId: Id<"orders">
   poolTableIdFrom: Id<"poolTables">
   poolTableName: string
@@ -91,10 +93,10 @@ export function TransferTable({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
-        disabled={!isCashier || !transferPoolTableList?.length}
+        disabled={(!isCashier && !isManager) || !transferPoolTableList?.length}
         className={cn(
           "pr-2 text-muted-foreground disabled:pointer-events-auto disabled:cursor-not-allowed",
-          isCashier &&
+          (isCashier || isManager) &&
             "transition-colors duration-300 ease-in-out hover:text-foreground",
         )}
       >

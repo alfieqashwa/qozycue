@@ -23,6 +23,7 @@ import { TransferTable } from "./transfer-table"
 
 type DetailButtonProps = {
   isCashier?: boolean
+  isManager?: boolean
   orderId?: Id<"orders">
   customerName?: string
   customerPhone?: string | null
@@ -35,6 +36,7 @@ type DetailButtonProps = {
 }
 export function DetailButton({
   isCashier,
+  isManager,
   orderId,
   customerName,
   customerPhone,
@@ -118,6 +120,7 @@ export function DetailButton({
             {!!order?.poolRental && poolTable?.isActive && (
               <TransferTable
                 isCashier={isCashier!}
+                isManager={isManager!}
                 orderId={order._id!}
                 poolTableIdFrom={poolTable._id}
                 poolTableName={poolTable.name}

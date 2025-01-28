@@ -129,7 +129,7 @@ export const transfer = mutation({
     endTime: v.union(v.null(), v.float64()),
   },
   handler: async (ctx, args) => {
-    await cashierProcedure(ctx, {})
+    await protectedProcedure(ctx, {})
 
     const startPoolTableTo = await ctx.db.patch(args.poolTableIdTo, {
       startTime: args.startTime,
