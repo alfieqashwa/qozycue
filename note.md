@@ -50,8 +50,8 @@
 ✅ Bug: Manager now has access to CRUD Booking
 ✅ Bug: Make the API for Booking list as public
 ✅ Create small WhatsApp icon if the table is active, so the potential customer knows he/she can also the booking table table althought it's in active
+✅ CreatedBy should not from the session user
 ❌ Transfer table to the table where has waiting list should be restricted because it will create potential collision schedule
-❌ Created By should not from the session user
 
 ## Backlog (Future Plan)
 
@@ -60,6 +60,7 @@
 ✅ Packet with the same company and the same rate must have a unique name
 ✅ Tax with the same company must have a unique name
 ✅ Discount with the same company must have a unique name
+❌ Create new Schema: UpdatedBy on Payment Form
 ❌ Setup Cancelled Feature (Refund use case)
 ❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
 ❌ "react-to-print" version after learn their recent documentation

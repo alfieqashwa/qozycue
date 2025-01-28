@@ -73,12 +73,18 @@ export const findAllSortedByDate = query({
       const poolTable = poolRental
         ? await ctx.db.get(poolRental?.poolTableId)
         : null
+
       const orderlines = await ctx.db
         .query("orderlines")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
         .collect()
+
       const customer = order.customerId
         ? await ctx.db.get(order.customerId)
+        : undefined
+
+      const createdBy = order.createdBy
+        ? await ctx.db.get(order.createdBy)
         : undefined
 
       filteredOrders.push({
@@ -91,8 +97,8 @@ export const findAllSortedByDate = query({
         },
         orderlines,
         createdBy: {
-          name: user?.name,
-          role: user?.role,
+          name: createdBy?.name,
+          role: createdBy?.role,
         },
         customer: {
           name: customer?.name,
@@ -145,17 +151,25 @@ export const findAllArchiveOrderSortedByDate = query({
         .query("poolRentals")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
         .filter((q) => q.eq(q.field("isBooking"), false))
-        .unique()
+        .first()
+
       const poolTable = poolRental
         ? await ctx.db.get(poolRental?.poolTableId)
         : null
+
       const orderlines = await ctx.db
         .query("orderlines")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
         .collect()
+
       const customer = order.customerId
         ? await ctx.db.get(order.customerId)
         : undefined
+
+      const createdBy = order.createdBy
+        ? await ctx.db.get(order.createdBy)
+        : undefined
+
       filteredOrders.push({
         ...order,
         poolRental: {
@@ -166,8 +180,8 @@ export const findAllArchiveOrderSortedByDate = query({
         },
         orderlines,
         createdBy: {
-          name: user?.name,
-          role: user?.role,
+          name: createdBy?.name,
+          role: createdBy?.role,
         },
         customer: {
           name: customer?.name,
