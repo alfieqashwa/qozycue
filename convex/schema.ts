@@ -113,10 +113,12 @@ export default defineSchema({
     customerId: v.optional(v.id("customers")),
     dueDate: v.optional(v.float64()), // new field
     createdBy: v.id("users"),
+    updatedBy: v.optional(v.id("users")),
     companyId: v.id("companies"),
   })
     .index("customerId", ["customerId"])
     .index("createdBy", ["createdBy"])
+    .index("updatedBy", ["updatedBy"])
     .index("companyId", ["companyId"]),
 
   // poolRentals is similar to orderlines

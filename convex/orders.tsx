@@ -931,7 +931,16 @@ export const payment = zMutation({
       // ...fields
     },
   ) => {
-    await cashierProcedure(ctx, {})
+    // await cashierProcedure(ctx, {})
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "CASHIER"
+    )
+      throw new ConvexError("You do not have access!")
 
     const poolRental = await ctx.db
       .query("poolRentals")
@@ -951,6 +960,7 @@ export const payment = zMutation({
         discount,
         tax,
         note,
+        updatedBy: user._id,
       })
       return { updateOrder }
     }

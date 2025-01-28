@@ -57,7 +57,7 @@
     - Avoid to transfer table to the table where has any booking order if the rate is "HOUR" and the time is overlap
 
 ✅ Style the Star Icon on Table Column for isBooking Order on Transactions Tab Orders & Tab Rentals
-❌ Create new Schema: updatedBy on Payment Form
+✅ Add new field called updatedBy on ordersSchema && retrieve on orders.payment API
 
 ## Backlog (Future Plan)
 
