@@ -122,6 +122,8 @@ export function DetailButton({
                 isCashier={isCashier!}
                 isManager={isManager!}
                 orderId={order._id!}
+                packetRate={order?.poolRental.packet.rate}
+                duration={order?.poolRental?.duration}
                 poolTableIdFrom={poolTable._id}
                 poolTableName={poolTable.name}
                 startTime={poolTable.startTime!}

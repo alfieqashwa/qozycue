@@ -51,7 +51,11 @@
 ✅ Bug: Make the API for Booking list as public
 ✅ Create small WhatsApp icon if the table is active, so the potential customer knows he/she can also the booking table table althought it's in active
 ✅ CreatedBy should not from the session user
-❌ Transfer table to the table where has waiting list should be restricted because it will create potential collision schedule
+✅ Feat: Add fn isTimeOverlap() to avoid transfer table create potential collision schedule
+
+    - Avoid to transfer table to the table where has any booking order if the rate is "MINUTE"
+    - Avoid to transfer table to the table where has any booking order if the rate is "HOUR" and the time is overlap
+
 ❌ Style the isBooking Order on Transactions Tab Orders
 
 ## Backlog (Future Plan)

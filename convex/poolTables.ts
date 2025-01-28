@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError, v } from "convex/values"
+import { isTimeOverlap } from "../lib/is-time-overlap"
 import {
   createPoolTableSchema,
   togglePoolSchema,
@@ -9,7 +10,6 @@ import {
 import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
-  cashierProcedure,
   protectedProcedure,
   subscriptions,
   validateSubscriptionLimits,
@@ -60,6 +60,43 @@ export const findById = query({
     return await ctx.db.get(poolTableId)
   },
 })
+
+export const transferPoolTableList = query({
+  args: { poolTableIdFrom: v.id("poolTables") },
+  handler: async (ctx, args) => {
+    // protectedProcedure
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+
+    const poolTableListByCompany = await ctx.db
+      .query("poolTables")
+      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
+      .filter((q) =>
+        q.and(
+          q.neq(q.field("_id"), args.poolTableIdFrom),
+          q.neq(q.field("status"), "disabled"),
+          q.eq(q.field("isActive"), false),
+          q.eq(q.field("startTime"), null),
+        ),
+      )
+      .collect()
+
+    return poolTableListByCompany.sort((p, q) =>
+      p.name.localeCompare(q.name, undefined, { numeric: true }),
+    )
+  },
+})
+
+export const findGapDuration = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, { poolTableId }) => {
+    await protectedProcedure(ctx, {})
+
+    return await ctx.db.get(poolTableId)
+  },
+})
+
+// === STARTS Mutation ===
 
 export const create = zMutation({
   args: { createPoolTableSchema },
@@ -120,9 +157,23 @@ export const toggle = zMutation({
   },
 })
 
+export const updateGapDuration = zMutation({
+  args: { updateGapDurationSchema },
+  handler: async (
+    ctx,
+    { updateGapDurationSchema: { poolTableId, gapDuration } },
+  ) => {
+    await protectedProcedure(ctx, {})
+
+    return await ctx.db.patch(poolTableId, { gapDuration })
+  },
+})
+
 export const transfer = mutation({
   args: {
     orderId: v.id("orders"),
+    duration: v.number(),
+    packetRate: v.union(v.literal("MINUTE"), v.literal("HOUR")),
     poolTableIdFrom: v.id("poolTables"),
     poolTableIdTo: v.id("poolTables"),
     startTime: v.float64(),
@@ -130,6 +181,66 @@ export const transfer = mutation({
   },
   handler: async (ctx, args) => {
     await protectedProcedure(ctx, {})
+
+    // === STARTS Config Conflict Validation ===
+
+    // find gapDuration of the poolTableIdTo
+    const poolTableTo = await ctx.db.get(args.poolTableIdTo)
+    if (!poolTableTo) throw new ConvexError("No PoolTableTo found!")
+    if (!poolTableTo._id) throw new ConvexError("No PoolTableTo ID found!")
+    if (!poolTableTo.gapDuration)
+      throw new ConvexError("No Gap Duration provided!")
+
+    const listOfPoolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableTo._id))
+      .collect()
+
+    const hasBooking = listOfPoolRental.some((rental) => rental.isBooking)
+    if (hasBooking && args.packetRate === "MINUTE")
+      throw new ConvexError(
+        "The selected table is currently being booked, will not be work with minute rate.",
+      )
+
+    const listOfRentalTime = (
+      await Promise.all(
+        listOfPoolRental.map(async (rental) => {
+          const order = await ctx.db
+            .query("orders")
+            .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+            .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+            .first()
+
+          // filtered only the open statusPayment orders
+          if (rental.orderId === order?._id) {
+            return {
+              timeStart: rental.timeStart,
+              timeEnd: rental.timeEnd,
+            }
+          }
+          return null
+        }),
+      )
+    )
+      .filter((rental) => rental !== null)
+      .sort((p, q) => p!.timeStart! - q!.timeStart!)
+
+    const HOUR_TO_MILLISECOND = 60 * 60 * 1000
+    // const startTime = Date.now()
+    const startTime = args.startTime
+    const endTime = startTime + args.duration * HOUR_TO_MILLISECOND
+
+    const hasConflict = isTimeOverlap(
+      poolTableTo.gapDuration,
+      args.startTime,
+      endTime,
+      listOfRentalTime as { timeStart: number; timeEnd: number }[],
+    )
+
+    if (hasConflict) {
+      throw new ConvexError("The selected time overlaps with another booking.")
+    }
+    // === ENDS Config Conflict Validation ===
 
     const startPoolTableTo = await ctx.db.patch(args.poolTableIdTo, {
       startTime: args.startTime,
@@ -154,67 +265,5 @@ export const transfer = mutation({
       poolTableId: args.poolTableIdTo,
     })
     return { startPoolTableTo, resetPoolTableFrom, transferTable }
-  },
-})
-export const transferPoolTableList = query({
-  args: { poolTableIdFrom: v.id("poolTables") },
-  handler: async (ctx, args) => {
-    // protectedProcedure
-    const userId = await getAuthUserId(ctx)
-    const user = userId !== null ? await ctx.db.get(userId) : null
-
-    const poolTableListByCompany = await ctx.db
-      .query("poolTables")
-      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .filter((q) =>
-        q.and(
-          q.neq(q.field("_id"), args.poolTableIdFrom),
-          q.neq(q.field("status"), "disabled"),
-          q.eq(q.field("isActive"), false),
-          q.eq(q.field("startTime"), null),
-        ),
-      )
-      .collect()
-
-    const poolTableList = await Promise.all(
-      (poolTableListByCompany ?? []).map(async (pool) => {
-        const poolRental = await ctx.db
-          .query("poolRentals")
-          .withIndex("poolTableId", (q) => q.eq("poolTableId", pool._id))
-          .first()
-
-        return {
-          ...pool,
-          poolRental,
-        }
-      }),
-    )
-
-    return poolTableList
-      .filter((pool) => pool.poolRental?.isBooking !== true)
-      .sort((p, q) =>
-        p.name.localeCompare(q.name, undefined, { numeric: true }),
-      )
-  },
-})
-
-export const findGapDuration = query({
-  args: { poolTableId: v.id("poolTables") },
-  handler: async (ctx, { poolTableId }) => {
-    await protectedProcedure(ctx, {})
-
-    return await ctx.db.get(poolTableId)
-  },
-})
-
-export const updateGapDuration = zMutation({
-  args: { updateGapDurationSchema },
-  handler: async (
-    ctx,
-    { updateGapDurationSchema: { poolTableId, gapDuration } },
-  ) => {
-    await protectedProcedure(ctx, {})
-
-    return await ctx.db.patch(poolTableId, { gapDuration })
   },
 })

@@ -24,6 +24,7 @@ import {
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { Rate } from "@/types"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
@@ -35,6 +36,8 @@ export function TransferTable({
   isCashier,
   isManager,
   orderId,
+  packetRate,
+  duration,
   poolTableIdFrom,
   poolTableName,
   startTime,
@@ -44,6 +47,8 @@ export function TransferTable({
   isCashier: boolean
   isManager: boolean
   orderId: Id<"orders">
+  packetRate?: Rate
+  duration?: number
   poolTableIdFrom: Id<"poolTables">
   poolTableName: string
   startTime: number
@@ -60,19 +65,18 @@ export function TransferTable({
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.poolTables.transfer),
-    onSuccess: () =>
+    onSuccess: () => {
+      setOpenDetailDrawer(false)
+      setOpen(false)
       toast.success("Succeed!", {
         description: "The table has been transfered successfully.",
-      }),
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => {
-      setOpenDetailDrawer(false)
-      setOpen(false)
-    },
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -85,6 +89,8 @@ export function TransferTable({
       orderId,
       poolTableIdFrom,
       poolTableIdTo,
+      packetRate: packetRate as Rate,
+      duration: duration as number,
       startTime: startTime as number,
       endTime: endTime,
     })
