@@ -58,6 +58,9 @@
 
 ✅ Style the Star Icon on Table Column for isBooking Order on Transactions Tab Orders & Tab Rentals
 ✅ Add new field called updatedBy on ordersSchema && retrieve on orders.payment API
+✅ Configure updatedByName & updatedByRole on Table Transactions & Archives
+✅ Add Tooltip Total Transactions of Revenue By Payment Method on Dashboard
+✅ Setup Customer Graphic on Dashboard
 
 ## Backlog (Future Plan)
 

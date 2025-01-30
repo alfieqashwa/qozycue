@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { BarChartDashboard } from "./bar-chart"
+import { PaymentMethodBarChartDashboard } from "./payment-method-bar-chart"
 
 export function RevenueByPaymentMethod({
   from,
@@ -25,6 +25,7 @@ export function RevenueByPaymentMethod({
   const dataGroupByPaymentMethod = groupByPaymentMethod?.map((order) => ({
     name: order.paymentMethod,
     total: order._sum.totalAmount,
+    count: order._count,
   }))
 
   return (
@@ -33,7 +34,7 @@ export function RevenueByPaymentMethod({
         <CardTitle className="text-center">Revenue By Payment Method</CardTitle>
       </CardHeader>
       <CardContent className="p-0 sm:pl-6">
-        <BarChartDashboard data={dataGroupByPaymentMethod} />
+        <PaymentMethodBarChartDashboard data={dataGroupByPaymentMethod} />
         {/* <pre>{JSON.stringify(groupByPaymentMethod)}</pre> */}
       </CardContent>
     </Card>
