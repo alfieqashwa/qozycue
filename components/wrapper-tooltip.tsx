@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 
 export const WrapperTooltip = (props: {
   side?: "top" | "right" | "bottom" | "left" | undefined
+  icon?: React.ReactNode
   content: string
   className?: string
   children: React.ReactNode
@@ -18,7 +19,10 @@ export const WrapperTooltip = (props: {
         props.className,
       )}
     >
-      {props.content}
+      <p className="flex items-center">
+        {props.icon}
+        {props.content}
+      </p>
     </TooltipContent>
   </Tooltip>
 )

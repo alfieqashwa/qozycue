@@ -3,6 +3,7 @@
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { formattedPriceWithRupiah } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
@@ -259,31 +260,42 @@ export const columnsOrder: ColumnDef<
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created By" />
     ),
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="px-3 py-1.5">
-        <User2 className="mr-2 h-4 w-4 text-muted-foreground" />
-        <span className="max-w-[500px] truncate capitalize">
-          {row.getValue("createdBy")}
-        </span>
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "role",
-    accessorFn: (row) => row.createdBy?.role,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Role As" />
-    ),
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="px-3 py-1.5">
-        <Key className="mr-2 h-4 w-4 text-primary" />
-        <span className="max-w-[500px] truncate">{row.getValue("role")}</span>
-      </Badge>
-    ),
-    filterFn: (row, id, value: string) => {
-      return value.includes(row.getValue(id))
+    cell: ({ row }) => {
+      const { createdBy } = row.original
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <WrapperTooltip
+            side="right"
+            icon={
+              createdBy.role && <Key className="mr-2 h-4 w-4 text-primary" />
+            }
+            content={createdBy.role as string}
+          >
+            <User2 className="mr-2 h-4 w-4 animate-pulse text-primary" />
+          </WrapperTooltip>
+          <span className="max-w-[500px] truncate capitalize">
+            {row.getValue("createdBy")}
+          </span>
+        </Badge>
+      )
     },
   },
+  // {
+  //   accessorKey: "role",
+  //   accessorFn: (row) => row.createdBy?.role,
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Role As" />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Badge variant="secondary" className="px-3 py-1.5">
+  //       <Key className="mr-2 h-4 w-4 text-primary" />
+  //       <span className="max-w-[500px] truncate">{row.getValue("role")}</span>
+  //     </Badge>
+  //   ),
+  //   filterFn: (row, id, value: string) => {
+  //     return value.includes(row.getValue(id))
+  //   },
+  // },
   {
     accessorKey: "customer",
     accessorFn: (row) => row.customer?.name,
@@ -318,6 +330,36 @@ export const columnsOrder: ColumnDef<
         locale: id,
       })
       return <div className="whitespace-nowrap">{createdAt}</div>
+    },
+  },
+  {
+    accessorKey: "updatedBy",
+    accessorFn: (row) => row.updatedBy?.name,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated By" />
+    ),
+    cell: ({ row }) => {
+      const { updatedBy } = row.original
+
+      if (!updatedBy.name) {
+        return <p></p>
+      }
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <WrapperTooltip
+            side="right"
+            icon={
+              updatedBy.role && <Key className="mr-2 h-4 w-4 text-primary" />
+            }
+            content={updatedBy.role as string}
+          >
+            <User2 className="mr-2 h-4 w-4 animate-pulse text-primary" />
+          </WrapperTooltip>
+          <span className="max-w-[500px] truncate capitalize">
+            {row.getValue("updatedBy")}
+          </span>
+        </Badge>
+      )
     },
   },
   {

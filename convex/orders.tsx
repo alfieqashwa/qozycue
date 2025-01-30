@@ -84,6 +84,9 @@ export const findAllSortedByDate = query({
       const createdBy = order.createdBy
         ? await ctx.db.get(order.createdBy)
         : undefined
+      const updatedBy = order.updatedBy
+        ? await ctx.db.get(order.updatedBy)
+        : undefined
 
       filteredOrders.push({
         ...order,
@@ -98,6 +101,10 @@ export const findAllSortedByDate = query({
         createdBy: {
           name: createdBy?.name,
           role: createdBy?.role,
+        },
+        updatedBy: {
+          name: updatedBy?.name,
+          role: updatedBy?.role,
         },
         customer: {
           name: customer?.name,
@@ -168,6 +175,9 @@ export const findAllArchiveOrderSortedByDate = query({
       const createdBy = order.createdBy
         ? await ctx.db.get(order.createdBy)
         : undefined
+      const updatedBy = order.updatedBy
+        ? await ctx.db.get(order.updatedBy)
+        : undefined
 
       filteredOrders.push({
         ...order,
@@ -181,6 +191,10 @@ export const findAllArchiveOrderSortedByDate = query({
         createdBy: {
           name: createdBy?.name,
           role: createdBy?.role,
+        },
+        updatedBy: {
+          name: updatedBy?.name,
+          role: updatedBy?.role,
         },
         customer: {
           name: customer?.name,
@@ -973,6 +987,7 @@ export const payment = zMutation({
       discount,
       tax,
       note,
+      updatedBy: user._id,
     })
 
     // for cafe-only use case
