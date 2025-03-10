@@ -42,15 +42,16 @@ export const metadata: Metadata = {
     follow: true,
     index: true,
   },
-  description: "Pool Billiard & Cafe Online Application.",
+  description: "Billiard & Cafe Real Time Application.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase: new URL(baseUrl),
   openGraph: {
     url: new URL(baseUrl),
-    images:
-      "https://images.unsplash.com/photo-1584161786791-1657f4409456?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    // images:
+    //   "https://images.unsplash.com/photo-1584161786791-1657f4409456?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    images: "/images/qozy-que.webp",
     authors: "alfieqashwa",
-    description: "Billiard & Cafe Online Application.",
+    description: "Billiard & Cafe Real Time Application.",
     // "https://raw.githubusercontent.com/alfieqashwa/me/main/public/img/cover.webp",
   },
 }
