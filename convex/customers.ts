@@ -12,7 +12,7 @@ export const update = zMutation({
     ctx,
     { updateCustomerByOrderIdSchema: { orderId, name, phone } },
   ) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
     const order = await ctx.db.get(orderId)
     if (!order) throw new ConvexError("No Order ID provided!")
 
@@ -40,6 +40,8 @@ export const create = zMutation({
       statusPayment: "OPEN",
       createdBy: user._id,
       customerId: customerId,
+      isDeleted: false,
+      _updatedTime: Date.now(),
     })
   },
 })

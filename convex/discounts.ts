@@ -32,7 +32,7 @@ export const findAll = query({
 export const create = zMutation({
   args: { createDiscountSchema },
   handler: async (ctx, { createDiscountSchema: { value, companyId } }) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     const val = percentToDecimal(value)
     const name = decimalToPercent(val)
@@ -47,7 +47,7 @@ export const create = zMutation({
 export const update = zMutation({
   args: { updateDiscountSchema },
   handler: async (ctx, { updateDiscountSchema: { id, value, companyId } }) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     const val = percentToDecimal(value)
     const name = decimalToPercent(val)
@@ -62,7 +62,7 @@ export const update = zMutation({
 export const remove = mutation({
   args: { id: v.id("discounts") },
   handler: async (ctx, args) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     return await ctx.db.delete(args.id)
   },

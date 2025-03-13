@@ -3,7 +3,6 @@ import { ConvexError, v } from "convex/values"
 import { upsertOrderlineSchema } from "../types/schema/orderline-schema"
 import { mutation, query } from "./_generated/server"
 import {
-  adminProcedure,
   cashierProcedure,
   managerProcedure,
   protectedProcedure,
@@ -81,7 +80,7 @@ export const findAll = query({
 export const findAllByOrderId = query({
   args: { orderId: v.optional(v.id("orders")) },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const orderlines = await ctx.db
       .query("orderlines")
@@ -105,7 +104,7 @@ export const findAllByOrderId = query({
 export const findAllByIds = query({
   args: { ids: v.array(v.id("orderlines")) },
   handler: async (ctx, { ids }) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     return await Promise.all(
       ids.map(async (id) => {
@@ -143,7 +142,7 @@ export const findAllByIds = query({
 export const findByProductId = query({
   args: { productId: v.id("products") },
   handler: async (ctx, { productId }) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     return await ctx.db
       .query("orderlines")
@@ -441,7 +440,7 @@ export const updateOrderlineStatusList = mutation({
     ids: v.array(v.id("orderlines")),
   },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const updateAll = Promise.all(
       args.ids.map(
@@ -502,7 +501,7 @@ export const upsert = zMutation({
 export const toggleIsFree = mutation({
   args: { orderlineId: v.id("orderlines"), isFree: v.boolean() },
   handler: async (ctx, args) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
     return await ctx.db.patch(args.orderlineId, {
       isFree: !args.isFree,
     })
@@ -512,7 +511,7 @@ export const toggleIsFree = mutation({
 export const remove = mutation({
   args: { id: v.id("orderlines") },
   handler: async (ctx, args) => {
-    await cashierProcedure(ctx, {})
+    await cashierProcedure(ctx)
 
     return await ctx.db.delete(args.id)
   },

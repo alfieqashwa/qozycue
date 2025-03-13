@@ -28,7 +28,7 @@ export const findAll = query({
 export const create = zMutation({
   args: { createTaxSchema },
   handler: async (ctx, { createTaxSchema: { value, companyId } }) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     const val = percentToDecimal(value)
     const name = decimalToPercent(val)
@@ -43,7 +43,7 @@ export const create = zMutation({
 export const update = zMutation({
   args: { updateTaxSchema },
   handler: async (ctx, { updateTaxSchema: { id, value, companyId } }) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     const val = percentToDecimal(value)
     const name = decimalToPercent(val)
@@ -71,14 +71,14 @@ export const findDefaultValue = query({
 export const toggle = mutation({
   args: { id: v.id("taxes"), isDefaultValue: v.boolean() },
   handler: async (ctx, args) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
     return await ctx.db.patch(args.id, { isDefaultValue: !args.isDefaultValue })
   },
 })
 export const remove = mutation({
   args: { id: v.id("taxes") },
   handler: async (ctx, args) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     return await ctx.db.delete(args.id)
   },

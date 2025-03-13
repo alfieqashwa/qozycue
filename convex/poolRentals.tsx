@@ -60,7 +60,7 @@ export const findAll = query({
 export const findAllBookingByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const bookingRentalList = await ctx.db
       .query("poolRentals")
@@ -120,7 +120,7 @@ export const findAllBookingByPoolTableIdPublicProcedure = query({
 export const findByPacketId = query({
   args: { packetId: v.id("packets") },
   handler: async (ctx, { packetId }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     return await ctx.db
       .query("poolRentals")
@@ -132,7 +132,7 @@ export const findByPacketId = query({
 export const countIsBooking = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const bookingList = await ctx.db
       .query("poolRentals")
@@ -363,7 +363,7 @@ export const startBookingTimer = zMutation({
       },
     },
   ) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
     // if there's an open order but has false is_booking pool_rental:
     const resetLatestOpenOrder =
       openAndNotBookingOrderId != null
@@ -415,7 +415,7 @@ export const createBooking = zMutation({
       },
     },
   ) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
     const user = userId !== null ? await ctx.db.get(userId) : null
@@ -462,13 +462,15 @@ export const createBooking = zMutation({
     const customerId = await ctx.db.insert("customers", {
       name: customerName,
       phone: customerPhone,
-      companyId: user?.companyId,
+      companyId: user.companyId,
     })
     const orderId = await ctx.db.insert("orders", {
       companyId: user.companyId,
       createdBy: user._id,
       statusPayment: "OPEN",
       customerId,
+      _updatedTime: Date.now(),
+      isDeleted: false,
     })
     const poolRentalId = await ctx.db.insert("poolRentals", {
       isBooking: true,
@@ -507,7 +509,7 @@ export const updateBooking = zMutation({
       },
     },
   ) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const listOfPoolRental = await ctx.db
       .query("poolRentals")

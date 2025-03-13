@@ -103,7 +103,7 @@ export const update = zMutation({
       },
     },
   ) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     return await ctx.db.patch(id, {
       name,
@@ -117,7 +117,7 @@ export const update = zMutation({
 export const toggle = zMutation({
   args: { toggleProductSchema },
   handler: async (ctx, { toggleProductSchema: { id, status } }) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     return await ctx.db.patch(id, {
       status: status === "enabled" ? "disabled" : "enabled",
@@ -130,7 +130,7 @@ export const toggle = zMutation({
 export const remove = zMutation({
   args: { deleteProductSchema },
   handler: async (ctx, { deleteProductSchema: { id } }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     return await ctx.db.delete(id)
   },
@@ -138,7 +138,7 @@ export const remove = zMutation({
 export const removeSelected = mutation({
   args: { ids: v.array(v.id("products")) },
   handler: async (ctx, { ids }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     const removeAll = await Promise.all(
       ids.map(async (id) => await ctx.db.delete(id)),

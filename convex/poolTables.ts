@@ -55,7 +55,7 @@ export const findAll = query({
 export const findById = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, { poolTableId }) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     return await ctx.db.get(poolTableId)
   },
@@ -90,7 +90,7 @@ export const transferPoolTableList = query({
 export const findGapDuration = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, { poolTableId }) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     return await ctx.db.get(poolTableId)
   },
@@ -101,7 +101,7 @@ export const findGapDuration = query({
 export const create = zMutation({
   args: { createPoolTableSchema },
   handler: async (ctx, { createPoolTableSchema: { name, companyId } }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     const subs = await subscriptions(ctx, { companyId })
     const isValid = validateSubscriptionLimits({
@@ -127,7 +127,7 @@ export const create = zMutation({
 export const update = zMutation({
   args: { updatePoolTableSchema },
   handler: async (ctx, { updatePoolTableSchema: { id, name, companyId } }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     const company = await ctx.db.get(companyId!)
     return await ctx.db.patch(id, {
@@ -140,7 +140,7 @@ export const update = zMutation({
 export const remove = mutation({
   args: { id: v.id("poolTables") },
   handler: async (ctx, { id }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     return await ctx.db.delete(id)
   },
@@ -149,7 +149,7 @@ export const remove = mutation({
 export const toggle = zMutation({
   args: { togglePoolSchema },
   handler: async (ctx, { togglePoolSchema: { id, status } }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     return await ctx.db.patch(id, {
       status: status === "enabled" ? "disabled" : "enabled",
@@ -163,7 +163,7 @@ export const updateGapDuration = zMutation({
     ctx,
     { updateGapDurationSchema: { poolTableId, gapDuration } },
   ) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     return await ctx.db.patch(poolTableId, { gapDuration })
   },
@@ -180,7 +180,7 @@ export const transfer = mutation({
     endTime: v.union(v.null(), v.float64()),
   },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     // === STARTS Config Conflict Validation ===
 

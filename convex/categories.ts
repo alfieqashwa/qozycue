@@ -9,7 +9,7 @@ import { protectedProcedure, superAdminProcedure, zMutation } from "./helpers"
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     return await ctx.db.query("categories").collect()
   },
@@ -28,7 +28,7 @@ export const findByProductId = query({
 export const create = zMutation({
   args: { createCategorySchema },
   handler: async (ctx, { createCategorySchema: { name, description } }) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     return await ctx.db.insert("categories", { name, description })
   },
@@ -36,7 +36,7 @@ export const create = zMutation({
 export const update = zMutation({
   args: { categorySchema },
   handler: async (ctx, { categorySchema: { id, name, description } }) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     return await ctx.db.patch(id, { name, description })
   },
@@ -44,7 +44,7 @@ export const update = zMutation({
 export const remove = mutation({
   args: { id: v.id("categories") },
   handler: async (ctx, args) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     return await ctx.db.delete(args.id)
   },

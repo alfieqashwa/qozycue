@@ -7,7 +7,7 @@ import { adminProcedure, reset, superAdminProcedure } from "./helpers"
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
     return await ctx.db.query("authSessions").collect()
   },
 })
@@ -45,7 +45,7 @@ export const find = query({
 export const deleteAllByUserId = mutation({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     const sessions = await ctx.db
       .query("authSessions")
@@ -93,7 +93,7 @@ export const deleteAllByUserId = mutation({
 export const resetAll = mutation({
   args: { forReal: v.string() },
   handler: async (ctx, args) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
     return await reset(ctx, { forReal: args.forReal })
   },
 })

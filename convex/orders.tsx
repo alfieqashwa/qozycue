@@ -19,7 +19,7 @@ import {
 export const findAll = query({
   args: { companyId: v.id("companies") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     return await ctx.db
       .query("orders")
@@ -210,7 +210,7 @@ export const findAllArchiveOrderSortedByDate = query({
 export const findAllBookingByCompanyId = query({
   args: { companyId: v.id("companies") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const orders = await ctx.db
       .query("orders")
@@ -245,7 +245,7 @@ export const findAllBookingByCompanyId = query({
 export const findById = query({
   args: { id: v.id("orders") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const order = await ctx.db.get(args.id)
     if (!order) throw new ConvexError("Order not found!")
@@ -288,7 +288,7 @@ export const findById = query({
 export const findByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const poolRentals = await ctx.db
       .query("poolRentals")
@@ -362,7 +362,7 @@ export const findByPoolTableIdPublicProcedure = query({
 export const findAllPendingStatusByPoolTableId = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const poolRentals = await ctx.db
       .query("poolRentals")
@@ -415,7 +415,7 @@ export const findAllPendingStatusByPoolTableId = query({
 export const countPendingStatus = query({
   args: { poolTableId: v.id("poolTables") },
   handler: async (ctx, { poolTableId }) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const poolRentalList = await ctx.db
       .query("poolRentals")
@@ -763,6 +763,8 @@ export const startTimer = zMutation({
       companyId: user.companyId,
       statusPayment: "OPEN",
       customerId,
+      _updatedTime: Date.now(),
+      isDeleted: false,
     })
 
     const createOrder = await ctx.db.insert("poolRentals", {
@@ -848,7 +850,7 @@ export const resetTimer = mutation({
     orderId: v.id("orders"),
   },
   handler: async (ctx, args) => {
-    await cashierProcedure(ctx, {})
+    await cashierProcedure(ctx)
 
     const updatePoolTable = await ctx.db.patch(args.poolTableId, {
       startTime: null,
@@ -877,7 +879,7 @@ export const updatedDuration = zMutation({
       },
     },
   ) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const firstBooking = await ctx.db
       .query("poolRentals")
@@ -1018,7 +1020,7 @@ export const updateStatusPaymentTo = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     return await ctx.db.patch(args.orderId, {
       statusPayment: args.updateTo,
@@ -1038,7 +1040,7 @@ export const updateSelectedOrders = mutation({
     ),
   },
   handler: async (ctx, { selectedOrders, updateTo }) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     const updateAll = await Promise.all(
       selectedOrders.map(async (o) => {
@@ -1063,7 +1065,7 @@ export const updateSelectedOrders = mutation({
 export const removeCafeOnly = mutation({
   args: { id: v.id("orders") },
   handler: async (ctx, { id }) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const order = await ctx.db.get(id)
     const removeOrder = await ctx.db.delete(id)
@@ -1078,7 +1080,7 @@ export const removeCafeOnly = mutation({
 export const remove = mutation({
   args: { id: v.id("orders") },
   handler: async (ctx, { id }) => {
-    await managerProcedure(ctx, {})
+    await managerProcedure(ctx)
 
     const order = await ctx.db.get(id)
     if (!order) throw new ConvexError("No Order provided!")
@@ -1116,7 +1118,7 @@ export const remove = mutation({
 export const removeSelectedOrders = mutation({
   args: { selectedOrders: v.array(v.object({ id: v.id("orders") })) },
   handler: async (ctx, { selectedOrders }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     const removeAll = []
     for (const selectedOrder of selectedOrders) {

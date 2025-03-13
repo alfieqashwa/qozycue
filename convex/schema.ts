@@ -115,11 +115,15 @@ export default defineSchema({
     createdBy: v.id("users"),
     updatedBy: v.optional(v.id("users")),
     companyId: v.id("companies"),
+    _updatedTime: v.number(), // add for tracking updates
+    isDeleted: v.optional(v.boolean()),
   })
     .index("customerId", ["customerId"])
     .index("createdBy", ["createdBy"])
     .index("updatedBy", ["updatedBy"])
-    .index("companyId", ["companyId"]),
+    .index("companyId", ["companyId"])
+    .index("by_status", ["statusPayment"])
+    .index("active_orders", ["isDeleted", "statusPayment"]),
 
   // poolRentals is similar to orderlines
   poolRentals: defineTable({
@@ -180,4 +184,16 @@ export default defineSchema({
     discountRate: v.float64(),
     customerId: v.optional(v.id("customers")), // Todos: not required (yet) b'coz have not config the Membership's feature
   }).index("customerId", ["customerId"]),
+
+  // TODOS: Setup for later
+  // payments: defineTable({
+  //   orderId: v.id("orders"),
+  //   amount: v.float64(),
+  //   method: v.union(v.literal("CASH"), v.literal("DEBIT"), v.literal("CREDIT")),
+  //   tax: v.float64(),
+  //   discount: v.float64(),
+  //   revenue: v.float64(),
+  //   note: v.optional(v.string()),
+  //   createdBy: v.id("users"),
+  // }).index("orderId", ["orderId"]),
 })

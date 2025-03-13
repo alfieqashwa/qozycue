@@ -45,7 +45,7 @@ export const findUserWithCompany = query({
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     const users = await ctx.db.query("users").collect()
     const usersWithCompany = Promise.all(
@@ -64,7 +64,7 @@ export const findAll = query({
 export const findAllByCompanyId = query({
   args: { companyId: v.id("companies") },
   handler: async (ctx, args) => {
-    await protectedProcedure(ctx, {})
+    await protectedProcedure(ctx)
 
     const usersByCompanyId = await ctx.db
       .query("users")
@@ -88,7 +88,7 @@ export const findAllByCompanyId = query({
 export const updateRoleAndCompanyId = zMutation({
   args: { updateUserSchema },
   handler: async (ctx, { updateUserSchema: { id, role, companyId } }) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     return await ctx.db.patch(id, {
       role,
@@ -102,7 +102,7 @@ export const updateRoleByIdOnlyForSuperAmin = zMutation({
     ctx,
     { updateRoleByIdOnlyForSuperAminSchema: { id, role } },
   ) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
     return await ctx.db.patch(id, { role })
   },
 })
@@ -110,7 +110,7 @@ export const updateRoleByIdOnlyForSuperAmin = zMutation({
 export const updateRoleByIdAdminProcedure = zMutation({
   args: { updateRoleByIdSchema },
   handler: async (ctx, { updateRoleByIdSchema: { id, role } }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
     return await ctx.db.patch(id, { role })
   },
 })
@@ -118,7 +118,7 @@ export const updateRoleByIdAdminProcedure = zMutation({
 export const upsertSuperAdminProcedure = zMutation({
   args: { upsertUserSchema },
   handler: async (ctx, { upsertUserSchema: { email, role, companyId } }) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     const user = await ctx.db
       .query("users")
@@ -154,7 +154,7 @@ export const upsertSuperAdminProcedure = zMutation({
 export const upsertAdminProcedure = zMutation({
   args: { upsertUserSchema },
   handler: async (ctx, { upsertUserSchema: { email, role, companyId } }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     // Validate user's limit based on company's subscriptions
     const subs = await subscriptions(ctx, { companyId })
@@ -199,14 +199,14 @@ export const upsertAdminProcedure = zMutation({
 export const remove = mutation({
   args: { id: v.id("users") },
   handler: async (ctx, args) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
     return await ctx.db.delete(args.id)
   },
 })
 export const removeAdminProcedure = mutation({
   args: { id: v.id("users") },
   handler: async (ctx, args) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
     return await ctx.db.delete(args.id)
   },
 })

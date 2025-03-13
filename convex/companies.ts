@@ -31,7 +31,7 @@ export const findPublicProcedure = query({
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     return await ctx.db.query("companies").collect()
   },
@@ -97,7 +97,7 @@ export const createTrial = zMutation({
 export const create = zMutation({
   args: { createCompanySchema },
   handler: async (ctx, { createCompanySchema: { name, phone, location } }) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     return await ctx.db.insert("companies", {
       name,
@@ -116,7 +116,7 @@ export const update = zMutation({
     ctx,
     { updateCompanyDewaSchema: { id, name, phone, location, subscription } },
   ) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     return await ctx.db.patch(id, {
       name,
@@ -134,7 +134,7 @@ export const updateAdminProcedure = zMutation({
     ctx,
     { updateCompanyByAdminSchema: { id, phone, location } },
   ) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
 
     return await ctx.db.patch(id, {
       phone,
@@ -146,7 +146,7 @@ export const updateAdminProcedure = zMutation({
 export const remove = mutation({
   args: { id: v.id("companies") },
   handler: async (ctx, args) => {
-    await superAdminProcedure(ctx, {})
+    await superAdminProcedure(ctx)
 
     return await ctx.db.delete(args.id)
   },
@@ -155,7 +155,7 @@ export const remove = mutation({
 export const toggleIsPublished = zMutation({
   args: { toggleIsPublishedSchema },
   handler: async (ctx, { toggleIsPublishedSchema: { id, isPublished } }) => {
-    await adminProcedure(ctx, {})
+    await adminProcedure(ctx)
     return await ctx.db.patch(id, { isPublished: !isPublished })
   },
 })
