@@ -41,7 +41,7 @@ export const create = zMutation({
       createdBy: user._id,
       customerId: customerId,
       isDeleted: false,
-      _updatedTime: Date.now(),
+      updatedTime: Date.now(),
     })
   },
 })

@@ -115,7 +115,7 @@ export default defineSchema({
     createdBy: v.id("users"),
     updatedBy: v.optional(v.id("users")),
     companyId: v.id("companies"),
-    _updatedTime: v.number(), // add for tracking updates
+    updatedTime: v.optional(v.number()), // add for tracking updates
     isDeleted: v.optional(v.boolean()),
   })
     .index("customerId", ["customerId"])

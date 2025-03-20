@@ -763,7 +763,7 @@ export const startTimer = zMutation({
       companyId: user.companyId,
       statusPayment: "OPEN",
       customerId,
-      _updatedTime: Date.now(),
+      updatedTime: Date.now(),
       isDeleted: false,
     })
 
