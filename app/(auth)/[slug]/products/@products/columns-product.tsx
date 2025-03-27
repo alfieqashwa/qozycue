@@ -232,16 +232,9 @@ export const columnsProduct: ColumnDef<
     ),
     cell: ({ row }) => {
       const {
-        original: { _id, name, status, countInStock },
+        original: { _id, name, status },
       } = row
-      return (
-        <ToggleProduct
-          id={_id}
-          name={name}
-          status={status}
-          countInStock={countInStock}
-        />
-      )
+      return <ToggleProduct id={_id} name={name} status={status} />
     },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id))

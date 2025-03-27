@@ -16,12 +16,10 @@ export function ToggleProduct({
   id,
   name,
   status,
-  countInStock,
 }: {
   id: Id<"products">
   name: string
   status: Status
-  countInStock: number
 }) {
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
   const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
@@ -49,30 +47,17 @@ export function ToggleProduct({
   })
 
   return (
-    <>
-      {countInStock === 0 ? (
-        <WrapperTooltip content="Out of stock">
-          <div>
-            <Switch
-              disabled={!managerAccessLevel || isPending || countInStock === 0}
-              checked={false}
-            />
-          </div>
-        </WrapperTooltip>
-      ) : (
-        <Switch
-          disabled={!managerAccessLevel || isPending}
-          checked={status === "enabled" ? true : false}
-          onCheckedChange={() =>
-            mutate({
-              toggleProductSchema: {
-                id,
-                status,
-              },
-            })
-          }
-        />
-      )}
-    </>
+    <Switch
+      disabled={!managerAccessLevel || isPending}
+      checked={status === "enabled" ? true : false}
+      onCheckedChange={() =>
+        mutate({
+          toggleProductSchema: {
+            id,
+            status,
+          },
+        })
+      }
+    />
   )
 }
