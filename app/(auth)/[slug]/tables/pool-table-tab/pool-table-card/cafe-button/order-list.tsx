@@ -14,6 +14,7 @@ import { toast } from "sonner"
 import { PrintOrder } from "./print-order"
 import { ReprintOrder } from "./reprint-order"
 import { ToggleFree } from "./toggle-free"
+import { Id } from "@/convex/_generated/dataModel"
 
 export function OrderList({
   isManager,
@@ -167,7 +168,15 @@ export function OrderList({
                         isPending ||
                         orderline.orderlineStatus === "ORDERED"
                       }
-                      onClick={() => mutate({ id: orderline._id })}
+                      onClick={() =>
+                        mutate({
+                          id: orderline._id,
+                          productId: orderline.product._id as Id<"products">,
+                          countInStock:
+                            (orderline.product.countInStock as number) +
+                            orderline.quantity,
+                        })
+                      }
                       className="relative min-h-9 min-w-10 rounded-md bg-muted shadow-md transition-colors hover:cursor-pointer hover:bg-muted/75 disabled:pointer-events-auto disabled:cursor-not-allowed"
                     >
                       <Trash2

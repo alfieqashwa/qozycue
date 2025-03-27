@@ -42,6 +42,7 @@ export function ProductMenuCard({
   children,
 }: ProductMenuCardProps) {
   const [qty, setQty] = useState(0)
+  const [stock, setStock] = useState(countInStock)
 
   const orderline = orderlines?.find(
     (orderline) =>
@@ -54,8 +55,7 @@ export function ProductMenuCard({
     if (typeof orderline?.quantity !== "number") {
       return setQty(0)
     }
-
-    setQty(orderline.quantity)
+    setStock(countInStock)
   }, [orderline?.quantity])
 
   return (
@@ -73,8 +73,8 @@ export function ProductMenuCard({
           className,
         )}
       >
-        <p className="flex h-full w-full items-center justify-center text-sm font-bold text-primary">
-          {countInStock}
+        <p className="flex h-full w-full items-center justify-center text-sm font-bold text-foreground">
+          {stock}
         </p>
       </div>
 
@@ -100,6 +100,8 @@ export function ProductMenuCard({
         price={price}
         qty={qty}
         setQty={setQty}
+        stock={stock}
+        setStock={setStock}
       />
     </li>
   )

@@ -461,11 +461,12 @@ export const upsert = zMutation({
     {
       upsertOrderlineSchema: {
         id,
-        orderId,
         orderlineStatus,
-        productId,
         quantity,
         amount,
+        productId,
+        countInStock,
+        orderId,
       },
     },
   ) => {
@@ -479,15 +480,25 @@ export const upsert = zMutation({
     )
       throw new ConvexError("You do not have access!")
 
+    const updateStock = await ctx.db.patch(productId, {
+      countInStock,
+    })
+
     if (!!id && orderlineStatus === "UNORDERED") {
       // update new orderline
-      return await ctx.db.patch(id, {
+      const updateOrderline = await ctx.db.patch(id, {
         quantity,
         amount,
       })
+
+      return {
+        updateStock,
+        updateOrderline,
+      }
     }
+
     // otherwise, create
-    return await ctx.db.insert("orderlines", {
+    const createOrderline = await ctx.db.insert("orderlines", {
       productId,
       quantity,
       amount,
@@ -495,6 +506,11 @@ export const upsert = zMutation({
       orderId,
       orderlineStatus: "UNORDERED", // "UNORDERED" is default value
     })
+
+    return {
+      updateStock,
+      createOrderline,
+    }
   },
 })
 
@@ -509,10 +525,22 @@ export const toggleIsFree = mutation({
 })
 
 export const remove = mutation({
-  args: { id: v.id("orderlines") },
-  handler: async (ctx, args) => {
+  args: {
+    id: v.id("orderlines"),
+    productId: v.id("products"),
+    countInStock: v.number(),
+  },
+  handler: async (ctx, { id, productId, countInStock }) => {
     await cashierProcedure(ctx)
 
-    return await ctx.db.delete(args.id)
+    const removeOrderline = await ctx.db.delete(id)
+    const updateStock = await ctx.db.patch(productId, {
+      countInStock,
+    })
+
+    return {
+      removeOrderline,
+      updateStock,
+    }
   },
 })
