@@ -264,12 +264,12 @@ export const createTrialCompany = async (
   const itemUomId = itemUom._id as Id<"unitOfMeasures">
 
   type TProduct = {
-    countInStock?: number | undefined
     name: string
     companyId: Id<"companies">
     status: "disabled" | "enabled"
     costPrice: number
     salePrice: number
+    countInStock: number
     unitOfMeasureId: Id<"unitOfMeasures">
     categoryId: Id<"categories">
   }
@@ -280,6 +280,7 @@ export const createTrialCompany = async (
       salePrice: 30000,
       status: "enabled",
       categoryId: drinkCategoryId,
+      countInStock: 10,
       unitOfMeasureId: itemUomId,
       companyId,
     },
@@ -289,6 +290,7 @@ export const createTrialCompany = async (
       salePrice: 30000,
       status: "enabled",
       categoryId: drinkCategoryId,
+      countInStock: 10,
       unitOfMeasureId: itemUomId,
       companyId,
     },
@@ -298,6 +300,7 @@ export const createTrialCompany = async (
       salePrice: 35000,
       status: "enabled",
       categoryId: foodCategoryId,
+      countInStock: 10,
       unitOfMeasureId: itemUomId,
       companyId,
     },
@@ -307,6 +310,7 @@ export const createTrialCompany = async (
       salePrice: 35000,
       status: "enabled",
       categoryId: foodCategoryId,
+      countInStock: 10,
       unitOfMeasureId: itemUomId,
       companyId,
     },
@@ -316,6 +320,7 @@ export const createTrialCompany = async (
       salePrice: 55000,
       status: "enabled",
       categoryId: othersCategoryId,
+      countInStock: 10,
       unitOfMeasureId: itemUomId,
       companyId,
     },
@@ -325,6 +330,7 @@ export const createTrialCompany = async (
       salePrice: 55000,
       status: "enabled",
       categoryId: othersCategoryId,
+      countInStock: 10,
       unitOfMeasureId: itemUomId,
       companyId,
     },

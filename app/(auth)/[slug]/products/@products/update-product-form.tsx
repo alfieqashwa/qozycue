@@ -39,6 +39,7 @@ export function UpdateProductForm({
   costPrice,
   salePrice,
   categoryId,
+  countInStock,
   unitOfMeasureId,
   setOpen,
 }: {
@@ -47,6 +48,7 @@ export function UpdateProductForm({
   costPrice: number
   salePrice: number
   categoryId: Id<"categories">
+  countInStock: number
   unitOfMeasureId: Id<"unitOfMeasures">
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -79,12 +81,20 @@ export function UpdateProductForm({
       costPrice,
       salePrice,
       categoryId,
+      countInStock,
       unitOfMeasureId,
     },
   })
   function onSubmit(values: TUpdateProduct) {
-    const { id, name, costPrice, salePrice, categoryId, unitOfMeasureId } =
-      values
+    const {
+      id,
+      name,
+      costPrice,
+      salePrice,
+      categoryId,
+      countInStock,
+      unitOfMeasureId,
+    } = values
     mutate({
       updateProductSchema: {
         id,
@@ -92,6 +102,7 @@ export function UpdateProductForm({
         costPrice,
         salePrice,
         categoryId,
+        countInStock,
         unitOfMeasureId,
       },
     })
@@ -150,6 +161,25 @@ export function UpdateProductForm({
                 <Input
                   type="number"
                   placeholder="sale price"
+                  className="w-[200px]"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Count In Stock */}
+        <FormField
+          control={form.control}
+          name="countInStock"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Stock</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="stock"
                   className="w-[200px]"
                   {...field}
                 />

@@ -39,6 +39,7 @@ type UpdateProductProps = {
   salePrice: number
   status: Status
   categoryId: Id<"categories">
+  countInStock: number
   unitOfMeasureId: Id<"unitOfMeasures">
 }
 export function UpdateProduct({
@@ -48,6 +49,7 @@ export function UpdateProduct({
   salePrice,
   status,
   categoryId,
+  countInStock,
   unitOfMeasureId,
 }: UpdateProductProps) {
   const [open, setOpen] = useState(false)
@@ -88,6 +90,7 @@ export function UpdateProduct({
             costPrice={costPrice}
             salePrice={salePrice}
             categoryId={categoryId}
+            countInStock={countInStock}
             unitOfMeasureId={unitOfMeasureId}
             setOpen={setOpen}
           />
@@ -128,6 +131,7 @@ export function UpdateProduct({
           costPrice={costPrice}
           salePrice={salePrice}
           categoryId={categoryId}
+          countInStock={countInStock}
           unitOfMeasureId={unitOfMeasureId}
           setOpen={setOpen}
         />

@@ -120,6 +120,7 @@ export function CafeButton({
                         productId={p._id}
                         name={p.name}
                         price={p.salePrice}
+                        countInStock={p.countInStock}
                         className="bg-emerald-200/70"
                         key={p._id}
                       >
@@ -140,6 +141,7 @@ export function CafeButton({
                         productId={p._id}
                         name={p.name}
                         price={p.salePrice}
+                        countInStock={p.countInStock}
                         className="bg-fuchsia-200/70"
                         key={p._id}
                       >
@@ -163,6 +165,7 @@ export function CafeButton({
                         productId={p._id}
                         name={p.name}
                         price={p.salePrice}
+                        countInStock={p.countInStock}
                         className="bg-lime-200/70"
                         key={p._id}
                       >

@@ -27,6 +27,14 @@ const productSchema = z.object({
       message: "Sale Price must be zero or a positive number.",
     }),
   status: z.enum(["enabled", "disabled"]),
+  countInStock: z.coerce
+    .number({
+      required_error: "Cost Price is required.",
+      invalid_type_error: "Cost Price must be a number.",
+    })
+    .nonnegative({
+      message: "Stock must be zero or a positive number.",
+    }),
   unitOfMeasureId: zid("unitOfMeasures").optional(),
   categoryId: zid("categories").optional(),
 

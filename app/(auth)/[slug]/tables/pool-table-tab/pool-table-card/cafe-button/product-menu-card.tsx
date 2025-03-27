@@ -16,6 +16,19 @@ import { FunctionReturnType } from "convex/server"
 import { useEffect, useState } from "react"
 import { OrderProduct } from "./order-product"
 
+type ProductMenuCardProps = {
+  isCashier: boolean
+  isDesktop: boolean
+  orderlines?: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
+  orderId: Id<"orders">
+  productId: Id<"products">
+  name: string
+  price: number
+  countInStock: number
+  className?: string
+  children: React.ReactNode
+}
+
 export function ProductMenuCard({
   isCashier,
   isDesktop,
@@ -24,19 +37,10 @@ export function ProductMenuCard({
   productId,
   name,
   price,
+  countInStock,
   className,
   children,
-}: {
-  isCashier: boolean
-  isDesktop: boolean
-  orderlines?: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
-  orderId: Id<"orders">
-  productId: Id<"products">
-  name: string
-  price: number
-  className?: string
-  children: React.ReactNode
-}) {
+}: ProductMenuCardProps) {
   const [qty, setQty] = useState(0)
 
   const orderline = orderlines?.find(
@@ -57,11 +61,23 @@ export function ProductMenuCard({
   return (
     <li
       className={cn(
-        "h-40 w-48 shrink-0 rounded-2xl p-3 text-muted shadow-xl md:h-44 md:w-52",
+        "relative mt-4 h-40 w-48 shrink-0 rounded-2xl p-3 text-muted shadow-xl md:h-44 md:w-52",
         className,
         !orderline && "opacity-70 transition-colors duration-500 ease-in-out",
       )}
     >
+      {/* STOCK */}
+      <div
+        className={cn(
+          "absolute -right-4 -top-4 z-[999] h-8 w-8 animate-pulse rounded-full",
+          className,
+        )}
+      >
+        <p className="flex h-full w-full items-center justify-center text-sm font-bold text-primary">
+          {countInStock}
+        </p>
+      </div>
+
       <div className={cn("text-muted", !!orderline && "animate-bounce")}>
         {children}
       </div>

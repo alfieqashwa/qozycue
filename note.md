@@ -76,4 +76,12 @@
 ❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
 ❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
 
+## New Features
+
+❌ Add maximum hours to 10 (currently is 6 hrs)
+❌ Stockable products
+❌ Internationalization (i18n)
+❌ Variant (Categories in Category)
+❌ Shift Feature
+
 ### Bugs ASAP

@@ -146,7 +146,7 @@ export default defineSchema({
     costPrice: v.float64(),
     salePrice: v.float64(),
     status: v.union(v.literal("disabled"), v.literal("enabled")),
-    countInStock: v.optional(v.float64()), // Todos: next feature: create Model Invetories
+    countInStock: v.number(),
     unitOfMeasureId: v.id("unitOfMeasures"),
     categoryId: v.id("categories"),
     companyId: v.id("companies"),

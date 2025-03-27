@@ -12,6 +12,8 @@ export default function Page() {
     convexQuery(api.products.findAll, {}),
   )
 
+  // console.log(JSON.stringify(products, null, 2))
+
   if (status !== "success")
     return <SkeletonDashboardCard className="h-[700px]" />
   return <ProductTable data={products} columns={columnsProduct} />

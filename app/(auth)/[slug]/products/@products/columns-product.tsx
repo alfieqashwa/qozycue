@@ -140,6 +140,35 @@ export const columnsProduct: ColumnDef<
     },
   },
   {
+    accessorKey: "countInStock",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Stock" />
+    ),
+    cell: ({ row }) => {
+      const category = row.getValue("category")
+      const countInStock = row.getValue("countInStock") as number
+      const colorBasedOnCategory =
+        countInStock === 0
+          ? "text-red-600"
+          : category === "food"
+            ? "text-emerald-200"
+            : category === "drink"
+              ? "text-fuchsia-200"
+              : "text-lime-200"
+
+      return (
+        <Badge
+          variant="secondary"
+          className={cn("px-3 py-1.5", colorBasedOnCategory)}
+        >
+          <span className="max-w-[500px] truncate font-medium capitalize">
+            {countInStock}
+          </span>
+        </Badge>
+      )
+    },
+  },
+  {
     accessorKey: "uom",
     accessorFn: (row) => row.unitOfMeasure?.name,
     header: ({ column }) => (
@@ -203,9 +232,16 @@ export const columnsProduct: ColumnDef<
     ),
     cell: ({ row }) => {
       const {
-        original: { _id, name, status },
+        original: { _id, name, status, countInStock },
       } = row
-      return <ToggleProduct id={_id} name={name} status={status} />
+      return (
+        <ToggleProduct
+          id={_id}
+          name={name}
+          status={status}
+          countInStock={countInStock}
+        />
+      )
     },
     filterFn: (row, id, value: string) => {
       return value.includes(row.getValue(id))
@@ -221,6 +257,7 @@ export const columnsProduct: ColumnDef<
         salePrice,
         status,
         categoryId,
+        countInStock,
         unitOfMeasureId,
       } = row.original
       return (
@@ -231,6 +268,7 @@ export const columnsProduct: ColumnDef<
           salePrice={salePrice}
           status={status}
           categoryId={categoryId}
+          countInStock={countInStock}
           unitOfMeasureId={unitOfMeasureId}
         />
       )
