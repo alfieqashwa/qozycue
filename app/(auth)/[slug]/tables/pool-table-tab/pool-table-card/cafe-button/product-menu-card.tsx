@@ -55,8 +55,12 @@ export function ProductMenuCard({
     if (typeof orderline?.quantity !== "number") {
       return setQty(0)
     }
-    setStock(countInStock)
+    setQty(orderline.quantity)
   }, [orderline?.quantity])
+
+  useEffect(() => {
+    setStock(countInStock)
+  }, [countInStock])
 
   return (
     <li
