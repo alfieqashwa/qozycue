@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils"
 import { FunctionReturnType } from "convex/server"
 import { useEffect, useState } from "react"
 import { OrderProduct } from "./order-product"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 
 type ProductMenuCardProps = {
   isCashier: boolean
@@ -25,7 +26,8 @@ type ProductMenuCardProps = {
   name: string
   price: number
   countInStock: number
-  className?: string
+  bgColor?: string
+  stockTextColor?: string
   children: React.ReactNode
 }
 
@@ -38,7 +40,8 @@ export function ProductMenuCard({
   name,
   price,
   countInStock,
-  className,
+  bgColor,
+  stockTextColor,
   children,
 }: ProductMenuCardProps) {
   const [qty, setQty] = useState(0)
@@ -66,21 +69,30 @@ export function ProductMenuCard({
     <li
       className={cn(
         "relative mt-4 h-40 w-48 shrink-0 rounded-2xl p-3 text-muted shadow-xl md:h-44 md:w-52",
-        className,
+        bgColor,
         !orderline && "opacity-70 transition-colors duration-500 ease-in-out",
       )}
     >
       {/* STOCK */}
-      <div
-        className={cn(
-          "absolute -right-4 -top-4 z-[999] h-8 w-8 animate-pulse rounded-full",
-          className,
-        )}
-      >
-        <p className="flex h-full w-full items-center justify-center text-sm font-bold text-foreground">
-          {stock}
-        </p>
-      </div>
+      <WrapperTooltip content="Stock">
+        <div
+          className={cn(
+            "absolute -right-4 -top-4 z-[999] h-8 w-8 rounded-full",
+            bgColor,
+            !!orderline && "animate-pulse",
+          )}
+        >
+          <p
+            className={cn(
+              "flex h-full w-full items-center justify-center text-sm font-semibold",
+              stockTextColor,
+              stock === 0 && "text-red-600",
+            )}
+          >
+            {stock}
+          </p>
+        </div>
+      </WrapperTooltip>
 
       <div className={cn("text-muted", !!orderline && "animate-bounce")}>
         {children}

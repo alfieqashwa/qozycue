@@ -121,7 +121,8 @@ export function CafeButton({
                         name={p.name}
                         price={p.salePrice}
                         countInStock={p.countInStock}
-                        className="bg-emerald-200/70"
+                        bgColor="bg-emerald-200/70"
+                        stockTextColor="text-emerald-900"
                         key={p._id}
                       >
                         <Soup strokeWidth={2.5} className="text-emerald-900" />
@@ -142,7 +143,8 @@ export function CafeButton({
                         name={p.name}
                         price={p.salePrice}
                         countInStock={p.countInStock}
-                        className="bg-fuchsia-200/70"
+                        bgColor="bg-fuchsia-200/70"
+                        stockTextColor="text-fuchsia-900"
                         key={p._id}
                       >
                         <Coffee
@@ -166,7 +168,8 @@ export function CafeButton({
                         name={p.name}
                         price={p.salePrice}
                         countInStock={p.countInStock}
-                        className="bg-lime-200/70"
+                        bgColor="bg-lime-200/70"
+                        stockTextColor="text-lime-900"
                         key={p._id}
                       >
                         <ShoppingBasket
