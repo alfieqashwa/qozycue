@@ -30,6 +30,8 @@ type OrderProductProps = {
   productId: Id<"products">
   name: string
   price: number
+  isStockable: boolean
+  countInStock: number
   qty: number
   setQty: React.Dispatch<React.SetStateAction<number>>
   stock: number
@@ -43,16 +45,17 @@ export function OrderProduct({
   productId,
   name,
   price,
+  isStockable,
+  countInStock,
   qty,
   setQty,
   stock,
   setStock,
 }: OrderProductProps) {
-  const { data: category, status } = useTanstackQuery({
+  const { data: category } = useTanstackQuery({
     ...convexQuery(api.categories.findByProductId, { productId }),
     enabled: Boolean(productId),
   })
-
   const classNames = {
     toast: cn(
       "flex items-center border-2 w-full pl-2 py-3 rounded-lg shadow-lg",
@@ -124,11 +127,12 @@ export function OrderProduct({
         quantity: qty,
         amount: price * qty,
         productId,
-        countInStock: stock,
+        countInStock: isStockable ? stock : countInStock,
         orderId,
       },
     })
   }
+
   return (
     <div className="mt-3 flex items-center justify-between whitespace-nowrap md:mt-6">
       <section>
@@ -145,7 +149,9 @@ export function OrderProduct({
         <Button
           variant="secondary"
           size="sm"
-          disabled={!isCashier || qty >= 20 || stock < 1 || isPending}
+          disabled={
+            !isCashier || qty >= 20 || (stock < 1 && isStockable) || isPending
+          }
           onClick={increaseQty}
           className="font-semibold disabled:pointer-events-auto disabled:cursor-not-allowed"
         >

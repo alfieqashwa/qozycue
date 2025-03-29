@@ -8,6 +8,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice } from "@/lib/format-price"
@@ -15,7 +16,6 @@ import { cn } from "@/lib/utils"
 import { FunctionReturnType } from "convex/server"
 import { useEffect, useState } from "react"
 import { OrderProduct } from "./order-product"
-import { WrapperTooltip } from "@/components/wrapper-tooltip"
 
 type ProductMenuCardProps = {
   isCashier: boolean
@@ -25,6 +25,7 @@ type ProductMenuCardProps = {
   productId: Id<"products">
   name: string
   price: number
+  isStockable: boolean
   countInStock: number
   bgColor?: string
   stockTextColor?: string
@@ -39,6 +40,7 @@ export function ProductMenuCard({
   productId,
   name,
   price,
+  isStockable,
   countInStock,
   bgColor,
   stockTextColor,
@@ -114,6 +116,8 @@ export function ProductMenuCard({
         productId={productId}
         name={name}
         price={price}
+        isStockable={isStockable}
+        countInStock={countInStock}
         qty={qty}
         setQty={setQty}
         stock={stock}
