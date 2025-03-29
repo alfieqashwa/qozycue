@@ -92,6 +92,7 @@ export function UpdateProduct({
             categoryId={categoryId}
             countInStock={countInStock}
             unitOfMeasureId={unitOfMeasureId}
+            companyId={me.data?.companyId as Id<"companies">}
             setOpen={setOpen}
           />
 
@@ -133,6 +134,7 @@ export function UpdateProduct({
           categoryId={categoryId}
           countInStock={countInStock}
           unitOfMeasureId={unitOfMeasureId}
+          companyId={me.data?.companyId as Id<"companies">}
           setOpen={setOpen}
         />
         <DrawerFooter className="pt-2">

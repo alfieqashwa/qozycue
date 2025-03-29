@@ -12,9 +12,18 @@ export default function Page() {
     convexQuery(api.products.findAll, {}),
   )
 
+  const company = useTanstackQuery({
+    ...convexQuery(api.companies.find, { id: products?.[0]?.companyId }),
+    enabled: !!products?.[0]?.companyId,
+  })
   // console.log(JSON.stringify(products, null, 2))
 
   if (status !== "success")
     return <SkeletonDashboardCard className="h-[700px]" />
-  return <ProductTable data={products} columns={columnsProduct} />
+  return (
+    <ProductTable
+      data={products}
+      columns={columnsProduct(company.data?.isStockable as boolean)}
+    />
+  )
 }

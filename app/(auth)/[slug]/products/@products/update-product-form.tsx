@@ -41,6 +41,7 @@ export function UpdateProductForm({
   categoryId,
   countInStock,
   unitOfMeasureId,
+  companyId,
   setOpen,
 }: {
   id: Id<"products">
@@ -50,12 +51,14 @@ export function UpdateProductForm({
   categoryId: Id<"categories">
   countInStock: number
   unitOfMeasureId: Id<"unitOfMeasures">
+  companyId: Id<"companies">
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
-  const [uoms, categories] = useTanstackQueries({
+  const [uoms, categories, company] = useTanstackQueries({
     queries: [
       convexQuery(api.unitOfMeasures.findAll, {}),
       convexQuery(api.categories.findAll, {}),
+      convexQuery(api.companies.find, { id: companyId }),
     ],
   })
 
@@ -170,24 +173,26 @@ export function UpdateProductForm({
           )}
         />
         {/* Count In Stock */}
-        <FormField
-          control={form.control}
-          name="countInStock"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Stock</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="stock"
-                  className="w-[200px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {company.data?.isStockable && (
+          <FormField
+            control={form.control}
+            name="countInStock"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stock</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="stock"
+                    className="w-[200px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         {/* Unit of Measure */}
         <FormField
           control={form.control}
