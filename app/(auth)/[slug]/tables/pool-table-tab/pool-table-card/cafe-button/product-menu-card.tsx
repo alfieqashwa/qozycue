@@ -76,25 +76,27 @@ export function ProductMenuCard({
       )}
     >
       {/* STOCK */}
-      <WrapperTooltip content="Stock">
-        <div
-          className={cn(
-            "absolute -right-4 -top-4 z-[999] h-8 w-8 rounded-full",
-            bgColor,
-            !!orderline && "animate-pulse",
-          )}
-        >
-          <p
+      {isStockable && (
+        <WrapperTooltip content="Stock">
+          <div
             className={cn(
-              "flex h-full w-full items-center justify-center text-sm font-semibold",
-              stockTextColor,
-              stock === 0 && "text-red-600",
+              "absolute -right-4 -top-4 z-[999] h-8 w-8 rounded-full",
+              bgColor,
+              !!orderline && "animate-pulse",
             )}
           >
-            {stock}
-          </p>
-        </div>
-      </WrapperTooltip>
+            <p
+              className={cn(
+                "flex h-full w-full items-center justify-center text-sm font-semibold",
+                stockTextColor,
+                stock === 0 && "text-red-600",
+              )}
+            >
+              {stock}
+            </p>
+          </div>
+        </WrapperTooltip>
+      )}
 
       <div className={cn("text-muted", !!orderline && "animate-bounce")}>
         {children}
