@@ -16,6 +16,7 @@ import Image from "next/image"
 import { TogglePublished } from "./toggle-published"
 import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
+import { ToggleStockable } from "./toggle-stockable"
 
 export function UserProfile({
   preloadedSession,
@@ -127,6 +128,29 @@ export function UserProfile({
                     companyName={user.company?.name as string}
                     isPublished={user.company?.isPublished as boolean}
                     countAllBooking={!!bookingOrders.data.length}
+                  />
+                )}
+              </div>
+              <div className="flex space-x-1 pb-4">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <LayoutTemplate className="mr-2 shrink-0 animate-pulse text-primary" />
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="right"
+                    className="bg-muted font-medium text-muted-foreground"
+                  >
+                    When enabled, it will activate the stockable feature
+                  </TooltipContent>
+                </Tooltip>
+                <p className="text-balance pr-2 capitalize text-muted-foreground">
+                  Stockable?
+                </p>
+                {bookingOrders.status === "success" && (
+                  <ToggleStockable
+                    companyId={user.companyId as Id<"companies">}
+                    companyName={user.company?.name as string}
+                    isStockable={user.company?.isStockable as boolean}
                   />
                 )}
               </div>

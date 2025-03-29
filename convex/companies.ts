@@ -4,6 +4,7 @@ import {
   createCompanySchema,
   createTrialCompanySchema,
   toggleIsPublishedSchema,
+  toggleIsStockableSchema,
   updateCompanyByAdminSchema,
   updateCompanyDewaSchema,
 } from "../types/schema/company-schema"
@@ -86,6 +87,7 @@ export const createTrial = zMutation({
       phone,
       location,
       isPublished: true,
+      isStockable: false,
       subscription: "TRIAL",
     })
     if (!companyId) throw new ConvexError("No companyId")
@@ -104,6 +106,7 @@ export const create = zMutation({
       slug: name.replace(/ /g, "-"),
       phone,
       location,
+      isStockable: false,
       isPublished: true,
       subscription: "TRIAL",
     })
@@ -157,5 +160,13 @@ export const toggleIsPublished = zMutation({
   handler: async (ctx, { toggleIsPublishedSchema: { id, isPublished } }) => {
     await adminProcedure(ctx)
     return await ctx.db.patch(id, { isPublished: !isPublished })
+  },
+})
+
+export const toggleIsStockable = zMutation({
+  args: { toggleIsStockableSchema },
+  handler: async (ctx, { toggleIsStockableSchema: { id, isStockable } }) => {
+    await adminProcedure(ctx)
+    return await ctx.db.patch(id, { isStockable: !isStockable })
   },
 })
