@@ -51,7 +51,8 @@ export function UserProfile({
         ) : (
           <div className="grid size-32 place-items-center rounded-full ring-4 ring-primary">
             <h1 className="text-9xl font-bold capitalize text-primary">
-              {user.name ? user.name.at(0) : user.email!.at(0)}
+              {/* {user.name ? user.name.at(0) : user.email!.at(0)} */}
+              {user.name ? user.name[0] : user.email![0]}
             </h1>
           </div>
         )}
