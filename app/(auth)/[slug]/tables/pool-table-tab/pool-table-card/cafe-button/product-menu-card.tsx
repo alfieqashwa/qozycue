@@ -67,6 +67,16 @@ export function ProductMenuCard({
     // setStock(countInStock) // if write here, it won't updated when user remove the orderline
   }, [countInStock, orderline?.quantity])
 
+  const getStockBackgroundColor = (stock: number): string => {
+    if (stock === 0) {
+      return "bg-rose-500/70"
+    }
+    if (stock > 0 && stock <= 5) {
+      return "bg-amber-400/70 animate-pulse"
+    }
+    return "" // Default case (no additional background color)
+  }
+
   return (
     <li
       className={cn(
@@ -82,14 +92,14 @@ export function ProductMenuCard({
             className={cn(
               "absolute -right-4 -top-4 z-[999] h-8 w-8 rounded-full",
               bgColor,
-              !!orderline && "animate-pulse",
+              getStockBackgroundColor(stock),
             )}
           >
             <p
               className={cn(
                 "flex h-full w-full items-center justify-center text-sm font-semibold",
                 stockTextColor,
-                stock === 0 && "text-red-600",
+                stock <= 5 && "text-foreground",
               )}
             >
               {stock}
