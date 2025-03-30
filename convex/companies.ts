@@ -98,7 +98,12 @@ export const createTrial = zMutation({
 
 export const create = zMutation({
   args: { createCompanySchema },
-  handler: async (ctx, { createCompanySchema: { name, phone, location } }) => {
+  handler: async (
+    ctx,
+    {
+      createCompanySchema: { name, phone, location, isStockable, isPublished },
+    },
+  ) => {
     await superAdminProcedure(ctx)
 
     return await ctx.db.insert("companies", {
@@ -106,8 +111,8 @@ export const create = zMutation({
       slug: name.replace(/ /g, "-"),
       phone,
       location,
-      isStockable: false,
-      isPublished: true,
+      isStockable,
+      isPublished,
       subscription: "TRIAL",
     })
   },
