@@ -57,15 +57,15 @@ export function ProductMenuCard({
   )
 
   useEffect(() => {
+    setStock(countInStock) // should be write on top of the qty
+
     if (typeof orderline?.quantity !== "number") {
       return setQty(0)
     }
     setQty(orderline.quantity)
-  }, [orderline?.quantity])
 
-  useEffect(() => {
-    setStock(countInStock)
-  }, [countInStock])
+    // setStock(countInStock) // if write here, it won't updated when user remove the orderline
+  }, [countInStock, orderline?.quantity])
 
   return (
     <li
@@ -76,27 +76,26 @@ export function ProductMenuCard({
       )}
     >
       {/* STOCK */}
-      {isStockable && (
-        <WrapperTooltip content="Stock">
-          <div
+
+      <WrapperTooltip content="Stock">
+        <div
+          className={cn(
+            "absolute -right-4 -top-4 z-[999] h-8 w-8 rounded-full",
+            bgColor,
+            !!orderline && "animate-pulse",
+          )}
+        >
+          <p
             className={cn(
-              "absolute -right-4 -top-4 z-[999] h-8 w-8 rounded-full",
-              bgColor,
-              !!orderline && "animate-pulse",
+              "flex h-full w-full items-center justify-center text-sm font-semibold",
+              stockTextColor,
+              stock === 0 && "text-red-600",
             )}
           >
-            <p
-              className={cn(
-                "flex h-full w-full items-center justify-center text-sm font-semibold",
-                stockTextColor,
-                stock === 0 && "text-red-600",
-              )}
-            >
-              {stock}
-            </p>
-          </div>
-        </WrapperTooltip>
-      )}
+            {stock}
+          </p>
+        </div>
+      </WrapperTooltip>
 
       <div className={cn("text-muted", !!orderline && "animate-bounce")}>
         {children}

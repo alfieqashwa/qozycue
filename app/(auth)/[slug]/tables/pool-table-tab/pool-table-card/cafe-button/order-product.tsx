@@ -91,11 +91,11 @@ export function OrderProduct({
 
   const increaseQty = () => {
     setQty((q) => q + 1)
-    setStock((s) => s - 1)
+    isStockable && setStock((s) => s - 1)
   }
   const decreaseQty = () => {
     setQty((q) => q - 1)
-    setStock((s) => s + 1)
+    isStockable && setStock((s) => s + 1)
   }
 
   const { mutate, isPending, variables } = useMutation({
