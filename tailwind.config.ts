@@ -1,8 +1,3 @@
-
-🌼   daisyUI 4.12.14
-├─ ✔︎ 2 themes added		https://daisyui.com/docs/themes
-╰─ ❤︎ Support daisyUI project:	https://opencollective.com/daisyui
-
 import type { Config } from "tailwindcss"
 import { fontFamily } from "tailwindcss/defaultTheme"
 import { default as flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette"
