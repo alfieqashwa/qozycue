@@ -90,6 +90,9 @@ const config = {
       },
     },
   },
+  daisyui: {
+    logs: false,
+  },
   plugins: [
     require("tailwindcss-animate"),
     require("daisyui"),
@@ -106,12 +109,6 @@ function addVariablesForColors({ addBase, theme }: any) {
   addBase({
     ":root": newVars,
   })
-}
-
-module.exports = {
-  daisyui: {
-    logs: false,
-  },
 }
 
 export default config
