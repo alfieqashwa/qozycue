@@ -39,7 +39,7 @@ export default defineSchema({
     logo: v.optional(v.string()),
     location: v.string(),
     isPublished: v.boolean(),
-    isStockable: v.boolean(),
+    isStockable: v.optional(v.boolean()),
     subscription: v.union(
       v.literal("TRIAL"),
       v.literal("BASIC"),
