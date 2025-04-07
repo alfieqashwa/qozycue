@@ -12,9 +12,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@auth/core": "^0.37.0",
-    "@convex-dev/auth": "^0.0.77",
-    "@convex-dev/react-query": "^0.0.0-alpha.7",
+    "@auth/core": "^0.38.0",
+    "@convex-dev/auth": "^0.0.81",
+    "@convex-dev/react-query": "^0.0.0-alpha.8",
     "@heroicons/react": "^2.1.5",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-avatar": "^1.1.1",
