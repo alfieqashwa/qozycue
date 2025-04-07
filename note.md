@@ -63,6 +63,12 @@
 ✅ Setup Cafe-Only Graphic on Dashboard
 ✅ Setup Customer Graphic on Dashboard
 
+## Issue
+
+- avoid IPv6 wifi, sometimes failed to fetch server
+
+  - npm --node-options "--dns-result-order=ipv4first" run dev
+
 ## Backlog (Future Plan)
 
 ✅ Pool Table with the same company must have a unique name
