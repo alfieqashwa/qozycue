@@ -19,7 +19,7 @@ export default function ToggleThemes() {
     case "system":
       icon = <Bird />
       break
-    case "light":
+    case "apple":
       icon = <Apple />
       break
     case "orange":
@@ -48,9 +48,9 @@ export default function ToggleThemes() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" forceMount className="z-70">
         <DropdownMenuItem
-          onClick={() => setTheme("light")}
+          onClick={() => setTheme("apple")}
           className={cn(
-            theme === "light" ? "text-primary" : "text-muted-foreground",
+            theme === "apple" ? "text-primary" : "text-muted-foreground",
           )}
         >
           <Apple className="mr-2 h-4 w-4" />
