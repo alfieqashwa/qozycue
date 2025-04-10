@@ -90,12 +90,12 @@ const config = {
       },
     },
   },
-  daisyui: {
-    logs: false,
-  },
+  // daisyui: {
+  //   logs: false,
+  // },
   plugins: [
     require("tailwindcss-animate"),
-    require("daisyui"),
+    // require("daisyui"),
     addVariablesForColors,
   ],
 } satisfies Config
