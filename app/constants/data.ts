@@ -143,7 +143,7 @@ export const sampleProductList = [
     categoryId: drink_category_ID,
   },
   {
-    name: "calamary ring",
+    name: "calamary ring-3",
     costPrice: 34000,
     salePrice: 39000,
     status: "enabled",

@@ -64,7 +64,7 @@ const DebuggingDeviceScreen = () => {
     }
   }, [])
   return (
-    <article className="fixed bottom-16 space-y-1 rounded-md bg-muted/80 px-5 py-2 text-sm font-medium text-muted-foreground shadow">
+    <article className="fixed bottom-16 space-y-1 rounded-md bg-muted/80 px-5 py-2 text-sm font-medium text-muted-foreground shadow-sm">
       <p>Screen Width: {screenWidth}</p>
       <p>Screen Height: {screenHeight}</p>
     </article>

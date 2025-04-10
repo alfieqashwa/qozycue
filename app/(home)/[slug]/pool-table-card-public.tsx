@@ -58,10 +58,10 @@ export function PoolTableCardPublic({
             "bg-sky-400 blur-md group-hover/card:blur-lg",
           !isActive &&
             !!poolTableStartTime &&
-            "bg-amber-300 blur-sm group-hover/card:blur-md",
+            "bg-amber-300 blur-xs group-hover/card:blur-md",
         )}
       />
-      <div className="relative h-44 rounded-2xl bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow">
+      <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow-sm">
         <section className="flex justify-between">
           <PublicTimer
             isActive={isActive}

@@ -3,7 +3,7 @@ import packageJson from "../package.json"
 
 export const Copyright = () => (
   <div className="fixed bottom-0 w-full">
-    <footer className="flex h-6 items-center justify-center bg-gradient-to-t from-white to-foreground bg-clip-text text-xs font-medium tracking-widest text-transparent text-zinc-400">
+    <footer className="flex h-6 items-center justify-center bg-linear-to-t from-white to-foreground bg-clip-text text-xs font-medium tracking-widest text-transparent text-zinc-400">
       <p className="whitespace-nowrap">
         © {new Date().getFullYear()} Made with{" "}
       </p>

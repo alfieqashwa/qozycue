@@ -85,7 +85,7 @@ export default function RootLayout({
                <SpeedInsights /> */}
               <Toaster
                 // richColors
-                // bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70%
+                // bg-linear-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70%
                 position="top-right"
                 toastOptions={{
                   unstyled: true,

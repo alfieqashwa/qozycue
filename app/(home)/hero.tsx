@@ -10,7 +10,7 @@ export const Hero = () => (
       {QOZY_CUE.map((q, i) => (
         <span
           className={cn(
-            "bg-gradient-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-transparent shadow-lg",
+            "bg-linear-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-transparent shadow-lg",
             q === "z" &&
               "from-pink-700 from-20% to-fuchsia-600 to-50% motion-safe:animate-pulse-slow",
           )}
@@ -23,12 +23,12 @@ export const Hero = () => (
     <section className="mt-8 flex w-full items-center justify-center space-x-1.5 sm:space-x-12 md:space-x-24 lg:space-x-32">
       <GiPoolTriangle className="hidden size-14 animate-pulse-slow text-fuchsia-600 sm:block sm:size-16 lg:size-24" />
       <article className="text-center">
-        <p className="whitespace-nowrap bg-gradient-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-2xl font-black tracking-widest text-transparent lg:text-4xl">
+        <p className="whitespace-nowrap bg-linear-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-2xl font-black tracking-widest text-transparent lg:text-4xl">
           Billiard & Cafe
         </p>
-        <p className="mt-1 whitespace-nowrap bg-gradient-to-t from-foreground/80 to-foreground bg-clip-text font-bold tracking-widest text-transparent lg:text-xl">
+        <p className="mt-1 whitespace-nowrap bg-linear-to-t from-foreground/80 to-foreground bg-clip-text font-bold tracking-widest text-transparent lg:text-xl">
           Online and{" "}
-          <span className="bg-gradient-to-t from-pink-700 from-20% to-fuchsia-600 to-50% bg-clip-text text-transparent shadow-lg motion-safe:animate-pulse-slow">
+          <span className="bg-linear-to-t from-pink-700 from-20% to-fuchsia-600 to-50% bg-clip-text text-transparent shadow-lg motion-safe:animate-pulse-slow">
             Real Time
           </span>{" "}
           Application

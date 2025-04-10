@@ -33,7 +33,7 @@ export function CompanySite({
     <div className="min-h-screen w-full">
       {status === "success" && (
         <section>
-          <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
+          <div className="sticky top-0 z-50 flex h-20 items-center justify-between border-b-[3px] bg-background">
             <div className="flex items-center justify-end space-x-2 pr-4">
               {/* Starts Company Name */}
               <div className="group flex items-center gap-4 py-2">

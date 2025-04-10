@@ -65,7 +65,7 @@ export function WrapperDashboard({
 
   return (
     <div className="relative pb-12 sm:pb-4">
-      <div className="sticky top-0 z-[50] flex h-20 items-center justify-between border-b-[3px] bg-background">
+      <div className="sticky top-0 z-50 flex h-20 items-center justify-between border-b-[3px] bg-background">
         <CompanyInfo company={user.company} pathname={pathname} />
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
           <ConnectionStatus />

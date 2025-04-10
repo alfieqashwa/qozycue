@@ -73,12 +73,12 @@ export function PoolTableCard({
             "bg-primary/10 group-hover:bg-primary/20 group-hover:shadow-lg":
               !isActive && !poolTableStartTime && !poolTableEndTime,
             "bg-sky-400": isActive && poolTableStartTime,
-            "bg-amber-300 blur-sm group-hover:blur-md":
+            "bg-amber-300 blur-xs group-hover:blur-md":
               !isActive && !!poolTableStartTime,
           },
         )}
       />
-      <div className="relative h-44 rounded-2xl bg-gradient-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow">
+      <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow-sm">
         <section className="flex justify-between">
           <Timer
             isCashier={cashierAccessLevel}
