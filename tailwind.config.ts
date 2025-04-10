@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss"
-import { fontFamily } from "tailwindcss/defaultTheme"
-// import { default as flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette"
+// import { fontFamily } from "tailwindcss/defaultTheme"
+import { default as flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette"
 
 const config = {
   darkMode: "class",
@@ -10,7 +10,7 @@ const config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
-  safelist: ["dark"],
+  // safelist: ["dark"],
   prefix: "",
   theme: {
     container: {
@@ -22,7 +22,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+        // sans: ["var(--font-sans)", ...fontFamily.sans],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -94,21 +94,21 @@ const config = {
   //   logs: false,
   // },
   plugins: [
-    require("tailwindcss-animate"),
+    // require("tailwindcss-animate"),
     // require("daisyui"),
     // addVariablesForColors,
   ],
 } satisfies Config
 
-// function addVariablesForColors({ addBase, theme }: any) {
-//   const allColors = flattenColorPalette(theme("colors"))
-//   const newVars = Object.fromEntries(
-//     Object.entries(allColors).map(([key, val]) => [`--${key}`, val]),
-//   )
-//
-//   addBase({
-//     ":root": newVars,
-//   })
-// }
+function addVariablesForColors({ addBase, theme }: any) {
+  const allColors = flattenColorPalette(theme("colors"))
+  const newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val]),
+  )
+
+  addBase({
+    ":root": newVars,
+  })
+}
 
 export default config

@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@plugin "daisyui";
 
 @config '../tailwind.config.ts';
 
@@ -24,18 +25,18 @@
   counter-increment: step;
 
   &:before {
-    @apply absolute inline-flex h-9 w-9 items-center justify-center rounded-full border-4 border-background bg-muted text-center -indent-px font-mono text-base font-medium;
-    @apply ml-[-50px] mt-[-4px];
+    @apply border-background bg-muted absolute inline-flex h-9 w-9 items-center justify-center rounded-full border-4 text-center -indent-px font-mono text-base font-medium;
+    @apply mt-[-4px] ml-[-50px];
     content: counter(step);
   }
 }
 
 @utility thom {
-  @apply z-50 outline outline-1 outline-rose-200;
+  @apply z-50 outline-1 outline-rose-200;
 }
 
 @utility kurt {
-  @apply z-50 outline outline-1 outline-sky-200;
+  @apply z-50 outline-1 outline-sky-200;
 }
 
 /* To change the theme colors, change the values below
