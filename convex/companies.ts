@@ -57,13 +57,25 @@ export const find = query({
 export const slug = query({
   args: {},
   handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx)
-    const user = userId !== null ? await ctx.db.get(userId) : null
+    try {
+      const userId = await getAuthUserId(ctx)
 
-    const company =
-      !!user && !!user.companyId ? await ctx.db.get(user.companyId) : null
+      if (!userId) return null
 
-    return company?.slug // slug type -> string | undefined is as expected
+      const user = await ctx.db.get(userId)
+
+      if (!user) {
+        return null
+      }
+
+      const company = user.companyId ? await ctx.db.get(user.companyId) : null
+
+      return company?.slug // slug type -> string | undefined is as expected
+    } catch (error) {
+      // Log the error server-side but return null to the client
+      console.error("Error in slug query:", error)
+      return null
+    }
   },
 })
 
