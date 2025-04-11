@@ -67,8 +67,6 @@
 
 - avoid IPv6 wifi, sometimes failed to fetch server
 
-  - npm --node-options "--dns-result-order=ipv4first" run dev
-
 ## Backlog (Future Plan)
 
 ✅ Pool Table with the same company must have a unique name
@@ -104,3 +102,12 @@
 ❌ Update others (optional)
 ❌ Optimizing Portal Page
 ❌ Optimizing (tweak between loading.tsx with <Suspense />) Configuration on all pages.
+
+## Debugging Helper
+
+- Check Network Stability: Ensure you have a stable internet connection. Try a different network if possible.
+  - NODE_OPTIONS='--dns-result-order=ipv4first' npm run dev
+- Run a Network Test: Use the Convex network test tool to diagnose connectivity issues:
+  - npx convex network-test
+- Consider Using Local Development: If you're developing locally, you might want to try using Convex's local development feature:
+  - npx convex dev --local
