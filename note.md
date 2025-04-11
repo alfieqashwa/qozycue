@@ -83,3 +83,24 @@
 ❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
 
 ### Bugs ASAP
+
+## Feature Stockable Products (Current Plan)
+
+✅ Add isStockable field on Table Companies
+✅ Add field on countIsStock on Table Products
+❌ Implement Stock Column on Product Table
+❌ Setup default stcokable when user create a product (set to 0)
+❌ Only Manager Access Level to CRUD the Product Stock
+❌ Add stock field on Edit Product
+❌ Add stock on Cafe Dialog
+❌ Add stock on Cafe Dialog
+❌ Cafe Cart Configuration related to add/update/remove product
+❌ Admin Access Level to toggle isStockable feature on Profile Page
+
+## Update Packages (Current Plan)
+
+✅ Update TailwindCss & Shadcn
+❌ Update Nextjs
+❌ Update others (optional)
+❌ Optimizing Portal Page
+❌ Optimizing (tweak between loading.tsx with <Suspense />) Configuration on all pages.
