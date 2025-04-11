@@ -2,24 +2,12 @@
 
 import { SignInButton, SignOutButton } from "@/components/sign-button"
 import { Button } from "@/components/ui/button"
-import { api } from "@/convex/_generated/api"
-import {
-  Authenticated,
-  AuthLoading,
-  Preloaded,
-  Unauthenticated,
-  usePreloadedQuery,
-} from "convex/react"
+import { Authenticated, AuthLoading, Unauthenticated } from "convex/react"
 import { Loader2 } from "lucide-react"
 import Link from "next/link"
 import { FcGoogle } from "react-icons/fc"
 
-export const AuthButtons = ({
-  preloadSlug,
-}: {
-  preloadSlug: Preloaded<typeof api.companies.slug>
-}) => {
-  const slug = usePreloadedQuery(preloadSlug)
+export const AuthButtons = ({ slug }: { slug: string | null }) => {
   return (
     <div className="mt-8 flex justify-center gap-4 md:mt-24">
       <AuthLoading>

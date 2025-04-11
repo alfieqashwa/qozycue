@@ -14,8 +14,11 @@ export default async function SlugLayout({
 }>) {
   const { slug } = params
 
-  const token = await convexAuthNextjsToken()
-  const preloadedSession = await preloadQuery(api.sessions.find, {}, { token })
+  const preloadedSession = await preloadQuery(
+    api.sessions.find,
+    {},
+    { token: await convexAuthNextjsToken() },
+  )
   const session = preloadedQueryResult(preloadedSession)
 
   if (!session) redirect("/signin")
@@ -26,7 +29,7 @@ export default async function SlugLayout({
     <WrapperDashboard
       linkList={DASHBOARD_LINK_LIST}
       preloadedSession={preloadedSession}
-      className="size-9 shrink-0 animate-spin text-primary"
+      className="text-primary size-9 shrink-0 animate-spin"
     >
       {children}
     </WrapperDashboard>
