@@ -53,10 +53,11 @@ export const findAll = query({
 })
 
 export const findById = query({
-  args: { poolTableId: v.id("poolTables") },
+  args: { poolTableId: v.optional(v.id("poolTables")) },
   handler: async (ctx, { poolTableId }) => {
     await protectedProcedure(ctx)
 
+    if (!poolTableId) return null
     return await ctx.db.get(poolTableId)
   },
 })

@@ -48,7 +48,7 @@ export function DetailButton({
 
   const { data: poolTable } = useQuery({
     ...convexQuery(api.poolTables.findById, {
-      poolTableId: order?.poolRental.poolTableId!,
+      poolTableId: order?.poolRental.poolTableId,
     }),
     enabled: !!order?.poolRental.poolTableId,
   })
@@ -56,13 +56,13 @@ export function DetailButton({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       {children}
-      <DrawerContent className="mx-auto min-w-[360px] max-w-xl bg-card px-6">
+      <DrawerContent className="bg-card mx-auto max-w-xl min-w-[360px] px-6">
         <DrawerHeader className="flex justify-between px-0">
           {!!order?.poolRental ? (
             <div className="flex flex-col items-start">
               <DrawerTitle
                 className={cn(
-                  "whitespace-nowrap text-base md:text-lg",
+                  "text-base whitespace-nowrap md:text-lg",
                   order.poolRental.packet?.rate === "HOUR"
                     ? "text-sky-400"
                     : "text-amber-300",
@@ -76,7 +76,7 @@ export function DetailButton({
             </div>
           ) : (
             <div className="flex flex-col items-start">
-              <DrawerTitle className="whitespace-nowrap text-base text-fuchsia-300 md:text-lg">
+              <DrawerTitle className="text-base whitespace-nowrap text-fuchsia-300 md:text-lg">
                 Cafe Only
               </DrawerTitle>
               <DrawerDescription className="text-xs font-medium">
@@ -87,13 +87,13 @@ export function DetailButton({
           <div className="space-y-1">
             <DrawerDescription className="flex space-x-2 capitalize">
               <User2 size={16} />
-              <span className="font-medium text-foreground">
+              <span className="text-foreground font-medium">
                 {order?.customer.name ?? customerName}
               </span>
             </DrawerDescription>
             <DrawerDescription className="flex space-x-2 text-xs capitalize">
               <Phone size={16} />
-              <span className="font-medium tracking-wider text-muted-foreground">
+              <span className="text-muted-foreground font-medium tracking-wider">
                 {order?.customer.phone || customerPhone || "No phone"}
               </span>
             </DrawerDescription>
