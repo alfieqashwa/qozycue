@@ -2,7 +2,7 @@ import { DASHBOARD_LINK_LIST } from "@/app/constants/link-list"
 import { WrapperDashboard } from "@/components/wrapper-dashboard"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
-import { preloadedQueryResult, preloadQuery } from "convex/nextjs"
+import { fetchQuery, preloadedQueryResult, preloadQuery } from "convex/nextjs"
 import { notFound, redirect } from "next/navigation"
 
 export default async function SlugLayout({
@@ -13,13 +13,10 @@ export default async function SlugLayout({
   children: React.ReactNode
 }>) {
   const { slug } = params
+  const token = await convexAuthNextjsToken()
+  const preloadedSession = await preloadQuery(api.sessions.find, {}, { token })
 
-  const preloadedSession = await preloadQuery(
-    api.sessions.find,
-    {},
-    { token: await convexAuthNextjsToken() },
-  )
-  const session = preloadedQueryResult(preloadedSession)
+  const session = await fetchQuery(api.sessions.find, {}, { token })
 
   if (!session) redirect("/signin")
   if (session.user?.role === "USER") redirect("/portal/")
