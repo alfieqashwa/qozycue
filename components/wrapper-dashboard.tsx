@@ -65,7 +65,7 @@ export function WrapperDashboard({
 
   return (
     <div className="relative pb-12 sm:pb-4">
-      <div className="sticky top-0 z-50 flex h-20 items-center justify-between border-b-[3px] bg-background">
+      <div className="bg-background sticky top-0 z-50 flex h-20 items-center justify-between border-b-[3px]">
         <CompanyInfo company={user.company} pathname={pathname} />
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
           <ConnectionStatus />
@@ -81,7 +81,7 @@ export function WrapperDashboard({
       {/* //? STARTS SIDEBAR */}
       <div
         className={cn(
-          "fixed z-20 hidden min-h-[calc(100vh_-_5rem)] min-w-[50px] border-r-4 bg-background py-2 transition-all duration-150 ease-in-out sm:block",
+          "bg-background fixed z-20 hidden min-h-[calc(100vh_-_5rem)] min-w-[50px] border-r-4 py-2 transition-all duration-150 ease-in-out sm:block",
           store.toggle ? "w-0 sm:w-20" : "w-0 sm:w-56",
         )}
       >
@@ -116,16 +116,16 @@ export function WrapperDashboard({
                     user.role === "DEWA" ? "block" : "hidden",
                   )}
                 >
-                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <GiFrozenOrb className={cn(className)} />
                   </span>
                 </Link>
               </TooltipTrigger>
               <TooltipContent
                 side="right"
-                className="flex items-center gap-4 bg-muted"
+                className="bg-muted flex items-center gap-4"
               >
-                <span className="text-sm capitalize tracking-wider text-primary">
+                <span className="text-primary text-sm tracking-wider capitalize">
                   {pathname.includes("dewa") ? user.company?.name : "dewa"}
                 </span>
               </TooltipContent>
@@ -137,7 +137,7 @@ export function WrapperDashboard({
 
       <main
         className={cn(
-          "min-h-[calc(100vh_-_5rem)] bg-background p-1 transition-all duration-150 ease-in-out sm:p-4",
+          "bg-background min-h-[calc(100vh_-_5rem)] p-1 transition-all duration-150 ease-in-out sm:p-4",
           store.toggle ? "ml-0 sm:ml-20" : "ml-0 sm:ml-56",
         )}
       >
