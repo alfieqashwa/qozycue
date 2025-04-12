@@ -77,7 +77,7 @@ export default function RootLayout({
               themes={["light", "dark", "orange", "cherry", "fish"]}
               disableTransitionOnChange
             >
-              <main className="mx-auto min-h-screen min-w-[360px] max-w-[2048px] bg-black">
+              <main className="mx-auto min-h-screen max-w-[2048px] min-w-[360px] bg-black">
                 {children}
               </main>
               {/* // Todos
@@ -91,10 +91,10 @@ export default function RootLayout({
                   unstyled: true,
                   classNames: {
                     error:
-                      "bg-red-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
-                    info: "bg-yellow-600 border-2 border-yellow-900 flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                      "bg-red-950 border-2 border-black flex items-center w-full pl-4 py-3 rounded-lg shadow-lg text-muted-foreground",
+                    info: "bg-yellow-600 border-2 border-yellow-900 flex items-center text-muted-foreground w-full pl-4 py-3 rounded-lg shadow-lg",
                     success:
-                      "bg-emerald-950 border-2 border-black flex items-center w-full pl-2 py-3 rounded-lg shadow-lg",
+                      "bg-emerald-950 border-2 border-black flex items-center text-muted-foreground w-full pl-4 py-3 rounded-lg shadow-lg",
                     // warning: "bg-orange-400",
                     // toast: "bg-blue-400",
                     title: "pl-8 text-foreground font-medium tracking-wide",
