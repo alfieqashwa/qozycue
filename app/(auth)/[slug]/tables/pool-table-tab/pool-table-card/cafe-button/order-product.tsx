@@ -49,7 +49,7 @@ export function OrderProduct({
 
   const classNames = {
     toast: cn(
-      "flex items-center border-2 w-full pl-2 py-3 rounded-lg shadow-lg",
+      "flex items-center border-2 w-full pl-4 py-3 rounded-lg shadow-lg",
       {
         "bg-emerald-200/70 border-emerald-900": category?.name === "food",
         "bg-fuchsia-200/70 border-fuchsia-900": category?.name === "drink",
@@ -88,7 +88,7 @@ export function OrderProduct({
       toast(`${!!orderline?._id ? "Re-order!" : "Order!"}`, {
         unstyled: true,
         description: (
-          <p className="font-semibold capitalize text-muted/70">{name}</p>
+          <p className="text-muted/70 font-semibold capitalize">{name}</p>
         ),
         classNames,
         icon,
