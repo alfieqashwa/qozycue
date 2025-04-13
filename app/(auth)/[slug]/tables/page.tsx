@@ -7,6 +7,7 @@ import { redirect } from "next/navigation"
 import CafeOnlyTab from "./cafe-only-tab"
 import { OpenStatusCounter } from "./open-status-counter"
 import { PoolTableTab } from "./pool-table-tab"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Tables",

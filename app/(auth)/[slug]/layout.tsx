@@ -1,11 +1,9 @@
 import { DASHBOARD_LINK_LIST } from "@/app/constants/link-list"
-import { LoadingSpinner } from "@/components/loading-spinner"
 import { WrapperDashboard } from "@/components/wrapper-dashboard"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { preloadedQueryResult, preloadQuery } from "convex/nextjs"
 import { notFound, redirect } from "next/navigation"
-import { Suspense } from "react"
 
 export default async function SlugLayout({
   params,
@@ -28,15 +26,13 @@ export default async function SlugLayout({
   if (session.user.company?.slug !== slug) notFound()
 
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <WrapperDashboard
-        linkList={DASHBOARD_LINK_LIST}
-        preloadedSession={preloadedSession}
-        className="text-primary size-9 shrink-0 animate-spin"
-      >
-        {children}
-      </WrapperDashboard>
-    </Suspense>
+    <WrapperDashboard
+      linkList={DASHBOARD_LINK_LIST}
+      preloadedSession={preloadedSession}
+      className="text-primary size-9 shrink-0 animate-spin"
+    >
+      {children}
+    </WrapperDashboard>
   )
 }
 

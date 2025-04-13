@@ -5,7 +5,7 @@ export default function LoadingTriangle() {
     <div className="grid min-h-screen w-full place-items-center">
       <GiPoolTriangle
         //   color="rgb(148 163 184)"
-        className="size-14 animate-ping text-primary md:size-16"
+        className="text-primary size-14 animate-ping md:size-16"
       />
     </div>
   )
