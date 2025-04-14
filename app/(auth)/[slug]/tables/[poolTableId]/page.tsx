@@ -6,13 +6,14 @@ import { redirect } from "next/navigation"
 import { BackButton } from "./back-button"
 import { PendingOrderList } from "./pending-order-list"
 
-export default async function PoolTableIdPage({
-  params,
-  searchParams,
-}: {
-  params: { poolTableId: Id<"poolTables"> }
-  searchParams: { pool: string }
-}) {
+export default async function PoolTableIdPage(
+  props: {
+    params: Promise<{ poolTableId: Id<"poolTables"> }>
+    searchParams: Promise<{ pool: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const { poolTableId } = params
   const { pool } = searchParams
 

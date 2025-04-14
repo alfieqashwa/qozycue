@@ -6,7 +6,7 @@ import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { Phone } from "lucide-react"
-import { forwardRef, type LegacyRef } from "react"
+import { forwardRef, type Ref } from "react"
 
 type PrintReceiptProps = {
   orderId: Id<"orders">
@@ -68,7 +68,7 @@ export const PrintReceipt = forwardRef(
     return (
       <div
         className="bg-white p-8 font-mono text-muted"
-        ref={ref as LegacyRef<HTMLDivElement> | undefined}
+        ref={ref as Ref<HTMLDivElement> | undefined}
       >
         {status === "success" && !!order && (
           <main className="text-xs">
@@ -285,7 +285,7 @@ export const PrintReceipt = forwardRef(
           </main>
         )}
       </div>
-    )
+    );
   },
 )
 

@@ -5,13 +5,18 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { preloadedQueryResult, preloadQuery } from "convex/nextjs"
 import { notFound, redirect } from "next/navigation"
 
-export default async function SlugLayout({
-  params,
-  children,
-}: Readonly<{
-  params: { slug: string }
-  children: React.ReactNode
-}>) {
+export default async function SlugLayout(
+  props: Readonly<{
+    params: { slug: string }
+    children: React.ReactNode
+  }>
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const { slug } = params
 
   const preloadedSession = await preloadQuery(

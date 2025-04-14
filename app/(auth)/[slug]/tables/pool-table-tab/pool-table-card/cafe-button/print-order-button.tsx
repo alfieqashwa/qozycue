@@ -4,7 +4,7 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
-import { forwardRef, type LegacyRef } from "react"
+import { forwardRef, type Ref } from "react"
 
 type PrintOrderProps = {
   ids: Id<"orderlines">[] | undefined
@@ -42,7 +42,7 @@ export const PrintOrderButton = forwardRef(
     return (
       <div
         className="bg-white p-8 font-mono text-muted"
-        ref={ref as LegacyRef<HTMLDivElement> | undefined}
+        ref={ref as Ref<HTMLDivElement> | undefined}
       >
         {status === "success" && (
           <main className="text-xs">
@@ -131,7 +131,7 @@ export const PrintOrderButton = forwardRef(
           </main>
         )}
       </div>
-    )
+    );
   },
 )
 

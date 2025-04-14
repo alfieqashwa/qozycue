@@ -4,11 +4,12 @@ import { fetchQuery, preloadQuery } from "convex/nextjs"
 import { redirect } from "next/navigation"
 import { CompanySite } from "./company-site"
 
-export default async function PublicSlugPage({
-  params,
-}: {
-  params: { slug: string }
-}) {
+export default async function PublicSlugPage(
+  props: {
+    params: Promise<{ slug: string }>
+  }
+) {
+  const params = await props.params;
   const { slug } = params
 
   const company = await fetchQuery(api.companies.findPublicProcedure, { slug })

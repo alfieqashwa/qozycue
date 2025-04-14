@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npm-run-all --parallel dev:fe dev:be",
-    "dev:fe": "next dev --turbo",
+    "dev:fe": "next dev --turbopack",
     "dev:be": "convex dev",
     "predev": "convex dev --until-success && node setup.mjs --once && convex dashboard",
     "build": "next build",
@@ -50,12 +50,12 @@
     "date-fns": "^3.6.0",
     "framer-motion": "^11.11.10",
     "lucide-react": "^0.453.0",
-    "next": "^14.2.20",
+    "next": "15.3.0",
     "next-themes": "^0.3.0",
     "postcss": "^8.5.3",
-    "react": "^18",
+    "react": "19.1.0",
     "react-day-picker": "^8.10.1",
-    "react-dom": "^18",
+    "react-dom": "19.1.0",
     "react-hook-form": "^7.55.0",
     "react-icons": "^5.3.0",
     "react-to-print": "^2.15.1",
@@ -74,15 +74,21 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "19.1.1",
+    "@types/react-dom": "19.1.2",
     "daisyui": "^5.0.18",
     "dotenv": "^16.4.5",
     "eslint": "^8",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "15.3.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.1.1",
+      "@types/react-dom": "19.1.2"
+    }
   }
 }

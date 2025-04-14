@@ -14,7 +14,7 @@ import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { MapPin, Phone } from "lucide-react"
-import { forwardRef, type LegacyRef } from "react"
+import { forwardRef, type Ref } from "react"
 
 export const PrintTransactionPdf = forwardRef(
   (
@@ -29,7 +29,7 @@ export const PrintTransactionPdf = forwardRef(
   ) => {
     return (
       <div
-        ref={ref as LegacyRef<HTMLDivElement> | undefined}
+        ref={ref as Ref<HTMLDivElement> | undefined}
         className="bg-white px-4 pb-20 text-sm text-zinc-700"
       >
         <section className="py-4 text-center">
@@ -119,7 +119,7 @@ export const PrintTransactionPdf = forwardRef(
           </article>
         </div>
       </div>
-    )
+    );
   },
 )
 
