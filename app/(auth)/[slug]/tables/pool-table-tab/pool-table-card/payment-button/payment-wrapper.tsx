@@ -37,14 +37,14 @@ export const PaymentSheet = ({
       <Button
         disabled={disabled}
         variant="secondary"
-        className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
+        className="gap-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
       >
         <Banknote size={20} />
         <span className="text-sm">Payment</span>
       </Button>
     </SheetTrigger>
 
-    <SheetContent className="h-svh min-w-full bg-card sm:min-w-[480px]">
+    <SheetContent className="bg-card h-svh min-w-full px-4 sm:min-w-[480px]">
       <SheetHeader>
         <SheetTitle className="whitespace-nowrap">
           {poolTableName ? `Table ${poolTableName}` : "Cafe Only"}

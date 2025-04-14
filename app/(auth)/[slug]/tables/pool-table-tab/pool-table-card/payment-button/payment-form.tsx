@@ -258,7 +258,7 @@ export function PaymentForm({
 
   return (
     <ScrollArea className="-mx-6 py-2 text-sm md:mt-4 md:min-h-[calc(100vh_-_6rem)] md:text-base">
-      <div className="flex justify-center md:justify-end md:pb-2 md:pr-5">
+      <div className="flex justify-center md:justify-end md:pr-5 md:pb-2">
         <div className="hidden">
           <PrintReceipt
             orderId={orderId}
@@ -284,7 +284,7 @@ export function PaymentForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-2 px-6 py-1"
+          className="gap-y-2 px-6 py-1"
         >
           {/* Tax */}
           <PaymentFormField
@@ -311,7 +311,7 @@ export function PaymentForm({
                 placeholder="input uang dari customer"
                 onChange={(e) => handleCustomerMoney(e.target.value)}
               />
-              <article className="grid grid-cols-2 gap-x-2 py-4 text-sm font-medium text-muted-foreground">
+              <article className="text-muted-foreground grid grid-cols-2 gap-x-2 py-4 text-sm font-medium">
                 <p className="text-right">Diterima:</p>
                 <p>{formattedPriceWithRupiah.format(Number(changeMoney))}</p>
                 <p className="text-right">Kembalian:</p>
@@ -327,7 +327,7 @@ export function PaymentForm({
               name="note"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="capitalize text-muted-foreground">
+                  <FormLabel className="text-muted-foreground capitalize">
                     Note
                   </FormLabel>
                   <FormControl>
@@ -342,7 +342,7 @@ export function PaymentForm({
               )}
             />
           )}
-          <footer className="flex flex-col-reverse md:absolute md:bottom-4 md:right-6 md:flex-row md:justify-end md:space-x-4">
+          <footer className="flex flex-col-reverse md:absolute md:right-6 md:bottom-6 md:flex-row md:justify-end md:gap-x-4">
             <Button
               type="button"
               variant="secondary"
@@ -399,7 +399,7 @@ const PaymentInformation = ({
     <InfoRow
       label="grand total:"
       value={formattedFixedGrandTotal}
-      className="font-semibold text-primary"
+      className="text-primary font-semibold"
     />
   </section>
 )
@@ -456,11 +456,11 @@ const PaymentFormField = ({
     name={name}
     render={({ field }) => (
       <FormItem>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between py-1">
           {defaultValue ? (
             <DefaultTaxTooltip defaultValue={defaultValue} name={name} />
           ) : (
-            <FormLabel className="capitalize text-muted-foreground">
+            <FormLabel className="text-muted-foreground capitalize">
               {name}
             </FormLabel>
           )}
@@ -519,7 +519,7 @@ const DefaultTaxTooltip = ({
         <Tooltip>
           <TooltipTrigger
             asChild
-            className="absolute -right-3.5 -top-1 hover:cursor-help"
+            className="absolute -top-1 -right-4.5 hover:cursor-help"
           >
             <CircleHelp
               size={15}
@@ -537,7 +537,7 @@ const DefaultTaxTooltip = ({
         <Popover>
           <PopoverTrigger
             asChild
-            className="absolute -right-4 -top-1 hover:cursor-help"
+            className="absolute -top-1 -right-4 hover:cursor-help"
           >
             <CircleHelp
               size={15}
@@ -546,13 +546,13 @@ const DefaultTaxTooltip = ({
           </PopoverTrigger>
           <PopoverContent
             side="right"
-            className="w-auto bg-muted py-1.5 text-xs tracking-wider text-amber-300"
+            className="bg-muted w-auto py-1.5 text-xs tracking-wider text-amber-300"
           >
             Default Tax {defaultValue * 100}%
           </PopoverContent>
         </Popover>
       )}
-      <FormLabel className="capitalize text-muted-foreground">{name}</FormLabel>
+      <FormLabel className="text-muted-foreground capitalize">{name}</FormLabel>
     </div>
   )
 }
