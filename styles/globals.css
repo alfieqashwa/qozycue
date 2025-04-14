@@ -341,4 +341,8 @@
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
   }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
