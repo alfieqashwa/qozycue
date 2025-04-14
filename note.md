@@ -110,4 +110,14 @@
 - Run a Network Test: Use the Convex network test tool to diagnose connectivity issues:
   - npx convex network-test
 - Consider Using Local Development: If you're developing locally, you might want to try using Convex's local development feature:
+
   - npx convex dev --local
+
+- The IPv6 and IPv4 issue has been resolved when I did:
+  - /etc/sysctl.conf, added:
+    net.ipv6.conf.all.disable_ipv6 = 1
+    net.ipv6.conf.default.disable_ipv6 = 1
+  - and applied with:
+    - sudo systcl -p
+  - Source:
+    - https://chatgpt.com/c/67fce350-7b70-8002-b621-55277015640e
