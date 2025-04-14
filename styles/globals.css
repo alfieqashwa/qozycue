@@ -345,4 +345,7 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  dialog {
+    margin: auto;
+  }
 }
