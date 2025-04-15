@@ -7,17 +7,15 @@ import { notFound, redirect } from "next/navigation"
 
 export default async function SlugLayout(
   props: Readonly<{
-    params: { slug: string }
+    params: Promise<{ slug: string }>
     children: React.ReactNode
-  }>
+  }>,
 ) {
-  const params = await props.params;
+  const params = props.params
 
-  const {
-    children
-  } = props;
+  const { children } = props
 
-  const { slug } = params
+  const { slug } = await params
 
   const preloadedSession = await preloadQuery(
     api.sessions.find,
