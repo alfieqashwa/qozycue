@@ -95,7 +95,7 @@ export function UpdateCompanyInfo({
             className,
           )}
         >
-          <Pencil size={14} className="mr-2" />
+          <Pencil size={14} />
           Edit
         </Button>
       </DialogTrigger>

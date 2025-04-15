@@ -55,7 +55,7 @@ export function Nav({
                   }
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
-                    "h-12 w-12 text-primary/70 hover:text-primary",
+                    "text-primary/70 hover:text-primary h-12 w-12",
                     !pathname.includes("dewa")
                       ? pathname ===
                           `/${encodeURIComponent(slug)}${link.href}` &&
@@ -71,15 +71,15 @@ export function Nav({
                       "hidden",
                   )}
                 >
-                  <link.icon size={28} className="shrink-0" />
+                  <link.icon className="size-7 shrink-0" />
                   <span className="sr-only">{link.title}</span>
                 </Link>
               </TooltipTrigger>
               <TooltipContent
                 side="right"
-                className="flex items-center gap-4 bg-muted"
+                className="bg-muted flex items-center gap-4"
               >
-                <span className="text-sm capitalize tracking-wider text-primary">
+                <span className="text-primary text-sm tracking-wider capitalize">
                   {link.title}
                 </span>
               </TooltipContent>
@@ -94,7 +94,7 @@ export function Nav({
               }
               className={cn(
                 buttonVariants({ variant: "ghost", size: "default" }),
-                "h-12 justify-start text-primary/70 hover:text-primary",
+                "text-primary/70 hover:text-primary h-12 justify-start",
                 !pathname.includes("dewa")
                   ? pathname === `/${encodeURIComponent(slug)}${link.href}` &&
                       "bg-muted text-primary hover:bg-muted"
@@ -105,8 +105,8 @@ export function Nav({
                 link.href === "/settings" && !managerAccessLevel && "hidden",
               )}
             >
-              <link.icon size={28} className="mr-4 shrink-0" />
-              <span className="text-base font-semibold capitalize text-muted-foreground">
+              <link.icon className="mr-4 size-7 shrink-0" />
+              <span className="text-muted-foreground text-base font-semibold capitalize">
                 {link.title}
               </span>
             </Link>

@@ -17,22 +17,22 @@ export default function ToggleThemes() {
   let icon
   switch (theme) {
     case "system":
-      icon = <Bird />
+      icon = <Bird className="size-4" />
       break
     case "apple":
-      icon = <Apple />
+      icon = <Apple className="size-4" />
       break
     case "orange":
-      icon = <Citrus />
+      icon = <Citrus className="size-4" />
       break
     case "cherry":
-      icon = <Cherry />
+      icon = <Cherry className="size-4" />
       break
     case "fish":
-      icon = <Fish />
+      icon = <Fish className="size-4" />
       break
     default:
-      icon = <Bird />
+      icon = <Bird className="size-4" />
       break
   }
 
@@ -41,7 +41,7 @@ export default function ToggleThemes() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-primary">
+        <Button variant={"secondary"} size={"sm"} className="text-primary">
           {toggleButton}
           <span className="sr-only">Toggle theme</span>
         </Button>
