@@ -70,10 +70,10 @@ export function ArchiveOrder({ orderId, statusPayment }: ArchiveOrderProps) {
         disabled={disabled}
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
-          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground",
+          "disabled:text-muted-foreground flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <FileArchive className="mr-2 h-4 w-4" />
+        <FileArchive className="size-4" />
         <span>Remove</span>
       </DialogTrigger>
 
@@ -83,7 +83,7 @@ export function ArchiveOrder({ orderId, statusPayment }: ArchiveOrderProps) {
             <DialogTitle>Are You Sure?</DialogTitle>
             <DialogDescription>
               You can&apos;t undo this change. Click Remove to remove Order ID
-              <span className="px-1.5 font-medium uppercase text-primary">
+              <span className="text-primary px-1.5 font-medium uppercase">
                 {orderId.slice(-10, orderId.length)}
               </span>
             </DialogDescription>
@@ -96,11 +96,12 @@ export function ArchiveOrder({ orderId, statusPayment }: ArchiveOrderProps) {
             </DialogClose>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
               <Button type="submit" variant="destructive">
+                <FileArchive className="size-4" />
                 Remove
               </Button>
             )}

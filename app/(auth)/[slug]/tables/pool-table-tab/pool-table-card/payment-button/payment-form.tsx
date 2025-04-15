@@ -121,7 +121,7 @@ export function PaymentForm({
               />
             </div>
             <Button size="sm" onClick={handleReceiptPrint}>
-              <Printer className="mr-2 size-4" />
+              <Printer className="size-4" />
               <span>Receipt</span>
             </Button>
           </>
@@ -269,7 +269,7 @@ export function PaymentForm({
           />
         </div>
         <Button variant="secondary" size="sm" onClick={handleBillPrint}>
-          <Printer className="mr-2 size-4" />
+          <Printer className="size-4" />
           <span>Bill</span>
         </Button>
       </div>
@@ -353,7 +353,7 @@ export function PaymentForm({
             </Button>
             {isPending ? (
               <Button disabled>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin disabled:pointer-events-auto disabled:cursor-not-allowed" />
+                <Loader2 className="size-4 animate-spin disabled:pointer-events-auto disabled:cursor-not-allowed" />
                 Please wait
               </Button>
             ) : (

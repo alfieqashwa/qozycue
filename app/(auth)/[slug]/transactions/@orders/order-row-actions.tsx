@@ -55,7 +55,7 @@ export function OrderRowActions({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          className="data-[state=open]:bg-muted flex h-8 w-8 p-0"
         >
           <DotsHorizontalIcon className="h-4 w-4" />
           <span className="sr-only">Open menu</span>
@@ -66,7 +66,7 @@ export function OrderRowActions({
           onClick={() => navigator.clipboard.writeText(orderId)}
           className="group hover:cursor-pointer"
         >
-          <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70 group-hover:text-primary" />
+          <Copy className="text-muted-foreground/70 group-hover:text-primary" />
           <span>Copy ID</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -95,13 +95,12 @@ export function OrderRowActions({
             orderStatus={orderStatus}
             order={order}
           >
-            <DrawerTrigger className="group flex w-full items-center text-sm disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground">
-              <ScrollText className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+            <DrawerTrigger className="group disabled:text-muted-foreground flex w-full items-center text-sm disabled:pointer-events-auto disabled:cursor-not-allowed">
+              <ScrollText className="text-muted-foreground group-hover:text-primary mr-2 h-4 w-4" />
               <span>Detail</span>
             </DrawerTrigger>
           </DetailButton>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
         {statusPayment === "PAID" && (
           <DropdownMenuItem
             className="group"
@@ -117,9 +116,9 @@ export function OrderRowActions({
             </div>
             <button
               onClick={handlePrint}
-              className="flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
+              className="disabled:text-muted-foreground flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed"
             >
-              <Printer className="mr-2 size-4 text-muted-foreground group-hover:text-primary" />
+              <Printer className="text-muted-foreground group-hover:text-primary mr-2 size-4" />
               <span>Receipt</span>
             </button>
           </DropdownMenuItem>

@@ -106,7 +106,7 @@ export const UpdatePoolTable = ({
           "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Pencil size={16} className="mr-1" />
+        <Pencil size={16} />
         <span className="text-sm">Edit</span>
       </DialogTrigger>
       <DialogContent
@@ -155,7 +155,7 @@ export const UpdatePoolTable = ({
                   variant="destructive"
                   className="disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (

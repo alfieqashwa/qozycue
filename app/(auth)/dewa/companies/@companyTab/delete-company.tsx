@@ -58,9 +58,9 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
     <Dialog>
       <DialogTrigger
         disabled={!isSuperAdmin}
-        className="flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
+        className="disabled:text-muted-foreground flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed"
       >
-        <Trash className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+        <Trash className="text-muted-foreground group-hover:text-primary size-4" />
         <span>Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -70,7 +70,7 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
             <DialogDescription>
               You can&apos;t undo this changes. Click <b>Delete Company</b> when
               you&apos;re sure to delete Company
-              <span className="px-1.5 font-medium uppercase text-primary">
+              <span className="text-primary px-1.5 font-medium uppercase">
                 {name}.
               </span>
             </DialogDescription>
@@ -86,7 +86,7 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
             </Button>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

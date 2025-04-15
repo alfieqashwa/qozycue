@@ -55,7 +55,7 @@ export const DeleteDiscount = ({
           "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash size={16} className="mr-1" />
+        <Trash size={16} />
         <span className="text-sm">Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -78,7 +78,7 @@ export const DeleteDiscount = ({
             </Button>
             {isPending ? (
               <Button disabled variant="destructive">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

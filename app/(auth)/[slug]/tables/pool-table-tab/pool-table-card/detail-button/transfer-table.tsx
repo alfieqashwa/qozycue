@@ -101,9 +101,9 @@ export function TransferTable({
       <SheetTrigger
         disabled={(!isCashier && !isManager) || !transferPoolTableList?.length}
         className={cn(
-          "pr-2 text-muted-foreground disabled:pointer-events-auto disabled:cursor-not-allowed",
+          "text-muted-foreground pr-2 disabled:pointer-events-auto disabled:cursor-not-allowed",
           (isCashier || isManager) &&
-            "transition-colors duration-300 ease-in-out hover:text-foreground",
+            "hover:text-foreground transition-colors duration-300 ease-in-out",
         )}
       >
         <Tooltip>
@@ -118,7 +118,7 @@ export function TransferTable({
           </TooltipContent>
         </Tooltip>
       </SheetTrigger>
-      <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
+      <SheetContent className="bg-card min-w-full sm:min-w-[480px]">
         {/* {status === "success" && (
           <pre>{JSON.stringify(transferPoolTableList, null, 2)}</pre>
         )} */}
@@ -159,7 +159,7 @@ export function TransferTable({
             </Button>
             {isPending ? (
               <Button disabled>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

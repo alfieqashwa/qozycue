@@ -21,9 +21,9 @@ export function ArchiveOrderRowActions({ id }: { id: Id<"orders"> }) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          className="data-[state=open]:bg-muted flex h-8 w-8 p-0"
         >
-          <DotsHorizontalIcon className="h-4 w-4" />
+          <DotsHorizontalIcon className="size-4" />
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
@@ -32,7 +32,7 @@ export function ArchiveOrderRowActions({ id }: { id: Id<"orders"> }) {
           onClick={() => navigator.clipboard.writeText(id)}
           className="group hover:cursor-pointer"
         >
-          <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70 group-hover:text-primary" />
+          <Copy className="text-muted-foreground/70 group-hover:text-primary" />
           <span className="group-hover:text-primary">Copy ID</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

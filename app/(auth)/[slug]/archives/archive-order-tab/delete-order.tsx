@@ -69,7 +69,7 @@ export function DeleteOrder({ id }: DeleteOrderProps) {
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash2 className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+        <Trash2 className="text-muted-foreground group-hover:text-primary" />
         <span>Delete</span>
       </DialogTrigger>
 
@@ -80,7 +80,7 @@ export function DeleteOrder({ id }: DeleteOrderProps) {
             <DialogDescription>
               You can&apos;t undo this change. Click <b>Delete</b> to remove
               Order ID
-              <span className="px-1.5 font-medium uppercase text-primary">
+              <span className="text-primary px-1.5 font-medium uppercase">
                 {id.slice(-10, id.length)}.
               </span>
             </DialogDescription>
@@ -93,12 +93,12 @@ export function DeleteOrder({ id }: DeleteOrderProps) {
             </DialogClose>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
               <Button type="submit" variant="destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="size-4" />
                 Delete
               </Button>
             )}

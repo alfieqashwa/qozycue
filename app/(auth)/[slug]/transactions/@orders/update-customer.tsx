@@ -85,9 +85,9 @@ export function UpdateCustomer({
     <Dialog>
       <DialogTrigger
         disabled={statusPayment === "PAID"}
-        className="group flex w-full items-center pl-2 text-sm disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
+        className="group disabled:text-muted-foreground flex w-full items-center pl-2 text-sm disabled:pointer-events-auto disabled:cursor-not-allowed"
       >
-        <User2 className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+        <User2 className="text-muted-foreground group-hover:text-primary mr-2 size-4" />
         <span>Edit Customer</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -146,13 +146,13 @@ export function UpdateCustomer({
               </DialogClose>
               {isPending ? (
                 <Button disabled variant="destructive" size="sm">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (
                 <Button type="submit">
-                  <User2 className="mr-2 h-4 w-4" />
-                  Update Customer
+                  <User2 className="size-4" />
+                  Update
                 </Button>
               )}
             </DialogFooter>

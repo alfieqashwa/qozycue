@@ -92,7 +92,7 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
           variant="secondary"
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <FilePlus2 size={16} className="mr-1" />
+          <FilePlus2 size={16} />
           <span>Create</span>
         </Button>
       </DialogTrigger>
@@ -135,7 +135,7 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
                   variant="destructive"
                   className="disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (

@@ -67,7 +67,7 @@ export function DeleteOrderList<TData>({
           disabled={disabledBasedOnAccessLevel}
           className="ml-2 h-8 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <Trash2 className="mr-2 h-4 w-4" />
+          <Trash2 />
           Delete Selected ({table.getFilteredSelectedRowModel().rows.length})
         </Button>
       </DialogTrigger>
@@ -94,7 +94,7 @@ export function DeleteOrderList<TData>({
             </Button>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

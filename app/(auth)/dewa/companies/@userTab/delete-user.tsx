@@ -75,7 +75,7 @@ export function DeleteUser({
             <DialogDescription>
               You can&apos;t undo this changes. Click <b>Delete User</b> when
               you&apos;re sure to delete
-              <span className="px-1.5 font-medium text-primary">{email}</span>
+              <span className="text-primary px-1.5 font-medium">{email}</span>
               user.
             </DialogDescription>
           </DialogHeader>
@@ -90,7 +90,7 @@ export function DeleteUser({
             </Button>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

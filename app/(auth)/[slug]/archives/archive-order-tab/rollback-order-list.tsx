@@ -63,9 +63,9 @@ export function RollbackOrderList<TData>({
           variant="secondary"
           size="sm"
           disabled={disabledBasedOnAccessLevel}
-          className="ml-2 h-8 whitespace-nowrap bg-amber-600 hover:bg-amber-700 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="ml-2 h-8 bg-amber-600 whitespace-nowrap hover:bg-amber-700 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <RefreshCcwDot className="mr-2 h-4 w-4" />
+          <RefreshCcwDot />
           Rollback Selected ({table.getFilteredSelectedRowModel().rows.length})
         </Button>
       </DialogTrigger>
@@ -92,7 +92,7 @@ export function RollbackOrderList<TData>({
             </Button>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

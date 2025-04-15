@@ -146,7 +146,7 @@ export function PoolTableCard({
                   // TODOS: FUCKIN' DISABLED
                   disabled={!order.data?._id}
                   variant="secondary"
-                  className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
+                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >
                   <ScrollText size={20} />
                   <span>Detail</span>

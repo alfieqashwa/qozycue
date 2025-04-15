@@ -66,12 +66,12 @@ export const UpdateBooking = ({
         <DialogTrigger
           className={cn(
             buttonVariants({ variant: "secondary", size: "sm" }),
-            "flex w-full items-center rounded pl-2 hover:bg-accent disabled:pointer-events-auto disabled:cursor-not-allowed",
+            "hover:bg-accent flex w-full items-center rounded pl-2 disabled:pointer-events-auto disabled:cursor-not-allowed",
           )}
         >
           <FilePlus2
             size={16}
-            className="mr-2 text-muted-foreground group-hover:text-primary"
+            className="text-muted-foreground group-hover:text-primary"
           />
           <span className="text-xs">{content.trigger}</span>
         </DialogTrigger>
@@ -104,16 +104,16 @@ export const UpdateBooking = ({
       <DrawerTrigger
         className={cn(
           buttonVariants({ variant: "secondary", size: "sm" }),
-          "flex w-full items-center rounded pl-2 hover:bg-accent disabled:pointer-events-auto disabled:cursor-not-allowed",
+          "hover:bg-accent flex w-full items-center rounded pl-2 disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <FilePlus2
           size={16}
-          className="mr-2 text-muted-foreground group-hover:text-primary"
+          className="text-muted-foreground group-hover:text-primary"
         />
         <span className="text-xs">{content.trigger}</span>
       </DrawerTrigger>
-      <DrawerContent className="mx-auto min-w-[360px] max-w-xl bg-card px-6">
+      <DrawerContent className="bg-card mx-auto max-w-xl min-w-[360px] px-6">
         <DrawerHeader>
           <DrawerTitle>{content.title}</DrawerTitle>
           <DrawerDescription className="text-amber-300">
@@ -153,7 +153,7 @@ export const BookingDialogFooter = ({
     </DialogClose>
     {isPending ? (
       <Button type="button" disabled>
-        <Loader2 className="mr-2 size-4 animate-spin" />
+        <Loader2 className="size-4 animate-spin" />
         Please wait
       </Button>
     ) : (
@@ -183,7 +183,7 @@ export const BookingDrawerFooter = ({
     </DrawerClose>
     {isPending ? (
       <Button disabled>
-        <Loader2 className="mr-2 size-4 animate-spin" />
+        <Loader2 className="size-4 animate-spin" />
         Please wait
       </Button>
     ) : (

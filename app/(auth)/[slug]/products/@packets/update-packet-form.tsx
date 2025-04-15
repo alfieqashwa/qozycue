@@ -167,13 +167,13 @@ export function UpdatePacketForm({
             </FormItem>
           )}
         />
-        <SheetFooter className="absolute bottom-4 left-0 right-0 px-6">
+        <SheetFooter className="absolute right-0 bottom-4 left-0 px-6">
           <SheetClose className={cn(buttonVariants({ variant: "secondary" }))}>
             Cancel
           </SheetClose>
           {isPending ? (
             <Button disabled>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
               Please wait
             </Button>
           ) : (

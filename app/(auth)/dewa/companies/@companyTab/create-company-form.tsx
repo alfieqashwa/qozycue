@@ -131,7 +131,7 @@ export function CreateCompanyForm({
         />
         {isPending ? (
           <Button disabled size="sm">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
             Please wait
           </Button>
         ) : (

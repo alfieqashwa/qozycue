@@ -83,7 +83,7 @@ export function ResetButton({
           </Button>
           {resetTimer.isPending ? (
             <Button disabled>
-              <Loader2 className="mr-2 size-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
               Please wait
             </Button>
           ) : (
@@ -114,7 +114,7 @@ const TooltipReset = ({
   <Tooltip>
     <TooltipTrigger asChild>{children}</TooltipTrigger>
     <TooltipContent className={cn("bg-muted", disabled && "sr-only")}>
-      <p className="font-sans text-sm capitalize text-muted-foreground">
+      <p className="text-muted-foreground font-sans text-sm capitalize">
         Reset Table
       </p>
     </TooltipContent>

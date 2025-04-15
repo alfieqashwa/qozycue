@@ -82,7 +82,7 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
           variant="secondary"
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <Plus size={16} className="mb-0.5 mr-1" />
+          <Plus size={16} />
           New
         </Button>
       </DialogTrigger>
@@ -137,7 +137,7 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
                   disabled
                   className="disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (

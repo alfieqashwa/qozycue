@@ -224,10 +224,10 @@ export function UpdateProductForm({
             </FormItem>
           )}
         />
-        <div className="px-4 pt-4 md:absolute md:bottom-4 md:right-4 md:px-0 md:pt-0">
+        <div className="px-4 pt-4 md:absolute md:right-4 md:bottom-4 md:px-0 md:pt-0">
           {isPending ? (
             <Button disabled className="w-full md:w-auto">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
               Please wait
             </Button>
           ) : (

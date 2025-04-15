@@ -76,7 +76,7 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash className="mr-2 h-4 w-4" />
+        <Trash />
         <span className="text-sm">Delete</span>
       </DialogTrigger>
 
@@ -87,7 +87,7 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
             <DialogDescription>
               You can&apos;t undo this changes. Click Delete Packet when
               you&apos;re sure to delete Product
-              <span className="px-1.5 font-medium uppercase text-primary">
+              <span className="text-primary px-1.5 font-medium uppercase">
                 {name}.
               </span>
             </DialogDescription>
@@ -103,7 +103,7 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
             </Button>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

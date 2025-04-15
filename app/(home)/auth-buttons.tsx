@@ -12,7 +12,7 @@ export const AuthButtons = ({ slug }: { slug: string | null }) => {
     <div className="mt-8 flex justify-center gap-4 md:mt-24">
       <AuthLoading>
         <Button variant={"outline"} size="lg">
-          <Loader2 size={20} className="mr-2 animate-spin" /> Loading
+          <Loader2 size={20} className="animate-spin" /> Loading
         </Button>
       </AuthLoading>
       <Unauthenticated>

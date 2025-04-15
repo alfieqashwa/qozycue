@@ -55,7 +55,7 @@ export const DeleteCategory = ({
           "flex items-center",
         )}
       >
-        <Trash size={16} className="mr-1" />
+        <Trash size={16} />
         <span>Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -65,7 +65,7 @@ export const DeleteCategory = ({
             <DialogDescription>
               You can&apos;t undo this changes. Click <b>Delete</b> when
               you&apos;re sure to delete{" "}
-              <span className="px-1.5 font-medium uppercase text-primary">
+              <span className="text-primary px-1.5 font-medium uppercase">
                 {name}.
               </span>
             </DialogDescription>
@@ -78,7 +78,7 @@ export const DeleteCategory = ({
             </DialogClose>
             {isPending ? (
               <Button disabled variant="destructive">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

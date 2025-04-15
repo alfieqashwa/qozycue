@@ -97,11 +97,13 @@
 
 ## Update Packages (Current Plan)
 
-✅ Update TailwindCss & Shadcn
-❌ Update Nextjs
-❌ Update others (optional)
-❌ Optimizing Portal Page
-❌ Optimizing (tweak between loading.tsx with <Suspense />) Configuration on all pages.
+✅ Update TailwindCss Version 4 & Shadcn-UI
+✅ Update Nextjs 15
+✅ Optimizing Portal Page
+✅ Optimizing (tweak between loading.tsx with <Suspense />) Configuration on all pages.
+✅ Theme Reconfiguration
+✅ Payment Card (Fix)
+❌ Button (Fix)
 
 ## Debugging Helper
 

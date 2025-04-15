@@ -102,7 +102,7 @@ export function UpdateDuration({
           <Button
             variant="secondary"
             size="sm"
-            className="absolute -top-11 hidden size-7 -translate-x-1/2 text-xs font-bold text-muted-foreground shadow-xl transition-all duration-500 ease-in-out hover:bg-sky-950 hover:text-foreground group-hover:inline-flex"
+            className="text-muted-foreground hover:text-foreground absolute -top-11 hidden size-7 -translate-x-1/2 text-xs font-bold shadow-xl transition-all duration-500 ease-in-out group-hover:inline-flex hover:bg-sky-950"
           >
             H
           </Button>
@@ -159,7 +159,7 @@ export function UpdateDuration({
               </DialogClose>
               {isPending ? (
                 <Button disabled>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (

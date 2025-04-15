@@ -65,7 +65,7 @@ export function DeletePacketList<TData>({
           disabled={disabledBasedOnAccessLevel}
           className="ml-2 h-8 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <Trash className="mr-2 h-4 w-4" />
+          <Trash className="size-4" />
           Delete Selected ({table.getFilteredSelectedRowModel().rows.length})
         </Button>
       </DialogTrigger>

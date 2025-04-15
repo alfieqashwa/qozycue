@@ -46,7 +46,7 @@ export default function DetailPage() {
       <section className="hidden md:absolute md:-top-14 md:right-0 md:block">
         {isLoading ? (
           <Button disabled variant="destructive">
-            <Loader2 className="mr-2 size-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
             Please wait
           </Button>
         ) : (

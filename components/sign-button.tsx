@@ -34,7 +34,7 @@ export function SignOutButton({
   return (
     <>
       <AuthLoading>
-        <LoaderButton size="sm" className="mr-1 animate-spin" />
+        <LoaderButton size="sm" className="animate-spin" />
       </AuthLoading>
       <Authenticated>
         <Button

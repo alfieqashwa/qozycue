@@ -92,7 +92,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
         <form onSubmit={handleSubmit}>
           {isPending ? (
             <Button disabled variant="destructive">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
               Please wait
             </Button>
           ) : (
@@ -116,7 +116,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
       <form onSubmit={handleSubmit}>
         {isPending ? (
           <Button disabled variant="destructive" className="w-full">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
             Please wait
           </Button>
         ) : (
@@ -166,13 +166,13 @@ function DeleteDialog({
           <DialogTitle>Are You Sure?</DialogTitle>
           <DialogDescription>
             {DESCRIPTION}
-            <span className="px-1.5 font-medium uppercase text-primary">
+            <span className="text-primary px-1.5 font-medium uppercase">
               {name}.
             </span>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="px-4 pt-4 md:absolute md:bottom-4 md:right-4 md:px-0 md:pt-0">
+        <div className="px-4 pt-4 md:absolute md:right-4 md:bottom-4 md:px-0 md:pt-0">
           {children}
         </div>
       </DialogContent>
@@ -217,7 +217,7 @@ function DeleteDrawer({
           <DrawerTitle>Are You Sure?</DrawerTitle>
           <DrawerDescription>
             {DESCRIPTION}
-            <span className="px-1.5 font-medium uppercase text-primary">
+            <span className="text-primary px-1.5 font-medium uppercase">
               {name}.
             </span>
           </DrawerDescription>

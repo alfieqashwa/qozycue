@@ -48,7 +48,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const classNames = ` font-sans antialiased ${poppins.variable}`
+  const classNames = `font-sans antialiased ${poppins.variable}`
   return (
     <ConvexAuthNextjsServerProvider>
       {/* `suppressHydrationWarning` only affects the html tag,
@@ -63,7 +63,7 @@ export default function RootLayout({
               attribute="class"
               defaultTheme="system"
               enableSystem
-              themes={["light", "dark", "orange", "cherry", "fish"]}
+              themes={["light", "dark", "cherry", "grape", "orange"]}
               disableTransitionOnChange
             >
               <main className="mx-auto min-h-screen max-w-[2048px] min-w-[360px] bg-black">

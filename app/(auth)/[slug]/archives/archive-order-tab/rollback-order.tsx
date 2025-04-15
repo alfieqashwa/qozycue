@@ -72,7 +72,7 @@ export function RollbackOrder({ id }: RolebackOrderProps) {
           "flex w-full items-center bg-amber-600 hover:bg-amber-700 disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <RefreshCcwDot className="mr-2 h-4 w-4" />
+        <RefreshCcwDot className="size-4" />
         <span>Rollback</span>
       </DialogTrigger>
 
@@ -84,7 +84,7 @@ export function RollbackOrder({ id }: RolebackOrderProps) {
               <p>
                 Anda tidak dapat membatalkan perubahan ini. Klik Rollback untuk
                 mengembalikan Order ID
-                <span className="px-1.5 font-medium uppercase text-primary">
+                <span className="text-primary px-1.5 font-medium uppercase">
                   {id.slice(-10, id.length)}
                 </span>
                 ke Table Transactions.
@@ -99,7 +99,7 @@ export function RollbackOrder({ id }: RolebackOrderProps) {
             </DialogClose>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
@@ -108,7 +108,7 @@ export function RollbackOrder({ id }: RolebackOrderProps) {
                 type="submit"
                 className="bg-amber-600 hover:bg-amber-700"
               >
-                <RefreshCcwDot className="mr-2 h-4 w-4" />
+                <RefreshCcwDot className="size-4" />
                 Rollback
               </Button>
             )}

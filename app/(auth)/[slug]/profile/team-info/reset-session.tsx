@@ -73,7 +73,7 @@ export function ResetSession({
             <DialogDescription>
               You can&apos;t undo this changes. Click <b>Reset Session</b> when
               you&apos;re sure to reset
-              <span className="px-1.5 font-medium text-primary">{email}</span>
+              <span className="text-primary px-1.5 font-medium">{email}</span>
               session from your Team.
             </DialogDescription>
           </DialogHeader>
@@ -88,7 +88,7 @@ export function ResetSession({
             </Button>
             {isPending ? (
               <Button disabled variant="destructive" size="sm">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

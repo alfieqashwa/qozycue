@@ -81,7 +81,7 @@ export function DeleteBookingForm({
         <form onSubmit={handleSubmit}>
           {isPending ? (
             <Button disabled variant="destructive">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
               Please wait
             </Button>
           ) : (
@@ -102,7 +102,7 @@ export function DeleteBookingForm({
       <form onSubmit={handleSubmit}>
         {isPending ? (
           <Button disabled variant="destructive" className="w-full">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
             Please wait
           </Button>
         ) : (
@@ -134,7 +134,7 @@ function DeleteDialog({
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash size={16} className="mr-2" />
+        <Trash size={16} />
         <span>Delete</span>
       </DialogTrigger>
 
@@ -143,14 +143,14 @@ function DeleteDialog({
           <DialogTitle>Are You Sure?</DialogTitle>
           <DialogDescription>
             Click Delete Booking to delete
-            <span className="px-1.5 font-medium uppercase text-primary">
+            <span className="text-primary px-1.5 font-medium uppercase">
               {customerName}
             </span>
             &apos;s booking.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="px-4 pt-4 md:absolute md:bottom-4 md:right-4 md:px-0 md:pt-0">
+        <div className="px-4 pt-4 md:absolute md:right-4 md:bottom-4 md:px-0 md:pt-0">
           {children}
         </div>
       </DialogContent>
@@ -172,7 +172,7 @@ function DeleteDrawer({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger className="flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed">
-        <Trash className="mr-2 h-4 w-4 text-muted-foreground group-hover:text-primary" />
+        <Trash className="text-muted-foreground group-hover:text-primary size-4" />
         <span>Delete</span>
       </DrawerTrigger>
 
@@ -181,7 +181,7 @@ function DeleteDrawer({
           <DrawerTitle>Are You Sure?</DrawerTitle>
           <DrawerDescription>
             Click Delete Booking to delete
-            <span className="px-1.5 font-medium uppercase text-primary">
+            <span className="text-primary px-1.5 font-medium uppercase">
               {customerName}
             </span>
             &apos;s booking.

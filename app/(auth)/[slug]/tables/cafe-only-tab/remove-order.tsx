@@ -59,7 +59,7 @@ export function RemoveOrder({
           "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash2 className="mr-2 h-4 w-4" />
+        <Trash2 className="size-4" />
         <span>Remove</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -69,7 +69,7 @@ export function RemoveOrder({
             <DialogDescription>
               You can&apos;t undo this changes. Click Remove when you&apos;re
               sure to remove
-              <span className="px-1.5 font-medium uppercase text-primary">
+              <span className="text-primary px-1.5 font-medium uppercase">
                 {customerName}.
               </span>
             </DialogDescription>
@@ -85,12 +85,12 @@ export function RemoveOrder({
                 size="sm"
                 className="disabled:pointer-events-auto disabled:cursor-not-allowed"
               >
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
               <Button type="submit" variant="destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="size-4" />
                 Remove
               </Button>
             )}

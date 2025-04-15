@@ -83,7 +83,7 @@ export const CreateCategory = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary">
-          <FilePlus2 size={16} className="mr-1" />
+          <FilePlus2 size={16} />
           <span>Create</span>
         </Button>
       </DialogTrigger>
@@ -145,7 +145,7 @@ export const CreateCategory = () => {
                   variant="destructive"
                   className="disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (

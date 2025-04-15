@@ -194,7 +194,7 @@ export function CreateBookingForm({
                           !field.value && "text-muted-foreground",
                         )}
                       >
-                        <Calendar className="mr-2 h-4 w-4 opacity-50" />
+                        <Calendar className="size-4 opacity-50" />
                         {field.value ? (
                           <span>{formatTimeForDisplay(field.value)}</span>
                         ) : (
@@ -360,7 +360,7 @@ export function CreateBookingForm({
             </DialogClose>
             {isPending ? (
               <Button disabled>
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
