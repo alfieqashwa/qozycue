@@ -14,29 +14,29 @@ import { cn } from "@/lib/utils"
 export default function ToggleThemes() {
   const { theme, setTheme } = useTheme()
 
-  let icon
+  const themeTitle = ["apple", "dark", "orange", "cherry", "fish"]
+
+  let toggleButton
   switch (theme) {
     case "system":
-      icon = <Bird className="size-4" />
+      toggleButton = <Bird className="size-4" />
       break
     case "apple":
-      icon = <Apple className="size-4" />
+      toggleButton = <Apple className="size-4" />
       break
     case "orange":
-      icon = <Citrus className="size-4" />
+      toggleButton = <Citrus className="size-4" />
       break
     case "cherry":
-      icon = <Cherry className="size-4" />
+      toggleButton = <Cherry className="size-4" />
       break
     case "fish":
-      icon = <Fish className="size-4" />
+      toggleButton = <Fish className="size-4" />
       break
     default:
-      icon = <Bird className="size-4" />
+      toggleButton = <Bird className="size-4" />
       break
   }
-
-  const toggleButton = icon
 
   return (
     <DropdownMenu>
@@ -47,52 +47,98 @@ export default function ToggleThemes() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" forceMount className="z-70">
-        <DropdownMenuItem
-          onClick={() => setTheme("apple")}
-          className={cn(
-            theme === "apple" ? "text-primary" : "text-muted-foreground",
-          )}
-        >
-          <Apple className="mr-2 h-4 w-4" />
-          <span>Apple</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => setTheme("dark")}
-          className={cn(
-            theme === "dark" ? "text-primary" : "text-muted-foreground",
-          )}
-        >
-          <Bird className="mr-2 h-4 w-4" />
-          <span>Bird</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => setTheme("orange")}
-          className={cn(
-            theme === "orange" ? "text-primary" : "text-muted-foreground",
-          )}
-        >
-          <Citrus className="mr-2 h-4 w-4" />
-          <span>Orange</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => setTheme("cherry")}
-          className={cn(
-            theme === "cherry" ? "text-primary" : "text-muted-foreground",
-          )}
-        >
-          <Cherry className="mr-2 h-4 w-4" />
-          <span>Cherry</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => setTheme("fish")}
-          className={cn(
-            theme === "fish" ? "text-primary" : "text-muted-foreground",
-          )}
-        >
-          <Fish className="mr-2 h-4 w-4" />
-          <span>Fish</span>
-        </DropdownMenuItem>
+        {themeTitle.map((title, i) => (
+          <DropdownMenuItem
+            onClick={() => setTheme(title)}
+            className={cn(
+              theme === title ? "text-primary" : "text-muted-foreground",
+            )}
+            key={`${i}-${title}`}
+          >
+            <span
+              className={cn(
+                theme === `${title}` ? "text-primary" : "text-muted-foreground",
+              )}
+            >
+              <ThemeIcon title={title} theme={theme} />
+            </span>
+            <span className="capitalize">{title}</span>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   )
+}
+
+const ThemeIcon = ({
+  title,
+  theme,
+}: {
+  title: string
+  theme: string | undefined
+}) => {
+  let icon
+  switch (title) {
+    case "apple":
+      icon = (
+        <Apple
+          className={cn(
+            theme === title ? "text-primary" : "text-foreground",
+            "mr-2 size-4",
+          )}
+        />
+      )
+      break
+    case "bird":
+      icon = (
+        <Bird
+          className={cn(
+            theme === title ? "text-primary" : "text-foreground",
+            "mr-2 size-4",
+          )}
+        />
+      )
+      break
+    case "orange":
+      icon = (
+        <Citrus
+          className={cn(
+            theme === title ? "text-primary" : "text-foreground",
+            "mr-2 size-4",
+          )}
+        />
+      )
+      break
+    case "cherry":
+      icon = (
+        <Cherry
+          className={cn(
+            theme === title ? "text-primary" : "text-foreground",
+            "mr-2 size-4",
+          )}
+        />
+      )
+      break
+    case "fish":
+      icon = (
+        <Fish
+          className={cn(
+            theme === title ? "text-primary" : "text-foreground",
+            "mr-2 size-4",
+          )}
+        />
+      )
+      break
+    default:
+      icon = (
+        <Bird
+          className={cn(
+            theme === title ? "text-primary" : "text-foreground",
+            "mr-2 size-4",
+          )}
+        />
+      )
+  }
+
+  return <span>{icon}</span>
 }
