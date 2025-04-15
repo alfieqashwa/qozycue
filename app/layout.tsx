@@ -1,10 +1,5 @@
-import "../styles/globals.css"
-export const dynamic = "force-dynamic"
-
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Poppins as FontSans } from "next/font/google"
-
 import ConvexClientProvider from "@/components/ConvexClientProvider"
 import { ThemeProvider } from "@/components/providers"
 import { cn } from "@/lib/utils"
@@ -12,16 +7,8 @@ import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server"
 import { CircleCheck, CircleX, Info } from "lucide-react"
 import type { Metadata } from "next"
 import { Toaster } from "sonner"
-
-const fontSans = FontSans({
-  // subsets: ["latin"],
-  // variable: "--font-sans",
-  subsets: ["latin-ext"],
-  variable: "--font-sans",
-  style: "normal",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  display: "swap",
-})
+import "../styles/globals.css"
+import { poppins } from "../styles/font"
 
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
@@ -61,6 +48,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const classNames = ` font-sans antialiased ${poppins.variable}`
   return (
     <ConvexAuthNextjsServerProvider>
       {/* `suppressHydrationWarning` only affects the html tag,
@@ -68,7 +56,8 @@ export default function RootLayout({
       class attribute on it */}
       <html lang="en" suppressHydrationWarning className="dark scroll-smooth">
         <head />
-        <body className={cn("font-sans antialiased", fontSans.variable)}>
+        {/* <body className={cn("font-sans antialiased", fontSans.variable)}> */}
+        <body className={classNames}>
           <ConvexClientProvider>
             <ThemeProvider
               attribute="class"

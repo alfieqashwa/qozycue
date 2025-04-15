@@ -115,6 +115,7 @@ export function WrapperDashboard({
                     "relative size-12",
                     user.role === "DEWA" ? "block" : "hidden",
                   )}
+                  as="style"
                 >
                   <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <GiFrozenOrb className={cn(className)} />
