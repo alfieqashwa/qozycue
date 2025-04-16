@@ -18,11 +18,11 @@ export function OrderlineRevenue({ date }: { date: DateRange | undefined }) {
   if (status !== "success") return <SkeletonDashboardCard className="h-36" />
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="font-semibold tracking-wider">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-primary font-semibold tracking-wider">
           Cafe Revenue
         </CardTitle>
-        <Utensils className="h-7 w-7 text-primary" />
+        <Utensils className="text-primary size-7" />
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
@@ -30,7 +30,7 @@ export function OrderlineRevenue({ date }: { date: DateRange | undefined }) {
             Number(orderlineRevenue._sum.amount),
           )}
         </div>
-        <p className="text-sm font-semibold tracking-wider text-muted-foreground">
+        <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total{" "}
           <span className="text-primary">{orderlineRevenue._sum.quantity}</span>{" "}
           orders

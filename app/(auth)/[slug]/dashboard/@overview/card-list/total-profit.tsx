@@ -56,17 +56,17 @@ export function TotalProfit({ date }: { date: DateRange | undefined }) {
     return <SkeletonDashboardCard className="h-36" />
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="font-semibolda tracking-wider">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-primary font-semibold tracking-wider">
           Total Profit
         </CardTitle>
-        <GiMoneyStack className="h-7 w-7 text-primary" />
+        <GiMoneyStack className="text-primary size-8" />
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
           {formattedPriceWithRupiah.format(Number(totalProfit))}
         </div>
-        <p className="text-sm font-semibold tracking-wider text-muted-foreground">
+        <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Profit Cafe{" "}
           <span className="text-primary">
             {formattedPrice.format(Number(totalOrderlineProfit))}

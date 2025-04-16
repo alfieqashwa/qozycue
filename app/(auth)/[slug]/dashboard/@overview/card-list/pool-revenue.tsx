@@ -48,17 +48,17 @@ export function PoolRevenue({ date }: { date: DateRange | undefined }) {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="font-semibold tracking-wider">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-primary font-semibold tracking-wider">
           Pool Revenue
         </CardTitle>
-        <GiPoolTriangle className="h-7 w-7 text-primary" />
+        <GiPoolTriangle className="text-primary size-8" />
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
           {formattedPriceWithRupiah.format(totalRevenue)}
         </div>
-        <p className="text-sm font-semibold tracking-wider text-muted-foreground">
+        <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total duration{" "}
           <span className="text-primary">{durationHour.toFixed(2)}</span> hours
         </p>

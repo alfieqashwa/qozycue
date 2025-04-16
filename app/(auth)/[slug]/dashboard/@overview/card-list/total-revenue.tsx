@@ -37,8 +37,8 @@ export function TotalRevenue({ date }: { date: DateRange | undefined }) {
   if (status !== "success") return <SkeletonDashboardCard className="h-36" />
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="font-semibold tracking-wider">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-primary font-semibold tracking-wider">
           Total Revenue
         </CardTitle>
         <Button
@@ -46,7 +46,7 @@ export function TotalRevenue({ date }: { date: DateRange | undefined }) {
           size={"icon"}
           onClick={() => setIsIncludeTaxes((prev) => (prev = !prev))}
         >
-          <Activity className="h-7 w-7 animate-pulse text-primary" />
+          <Activity className="text-primary size-7 animate-pulse" />
         </Button>
       </CardHeader>
       <CardContent>
@@ -54,7 +54,7 @@ export function TotalRevenue({ date }: { date: DateRange | undefined }) {
           {isIncludeTaxes ? revenueIncludeTaxes : revenueExcludeTaxes}
           <CardDescription className="text-xs font-medium">{`*${isIncludeTaxes ? "include" : "exclude"} taxes`}</CardDescription>
         </div>
-        <p className="text-sm font-semibold tracking-wider text-muted-foreground">
+        <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total <span className="text-primary">{totalTransactions}</span>{" "}
           transactions
         </p>
