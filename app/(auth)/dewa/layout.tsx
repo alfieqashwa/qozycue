@@ -21,7 +21,7 @@ export default async function DewaLayout({
     <WrapperDashboard
       linkList={DEWA_LINK_LIST}
       preloadedSession={preloadedSession}
-      classNames="size-9 shrink-0 animate-spin text-foreground"
+      classNames="size-9 shrink-0 animate-spin-slow text-foreground"
     >
       {children}
     </WrapperDashboard>
