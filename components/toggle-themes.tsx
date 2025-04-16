@@ -41,8 +41,8 @@ export default function ToggleThemes() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={"secondary"} size={"sm"} className="text-primary">
-          {toggleButton}
+        <Button variant={"secondary"} className="text-primary mr-4 ml-2">
+          <span>{toggleButton}</span>
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
@@ -50,11 +50,13 @@ export default function ToggleThemes() {
         <DropdownMenuItem
           onClick={() => setTheme("light")}
           className={cn(
+            "hover:cursor-pointer",
             theme === "light" ? "text-primary" : "text-muted-foreground",
           )}
         >
           <Apple
             className={cn(
+              "hover:cursor-pointer",
               theme === "light" ? "text-primary" : "text-foreground",
             )}
           />
@@ -63,6 +65,7 @@ export default function ToggleThemes() {
         <DropdownMenuItem
           onClick={() => setTheme("cherry")}
           className={cn(
+            "hover:cursor-pointer",
             theme === "cherry" ? "text-primary" : "text-muted-foreground",
           )}
         >
@@ -76,6 +79,7 @@ export default function ToggleThemes() {
         <DropdownMenuItem
           onClick={() => setTheme("grape")}
           className={cn(
+            "hover:cursor-pointer",
             theme === "grape" ? "text-primary" : "text-muted-foreground",
           )}
         >
@@ -89,6 +93,7 @@ export default function ToggleThemes() {
         <DropdownMenuItem
           onClick={() => setTheme("orange")}
           className={cn(
+            "hover:cursor-pointer",
             theme === "orange" ? "text-primary" : "text-muted-foreground",
           )}
         >
@@ -102,6 +107,7 @@ export default function ToggleThemes() {
         <DropdownMenuItem
           onClick={() => setTheme("dark")}
           className={cn(
+            "hover:cursor-pointer",
             theme === "dark" ? "text-primary" : "text-muted-foreground",
           )}
         >
