@@ -3,9 +3,14 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
+import dynamic from "next/dynamic"
 import { useState } from "react"
 import { PaymentForm } from "./payment-form"
-import { PaymentDrawer, PaymentSheet } from "./payment-wrapper"
+
+const PaymentSheet = dynamic(() => import("./payment-sheet.tsx"), { ssr: true })
+const PaymentDrawer = dynamic(() => import("./payment-drawer.tsx"), {
+  ssr: true,
+})
 
 export function PaymentButton({
   isCashier,
