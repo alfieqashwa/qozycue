@@ -32,7 +32,7 @@ export default async function SlugLayout(
     <WrapperDashboard
       linkList={DASHBOARD_LINK_LIST}
       preloadedSession={preloadedSession}
-      className="text-primary size-9 shrink-0 animate-spin"
+      classNames="text-primary size-9 shrink-0 animate-spin"
     >
       {children}
     </WrapperDashboard>

@@ -55,7 +55,7 @@ export function Nav({
                   }
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
-                    "text-primary/70 hover:text-primary h-12 w-12",
+                    "text-primary/70 hover:text-primary size-12",
                     !pathname.includes("dewa")
                       ? pathname ===
                           `/${encodeURIComponent(slug)}${link.href}` &&
@@ -105,7 +105,7 @@ export function Nav({
                 link.href === "/settings" && !managerAccessLevel && "hidden",
               )}
             >
-              <link.icon className="mr-4 size-7 shrink-0" />
+              <link.icon className="mr-4 ml-2 size-7 shrink-0" />
               <span className="text-muted-foreground text-base font-semibold capitalize">
                 {link.title}
               </span>

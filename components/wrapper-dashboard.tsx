@@ -33,14 +33,14 @@ const ToggleThemes = dynamic(() => import("./toggle-themes"), {
 type WrapperDashboardProps = {
   linkList: TLinkList[]
   preloadedSession: Preloaded<typeof api.sessions.find>
-  className?: string
+  classNames?: string
   children: React.ReactNode
 }
 
 export function WrapperDashboard({
   linkList,
   preloadedSession,
-  className,
+  classNames,
   children,
 }: WrapperDashboardProps) {
   const { user } = usePreloadedQuery(preloadedSession)
@@ -101,7 +101,7 @@ export function WrapperDashboard({
             links={linkList.filter((l) => !l.isGeneral)}
           />
           {/* //? set padding-bottom so the sidebar can be fully-scrolled on mobile-view's landscape */}
-          <nav className={cn("pb-24", store.toggle ? "pl-3.5" : "pl-2")}>
+          <nav className="pb-24 pl-3.5">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
@@ -115,10 +115,9 @@ export function WrapperDashboard({
                     "relative size-12",
                     user.role === "DEWA" ? "block" : "hidden",
                   )}
-                  as={"style"}
                 >
                   <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <GiFrozenOrb className={cn(className)} />
+                    <GiFrozenOrb className={cn(classNames)} />
                   </span>
                 </Link>
               </TooltipTrigger>
@@ -151,7 +150,7 @@ export function WrapperDashboard({
           slug={user.company?.slug as string}
           links={linkList}
           dewaRole={user.role === "DEWA"}
-          className={className}
+          className={classNames}
         />
       </footer>
     </div>
