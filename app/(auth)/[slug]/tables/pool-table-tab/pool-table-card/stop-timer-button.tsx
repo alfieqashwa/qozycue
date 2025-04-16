@@ -72,9 +72,12 @@ export function StopTimerButton({
         <Button
           disabled={!isCashier}
           variant="secondary"
-          className="space-x-2 text-red-500 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <TimerOff size={20} />
+          <TimerOff
+            size={20}
+            className="text-primary disabled:text-primary/10"
+          />
           <span>Stop</span>
         </Button>
       </DialogTrigger>

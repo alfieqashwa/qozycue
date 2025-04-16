@@ -148,7 +148,10 @@ export function PoolTableCard({
                   variant="secondary"
                   className="disabled:pointer-events-auto disabled:cursor-not-allowed"
                 >
-                  <ScrollText size={20} />
+                  <ScrollText
+                    size={20}
+                    className="text-primary disabled:text-primary/10"
+                  />
                   <span>Detail</span>
                 </Button>
               </DrawerTrigger>

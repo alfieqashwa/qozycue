@@ -12,12 +12,12 @@ export const OpenStatusCounter = () => {
   return (
     <div
       className={cn(
-        "absolute -right-4 -top-4 h-6 w-6 animate-pulse rounded-full bg-primary/30",
+        "bg-primary/30 absolute -top-4 -right-4 size-6 animate-pulse rounded-full",
         !count.data?.length && "hidden",
       )}
     >
       {count.status === "success" && (
-        <p className="flex h-full w-full items-center justify-center text-xs font-bold text-primary">
+        <p className="text-primary flex h-full w-full items-center justify-center text-xs font-bold">
           {count?.data.length}
         </p>
       )}

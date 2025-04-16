@@ -73,7 +73,10 @@ export function CafeButton({
         >
           <UtensilsCrossed
             size={20}
-            className={cn(!!orderlines?.length && "text-emerald-400")}
+            className={cn(
+              !!orderlines?.length && "animate-bounce",
+              "text-primary disabled:text-primary/10",
+            )}
           />
           <span>Cafe</span>
         </Button>

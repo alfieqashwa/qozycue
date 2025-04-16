@@ -153,9 +153,9 @@ export function StartTimerButton({
         <Button
           disabled={!isCashier}
           variant="secondary"
-          className="space-x-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <Timer size={20} />
+          <Timer size={20} className="text-primary disabled:text-primary/10" />
           <span>Start</span>
         </Button>
       </DialogTrigger>
