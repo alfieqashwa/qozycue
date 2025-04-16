@@ -212,8 +212,10 @@
 .grape {
   --background: oklch(3.91% 0.011 282.49);
   --foreground: oklch(98.3% 0.028 282.49);
-  --muted: oklch(13.57% 0.012 282.49);
-  --muted-foreground: oklch(61.24% 0.027 282.49);
+  /* --muted: oklch(13.57% 0.012 282.49); */
+  /* --muted-foreground: oklch(61.24% 0.027 282.49); */
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
   --popover: oklch(4.91% 0.012 282.49);
   --popover-foreground: oklch(100% 0 0);
   /* --card: oklch(4.91% 0.012 282.49); */
