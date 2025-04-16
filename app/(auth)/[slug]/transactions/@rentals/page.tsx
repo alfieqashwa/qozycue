@@ -1,13 +1,11 @@
 "use client"
 
+import { useDateRange } from "@/app/hooks/useDateRange"
 import { CustomDatePicker } from "@/components/custom-date-picker"
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { addDays } from "date-fns"
-import { useState } from "react"
-import { type DateRange } from "react-day-picker"
 import { columnsRental } from "./columns-rental"
 import { RentalTable } from "./rental-table"
 
@@ -24,10 +22,7 @@ import { RentalTable } from "./rental-table"
  * */
 
 export default function RentalPage() {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: addDays(new Date(new Date().setHours(0, 0, 0, 0)), -30),
-    to: new Date(new Date().setHours(23, 59, 59, 0)),
-  })
+  const [date, setDate] = useDateRange()
 
   const poolRentals = useTanstackQuery({
     ...convexQuery(api.poolRentals.findAll, {
