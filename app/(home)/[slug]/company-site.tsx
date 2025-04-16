@@ -33,7 +33,7 @@ export function CompanySite({
     <div className="min-h-screen w-full">
       {status === "success" && (
         <section>
-          <div className="sticky top-0 z-50 flex h-20 items-center justify-between border-b-[3px] bg-background">
+          <div className="bg-background sticky top-0 z-50 flex h-20 items-center justify-between border-b-[3px]">
             <div className="flex items-center justify-end space-x-2 pr-4">
               {/* Starts Company Name */}
               <div className="group flex items-center gap-4 py-2">
@@ -49,7 +49,7 @@ export function CompanySite({
                           <Building2
                             size={32}
                             className={cn(
-                              "mr-4 text-foreground hover:cursor-pointer",
+                              "text-foreground mr-4 size-8 hover:cursor-pointer",
                             )}
                           />
                         </Link>
@@ -59,7 +59,7 @@ export function CompanySite({
                       </TooltipContent>
                     </Tooltip>
 
-                    <p className="flex items-center font-semibold capitalize text-muted-foreground">
+                    <p className="text-muted-foreground flex items-center font-semibold capitalize">
                       <span className="text-lg">{company?.name}</span>
                     </p>
                   </div>
@@ -69,11 +69,11 @@ export function CompanySite({
             </div>
 
             <div className="mr-4 hidden items-center space-x-2 md:flex">
-              <p className="font-medium capitalize text-muted-foreground">
+              <p className="text-muted-foreground font-medium capitalize">
                 {company?.location}
               </p>
             </div>
-            <div className="mr-4 hidden items-center space-x-2 text-muted-foreground md:flex">
+            <div className="text-muted-foreground mr-4 hidden items-center space-x-2 md:flex">
               <Phone size={20} />
               <p>{company?.phone}</p>
             </div>

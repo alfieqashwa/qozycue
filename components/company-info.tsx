@@ -34,27 +34,20 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
   const displayPathname = configureDisplayPathname(pathname, data)
 
   return (
-    <div className="group flex items-center gap-4 py-2">
-      <section className="grid gap-1 px-2">
-        <div
-          className={cn(buttonVariants({ variant: "ghost", size: "default" }))}
-        >
-          <Link href={`/${company?.slug}`}>
-            <Building2
-              size={32}
-              className={cn("mr-4 text-primary hover:cursor-pointer")}
-            />
-          </Link>
+    <div className="flex items-center space-x-4 pl-5.5">
+      <Link href={`/${company?.slug}`}>
+        <Building2
+          className={cn("text-primary mr-2 size-8 hover:cursor-pointer")}
+        />
+      </Link>
 
-          <p className="flex items-center font-semibold capitalize text-muted-foreground">
-            <span className="md:text-lg">{company?.name}</span>
-            <MdArrowRight className="mx-2 hidden lg:block" />
-            {status === "success" && (
-              <span className="hidden lg:block">{displayPathname}</span>
-            )}
-          </p>
-        </div>
-      </section>
+      <p className="text-muted-foreground flex items-center font-semibold capitalize">
+        <span className="md:text-lg">{company?.name}</span>
+        <MdArrowRight className="mx-2 hidden lg:block" />
+        {status === "success" && (
+          <span className="hidden lg:block">{displayPathname}</span>
+        )}
+      </p>
     </div>
   )
 
