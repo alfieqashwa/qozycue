@@ -67,20 +67,25 @@
 
 - avoid IPv6 wifi, sometimes failed to fetch server
 
-## Backlog (Future Plan)
+## Update Packages (Current Plan)
 
-✅ Pool Table with the same company must have a unique name
-✅ Product with the same company must have a unique name
-✅ Packet with the same company and the same rate must have a unique name
-✅ Tax with the same company must have a unique name
-✅ Discount with the same company must have a unique name
-❌ Setup Cancelled Feature (Refund use case)
-❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
-❌ "react-to-print" version after learn their recent documentation
-❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
-❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
+✅ Update TailwindCss Version 4 & Shadcn-UI
+✅ Update Nextjs 15
+✅ Optimizing Portal Page
+✅ Optimizing (tweak between loading.tsx with <Suspense />) Configuration on all pages.
+✅ Theme Reconfiguration
+✅ Payment Card (Fix)
+✅ Button (Fix)
+✅ Dashboard Card (Modify)
 
-### Bugs ASAP
+❌ Lazy Loading (Optimizing):
+
+- ❌ app/…/@products/update-product.tsx:1
+- ❌ app/…/booking/update-booking-form.tsx:183:22
+- ❌ app/…/booking/delete-booking-form.tsx:148:6
+- ❌ app/…/booking/update-booking.tsx:131:6
+- ❌ app/…/portal/trigger-trial-button.tsx:1:6
+- ❌ app/…/@products/delete-product-form.tsx:205:6
 
 ## Feature Stockable Products (Current Plan)
 
@@ -95,16 +100,18 @@
 ❌ Cafe Cart Configuration related to add/update/remove product
 ❌ Admin Access Level to toggle isStockable feature on Profile Page
 
-## Update Packages (Current Plan)
+## Backlog (Future Plan)
 
-✅ Update TailwindCss Version 4 & Shadcn-UI
-✅ Update Nextjs 15
-✅ Optimizing Portal Page
-✅ Optimizing (tweak between loading.tsx with <Suspense />) Configuration on all pages.
-✅ Theme Reconfiguration
-✅ Payment Card (Fix)
-✅ Button (Fix)
-✅ Dashboard Card (Modify)
+✅ Pool Table with the same company must have a unique name
+✅ Product with the same company must have a unique name
+✅ Packet with the same company and the same rate must have a unique name
+✅ Tax with the same company must have a unique name
+✅ Discount with the same company must have a unique name
+❌ Setup Cancelled Feature (Refund use case)
+❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
+❌ "react-to-print" version after learn their recent documentation
+❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
+❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
 
 ## Debugging Helper
 
