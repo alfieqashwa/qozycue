@@ -14,6 +14,7 @@ import { Trash } from "lucide-react"
 export default function DeleteDialog({
   disabledBasedOnAccessLevel,
   hasProductId,
+  description,
   name,
   status,
   open,
@@ -22,6 +23,7 @@ export default function DeleteDialog({
 }: {
   disabledBasedOnAccessLevel: boolean
   hasProductId: boolean
+  description: string
   name: string
   status: Status
   open: boolean
@@ -47,8 +49,7 @@ export default function DeleteDialog({
         <DialogHeader>
           <DialogTitle>Are You Sure?</DialogTitle>
           <DialogDescription>
-            You can&apos;t undo this changes. Click Delete Product when
-            you&apos;re sure to delete
+            {description}
             <span className="text-primary px-1.5 font-medium uppercase">
               {name}.
             </span>

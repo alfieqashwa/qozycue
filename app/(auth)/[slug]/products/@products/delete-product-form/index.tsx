@@ -62,6 +62,8 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
     e.preventDefault()
     mutate({ deleteProductSchema: { id } })
   }
+  const DESCRIPTION = `You can&apos;t undo this changes. Click Delete Product when
+            you&apos;re sure to delete`
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
   if (isDesktop) {
@@ -71,6 +73,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
         hasProductId={
           orderline.status === "success" && Boolean(orderline?.data?._id) // if there's orderline data, cannot delete
         }
+        description={DESCRIPTION}
         name={name}
         status={status}
         open={open}
@@ -95,6 +98,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
     <DeleteDrawer
       disabledBasedOnAccessLevel={!adminAccessLevel}
       hasProductId={Boolean(orderline?.data?._id)}
+      description={DESCRIPTION}
       name={name}
       status={status}
       open={open}

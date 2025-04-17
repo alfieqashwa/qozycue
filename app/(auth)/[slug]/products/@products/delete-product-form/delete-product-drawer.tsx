@@ -16,6 +16,7 @@ import { Trash } from "lucide-react"
 export default function DeleteDrawer({
   disabledBasedOnAccessLevel,
   hasProductId,
+  description,
   name,
   status,
   open,
@@ -24,6 +25,7 @@ export default function DeleteDrawer({
 }: {
   disabledBasedOnAccessLevel: boolean
   hasProductId: boolean
+  description: string
   name: string
   status: Status
   open: boolean
@@ -49,8 +51,7 @@ export default function DeleteDrawer({
         <DrawerHeader>
           <DrawerTitle>Are You Sure?</DrawerTitle>
           <DrawerDescription>
-            You can&apos;t undo this changes. Click Delete Product when
-            you&apos;re sure to delete
+            {description}
             <span className="text-primary px-1.5 font-medium uppercase">
               {name}.
             </span>
