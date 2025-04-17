@@ -81,11 +81,11 @@
 ❌ Lazy Loading (Optimizing):
 
 - ❌ app/…/@products/update-product.tsx:1
+- ✅ app/…/@products/delete-product-form.tsx:205:6
 - ❌ app/…/booking/update-booking-form.tsx:183:22
 - ❌ app/…/booking/delete-booking-form.tsx:148:6
 - ❌ app/…/booking/update-booking.tsx:131:6
 - ❌ app/…/portal/trigger-trial-button.tsx:1:6
-- ✅ app/…/@products/delete-product-form.tsx:205:6
 
 ## Feature Stockable Products (Current Plan)
 

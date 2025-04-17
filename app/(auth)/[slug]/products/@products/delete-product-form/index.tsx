@@ -14,8 +14,12 @@ import dynamic from "next/dynamic"
 import { useState } from "react"
 import { toast } from "sonner"
 
-const DeleteDialog = dynamic(() => import("./delete-product-dialog.tsx"))
-const DeleteDrawer = dynamic(() => import("./delete-product-drawer.tsx"))
+const DeleteDialog = dynamic(() => import("./delete-product-dialog.tsx"), {
+  ssr: false,
+})
+const DeleteDrawer = dynamic(() => import("./delete-product-drawer.tsx"), {
+  ssr: false,
+})
 
 type DeleteProductProps = {
   id: Id<"products">
