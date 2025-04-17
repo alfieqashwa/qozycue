@@ -74,12 +74,12 @@ export function UpdateProduct({
           <span className="text-sm">Edit</span>
         </SheetTrigger>
 
-        <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
+        <SheetContent className="bg-card min-w-full px-8 py-4 sm:min-w-[480px]">
           <SheetHeader>
             <SheetTitle>Update Product</SheetTitle>
             <SheetDescription>
               {description}
-              <span className="pl-1 uppercase text-primary">{name}</span>.
+              <span className="text-primary pl-1 uppercase">{name}</span>.
             </SheetDescription>
           </SheetHeader>
           <UpdateProductForm
@@ -92,7 +92,7 @@ export function UpdateProduct({
             setOpen={setOpen}
           />
 
-          <SheetFooter className="px-4 pt-4 md:absolute md:bottom-4 md:right-44 md:px-0 md:pt-0">
+          <SheetFooter className="px-4 pt-4 md:absolute md:right-44 md:bottom-0 md:px-0 md:pt-0">
             <SheetClose asChild>
               <Button variant="outline">Cancel</Button>
             </SheetClose>
@@ -114,12 +114,12 @@ export function UpdateProduct({
         <span className="text-sm">Edit</span>
       </DrawerTrigger>
 
-      <DrawerContent className="px-4">
+      <DrawerContent className="px-8 text-center">
         <DrawerHeader>
           <DrawerTitle>Update Product</DrawerTitle>
           <DrawerDescription className="text-balance">
             {description}
-            <span className="pl-1 capitalize text-primary">{name}</span>.
+            <span className="text-primary pl-1 capitalize">{name}</span>.
           </DrawerDescription>
         </DrawerHeader>
         <UpdateProductForm
