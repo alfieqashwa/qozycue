@@ -1,7 +1,5 @@
 "use client"
 
-import { FilePlus2 } from "lucide-react"
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -11,6 +9,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { FilePlus2 } from "lucide-react"
+import { useState } from "react"
 import { CreateProductForm } from "./create-product-form"
 
 export function CreateProduct({
@@ -29,11 +29,11 @@ export function CreateProduct({
           disabled={disabledBasedOnAccessLevel}
           className="ml-2 h-8 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <FilePlus2 className="mr-2 h-4 w-4" />
+          <FilePlus2 className="size-4" />
           Create Product
         </Button>
       </SheetTrigger>
-      <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
+      <SheetContent className="bg-card min-w-full px-8 py-4 sm:min-w-[480px]">
         <SheetHeader>
           <SheetTitle>Create New Product</SheetTitle>
           <SheetDescription>

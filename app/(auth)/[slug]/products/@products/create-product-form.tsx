@@ -221,14 +221,6 @@ export function CreateProductForm({
           )}
         />
         <SheetFooter className="absolute right-0 bottom-4 left-0 px-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setOpen(false)}
-            className="mt-1.5 sm:mt-0"
-          >
-            Cancel
-          </Button>
           {isPending ? (
             <Button disabled>
               <Loader2 className="size-4 animate-spin" />
@@ -239,6 +231,13 @@ export function CreateProductForm({
               Create Product
             </Button>
           )}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setOpen(false)}
+          >
+            Cancel
+          </Button>
         </SheetFooter>
       </form>
     </Form>

@@ -85,7 +85,7 @@
 - ❌ app/…/booking/delete-booking-form.tsx:148:6
 - ❌ app/…/booking/update-booking.tsx:131:6
 - ❌ app/…/portal/trigger-trial-button.tsx:1:6
-- ❌ app/…/@products/delete-product-form.tsx:205:6
+- ✅ app/…/@products/delete-product-form.tsx:205:6
 
 ## Feature Stockable Products (Current Plan)
 
