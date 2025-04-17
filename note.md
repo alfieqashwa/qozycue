@@ -69,23 +69,26 @@
 
 ## Update Packages (Current Plan)
 
-✅ Update TailwindCss Version 4 & Shadcn-UI
-✅ Update Nextjs 15
-✅ Optimizing Portal Page
-✅ Optimizing (tweak between loading.tsx with <Suspense />) Configuration on all pages.
-✅ Theme Reconfiguration
-✅ Payment Card (Fix)
-✅ Button (Fix)
-✅ Dashboard Card (Modify)
+### Update TailwindCss Version 4 & Shadcn-UI
 
-❌ Lazy Loading (Optimizing):
+    - ✅ Theme Reconfiguration
+    - ✅ Payment Card (Fix)
+    - ✅ Button (Fix)
+    - ✅ Dashboard Card (Modify)
 
-- ❌ app/…/@products/update-product.tsx:1
-- ✅ app/…/@products/delete-product-form.tsx:205:6
-- ❌ app/…/booking/update-booking-form.tsx:183:22
-- ❌ app/…/booking/delete-booking-form.tsx:148:6
-- ❌ app/…/booking/update-booking.tsx:131:6
-- ❌ app/…/portal/trigger-trial-button.tsx:1:6
+### Update Nextjs 15
+
+    - ✅ Optimizing Portal Page
+    - ✅ Optimizing (tweak between loading.tsx with <Suspense />) Configuration on all pages.
+
+### Lazy Loading (Optimize)
+
+    - ❌ app/…/portal/trigger-trial-button.tsx:1:6
+    - ❌ app/…/@products/update-product.tsx:1
+    - ✅ app/…/@products/delete-product-form.tsx:205:6
+    - ❌ app/…/booking/delete-booking-form.tsx:148:6
+    - ❌ app/…/booking/update-booking.tsx:131:6
+    - ❌ app/…/booking/update-booking-form.tsx:183:22
 
 ## Feature Stockable Products (Current Plan)
 
