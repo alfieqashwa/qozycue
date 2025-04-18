@@ -51,16 +51,16 @@ export function UpdatePacket({
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Pen className="mr-2 h-4 w-4" />
+        <Pen className="size-4" />
         <span className="text-sm">Edit</span>
       </SheetTrigger>
 
-      <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
+      <SheetContent className="bg-card min-w-full pt-4 text-center sm:min-w-[480px] md:text-start">
         <SheetHeader>
           <SheetTitle>Update Packet</SheetTitle>
           <SheetDescription>
             Edit Packet
-            <span className="px-1.5 font-medium uppercase text-primary">
+            <span className="text-primary px-1.5 font-medium uppercase">
               {name}
             </span>
             . Click <b>Update Packet</b> when you&apos;re done.

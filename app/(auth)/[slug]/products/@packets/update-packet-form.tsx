@@ -84,7 +84,10 @@ export function UpdatePacketForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 px-8 py-4"
+      >
         {/* Name */}
         <FormField
           control={form.control}
