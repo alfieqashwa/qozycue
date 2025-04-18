@@ -42,9 +42,9 @@ export function OrderRowActions({
     enabled: Boolean(orderId),
   })
 
-  const componentRef = useRef(null)
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+  const contentRef = useRef(null)
+  const handlePrintFn = useReactToPrint({
+    contentRef: contentRef,
     documentTitle: `order_receipt_${order?._id?.slice(-8, order?._id.length)}`,
     onPrintError: () => alert("there is an error when printing receipt."),
     // pageStyle: "@page { margin-top: 10mm; }",
@@ -111,11 +111,11 @@ export function OrderRowActions({
                 poolTableName={poolTableName!}
                 orderId={orderId}
                 customerName={customerName}
-                ref={componentRef}
+                ref={contentRef}
               />
             </div>
             <button
-              onClick={handlePrint}
+              onClick={() => handlePrintFn()}
               className="disabled:text-muted-foreground flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed"
             >
               <Printer className="text-muted-foreground group-hover:text-primary mr-2 size-4" />

@@ -90,6 +90,13 @@
     - ❌ app/…/booking/update-booking.tsx:131:6
     - ❌ app/…/booking/update-booking-form.tsx:183:22
 
+### Update React To Print
+
+    - ✅ Fix(Print): Dashboard -> Detail -> Download Pdf
+    - ✅ Fix(Print): Transactions -> Orders -> Receipt
+    - ❌ Fix(Print): Tables -> Payment -> Bill
+    - ❌ Fix(Print): Tables -> Payment -> Print
+
 ## Feature Stockable Products (Current Plan)
 
 ✅ Add isStockable field on Table Companies
@@ -102,7 +109,6 @@
 ❌ Add stock on Cafe Dialog
 ❌ Cafe Cart Configuration related to add/update/remove product
 ❌ Admin Access Level to toggle isStockable feature on Profile Page
-✅ Fix(Print): Dashboard -> Detail -> Download Pdf
 
 ## Backlog (Future Plan)
 
