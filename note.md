@@ -141,3 +141,64 @@
     - sudo systcl -p
   - Source:
     - https://chatgpt.com/c/67fce350-7b70-8002-b621-55277015640e
+
+## Review Later (fix conditional error)
+
+```
+
+ ✓ Compiled / in 4.7s
+ ⨯ TypeError: fetch failed
+    at async HomePage (app/(home)/page.tsx:13:15)
+  11 |
+  12 | export default async function HomePage() {
+> 13 |   const slug = await fetchQuery(
+     |               ^
+  14 |     api.companies.slug,
+  15 |     {},
+  16 |     { token: await convexAuthNextjsToken() }, {
+  digest: '3553448617',
+  [cause]: [AggregateError: ] { code: 'ETIMEDOUT' }
+}
+ GET / 200 in 5947ms
+ ○ Compiling /[slug] ...
+ ✓ Compiled /[slug] in 2.8s
+ ⨯ TypeError: fetch failed
+    at async PublicSlugPage (app/(home)/[slug]/page.tsx:15:18)
+  13 |   const { slug } = params
+  14 |
+> 15 |   const company = await fetchQuery(api.companies.findPublicProcedure, { slug })
+     |                  ^
+  16 |   if (!company) redirect("/")
+  17 |
+  18 |   const preloadedUser = await preloadQuery( {
+  digest: '1773728687',
+  [cause]: [AggregateError: ] { code: 'ETIMEDOUT' }
+}
+ GET /favicon.ico 200 in 4168ms
+ ⨯ TypeError: fetch failed
+    at async HomePage (app/(home)/page.tsx:13:15)
+  11 |
+  12 | export default async function HomePage() {
+> 13 |   const slug = await fetchQuery(
+     |               ^
+  14 |     api.companies.slug,
+  15 |     {},
+  16 |     { token: await convexAuthNextjsToken() }, {
+  digest: '3553448617',
+  [cause]: [AggregateError: ] { code: 'ETIMEDOUT' }
+}
+ GET / 200 in 861ms
+ ⨯ TypeError: fetch failed
+    at async PublicSlugPage (app/(home)/[slug]/page.tsx:15:18)
+  13 |   const { slug } = params
+  14 |
+> 15 |   const company = await fetchQuery(api.companies.findPublicProcedure, { slug })
+     |                  ^
+  16 |   if (!company) redirect("/")
+  17 |
+  18 |   const preloadedUser = await preloadQuery( {
+  digest: '1773728687',
+  [cause]: [AggregateError: ] { code: 'ETIMEDOUT' }
+}
+ GET /favicon.ico 200 in 941ms
+```
