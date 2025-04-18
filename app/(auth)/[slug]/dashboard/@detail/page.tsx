@@ -32,10 +32,12 @@ export default function DetailPage() {
     ],
   })
 
-  const componentRef = useRef(null)
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
+  const contentRef = useRef<HTMLDivElement>(null)
+  const handlePrintFn = useReactToPrint({
+    contentRef: contentRef,
     onPrintError: () => alert("there is an error when printing"),
+    // contentRef: () => componentRef,
+    // onPrintError: () => alert("there is an error when printing"),
   })
 
   const isLoading = company.status !== "success" || orders.status !== "success"
@@ -50,7 +52,7 @@ export default function DetailPage() {
             Please wait
           </Button>
         ) : (
-          <Button variant={"outline"} onClick={handlePrint}>
+          <Button variant={"outline"} onClick={() => handlePrintFn()}>
             Download
           </Button>
         )}
@@ -61,7 +63,7 @@ export default function DetailPage() {
         <PrintTransactionPdf
           company={company.data}
           orders={orders.data}
-          ref={componentRef}
+          ref={contentRef}
         />
       )}
     </div>

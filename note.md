@@ -102,6 +102,7 @@
 ❌ Add stock on Cafe Dialog
 ❌ Cafe Cart Configuration related to add/update/remove product
 ❌ Admin Access Level to toggle isStockable feature on Profile Page
+✅ Fix(Print): Dashboard -> Detail -> Download Pdf
 
 ## Backlog (Future Plan)
 
