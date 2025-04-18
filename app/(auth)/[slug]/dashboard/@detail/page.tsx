@@ -1,23 +1,19 @@
 "use client"
 
+import { useDateRange } from "@/app/hooks/useDateRange"
 import { CustomDatePicker } from "@/components/custom-date-picker"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Button } from "@/components/ui/button"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
-import { addDays } from "date-fns"
 import { Loader2 } from "lucide-react"
-import { useRef, useState } from "react"
-import { DateRange } from "react-day-picker"
+import { useRef } from "react"
 import { useReactToPrint } from "react-to-print"
 import { PrintTransactionPdf } from "./print-transaction-pdf"
 
 export default function DetailPage() {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: addDays(new Date(new Date().setHours(0, 0, 0, 0)), -30),
-    to: new Date(new Date().setHours(23, 59, 59, 0)),
-  })
+  const [date, setDate] = useDateRange()
 
   const [company, orders] = useTanstackQueries({
     queries: [
