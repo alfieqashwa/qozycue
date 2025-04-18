@@ -120,7 +120,7 @@ export function PaymentForm({
                 ref={receiptRef}
               />
             </div>
-            <Button size="sm" onClick={handleReceiptPrint}>
+            <Button size="sm" onClick={() => handleReceiptPrintFn()}>
               <Printer className="size-4" />
               <span>Receipt</span>
             </Button>
@@ -137,13 +137,13 @@ export function PaymentForm({
   })
 
   // STARTS PRINT THE PAYMENT CONFIGURATiON
-  const handleReceiptPrint = useReactToPrint({
-    content: () => receiptRef.current,
+  const handleReceiptPrintFn = useReactToPrint({
+    contentRef: receiptRef,
     documentTitle: `receipt_order_${orderId?.slice(-8, orderId.length)}`,
     onPrintError: () => alert("There is an error when printing receipt."),
   })
-  const handleBillPrint = useReactToPrint({
-    content: () => billRef.current,
+  const handleBillPrintFn = useReactToPrint({
+    contentRef: billRef,
     documentTitle: `bill_order_${orderId?.slice(-8, orderId.length)}`,
     onPrintError: () => alert("There is an error when printing bill."),
   })
@@ -268,7 +268,11 @@ export function PaymentForm({
             ref={billRef}
           />
         </div>
-        <Button variant="secondary" size="sm" onClick={handleBillPrint}>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => handleBillPrintFn()}
+        >
           <Printer className="size-4" />
           <span>Bill</span>
         </Button>

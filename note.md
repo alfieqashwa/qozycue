@@ -94,8 +94,8 @@
 
     - ✅ Fix(Print): Dashboard -> Detail -> Download Pdf
     - ✅ Fix(Print): Transactions -> Orders -> Receipt
-    - ❌ Fix(Print): Tables -> Payment -> Bill
-    - ❌ Fix(Print): Tables -> Payment -> Print
+    - ✅ Fix(Print): Tables -> Payment -> Bill
+    - ✅ Fix(Print): Tables -> Payment -> Print
 
 ## Feature Stockable Products (Current Plan)
 

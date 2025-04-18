@@ -6,7 +6,7 @@ import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { Phone } from "lucide-react"
-import { forwardRef, RefObject, type Ref } from "react"
+import { RefObject, type Ref } from "react"
 
 type PrintReceiptProps = {
   orderId: Id<"orders">
