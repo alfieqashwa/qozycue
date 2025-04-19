@@ -155,7 +155,7 @@ export function StartTimerButton({
           variant="secondary"
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <Timer size={20} className="text-primary disabled:text-primary/10" />
+          <Timer className="text-primary disabled:text-primary/10 size-5" />
           <span>Start</span>
         </Button>
       </DialogTrigger>

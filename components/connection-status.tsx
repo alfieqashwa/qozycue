@@ -6,9 +6,9 @@ export function ConnectionStatus() {
   return (
     <div>
       {isOnline ? (
-        <Wifi size={20} className="text-primary" />
+        <Wifi className="text-primary" />
       ) : (
-        <WifiOff size={20} className="text-muted-foreground" />
+        <WifiOff className="text-muted-foreground" />
       )}
     </div>
   )

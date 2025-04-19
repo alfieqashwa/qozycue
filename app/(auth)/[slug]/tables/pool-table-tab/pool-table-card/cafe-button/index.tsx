@@ -72,10 +72,9 @@ export function CafeButton({
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <UtensilsCrossed
-            size={20}
             className={cn(
               !!orderlines?.length && "animate-bounce",
-              "text-primary disabled:text-primary/10",
+              "text-primary disabled:text-primary/10 size-5",
             )}
           />
           <span>Cafe</span>

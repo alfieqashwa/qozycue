@@ -57,7 +57,7 @@ export function DetailButton({
     <Drawer open={open} onOpenChange={setOpen}>
       {children}
       <DrawerContent className="bg-card mx-auto max-w-xl min-w-[360px] px-6">
-        <DrawerHeader className="flex justify-between px-0">
+        <DrawerHeader className="flex flex-row items-center justify-between px-0">
           {!!order?.poolRental ? (
             <div className="flex flex-col items-start">
               <DrawerTitle

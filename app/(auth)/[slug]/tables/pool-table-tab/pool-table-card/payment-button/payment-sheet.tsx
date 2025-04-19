@@ -32,10 +32,7 @@ export default function PaymentSheet({
           variant="secondary"
           className="gap-2 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <Banknote
-            size={20}
-            className="text-primary disabled:text-primary/10"
-          />
+          <Banknote className="text-primary disabled:text-primary/10 size-5" />
           <span className="text-sm">Payment</span>
         </Button>
       </SheetTrigger>
