@@ -24,7 +24,7 @@ export default function TriggerTrialDrawer({
 }) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>{triggerButton} </DrawerTrigger>
+      <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
       <DrawerContent className="p-4">
         <DrawerHeader>
           <DrawerTitle>{title}</DrawerTitle>

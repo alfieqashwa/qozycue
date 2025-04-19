@@ -36,7 +36,7 @@ export default async function Page() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center gap-2 p-2 font-semibold">
-      <FaceSmileIcon className="w-10 text-primary" />
+      <FaceSmileIcon className="text-primary w-10" />
       <h2 className="text-xl font-semibold md:text-3xl">
         Welcome to Qozy Cue App.
       </h2>
@@ -44,7 +44,7 @@ export default async function Page() {
         Tekan
         <TriggerTrialButton userRole={session.user.role === "USER"} />
         untuk mencoba aplikasi kami
-        <span className="pl-1 text-primary">secara gratis</span>. Tekan ikon
+        <span className="text-primary pl-1">secara gratis</span>. Tekan ikon
         <a
           href={CONTACT}
           target="_blank"
@@ -67,7 +67,7 @@ export default async function Page() {
 
       {/* only show for dewa user when it has no company yet */}
       {session.user.role === "DEWA" && (
-        <div className="absolute bottom-2 right-2">
+        <div className="absolute right-2 bottom-2">
           <Link href="/dewa/">
             <LinkIcon />
           </Link>
