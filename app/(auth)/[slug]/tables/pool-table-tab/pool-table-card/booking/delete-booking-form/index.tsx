@@ -1,18 +1,25 @@
 "use client"
 
 import { useMediaQuery } from "@/app/hooks/use-media-query"
-import { Button } from "@/components/ui/button"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2 } from "lucide-react"
-import dynamic from "next/dynamic"
 import { useState } from "react"
 import { toast } from "sonner"
+import { DeleteBookingDialog } from "./delete-booking-dialog.tsx"
+import { DeleteBookingDrawer } from "./delete-booking-drawer.tsx"
+import { DeleteForm } from "./delete-form.tsx"
 
-type DeleteBookingProps = {
+export type DeleteBookingProps = {
+  customerName: string
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  children: React.ReactNode
+}
+
+type DeleteBookingFormProps = {
   orderId: Id<"orders"> | null
   customerName?: string
 }
@@ -20,7 +27,7 @@ type DeleteBookingProps = {
 export function DeleteBookingForm({
   orderId,
   customerName,
-}: DeleteBookingProps) {
+}: DeleteBookingFormProps) {
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
@@ -53,15 +60,6 @@ export function DeleteBookingForm({
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  const DeleteBookingDialog = dynamic(
-    () => import("./delete-booking-dialog.tsx"),
-    { ssr: false },
-  )
-  const DeleteBookingDrawer = dynamic(
-    () => import("./delete-booking-drawer.tsx"),
-    { ssr: false },
-  )
-
   if (isDesktop) {
     return (
       <DeleteBookingDialog
@@ -69,18 +67,7 @@ export function DeleteBookingForm({
         open={open}
         setOpen={setOpen}
       >
-        <form onSubmit={handleSubmit}>
-          {isPending ? (
-            <Button disabled variant="destructive">
-              <Loader2 className="size-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button type="submit" variant="destructive" className="f-full">
-              Delete Booking
-            </Button>
-          )}
-        </form>
+        <DeleteForm isPending={isPending} handleSubmit={handleSubmit} />
       </DeleteBookingDialog>
     )
   }
@@ -90,18 +77,7 @@ export function DeleteBookingForm({
       open={open}
       setOpen={setOpen}
     >
-      <form onSubmit={handleSubmit}>
-        {isPending ? (
-          <Button disabled variant="destructive" className="w-full">
-            <Loader2 className="size-4 animate-spin" />
-            Please wait
-          </Button>
-        ) : (
-          <Button type="submit" variant="destructive" className="w-full">
-            Delete Booking
-          </Button>
-        )}
-      </form>
+      <DeleteForm isPending={isPending} handleSubmit={handleSubmit} />
     </DeleteBookingDrawer>
   )
 }

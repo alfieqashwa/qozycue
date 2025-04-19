@@ -46,11 +46,11 @@ export function BookingRentalTable({
   seconds: number | null
 }) {
   return (
-    <>
+    <div className="px-2">
       <Table>
         <TableCaption>List of booking orders</TableCaption>
         <TableHeader>
-          <TableRow className="text-xs capitalize tracking-wider">
+          <TableRow className="text-xs tracking-wider capitalize">
             {[
               "ID",
               "Cust.Name",
@@ -77,7 +77,7 @@ export function BookingRentalTable({
             <TableRow key={booking._id}>
               <TableCell>
                 <Badge variant="secondary" className="px-3 py-1.5">
-                  <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <Hash className="text-muted-foreground mr-2 h-4 w-4" />
                   <span className="max-w-[300px] truncate">
                     {booking.order.id?.slice(-8, booking.order.id.length)}
                   </span>
@@ -85,7 +85,7 @@ export function BookingRentalTable({
               </TableCell>
               <TableCell>
                 <Badge variant="secondary" className="px-3 py-1.5">
-                  <UserRoundCheck className="mr-2 h-4 w-4 text-primary" />
+                  <UserRoundCheck className="text-primary mr-2 h-4 w-4" />
                   <span className="whitespace-nowrap capitalize">
                     {booking.order.customer.name}
                   </span>
@@ -93,7 +93,7 @@ export function BookingRentalTable({
               </TableCell>
               <TableCell>
                 <Badge variant="secondary" className="px-3 py-1.5">
-                  <UserRoundCheck className="mr-2 h-4 w-4 text-primary" />
+                  <UserRoundCheck className="text-primary mr-2 h-4 w-4" />
                   <span className="whitespace-nowrap capitalize">
                     {booking.order?.customer?.phone}
                   </span>
@@ -155,7 +155,7 @@ export function BookingRentalTable({
                 ) : (
                   <Badge
                     variant="secondary"
-                    className="w-28 py-1 text-muted-foreground"
+                    className="text-muted-foreground w-28 py-1"
                   >
                     <AlarmClockOff size={18} className="mr-2" />
                     <span>-- : -- : --</span>
@@ -210,6 +210,6 @@ export function BookingRentalTable({
           ))}
         </TableBody>
       </Table>
-    </>
+    </div>
   )
 }

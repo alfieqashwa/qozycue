@@ -162,9 +162,9 @@ export function Booking({
                 (!hours && !minutes && !seconds)
               }
               size="sm"
-              className="duration absolute left-0 top-0 z-10 size-7 animate-pulse rounded-bl-none rounded-tl-2xl rounded-tr-none bg-primary/30 shadow-xl transition-opacity hover:bg-primary/50 disabled:pointer-events-auto disabled:cursor-not-allowed"
+              className="duration bg-primary/30 hover:bg-primary/50 absolute top-0 left-0 z-10 size-7 animate-pulse rounded-tl-2xl rounded-tr-none rounded-bl-none shadow-xl transition-opacity disabled:pointer-events-auto disabled:cursor-not-allowed"
             >
-              <span className="text-xs font-bold capitalize text-primary">
+              <span className="text-primary text-xs font-bold capitalize">
                 w
               </span>
             </Button>
@@ -173,7 +173,7 @@ export function Booking({
         {hours === 0 && minutes! < 5 && (
           <DisplayBookingTimer minutes={minutes!} seconds={seconds!} />
         )}
-        <SheetContent side="top" className="-mx-2 md:-mx-0">
+        <SheetContent side="top" className="px-2 pt-4">
           <div className="mb-4">
             <CreateBooking poolTableId={poolTableId} />
           </div>
@@ -216,7 +216,7 @@ export function Booking({
           <Button
             disabled={!isCashierOrIsManagerAccessLevel}
             size="sm"
-            className="absolute left-0 top-0 z-10 size-7 rounded-bl-none rounded-tl-2xl rounded-tr-none shadow-xl transition-all duration-500 ease-in-out hover:bg-primary/50 hover:text-foreground disabled:pointer-events-auto disabled:cursor-not-allowed"
+            className="hover:bg-primary/50 hover:text-foreground absolute top-0 left-0 z-10 size-7 rounded-tl-2xl rounded-tr-none rounded-bl-none shadow-xl transition-all duration-500 ease-in-out disabled:pointer-events-auto disabled:cursor-not-allowed"
           >
             <span className="text-xs font-bold capitalize">b</span>
           </Button>
@@ -246,7 +246,7 @@ const TooltipIsBookingNotification = ({
   <Tooltip>
     <TooltipTrigger asChild>{children}</TooltipTrigger>
     <TooltipContent side={side} className="bg-muted">
-      <p className="space-x-1 font-sans text-xs font-medium tracking-wider text-muted-foreground">
+      <p className="text-muted-foreground space-x-1 font-sans text-xs font-medium tracking-wider">
         <span>{count}</span>
         <span>{title}</span>
       </p>
@@ -257,12 +257,12 @@ const TooltipIsBookingNotification = ({
 const GapDurationDescription = ({ gapDuration }: { gapDuration: number }) => (
   <Tooltip>
     <TooltipTrigger asChild>
-      <SheetDescription className="animate-pulse-slow pb-2 pt-1 text-center text-xs font-medium capitalize tracking-widest text-primary hover:cursor-text md:pb-4 md:text-sm">
+      <SheetDescription className="animate-pulse-slow text-primary pt-1 pb-2 text-center text-xs font-medium tracking-widest capitalize hover:cursor-text md:pb-4 md:text-sm">
         gap duration time = {gapDuration} minutes
       </SheetDescription>
     </TooltipTrigger>
     <TooltipContent className="bg-muted">
-      <p className="text-xs font-medium text-muted-foreground">
+      <p className="text-muted-foreground text-xs font-medium">
         Minimum time difference between each order
       </p>
     </TooltipContent>

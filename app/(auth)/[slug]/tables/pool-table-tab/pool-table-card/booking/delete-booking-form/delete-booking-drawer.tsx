@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { DialogFooter } from "@/components/ui/dialog"
 import {
   Drawer,
@@ -9,22 +9,24 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { cn } from "@/lib/utils"
 import { Trash } from "lucide-react"
+import { DeleteBookingProps } from "."
 
-export default function DeleteBookingDrawer({
+export function DeleteBookingDrawer({
   customerName,
   open,
   setOpen,
   children,
-}: {
-  customerName: string
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  children: React.ReactNode
-}) {
+}: DeleteBookingProps) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger className="flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed">
+      <DrawerTrigger
+        className={cn(
+          buttonVariants({ variant: "destructive", size: "sm" }),
+          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
         <Trash className="text-muted-foreground group-hover:text-primary size-4" />
         <span>Delete</span>
       </DrawerTrigger>

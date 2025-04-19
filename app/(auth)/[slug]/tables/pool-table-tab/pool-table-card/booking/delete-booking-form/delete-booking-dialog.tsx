@@ -9,18 +9,14 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { Trash } from "lucide-react"
+import { DeleteBookingProps } from "."
 
-export default function DeleteBookingDialog({
+export function DeleteBookingDialog({
   customerName,
   open,
   setOpen,
   children,
-}: {
-  customerName: string
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  children: React.ReactNode
-}) {
+}: DeleteBookingProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
