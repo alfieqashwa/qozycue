@@ -56,6 +56,9 @@ export function TransferTable({
   poolRentalId: Id<"poolRentals">
   setOpenDetailDrawer: React.Dispatch<React.SetStateAction<boolean>>
 }) {
+  const [selectedTableId, setSelectedTableId] = useState<Id<"poolTables"> | "">(
+    "",
+  )
   const [open, setOpen] = useState(false)
 
   const { data: transferPoolTableList, status } = useQuery({
@@ -68,6 +71,7 @@ export function TransferTable({
     onSuccess: () => {
       setOpenDetailDrawer(false)
       setOpen(false)
+      setSelectedTableId("") // <- reset selected tableId
       toast.success("Succeed!", {
         description: "The table has been transfered successfully.",
       })
@@ -81,14 +85,12 @@ export function TransferTable({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    const formData = new FormData(e.currentTarget)
-    const poolTableIdTo = formData.get("poolTableIdTo") as Id<"poolTables">
+    if (!selectedTableId) return // just an extra guard, though the button is disabled already
 
     mutate({
       orderId,
       poolTableIdFrom,
-      poolTableIdTo,
+      poolTableIdTo: selectedTableId,
       packetRate: packetRate as Rate,
       duration: duration as number,
       startTime: startTime as number,
@@ -118,7 +120,7 @@ export function TransferTable({
           </TooltipContent>
         </Tooltip>
       </SheetTrigger>
-      <SheetContent className="bg-card min-w-full sm:min-w-[480px]">
+      <SheetContent className="bg-card min-w-full p-2 sm:min-w-[480px]">
         {/* {status === "success" && (
           <pre>{JSON.stringify(transferPoolTableList, null, 2)}</pre>
         )} */}
@@ -129,8 +131,14 @@ export function TransferTable({
           </SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit} className="mt-4 space-y-8">
-          <Select name="poolTableIdTo">
-            <SelectTrigger className="w-[180px] capitalize">
+          <Select
+            name="poolTableIdTo"
+            value={selectedTableId}
+            onValueChange={(value) =>
+              setSelectedTableId(value as Id<"poolTables">)
+            }
+          >
+            <SelectTrigger className="ml-4 w-[180px] capitalize">
               <SelectValue placeholder="Select Table" />
             </SelectTrigger>
             <SelectContent>
@@ -139,7 +147,7 @@ export function TransferTable({
                   transferPoolTableList?.map((t) => (
                     <SelectItem
                       value={t._id}
-                      className="capitalize"
+                      className="capitalize hover:cursor-pointer"
                       key={t._id}
                     >
                       Table {t.name}
@@ -157,19 +165,20 @@ export function TransferTable({
             >
               Cancel
             </Button>
-            {isPending ? (
-              <Button disabled>
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-              >
-                Transfer
-              </Button>
-            )}
+            <Button
+              disabled={!selectedTableId || isPending}
+              type="submit"
+              className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                "Transfer"
+              )}
+            </Button>
           </SheetFooter>
         </form>
       </SheetContent>
