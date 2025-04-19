@@ -52,7 +52,7 @@ export function ResetButton({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger disabled={disabled}>
+      <DialogTrigger disabled={disabled} className="text-primary">
         <TooltipReset disabled={disabled}>
           <TimerReset
             aria-disabled={disabled}
@@ -60,7 +60,7 @@ export function ResetButton({
             className={cn(
               "relative mt-2 cursor-pointer",
               disabled &&
-                "text-muted-foreground aria-disabled:pointer-events-auto aria-disabled:cursor-not-allowed",
+                "text-primary/50 aria-disabled:pointer-events-auto aria-disabled:cursor-not-allowed",
             )}
           />
         </TooltipReset>
