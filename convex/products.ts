@@ -99,6 +99,7 @@ export const update = zMutation({
         name,
         costPrice,
         salePrice,
+        countInStock,
         unitOfMeasureId,
         categoryId,
       },
@@ -110,11 +111,13 @@ export const update = zMutation({
       name,
       costPrice,
       salePrice,
+      countInStock,
       unitOfMeasureId,
       categoryId,
     })
   },
 })
+
 export const toggle = zMutation({
   args: { toggleProductSchema },
   handler: async (ctx, { toggleProductSchema: { id, status } }) => {

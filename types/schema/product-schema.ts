@@ -27,6 +27,14 @@ const productSchema = z.object({
       message: "Sale Price must be zero or a positive number.",
     }),
   status: z.enum(["enabled", "disabled"]),
+  countInStock: z.coerce
+    .number({
+      required_error: "Stock is required.",
+      invalid_type_error: "Stock must be a number.",
+    })
+    .nonnegative({
+      message: "Stock must be zero or a positive number.",
+    }),
   unitOfMeasureId: zid("unitOfMeasures").optional(),
   categoryId: zid("categories").optional(),
 
@@ -43,6 +51,7 @@ export const createProductSchema = productSchema
   .omit({
     id: true,
     status: true,
+    countInStock: true,
   })
   .refine((val) => val.costPrice < val.salePrice, {
     path: ["comparison price"],

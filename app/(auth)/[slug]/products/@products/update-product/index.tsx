@@ -15,6 +15,7 @@ type UpdateProductProps = {
   name: string
   costPrice: number
   salePrice: number
+  countInStock: number
   status: Status
   categoryId: Id<"categories">
   unitOfMeasureId: Id<"unitOfMeasures">
@@ -24,6 +25,7 @@ export function UpdateProduct({
   name,
   costPrice,
   salePrice,
+  countInStock,
   status,
   categoryId,
   unitOfMeasureId,
@@ -62,6 +64,7 @@ export function UpdateProduct({
           name={name}
           costPrice={costPrice}
           salePrice={salePrice}
+          countInStock={countInStock}
           categoryId={categoryId}
           unitOfMeasureId={unitOfMeasureId}
           setOpen={setOpen}
@@ -83,6 +86,7 @@ export function UpdateProduct({
         name={name}
         costPrice={costPrice}
         salePrice={salePrice}
+        countInStock={countInStock}
         categoryId={categoryId}
         unitOfMeasureId={unitOfMeasureId}
         setOpen={setOpen}

@@ -99,11 +99,11 @@
 
 ✅ Add isStockable field on Table Companies
 ✅ Add field on countIsStock on Table Products
-❌ Implement Stock Column on Product Table
-❌ Setup default stcokable when user create a product (set to 0)
-❌ Only Manager Access Level to CRUD the Product Stock
-❌ Add stock field on Edit Product
-❌ Add stock on Cafe Dialog
+✅ Implement Stock Column on Product Table
+✅ Setup default stockable when user create a product (set to 0)
+✅ Only Manager Access Level to CRU the Product Stock
+✅ Add stock field on Edit Product
+
 ❌ Add stock on Cafe Dialog
 ❌ Cafe Cart Configuration related to add/update/remove product
 ❌ Admin Access Level to toggle isStockable feature on Profile Page
