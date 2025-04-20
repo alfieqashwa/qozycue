@@ -1,13 +1,9 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError, v } from "convex/values"
 import { upsertOrderlineSchema } from "../types/schema/orderline-schema"
+import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
-import {
-  cashierProcedure,
-  managerProcedure,
-  protectedProcedure,
-  zMutation,
-} from "./helpers"
+import { managerProcedure, protectedProcedure, zMutation } from "./helpers"
 
 export const findAll = query({
   args: {
@@ -461,11 +457,12 @@ export const upsert = zMutation({
     {
       upsertOrderlineSchema: {
         id,
-        orderId,
         orderlineStatus,
-        productId,
         quantity,
         amount,
+        productId,
+        countInStock,
+        orderId,
       },
     },
   ) => {
@@ -479,15 +476,25 @@ export const upsert = zMutation({
     )
       throw new ConvexError("You do not have access!")
 
+    const updateStock = await ctx.db.patch(productId, {
+      countInStock,
+    })
+
     if (!!id && orderlineStatus === "UNORDERED") {
       // update new orderline
-      return await ctx.db.patch(id, {
+      const updateOrderline = await ctx.db.patch(id, {
         quantity,
         amount,
       })
+
+      return {
+        updateStock,
+        updateOrderline,
+      }
     }
+
     // otherwise, create
-    return await ctx.db.insert("orderlines", {
+    const createOrderline = await ctx.db.insert("orderlines", {
       productId,
       quantity,
       amount,
@@ -495,6 +502,11 @@ export const upsert = zMutation({
       orderId,
       orderlineStatus: "UNORDERED", // "UNORDERED" is default value
     })
+
+    return {
+      updateStock,
+      createOrderline,
+    }
   },
 })
 
@@ -509,10 +521,39 @@ export const toggleIsFree = mutation({
 })
 
 export const remove = mutation({
-  args: { id: v.id("orderlines") },
+  args: {
+    id: v.id("orderlines"),
+    productId: v.id("products"),
+    countInStock: v.number(),
+  },
   handler: async (ctx, args) => {
-    await cashierProcedure(ctx)
+    // cashierProcedure(ctx)
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (
+      user?.role !== "DEWA" &&
+      user?.role !== "ADMIN" &&
+      user?.role !== "CASHIER"
+    )
+      throw new ConvexError("You do not have access!")
 
-    return await ctx.db.delete(args.id)
+    const company = await ctx.db.get(user.companyId as Id<"companies">)
+    if (!company) {
+      throw new ConvexError("Company not found!")
+    }
+
+    const removeOrderline = await ctx.db.delete(args.id)
+
+    let updateStock = null
+    if (company.isStockable) {
+      updateStock = await ctx.db.patch(args.productId, {
+        countInStock: args.countInStock,
+      })
+    }
+
+    return {
+      removeOrderline,
+      ...(updateStock ? { updateStock } : {}),
+    }
   },
 })

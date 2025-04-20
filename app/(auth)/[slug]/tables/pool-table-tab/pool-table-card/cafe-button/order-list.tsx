@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { api } from "@/convex/_generated/api"
+import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { useConvexMutation } from "@convex-dev/react-query"
@@ -38,7 +39,7 @@ export function OrderList({
         unstyled: true,
 
         description: (
-          <p className="font-semibold capitalize text-muted/70">
+          <p className="text-muted/70 font-semibold capitalize">
             {productName}
           </p>
         ),
@@ -51,7 +52,7 @@ export function OrderList({
           <Trash2
             size={28}
             strokeWidth={2.5}
-            className="ml-2.5 animate-pulse text-destructive"
+            className="text-destructive ml-2.5 animate-pulse"
           />
         ),
       })
@@ -64,14 +65,14 @@ export function OrderList({
   })
 
   return (
-    <div className="mt-1.5 rounded-2xl bg-card py-4 xl:w-4/12">
+    <div className="bg-card mt-1.5 rounded-2xl py-4 xl:w-4/12">
       {!!poolTableName && (
-        <h1 className="whitespace-nowrap text-center sm:text-lg md:text-xl">
+        <h1 className="text-center whitespace-nowrap sm:text-lg md:text-xl">
           Table {poolTableName}
         </h1>
       )}
       {!!customerName && (
-        <h1 className="truncate whitespace-nowrap text-center capitalize text-muted-foreground sm:text-sm md:text-lg">
+        <h1 className="text-muted-foreground truncate text-center whitespace-nowrap capitalize sm:text-sm md:text-lg">
           {customerName}
         </h1>
       )}
@@ -134,7 +135,7 @@ export function OrderList({
                         <h3 className={cn("font-medium capitalize", textColor)}>
                           {orderline.product.name}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                           <span>
                             {formattedPrice.format(
                               Number(orderline.product.salePrice),
@@ -144,8 +145,8 @@ export function OrderList({
                         </p>
                       </section>
                       {isManager && <ToggleFree orderline={orderline} />}
-                      <div className="relative min-h-9 min-w-10 rounded-md border bg-muted shadow-md">
-                        <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-semibold">
+                      <div className="bg-muted relative min-h-9 min-w-10 rounded-md border shadow-md">
+                        <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-semibold">
                           {orderline.quantity}
                         </p>
                       </div>
@@ -167,12 +168,20 @@ export function OrderList({
                         isPending ||
                         orderline.orderlineStatus === "ORDERED"
                       }
-                      onClick={() => mutate({ id: orderline._id })}
-                      className="relative min-h-9 min-w-10 rounded-md bg-muted shadow-md transition-colors hover:cursor-pointer hover:bg-muted/75 disabled:pointer-events-auto disabled:cursor-not-allowed"
+                      onClick={() =>
+                        mutate({
+                          id: orderline._id,
+                          productId: orderline.product._id as Id<"products">,
+                          countInStock:
+                            (orderline.product.countInStock as number) +
+                            orderline.quantity,
+                        })
+                      }
+                      className="bg-muted hover:bg-muted/75 relative min-h-9 min-w-10 rounded-md shadow-md transition-colors hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed"
                     >
                       <Trash2
                         size={18}
-                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-destructive"
+                        className="text-destructive absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                       />
                     </Button>
                   </li>

@@ -45,6 +45,7 @@ export default defineSchema({
       v.literal("PRO"),
       v.literal("ENTERPRISE"),
     ),
+    isStockable: v.optional(v.boolean()),
   }).index("by_slug", ["slug"]),
 
   taxes: defineTable({

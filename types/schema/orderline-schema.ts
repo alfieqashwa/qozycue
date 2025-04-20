@@ -18,6 +18,14 @@ export const orderlineSchema = z.object({
     })
     .nonnegative({ message: "Qty must be 0 or a positive number." }),
   productId: zid("products"),
+  countInStock: z.coerce
+    .number({
+      required_error: "Stock is required.",
+      invalid_type_error: "Stock must be a number.",
+    })
+    .nonnegative({
+      message: "Stock must be zero or a positive number.",
+    }),
   orderId: zid("orders"),
 })
 export type TOrderline = z.infer<typeof orderlineSchema>

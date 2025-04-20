@@ -20,16 +20,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
-export function OrderProduct({
-  isCashier,
-  orderId,
-  orderline,
-  productId,
-  name,
-  price,
-  qty,
-  setQty,
-}: {
+type OrderProductProps = {
   isCashier: boolean
   orderline:
     | FunctionReturnType<typeof api.orderlines.findAllByOrderId>[0]
@@ -39,9 +30,28 @@ export function OrderProduct({
   productId: Id<"products">
   name: string
   price: number
+  isStockable: boolean
+  countInStock: number
   qty: number
   setQty: React.Dispatch<React.SetStateAction<number>>
-}) {
+  stock: number
+  setStock: React.Dispatch<React.SetStateAction<number>>
+}
+
+export function OrderProduct({
+  isCashier,
+  orderId,
+  orderline,
+  productId,
+  name,
+  price,
+  isStockable,
+  countInStock,
+  qty,
+  setQty,
+  stock,
+  setStock,
+}: OrderProductProps) {
   const { data: category, status } = useTanstackQuery({
     ...convexQuery(api.categories.findByProductId, { productId }),
     enabled: Boolean(productId),
@@ -80,6 +90,15 @@ export function OrderProduct({
       />
     )
 
+  const increaseQty = () => {
+    setQty((q) => q + 1)
+    isStockable && setStock((s) => s - 1)
+  }
+  const decreaseQty = () => {
+    setQty((q) => q - 1)
+    isStockable && setStock((s) => s + 1)
+  }
+
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.orderlines.upsert),
     onSuccess() {
@@ -105,11 +124,12 @@ export function OrderProduct({
     mutate({
       upsertOrderlineSchema: {
         id: orderline?._id,
-        orderId,
         orderlineStatus: orderline?.orderlineStatus,
-        productId,
         quantity: qty,
         amount: price * qty,
+        productId,
+        countInStock: isStockable ? stock : countInStock,
+        orderId,
       },
     })
   }
@@ -120,7 +140,7 @@ export function OrderProduct({
           variant="secondary"
           size="sm"
           disabled={!isCashier || qty < 1 || isPending}
-          onClick={() => setQty((q) => q - 1)}
+          onClick={decreaseQty}
           className="font-semibold disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Minus size={16} />
@@ -129,8 +149,10 @@ export function OrderProduct({
         <Button
           variant="secondary"
           size="sm"
-          disabled={!isCashier || qty >= 20 || isPending}
-          onClick={() => setQty((q) => q + 1)}
+          disabled={
+            !isCashier || qty >= 20 || (stock < 1 && isStockable) || isPending
+          }
+          onClick={increaseQty}
           className="font-semibold disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Plus size={16} />

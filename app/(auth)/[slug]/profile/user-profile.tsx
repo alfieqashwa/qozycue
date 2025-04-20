@@ -14,6 +14,7 @@ import { Preloaded, usePreloadedQuery } from "convex/react"
 import { Building2, Layers, LayoutTemplate, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { TogglePublished } from "./toggle-published"
+import { ToggleStockable } from "./toggle-stockable"
 import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
 
@@ -45,11 +46,11 @@ export function UserProfile({
             width={500}
             height={500}
             priority
-            className="size-32 rounded-full object-cover p-1 ring-4 ring-primary"
+            className="ring-primary size-32 rounded-full object-cover p-1 ring-4"
           />
         ) : (
-          <div className="grid size-32 place-items-center rounded-full ring-4 ring-primary">
-            <h1 className="text-9xl font-bold capitalize text-primary">
+          <div className="ring-primary grid size-32 place-items-center rounded-full ring-4">
+            <h1 className="text-primary text-9xl font-bold capitalize">
               {user.name ? user.name.at(0) : user.email!.at(0)}
             </h1>
           </div>
@@ -62,7 +63,7 @@ export function UserProfile({
           {user.name && (
             <article>
               <h2 className="text-primary">Name</h2>
-              <p className="capitalize text-muted-foreground">{user.name}</p>
+              <p className="text-muted-foreground capitalize">{user.name}</p>
             </article>
           )}
           {/* // Only me can access this! */}
@@ -83,24 +84,24 @@ export function UserProfile({
         </section>
         <section className="mt-8 space-y-4">
           <div className="flex space-x-1">
-            <Building2 className="mr-2 shrink-0 text-primary" />
-            <p className="space-x-1 capitalize text-muted-foreground">
+            <Building2 className="text-primary mr-2 shrink-0" />
+            <p className="text-muted-foreground space-x-1 capitalize">
               <span>{user.company?.name}</span>
             </p>
           </div>
           <div className="flex space-x-1">
-            <Phone className="mr-2 shrink-0 text-primary" />
+            <Phone className="text-primary mr-2 shrink-0" />
             <p className="text-muted-foreground">{user.company?.phone}</p>
           </div>
           <div className="flex space-x-1">
-            <MapPin className="mr-2 shrink-0 text-primary" />
-            <p className="space-x-1 text-balance capitalize text-muted-foreground">
+            <MapPin className="text-primary mr-2 shrink-0" />
+            <p className="text-muted-foreground space-x-1 text-balance capitalize">
               {user.company?.location}
             </p>
           </div>
           <div className="flex space-x-1">
-            <Layers className="mr-2 shrink-0 text-primary" />
-            <p className="space-x-1 text-balance capitalize text-muted-foreground">
+            <Layers className="text-primary mr-2 shrink-0" />
+            <p className="text-muted-foreground space-x-1 text-balance capitalize">
               {user.company?.subscription} Subscription
             </p>
           </div>
@@ -109,16 +110,16 @@ export function UserProfile({
               <div className="flex space-x-1 pb-4">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <LayoutTemplate className="mr-2 shrink-0 animate-pulse text-primary" />
+                    <LayoutTemplate className="text-primary mr-2 shrink-0 animate-pulse" />
                   </TooltipTrigger>
                   <TooltipContent
                     side="right"
-                    className="bg-muted font-medium text-muted-foreground"
+                    className="bg-muted text-muted-foreground font-medium"
                   >
                     When enabled, it will activate the booking feature
                   </TooltipContent>
                 </Tooltip>
-                <p className="text-balance pr-2 capitalize text-muted-foreground">
+                <p className="text-muted-foreground pr-2 text-balance capitalize">
                   Published?
                 </p>
                 {bookingOrders.status === "success" && (
@@ -127,6 +128,29 @@ export function UserProfile({
                     companyName={user.company?.name as string}
                     isPublished={user.company?.isPublished as boolean}
                     countAllBooking={!!bookingOrders.data.length}
+                  />
+                )}
+              </div>
+              <div className="flex space-x-1 pb-4">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <LayoutTemplate className="text-primary mr-2 shrink-0 animate-pulse" />
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="right"
+                    className="bg-muted text-muted-foreground font-medium"
+                  >
+                    When enabled, it will activate the stockable feature
+                  </TooltipContent>
+                </Tooltip>
+                <p className="text-muted-foreground pr-2 text-balance capitalize">
+                  Stockable?
+                </p>
+                {bookingOrders.status === "success" && (
+                  <ToggleStockable
+                    companyId={user.companyId as Id<"companies">}
+                    companyName={user.company?.name as string}
+                    isStockable={user.company?.isStockable as boolean}
                   />
                 )}
               </div>

@@ -14,6 +14,7 @@ export const companySchema = z
   .object({
     id: zid("companies"),
     isPublished: z.boolean(),
+    isStockable: z.boolean(),
     name: z
       .string({
         required_error: "Name is required.",
@@ -65,3 +66,9 @@ export const toggleIsPublishedSchema = companySchema.pick({
   isPublished: true,
 })
 export type TToggleIsPublished = z.infer<typeof toggleIsPublishedSchema>
+
+export const toggleIsStockableSchema = companySchema.pick({
+  id: true,
+  isStockable: true,
+})
+export type TToggleIsStockable = z.infer<typeof toggleIsStockableSchema>

@@ -38,6 +38,11 @@ export function CafeButton({
 }: CafeButtonProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
+  const { data: company } = useTanstackQuery({
+    ...convexQuery(api.companies.find, { id: order?.companyId }),
+    enabled: Boolean(order?.companyId),
+  })
+
   const { data: orderlines } = useTanstackQuery({
     ...convexQuery(api.orderlines.findAllByOrderId, { orderId: order?._id }),
     enabled: Boolean(order?._id),
@@ -122,7 +127,9 @@ export function CafeButton({
                         productId={p._id}
                         name={p.name}
                         price={p.salePrice}
-                        className="bg-emerald-200/70"
+                        isStockable={company?.isStockable as boolean}
+                        countInStock={p.countInStock as number}
+                        bgColor="bg-emerald-200/70"
                         key={p._id}
                       >
                         <Soup strokeWidth={2.5} className="text-emerald-900" />
@@ -142,7 +149,9 @@ export function CafeButton({
                         productId={p._id}
                         name={p.name}
                         price={p.salePrice}
-                        className="bg-fuchsia-200/70"
+                        isStockable={company?.isStockable as boolean}
+                        countInStock={p.countInStock as number}
+                        bgColor="bg-fuchsia-200/70"
                         key={p._id}
                       >
                         <Coffee
@@ -165,7 +174,9 @@ export function CafeButton({
                         productId={p._id}
                         name={p.name}
                         price={p.salePrice}
-                        className="bg-lime-200/70"
+                        isStockable={company?.isStockable as boolean}
+                        countInStock={p.countInStock as number}
+                        bgColor="bg-lime-200/70"
                         key={p._id}
                       >
                         <ShoppingBasket

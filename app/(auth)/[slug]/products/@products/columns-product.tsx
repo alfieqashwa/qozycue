@@ -14,9 +14,9 @@ import { DeleteProductForm } from "./delete-product-form"
 import { ToggleProduct } from "./toggle-product"
 import { UpdateProduct } from "./update-product"
 
-export const columnsProduct: ColumnDef<
-  FunctionReturnType<typeof api.products.findAll>[0]
->[] = [
+export const columnsProduct = (
+  isStockable: boolean,
+): ColumnDef<FunctionReturnType<typeof api.products.findAll>[0]>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -142,11 +142,15 @@ export const columnsProduct: ColumnDef<
   {
     accessorKey: "countInStock",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Stock" />
+      <DataTableColumnHeader
+        column={column}
+        title="Stock"
+        className={cn(isStockable ? "" : "hidden")}
+      />
     ),
     cell: ({ row }) => {
-      const { countInStock } = row.original
       const category = row.getValue("category")
+      const countInStock = row.getValue("countInStock") as number
       const colorBasedOnCategory =
         category === "food"
           ? "text-emerald-200"
@@ -154,10 +158,15 @@ export const columnsProduct: ColumnDef<
             ? "text-fuchsia-200"
             : "text-lime-200"
       return (
-        <Badge variant="secondary" className="px-3 py-1.5">
-          <Tags className={cn("mr-2 h-4 w-4", colorBasedOnCategory)} />
+        <Badge
+          variant="secondary"
+          className={cn(
+            "px-3 py-1.5",
+            colorBasedOnCategory,
+            isStockable ? "" : "hidden",
+          )}
+        >
           <span className="max-w-[500px] truncate font-medium uppercase">
-            {/* {row.getValue("countInStock")} */}
             {countInStock}
           </span>
         </Badge>
