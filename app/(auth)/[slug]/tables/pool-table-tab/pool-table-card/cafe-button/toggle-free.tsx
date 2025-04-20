@@ -11,14 +11,16 @@ export function ToggleFree({
 }: {
   orderline: FunctionReturnType<typeof api.orderlines.findAllByOrderId>[0]
 }) {
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.orderlines.toggleIsFree),
     onSuccess: () =>
       toast.success("Succeed!", {
         description: (
           <p>
-            <span className="capitalize">{orderline.product.name}</span> has
-            been updated successfully.
+            <span>
+              {!variables?.isFree ? "Enabled" : "Disabled"} free of product
+            </span>{" "}
+            <span className="capitalize">{orderline.product.name}</span>
           </p>
         ),
       }),
@@ -29,7 +31,7 @@ export function ToggleFree({
       }),
   })
   return (
-    <div className="absolute -bottom-6 -left-2 xl:bottom-0 xl:left-24">
+    <div className="absolute -bottom-6 left-0 xl:bottom-0 xl:left-24">
       <button
         disabled={isPending}
         onClick={() =>
@@ -39,7 +41,7 @@ export function ToggleFree({
           })
         }
         className={cn(
-          "rounded-sm bg-muted px-1 text-xs font-medium tracking-widest",
+          "bg-muted rounded-sm px-1 text-sm font-medium tracking-widest",
           orderline.isFree
             ? "text-amber-300"
             : "text-muted-foreground line-through",
