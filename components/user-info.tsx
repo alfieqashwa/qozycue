@@ -41,7 +41,7 @@ export const UserInfo = ({
         </MenubarItem>
       </Link>
     </TooltipTrigger>
-    <TooltipContent side="left" className="mr-1.5 flex items-center bg-muted">
+    <TooltipContent side="left" className="bg-muted flex items-center">
       <Key
         size={16}
         className={cn(
@@ -49,7 +49,7 @@ export const UserInfo = ({
           pathname === href ? "text-primary" : "text-muted-foreground",
         )}
       />
-      <span className="text-xs text-muted-foreground">{userRole}</span>
+      <span className="text-muted-foreground text-xs">{userRole}</span>
     </TooltipContent>
   </Tooltip>
 )
