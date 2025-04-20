@@ -107,6 +107,9 @@
 ✅ Cafe Cart Configuration related to add/update/remove product
 ✅ Admin Access Level to toggle isStockable feature on Profile Page
 
+❌ Testing Stockable Feature
+❌ Testing Free Product
+
 ## Backlog (Future Plan)
 
 ✅ Pool Table with the same company must have a unique name
