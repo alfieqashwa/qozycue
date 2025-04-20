@@ -50,7 +50,7 @@ export const columnsProduct: ColumnDef<
       const id: Id<"products"> = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[300px] truncate font-medium">
             {id?.slice(-8, id?.length)}
           </span>
@@ -134,6 +134,31 @@ export const columnsProduct: ColumnDef<
         >
           <span className="max-w-[500px] truncate font-medium capitalize">
             {formattedPriceWithRupiah.format(Number(salePrice))}
+          </span>
+        </Badge>
+      )
+    },
+  },
+  {
+    accessorKey: "countInStock",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Stock" />
+    ),
+    cell: ({ row }) => {
+      const { countInStock } = row.original
+      const category = row.getValue("category")
+      const colorBasedOnCategory =
+        category === "food"
+          ? "text-emerald-200"
+          : category === "drink"
+            ? "text-fuchsia-200"
+            : "text-lime-200"
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <Tags className={cn("mr-2 h-4 w-4", colorBasedOnCategory)} />
+          <span className="max-w-[500px] truncate font-medium uppercase">
+            {/* {row.getValue("countInStock")} */}
+            {countInStock}
           </span>
         </Badge>
       )

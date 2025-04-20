@@ -85,6 +85,7 @@ export const create = zMutation({
       unitOfMeasureId,
       categoryId,
       status: "disabled",
+      countInStock: 0,
     })
   },
 })
