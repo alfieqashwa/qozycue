@@ -99,7 +99,6 @@ export const update = zMutation({
         name,
         costPrice,
         salePrice,
-        countInStock,
         unitOfMeasureId,
         categoryId,
       },
@@ -111,7 +110,6 @@ export const update = zMutation({
       name,
       costPrice,
       salePrice,
-      countInStock,
       unitOfMeasureId,
       categoryId,
     })

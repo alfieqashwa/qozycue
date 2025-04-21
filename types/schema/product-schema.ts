@@ -58,7 +58,10 @@ export const createProductSchema = productSchema
     message: "Cost Price must be less than Sale Price",
   })
 
-export const updateProductSchema = productSchema.omit({ status: true })
+export const updateProductSchema = productSchema.omit({
+  status: true,
+  countInStock: true,
+})
 export type TUpdateProduct = z.infer<typeof updateProductSchema>
 /*
   Unanswered how to display zod-refine error-message. 

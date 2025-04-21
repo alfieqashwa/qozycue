@@ -250,7 +250,6 @@ export const columnsProduct = (
         name,
         costPrice,
         salePrice,
-        countInStock,
         status,
         categoryId,
         unitOfMeasureId,
@@ -261,7 +260,6 @@ export const columnsProduct = (
           name={name}
           costPrice={costPrice}
           salePrice={salePrice}
-          countInStock={countInStock as number}
           status={status}
           categoryId={categoryId}
           unitOfMeasureId={unitOfMeasureId}
