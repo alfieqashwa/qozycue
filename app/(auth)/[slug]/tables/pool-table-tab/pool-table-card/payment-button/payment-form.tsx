@@ -257,7 +257,7 @@ export function PaymentForm({
   }
 
   return (
-    <ScrollArea className="-mx-6 py-2 text-sm md:mt-4 md:min-h-[calc(100vh_-_6rem)] md:text-base">
+    <ScrollArea className="py-2 text-sm md:mt-4 md:min-h-[calc(100vh_-_6rem)] md:text-base">
       <div className="flex justify-center md:justify-end md:pr-5 md:pb-2">
         <div className="hidden">
           <PrintReceipt
@@ -287,6 +287,7 @@ export function PaymentForm({
       />
       <Form {...form}>
         <form
+          id="payment"
           onSubmit={form.handleSubmit(onSubmit)}
           className="gap-y-2 px-6 py-1"
         >

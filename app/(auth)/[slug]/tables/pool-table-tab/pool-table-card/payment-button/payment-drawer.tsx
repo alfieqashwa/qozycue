@@ -25,7 +25,7 @@ export default function PaymentDrawer({
   children,
 }: PaymentDrawerProps) {
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen} autoFocus={open}>
       <DrawerTrigger asChild>
         <Button
           disabled={disabled}
