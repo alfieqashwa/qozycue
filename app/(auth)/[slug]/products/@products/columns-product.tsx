@@ -13,6 +13,7 @@ import { Coffee, Hash, ShoppingBasket, Soup, Star, Tags } from "lucide-react"
 import { DeleteProductForm } from "./delete-product-form"
 import { ToggleProduct } from "./toggle-product"
 import { UpdateProduct } from "./update-product"
+import { UpdateStockProduct } from "./update-stock-product"
 
 export const columnsProduct = (
   isStockable: boolean,
@@ -150,7 +151,7 @@ export const columnsProduct = (
     ),
     cell: ({ row }) => {
       const category = row.getValue("category")
-      const countInStock = row.getValue("countInStock") as number
+      const { _id, name, status, countInStock } = row.original
       const colorBasedOnCategory =
         category === "food"
           ? "text-emerald-200"
@@ -158,18 +159,14 @@ export const columnsProduct = (
             ? "text-fuchsia-200"
             : "text-lime-200"
       return (
-        <Badge
-          variant="secondary"
-          className={cn(
-            "px-3 py-1.5",
-            colorBasedOnCategory,
-            isStockable ? "" : "hidden",
-          )}
-        >
-          <span className="max-w-[500px] truncate font-medium uppercase">
-            {countInStock}
-          </span>
-        </Badge>
+        <UpdateStockProduct
+          id={_id}
+          status={status}
+          name={name}
+          isStockable={isStockable}
+          countInStock={countInStock as number}
+          colorBasedOnCategory={colorBasedOnCategory}
+        />
       )
     },
   },

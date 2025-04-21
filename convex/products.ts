@@ -118,6 +118,20 @@ export const update = zMutation({
   },
 })
 
+export const updateCountInStock = mutation({
+  args: {
+    id: v.id("products"),
+    updatedStock: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await managerProcedure(ctx)
+
+    return await ctx.db.patch(args.id, {
+      countInStock: args.updatedStock,
+    })
+  },
+})
+
 export const toggle = zMutation({
   args: { toggleProductSchema },
   handler: async (ctx, { toggleProductSchema: { id, status } }) => {

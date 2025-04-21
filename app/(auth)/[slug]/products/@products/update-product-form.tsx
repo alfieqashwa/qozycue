@@ -179,6 +179,7 @@ export function UpdateProductForm({
               <FormControl>
                 <Input
                   type="number"
+                  min={0}
                   placeholder="stock"
                   className="w-[200px]"
                   {...field}

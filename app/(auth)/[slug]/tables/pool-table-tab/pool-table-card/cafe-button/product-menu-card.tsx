@@ -8,14 +8,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice } from "@/lib/format-price"
+import { getStockBackgroundColor } from "@/lib/getStockBackgroundColor"
 import { cn } from "@/lib/utils"
 import { FunctionReturnType } from "convex/server"
 import { useEffect, useState } from "react"
 import { OrderProduct } from "./order-product"
-import { WrapperTooltip } from "@/components/wrapper-tooltip"
 
 type ProductMenuCardProps = {
   isCashier: boolean
@@ -65,16 +66,6 @@ export function ProductMenuCard({
 
     setQty(orderline.quantity)
   }, [countInStock, orderline?.quantity])
-
-  const getStockBackgroundColor = (stock: number): string => {
-    if (stock === 0) {
-      return "bg-rose-500/70"
-    }
-    if (stock > 0 && stock <= 5) {
-      return "bg-amber-400/70 animate-pulse"
-    }
-    return "" // Default case (no additional background color)
-  }
 
   return (
     <li
