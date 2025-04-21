@@ -51,6 +51,7 @@ export type TCreateCompany = z.infer<typeof createCompanySchema>
 export const updateCompanyDewaSchema = companySchema.omit({
   logo: true,
   isPublished: true,
+  isStockable: true,
 })
 export type TUpdateCompanyDewa = z.infer<typeof updateCompanyDewaSchema>
 

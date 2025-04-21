@@ -118,6 +118,7 @@ export const create = zMutation({
       phone,
       location,
       isPublished: true,
+      isStockable: false,
       subscription: "TRIAL",
     })
   },

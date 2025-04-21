@@ -36,8 +36,8 @@ export function ReprintOrder({
 
   // STARTS PRINT THE ORDER CONFIGURATiON
   const orderId = orderlines?.[0]?.orderId as string
-  const handleOrderPrint = useReactToPrint({
-    content: () => orderRef.current,
+  const handleOrderPrintFn = useReactToPrint({
+    contentRef: orderRef,
     documentTitle: `receipt_order_${orderId.slice(-8, orderId.length)}`,
     onPrintError: () => {
       alert("There is an error when printing order.")
@@ -129,7 +129,7 @@ export function ReprintOrder({
           className="flex items-center justify-center space-x-2 text-emerald-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Soup className="size-5 shrink-0 md:size-6" />
-          <span className="text-xs font-semibold uppercase tracking-widest md:text-base">
+          <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
             Food
           </span>
         </Button>
@@ -141,7 +141,7 @@ export function ReprintOrder({
           className="flex items-center justify-center space-x-2 text-fuchsia-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Coffee className="size-5 shrink-0 md:size-6" />
-          <span className="text-xs font-semibold uppercase tracking-widest md:text-base">
+          <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
             Drink
           </span>
         </Button>
@@ -153,7 +153,7 @@ export function ReprintOrder({
           className="flex items-center justify-center space-x-2 text-lime-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <ShoppingBasket className="size-5 shrink-0 md:size-6" />
-          <span className="text-xs font-semibold uppercase tracking-widest md:text-base">
+          <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
             Others
           </span>
         </Button>
@@ -190,7 +190,7 @@ export function ReprintOrder({
           <Button variant="secondary" onClick={() => handleCloseAutoFocus()}>
             Close
           </Button>
-          <Button onClick={handleOrderPrint}>
+          <Button onClick={() => handleOrderPrintFn()}>
             <Printer className="mr-2 size-4" />
             Reprint
           </Button>
