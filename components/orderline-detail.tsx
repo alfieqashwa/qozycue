@@ -33,8 +33,8 @@ export function OrderlineDetail({
 
   return (
     <section className="relative">
-      <ScrollArea className="-mx-5 h-[calc(100vh_-_24rem)] border-b">
-        <ul className="px-5">
+      <ScrollArea className="h-[calc(100vh_-_30rem)] border-b">
+        <ul className="px-4">
           {status === "success" &&
             orderlines
               ?.sort((p, q) =>
@@ -62,8 +62,8 @@ export function OrderlineDetail({
                   <Fragment key={orderline._id}>
                     <li className="relative flex w-full items-center py-1 md:py-2">
                       {orderline.isFree && (
-                        <div className="absolute right-0 top-0">
-                          <h6 className="rounded-sm bg-muted px-1 text-end text-xs font-medium tracking-widest text-amber-300">
+                        <div className="absolute top-0 right-0">
+                          <h6 className="bg-muted rounded-sm px-1 text-end text-xs font-medium tracking-widest text-amber-300">
                             Free
                           </h6>
                         </div>
@@ -79,7 +79,7 @@ export function OrderlineDetail({
                           >
                             {orderline.product.name}
                           </h3>
-                          <div className="text-xs font-medium text-muted-foreground md:text-sm">
+                          <div className="text-muted-foreground text-xs font-medium md:text-sm">
                             {formattedPrice.format(
                               Number(orderline.product.salePrice),
                             )}
@@ -87,15 +87,15 @@ export function OrderlineDetail({
                             {orderline.orderlineStatus === "UNORDERED" && (
                               <Badge
                                 variant="secondary"
-                                className="ml-2 text-[10px] uppercase tracking-widest text-amber-400"
+                                className="ml-2 text-[10px] tracking-widest text-amber-400 uppercase"
                               >
                                 unordered
                               </Badge>
                             )}
                           </div>
                         </section>
-                        <div className="relative h-8 w-10 rounded-md border bg-muted text-sm shadow-md md:h-10 md:w-12 md:text-base">
-                          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
+                        <div className="bg-muted relative h-8 w-10 rounded-md border text-sm shadow-md md:h-10 md:w-12 md:text-base">
+                          <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
                             {orderline.quantity}
                           </p>
                         </div>
@@ -119,17 +119,17 @@ export function OrderlineDetail({
         </ul>
       </ScrollArea>
       {/* === STARTS SUMMARY OF TOTAL ORDERS === */}
-      <div className="mt-3 flex w-full items-center justify-between text-cyan-600">
+      <div className="mt-3 flex w-full items-center justify-between px-4 text-cyan-600">
         <BaggageClaim className="md:size-8" />
         <div className="flex w-9/12 items-center justify-between">
           {status === "success" && (
-            <h3 className="flex-1 whitespace-nowrap pl-4 text-sm font-medium md:text-base">
+            <h3 className="flex-1 pl-4 text-sm font-medium whitespace-nowrap md:text-base">
               {orderlines?.length} order
               <span className={cn(orderlines.length <= 1 && "hidden")}>s</span>
             </h3>
           )}
-          <div className="relative h-8 w-10 rounded-md border bg-muted text-sm shadow-md md:h-10 md:w-12 md:text-base">
-            <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
+          <div className="bg-muted relative h-8 w-10 rounded-md border text-sm shadow-md md:h-10 md:w-12 md:text-base">
+            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
               {formattedPrice.format(Number(totalQty))}
             </p>
           </div>

@@ -109,7 +109,7 @@ export function PoolRentalDetail({
   )
 
   return (
-    <ScrollArea className="-mx-4 h-[calc(100vh_-_20.725rem)] px-4">
+    <ScrollArea className="h-[calc(100vh_-_26rem)] px-4">
       <WrapperDiv>
         <p className="text-muted-foreground">Rental ID:</p>
         {poolRentalId && (
@@ -127,7 +127,7 @@ export function PoolRentalDetail({
       <WrapperDiv>
         <p className="text-muted-foreground">Packet:</p>
         {packetName && (
-          <p className="capitalize text-foreground">{packetName}</p>
+          <p className="text-foreground capitalize">{packetName}</p>
         )}
       </WrapperDiv>
       <Separator className="my-0.5" />
