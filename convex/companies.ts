@@ -99,6 +99,7 @@ export const createTrial = zMutation({
       phone,
       location,
       isPublished: true,
+      isStockable: true,
       subscription: "TRIAL",
     })
     if (!companyId) throw new ConvexError("No companyId")
@@ -118,7 +119,7 @@ export const create = zMutation({
       phone,
       location,
       isPublished: true,
-      isStockable: false,
+      isStockable: true,
       subscription: "TRIAL",
     })
   },
