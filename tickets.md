@@ -109,6 +109,7 @@
 
 ❌ Testing Stockable Feature
 ❌ Testing Free Product
+❌ Testing Free Packet
 
 ## Backlog (Future Plan)
 
