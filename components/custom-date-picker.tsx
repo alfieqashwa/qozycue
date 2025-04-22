@@ -16,7 +16,7 @@ export function CustomDatePicker({
   return (
     <div
       className={cn(
-        "hidden md:absolute md:-top-14 md:right-0 md:block",
+        "mb-2 md:absolute md:-top-14 md:right-0 md:block",
         className,
       )}
     >
