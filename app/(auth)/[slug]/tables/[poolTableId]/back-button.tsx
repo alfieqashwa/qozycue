@@ -16,13 +16,13 @@ type BackButtonProps = {
     | null
     | undefined
   size?: "default" | "sm" | "lg" | "icon" | null | undefined
-  className?: string
+  classNames?: string
 }
 
 export const BackButton = ({
   variant = "secondary",
   size = "default",
-  className,
+  classNames,
 }: BackButtonProps) => {
   const router = useRouter()
   return (
@@ -30,11 +30,11 @@ export const BackButton = ({
       variant={variant}
       size={size}
       onClick={() => router.back()}
-      className={cn(className, "space-x-1")}
+      className={cn(classNames)}
     >
       <ArrowBigLeftDash
-        size={22}
-        className="shrink-0 animate-pulse text-primary"
+        size={24}
+        className="text-primary size-6 shrink-0 animate-pulse"
       />
       <span>Back</span>
     </Button>
