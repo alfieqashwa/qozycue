@@ -126,7 +126,7 @@ export function ReprintOrder({
           variant="secondary"
           size="lg"
           onClick={() => handleUpdateOrderlineStatusList("food")}
-          className="flex items-center justify-center space-x-2 text-emerald-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="flex items-center justify-center text-emerald-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Soup className="size-5 shrink-0 md:size-6" />
           <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
@@ -138,7 +138,7 @@ export function ReprintOrder({
           variant="secondary"
           size="lg"
           onClick={() => handleUpdateOrderlineStatusList("drink")}
-          className="flex items-center justify-center space-x-2 text-fuchsia-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="flex items-center justify-center text-fuchsia-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Coffee className="size-5 shrink-0 md:size-6" />
           <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
@@ -150,7 +150,7 @@ export function ReprintOrder({
           variant="secondary"
           size="lg"
           onClick={() => handleUpdateOrderlineStatusList("others")}
-          className="flex items-center justify-center space-x-2 text-lime-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="flex items-center justify-center text-lime-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <ShoppingBasket className="size-5 shrink-0 md:size-6" />
           <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
@@ -164,9 +164,9 @@ export function ReprintOrder({
           onClick={() => handleUpdateOrderlineStatusList("all")}
           className="col-span-3 flex items-center justify-center space-x-4"
         >
-          <Soup size={24} className="shrink-0 text-emerald-200" />
-          <Coffee size={24} className="shrink-0 text-fuchsia-200" />
-          <ShoppingBasket size={24} className="shrink-0 text-lime-200" />
+          <Soup size={24} className="size-5 shrink-0 text-emerald-200" />
+          <Coffee size={24} className="size-5 shrink-0 text-fuchsia-200" />
+          <ShoppingBasket size={24} className="size-5 shrink-0 text-lime-200" />
         </Button>
       </div>
       <div
@@ -191,7 +191,7 @@ export function ReprintOrder({
             Close
           </Button>
           <Button onClick={() => handleOrderPrintFn()}>
-            <Printer className="mr-2 size-4" />
+            <Printer className="size-4" />
             Reprint
           </Button>
         </div>

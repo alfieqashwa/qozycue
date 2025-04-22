@@ -7,6 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { PrintTooltip } from "./print-tooltip"
+import { DialogDescription } from "@radix-ui/react-dialog"
 
 export const WrapperDialog = ({
   contentText,
@@ -34,6 +35,10 @@ export const WrapperDialog = ({
         </Button>
       </DialogTrigger>
     </PrintTooltip>
+    <DialogHeader>
+      <DialogTitle />
+      <DialogDescription />
+    </DialogHeader>
     <DialogContent onCloseAutoFocus={onCloseAutoFocus} className="bg-card">
       <DialogHeader>
         <DialogTitle>{title}?</DialogTitle>
