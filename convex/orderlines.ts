@@ -510,16 +510,6 @@ export const upsert = zMutation({
   },
 })
 
-export const toggleIsFree = mutation({
-  args: { orderlineId: v.id("orderlines"), isFree: v.boolean() },
-  handler: async (ctx, args) => {
-    await managerProcedure(ctx)
-    return await ctx.db.patch(args.orderlineId, {
-      isFree: !args.isFree,
-    })
-  },
-})
-
 export const remove = mutation({
   args: {
     id: v.id("orderlines"),

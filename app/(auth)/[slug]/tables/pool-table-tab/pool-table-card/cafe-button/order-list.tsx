@@ -14,7 +14,6 @@ import { Fragment } from "react"
 import { toast } from "sonner"
 import { PrintOrder } from "./print-order"
 import { ReprintOrder } from "./reprint-order"
-import { ToggleFree } from "./toggle-free"
 
 export function OrderList({
   isManager,
@@ -144,7 +143,6 @@ export function OrderList({
                           </span>
                         </p>
                       </section>
-                      {isManager && <ToggleFree orderline={orderline} />}
                       <div className="bg-muted relative min-h-9 min-w-10 rounded-md border shadow-md">
                         <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-semibold">
                           {orderline.quantity}
