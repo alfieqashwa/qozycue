@@ -20,7 +20,7 @@ export function CustomDatePicker({
         className,
       )}
     >
-      <div className="flex w-full flex-col items-end space-y-2 md:w-auto md:flex-row md:justify-end md:space-x-2 md:space-y-0">
+      <div className="flex w-full flex-col items-end space-y-2 md:w-auto md:flex-row md:justify-end md:space-y-0 md:space-x-2">
         <div className="flex space-x-2">
           <Button
             variant="outline"
@@ -37,7 +37,7 @@ export function CustomDatePicker({
             variant="outline"
             onClick={() =>
               setDate({
-                from: new Date(2024, 0, 1),
+                from: new Date(2025, 0, 1),
                 to: new Date(new Date().setHours(23, 59, 59, 0)),
               })
             }
