@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils"
 import { Menu } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState } from "react"
 import { GiFrozenOrb } from "react-icons/gi"
 
 export function MenuOnMobile({
@@ -37,13 +38,18 @@ export function MenuOnMobile({
   className?: string
 }) {
   const pathname = usePathname()
+  const [openDrawer, setOpenDrawer] = useState(false)
 
   return (
-    <Drawer>
+    <Drawer
+      open={openDrawer}
+      onOpenChange={setOpenDrawer}
+      autoFocus={openDrawer}
+    >
       <DrawerTrigger asChild>
         <Button
           variant="secondary"
-          className="font-semibold tracking-wider text-primary opacity-60 transition-opacity duration-300 ease-in-out hover:opacity-100"
+          className="text-primary size-10 shrink-0 font-semibold tracking-wider opacity-70 transition-opacity duration-300 ease-in-out hover:opacity-100"
         >
           <Menu className="animate-pulse" />
         </Button>
@@ -55,7 +61,7 @@ export function MenuOnMobile({
         </DrawerHeader>
         <div className="mx-auto grid grid-cols-4 gap-6">
           {links.map((link, index) => (
-            <Popover key={index}>
+            <Popover key={`${index}-${link}`}>
               <PopoverTrigger asChild>
                 <Link
                   href={
@@ -65,7 +71,7 @@ export function MenuOnMobile({
                   }
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
-                    "size-16 text-primary/70 hover:text-primary",
+                    "text-primary/70 hover:text-primary size-16",
                     !pathname.includes("dewa")
                       ? pathname ===
                           `/${encodeURIComponent(slug)}${link.href}` &&
@@ -77,13 +83,13 @@ export function MenuOnMobile({
                     link.href === "/settings" && !isManager && "hidden",
                   )}
                 >
-                  <link.icon size={32} className="shrink-0" />
+                  <link.icon size={32} className="size-8 shrink-0" />
                   <span className="sr-only">{link.title}</span>
                 </Link>
               </PopoverTrigger>
               <PopoverContent
                 side="top"
-                className="w-auto bg-muted px-4 py-2 text-xs capitalize text-muted-foreground"
+                className="bg-muted text-muted-foreground w-auto px-4 py-2 text-xs capitalize"
               >
                 {link.title}
               </PopoverContent>
@@ -102,7 +108,7 @@ export function MenuOnMobile({
               dewaRole ? "block" : "hidden",
             )}
           >
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <GiFrozenOrb className={cn(className)} />
             </span>
           </Link>
