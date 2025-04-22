@@ -1,5 +1,5 @@
-import { LoadingSpinner } from "@/components/loading-spinner"
+import { LoadingTriangle } from "@/components/LoadingTriangle"
 
 export default function LoadingSlug() {
-  return <LoadingSpinner />
+  return <LoadingTriangle />
 }
