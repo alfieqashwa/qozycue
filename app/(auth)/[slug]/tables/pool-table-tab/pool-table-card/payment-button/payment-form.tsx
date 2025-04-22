@@ -109,7 +109,7 @@ export function PaymentForm({
       router.refresh()
 
       toast.success("Succeed!", {
-        description: "Payment process is succeed.",
+        description: "Payment is succeed",
         action: (
           <>
             <div className="hidden">
@@ -120,7 +120,11 @@ export function PaymentForm({
                 ref={receiptRef}
               />
             </div>
-            <Button size="sm" onClick={() => handleReceiptPrintFn()}>
+            <Button
+              size="sm"
+              className="mx-2"
+              onClick={() => handleReceiptPrintFn()}
+            >
               <Printer className="size-4" />
               <span>Receipt</span>
             </Button>
@@ -257,7 +261,7 @@ export function PaymentForm({
   }
 
   return (
-    <ScrollArea className="py-2 text-sm md:mt-4 md:min-h-[calc(100vh_-_6rem)] md:text-base">
+    <ScrollArea className="text-sm md:mt-4 md:min-h-[calc(100vh_-_6rem)] md:text-base">
       <div className="flex justify-center md:justify-end md:pr-5 md:pb-2">
         <div className="hidden">
           <PrintReceipt

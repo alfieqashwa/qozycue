@@ -69,10 +69,10 @@ export function PaymentButton({
     <PaymentDrawer
       open={open}
       setOpen={setOpen}
+      poolTableName={poolTableName}
       disabled={
         !isCashier || orderlines?.some((o) => o.orderlineStatus === "UNORDERED")
       }
-      poolTableName={poolTableName}
     >
       {status === "success" && (
         <PaymentForm
