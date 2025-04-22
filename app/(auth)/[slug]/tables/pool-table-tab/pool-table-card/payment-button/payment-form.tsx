@@ -351,7 +351,7 @@ export function PaymentForm({
               )}
             />
           )}
-          <footer className="flex flex-col-reverse md:absolute md:right-6 md:bottom-6 md:flex-row md:justify-end md:gap-x-4">
+          <footer className="flex flex-col-reverse md:absolute md:right-2 md:bottom-6 md:flex-row md:justify-end md:gap-x-4">
             <Button
               type="button"
               variant="secondary"
