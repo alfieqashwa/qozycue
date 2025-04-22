@@ -38,8 +38,10 @@ export function MenuOnMobile({
   className?: string
 }) {
   const pathname = usePathname()
+
   const [openDrawer, setOpenDrawer] = useState(false)
   const [showButton, setShowButton] = useState(true)
+
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // source -> https://chatgpt.com/c/68071492-2fb8-8002-a253-55426f122e9c
@@ -83,41 +85,43 @@ export function MenuOnMobile({
             showButton ? "opacity-100" : "pointer-events-none opacity-30",
           )}
         >
-          <Menu className="animate-pulse-slow size-24" />
+          <Menu className="animate-pulse-slow size-6" />
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="sm:hidden">
+      <DrawerContent className="text-center sm:hidden">
         <DrawerHeader>
           <DrawerTitle>Menu</DrawerTitle>
-          <DrawerDescription>Click to where ever you want.</DrawerDescription>
+          <DrawerDescription>Explore the site</DrawerDescription>
         </DrawerHeader>
         <div className="mx-auto grid grid-cols-4 gap-6">
           {links.map((link, index) => (
             <Popover key={`${index}-${link}`}>
               <PopoverTrigger asChild>
-                <Link
-                  href={
-                    !pathname.includes("dewa")
-                      ? `/${encodeURIComponent(slug)}${link.href}`
-                      : link.href
-                  }
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "icon" }),
-                    "text-primary/70 hover:text-primary size-16",
-                    !pathname.includes("dewa")
-                      ? pathname ===
-                          `/${encodeURIComponent(slug)}${link.href}` &&
-                          "bg-muted text-primary hover:bg-muted"
-                      : pathname === link.href &&
-                          "bg-muted text-primary hover:bg-muted",
-                    link.href === "/dashboard" && !isOwner && "hidden",
-                    link.href === "/products" && !isManager && "hidden",
-                    link.href === "/settings" && !isManager && "hidden",
-                  )}
-                >
-                  <link.icon size={32} className="size-8 shrink-0" />
-                  <span className="sr-only">{link.title}</span>
-                </Link>
+                <DrawerClose asChild>
+                  <Link
+                    href={
+                      !pathname.includes("dewa")
+                        ? `/${encodeURIComponent(slug)}${link.href}`
+                        : link.href
+                    }
+                    className={cn(
+                      buttonVariants({ variant: "ghost", size: "icon" }),
+                      "text-primary/70 hover:text-primary size-16",
+                      !pathname.includes("dewa")
+                        ? pathname ===
+                            `/${encodeURIComponent(slug)}${link.href}` &&
+                            "bg-muted text-primary hover:bg-muted"
+                        : pathname === link.href &&
+                            "bg-muted text-primary hover:bg-muted",
+                      link.href === "/dashboard" && !isOwner && "hidden",
+                      link.href === "/products" && !isManager && "hidden",
+                      link.href === "/settings" && !isManager && "hidden",
+                    )}
+                  >
+                    <link.icon size={32} className="size-8 shrink-0" />
+                    <span className="sr-only">{link.title}</span>
+                  </Link>
+                </DrawerClose>
               </PopoverTrigger>
               <PopoverContent
                 side="top"
@@ -145,9 +149,9 @@ export function MenuOnMobile({
             </span>
           </Link>
         </div>
-        <DrawerFooter>
+        <DrawerFooter className="px-10">
           <DrawerClose asChild>
-            <Button variant="secondary">Close</Button>
+            <Button className="shadow-md">Close</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
