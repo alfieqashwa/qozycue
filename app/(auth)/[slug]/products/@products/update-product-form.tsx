@@ -234,7 +234,7 @@ export function UpdateProductForm({
             <Button
               disabled={isPending || disabled}
               type="submit"
-              className="w-full md:w-auto"
+              className="w-full disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
             >
               Update Product
             </Button>
