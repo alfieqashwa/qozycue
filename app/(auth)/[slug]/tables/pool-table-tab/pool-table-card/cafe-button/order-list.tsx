@@ -90,7 +90,7 @@ export function OrderList({
           customerName={customerName}
         />
       </div>
-      <ScrollArea className="h-[calc(100vh_-_18rem)] px-8 py-2">
+      <ScrollArea className="h-[calc(100vh_-_18rem)] scroll-smooth px-8 py-2">
         <ul className="min-w-max">
           {orderlines
             .sort((p, q) => q.orderlineStatus.localeCompare(p.orderlineStatus))
