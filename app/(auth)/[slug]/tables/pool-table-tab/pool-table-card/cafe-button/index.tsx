@@ -36,6 +36,7 @@ export function CafeButton({
   order,
   poolTableName,
 }: CafeButtonProps) {
+  const [openDrawer, setOpenDrawer] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
 
   const { data: company } = useTanstackQuery({
@@ -69,7 +70,11 @@ export function CafeButton({
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   return (
-    <Drawer>
+    <Drawer
+      open={openDrawer}
+      onOpenChange={setOpenDrawer}
+      autoFocus={openDrawer}
+    >
       <DrawerTrigger asChild>
         <Button
           disabled={!order?._id}
@@ -86,21 +91,21 @@ export function CafeButton({
         </Button>
       </DrawerTrigger>
       <DrawerContent
-        className="h-[calc(100vh_-_5rem)] min-w-full"
+        className="min-h-[calc(100vh_-_8.5rem)] min-w-full md:min-h-[calc(100vh_-_10rem)]"
         onCloseAutoFocus={() => setSearchTerm("")}
       >
         {/* Title is a must!! Source -> https://github.com/shadcn-ui/ui/issues/4302 */}
-        <DrawerTitle className="hidden"></DrawerTitle>
-        <DrawerDescription className="hidden"></DrawerDescription>
-        <ScrollArea className="w-full p-2">
-          <Tabs defaultValue="food" className="mt-2">
+        <DrawerTitle className="hidden" />
+        <DrawerDescription className="hidden" />
+        <ScrollArea className="w-full scroll-smooth">
+          <Tabs defaultValue="food" className="my-4">
             <div className="flex space-x-4 px-4">
               <SearchProductInput
                 placeholder="Search..."
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
               />
-              <TabsList className="mb-4 md:mb-8">
+              <TabsList className="mb-2">
                 {["food", "drink", "others"].map((categoryName, i) => (
                   <TabsTrigger
                     value={categoryName}
@@ -113,7 +118,7 @@ export function CafeButton({
                 ))}
               </TabsList>
             </div>
-            <div className="flex space-x-4 xl:space-x-6 xl:px-4">
+            <div className="flex space-x-4 xl:px-4">
               {status !== "success" && <LoadingSpinner />}
               <TabsContent value="food" className="xl:w-8/12">
                 <WrapperProductMenuCard>
@@ -209,7 +214,12 @@ const WrapperProductMenuCard = (props: {
   className?: string
   children: React.ReactNode
 }) => (
-  <ScrollArea className={cn("h-svh", props.className)}>
+  <ScrollArea
+    className={cn(
+      "h-[calc(100vh_-_14.375rem)] scroll-smooth pb-2",
+      props.className,
+    )}
+  >
     <ul className="flex flex-wrap justify-center gap-6 px-4">
       {props.children}
     </ul>
