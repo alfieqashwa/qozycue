@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
 import { Menu } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { GiFrozenOrb } from "react-icons/gi"
 
 export function MenuOnMobile({
@@ -39,6 +39,34 @@ export function MenuOnMobile({
 }) {
   const pathname = usePathname()
   const [openDrawer, setOpenDrawer] = useState(false)
+  const [showButton, setShowButton] = useState(true)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // source -> https://chatgpt.com/c/68071492-2fb8-8002-a253-55426f122e9c
+  useEffect(() => {
+    const handleScroll = () => {
+      // Hide the button while scrolling
+      setShowButton(false)
+
+      // Clear existing timer
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+
+      // Set a new timer to show the button after scroll stops
+      scrollTimeoutRef.current = setTimeout(() => {
+        setShowButton(true)
+      }, 500) // Adjust delay as needed
+    }
+    window.addEventListener("scroll", handleScroll)
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
+  }, [])
 
   return (
     <Drawer
@@ -48,10 +76,14 @@ export function MenuOnMobile({
     >
       <DrawerTrigger asChild>
         <Button
-          variant="secondary"
-          className="text-primary size-10 shrink-0 font-semibold tracking-wider opacity-70 transition-opacity duration-300 ease-in-out hover:opacity-100"
+          variant="outline"
+          size={"lg"}
+          className={cn(
+            "text-primary font-semibold tracking-wider opacity-70 transition-opacity duration-500 ease-in-out hover:opacity-100",
+            showButton ? "opacity-100" : "pointer-events-none opacity-30",
+          )}
         >
-          <Menu className="animate-pulse" />
+          <Menu className="animate-pulse-slow size-24" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="sm:hidden">
