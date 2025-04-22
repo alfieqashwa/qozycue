@@ -64,7 +64,7 @@ export function OrderList({
   })
 
   return (
-    <div className="bg-card mt-1.5 rounded-2xl py-4 xl:w-4/12">
+    <div className="bg-card rounded-2xl py-4 xl:w-4/12">
       {!!poolTableName && (
         <h1 className="text-center whitespace-nowrap sm:text-lg md:text-xl">
           Table {poolTableName}
@@ -76,7 +76,7 @@ export function OrderList({
         </h1>
       )}
 
-      <div className="mx-8 mt-2 flex items-center justify-between space-x-2">
+      <div className="mx-8 flex items-center justify-between space-x-2">
         <ReprintOrder
           isManager={isManager}
           orderlines={orderlines}
@@ -90,7 +90,7 @@ export function OrderList({
           customerName={customerName}
         />
       </div>
-      <ScrollArea className="h-svh px-8 pt-4">
+      <ScrollArea className="h-[calc(100vh_-_18rem)] px-8 py-2">
         <ul className="min-w-max">
           {orderlines
             .sort((p, q) => q.orderlineStatus.localeCompare(p.orderlineStatus))
