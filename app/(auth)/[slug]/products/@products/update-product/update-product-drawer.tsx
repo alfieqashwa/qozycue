@@ -23,7 +23,7 @@ type UpdateProductDrawerProps = {
   children: React.ReactNode
 }
 
-export default function UpdateProductDrawer({
+export function UpdateProductDrawer({
   open,
   setOpen,
   managerAccessLevel,

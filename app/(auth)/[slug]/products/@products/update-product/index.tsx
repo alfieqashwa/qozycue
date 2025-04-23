@@ -6,9 +6,10 @@ import { Id } from "@/convex/_generated/dataModel"
 import { Status } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import dynamic from "next/dynamic"
 import { useState } from "react"
-import { UpdateProductForm } from "../update-product-form"
+import { UpdateProductDrawer } from "./update-product-drawer"
+import { UpdateProductForm } from "./update-product-form"
+import { UpdateProductSheet } from "./update-product-sheet"
 
 type UpdateProductProps = {
   id: Id<"products">
@@ -36,15 +37,6 @@ export function UpdateProduct({
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
   const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
     me.data?.role ?? "",
-  )
-
-  const UpdateProductSheet = dynamic(
-    () => import("./update-product-sheet.tsx"),
-    { ssr: false },
-  )
-  const UpdateProductDrawer = dynamic(
-    () => import("./update-product-drawer.tsx"),
-    { ssr: false },
   )
 
   if (isDesktop) {

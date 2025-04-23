@@ -23,7 +23,7 @@ type UpdateProductSheetProps = {
   children: React.ReactNode
 }
 
-export default function UpdateProductSheet({
+export function UpdateProductSheet({
   open,
   setOpen,
   managerAccessLevel,
