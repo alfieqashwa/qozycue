@@ -110,7 +110,7 @@
 
 ✅ Testing Stockable Feature
 ✅ Reconfig Detail Button on Transactions table
-❌ Customize update customer info on detail-button
+✅ Customize update customer info on detail-button
 
 ## Backlog (Future Plan)
 

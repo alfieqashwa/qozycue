@@ -14,12 +14,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
-import { Phone, User2 } from "lucide-react"
+import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { TransferTable } from "./transfer-table"
+import { UpdateCustomerInfo } from "./update-customer-info"
 
 type DetailButtonProps = {
   isCashier?: boolean
@@ -45,6 +47,8 @@ export function DetailButton({
   children,
 }: DetailButtonProps) {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+  console.log(pathname)
 
   const { data: poolTable } = useQuery({
     ...convexQuery(api.poolTables.findById, {
@@ -84,20 +88,16 @@ export function DetailButton({
               </DrawerDescription>
             </div>
           )}
-          <div className="space-y-1">
-            <DrawerDescription className="flex space-x-2 capitalize">
-              <User2 size={16} />
-              <span className="text-foreground font-medium">
-                {order?.customer.name ?? customerName}
-              </span>
-            </DrawerDescription>
-            <DrawerDescription className="flex space-x-2 text-xs capitalize">
-              <Phone size={16} />
-              <span className="text-muted-foreground font-medium tracking-wider">
-                {order?.customer.phone || customerPhone || "No phone"}
-              </span>
-            </DrawerDescription>
-          </div>
+          {order?._id && (
+            <UpdateCustomerInfo
+              orderId={order._id}
+              customerName={order?.customer.name ?? customerName ?? "Anonymous"}
+              customerPhone={
+                order?.customer.phone || customerPhone || "No Phone"
+              }
+              statusPayment={order.statusPayment as StatusPayment}
+            />
+          )}
         </DrawerHeader>
         <Tabs defaultValue={`${!!order?.poolRental._id ? "table" : "cafe"}`}>
           <div className="flex justify-between">
@@ -130,6 +130,7 @@ export function DetailButton({
                 endTime={poolTable.endTime}
                 poolRentalId={order.poolRental._id!}
                 setOpenDetailDrawer={setOpen}
+                pathname={pathname}
               />
             )}
           </div>

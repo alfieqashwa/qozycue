@@ -43,6 +43,7 @@ export function TransferTable({
   startTime,
   endTime,
   setOpenDetailDrawer,
+  pathname,
 }: {
   isCashier: boolean
   isManager: boolean
@@ -55,6 +56,7 @@ export function TransferTable({
   endTime: number | null
   poolRentalId: Id<"poolRentals">
   setOpenDetailDrawer: React.Dispatch<React.SetStateAction<boolean>>
+  pathname: string
 }) {
   const [selectedTableId, setSelectedTableId] = useState<Id<"poolTables"> | "">(
     "",
@@ -106,6 +108,7 @@ export function TransferTable({
           "text-muted-foreground pr-2 disabled:pointer-events-auto disabled:cursor-not-allowed",
           (isCashier || isManager) &&
             "hover:text-foreground transition-colors duration-300 ease-in-out",
+          pathname.includes("transactions") && "invisible",
         )}
       >
         <Tooltip>

@@ -380,7 +380,6 @@ export const columnsOrder: ColumnDef<
             poolTableName={poolRental.poolTable.name}
             statusPayment={statusPayment}
             customerName={customer?.name}
-            customerPhone={customer?.phone}
           />
         </div>
       )

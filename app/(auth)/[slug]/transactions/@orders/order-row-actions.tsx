@@ -18,24 +18,21 @@ import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Copy, Printer } from "lucide-react"
 import { useRef, useState } from "react"
 import { useReactToPrint } from "react-to-print"
-import { UpdateCustomer } from "./update-customer"
 
 export function OrderRowActions({
   orderId,
   statusPayment,
   poolTableName,
   customerName,
-  customerPhone,
 }: {
   orderId: Id<"orders">
   statusPayment: StatusPayment
   poolTableName?: string
   customerName?: string
-  customerPhone?: string | null
 }) {
   const [open, setOpen] = useState(false)
 
-  const { data: order, status: orderStatus } = useTanstackQuery({
+  const { data: order } = useTanstackQuery({
     ...convexQuery(api.orders.findById, { id: orderId }),
     enabled: Boolean(orderId),
   })
@@ -67,20 +64,6 @@ export function OrderRowActions({
           <Copy className="text-muted-foreground/70 group-hover:text-primary" />
           <span>Copy ID</span>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {/* //! I remove DropdownMenuItem because bug: cannot input space-bar when edit the input form */}
-        {/* <DropdownMenuItem
-          className="group"
-          onSelect={(e) => e.preventDefault()}
-        > */}
-        <UpdateCustomer
-          orderId={orderId}
-          statusPayment={statusPayment}
-          customerName={customerName}
-          customerPhone={customerPhone}
-          setOpen={setOpen}
-        />
-        {/* </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         {statusPayment === "PAID" && (
           <DropdownMenuItem
