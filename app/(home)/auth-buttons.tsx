@@ -17,7 +17,7 @@ export const AuthButtons = ({ slug }: { slug: string | null }) => {
       </AuthLoading>
       <Unauthenticated>
         <SignInButton variant={"outline"} size={"lg"} redirectTo="/portal">
-          <FcGoogle size={20} className="mr-2" />
+          <FcGoogle size={20} className="size-5" />
           <span className="whitespace-nowrap">Sign In</span>
         </SignInButton>
       </Unauthenticated>
