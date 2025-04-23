@@ -8,7 +8,7 @@ import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
-import { User2 } from "lucide-react"
+import { Phone, User2 } from "lucide-react"
 import { CafeButton } from "../pool-table-tab/pool-table-card/cafe-button"
 import { PaymentButton } from "../pool-table-tab/pool-table-card/payment-button"
 
@@ -62,15 +62,25 @@ const PendingOrderCard = ({
   order,
 }: PendingOrderCardProps) => (
   <section
-    className="rounded-2xl border-2 bg-card p-4 shadow-lg"
+    className="bg-card rounded-2xl border-2 p-4 shadow-lg"
     key={order._id}
   >
     <div className="flex justify-between space-x-2 text-sm font-medium tracking-widest">
       <h2 className="text-foreground">Table {poolTableName}</h2>
-      <h2 className="capitalize text-muted-foreground">
-        <User2 size={16} className="mr-1 inline-block" />
-        {order.customer.name}
-      </h2>
+      <article className="space-y-1">
+        <p className="flex space-x-2 capitalize">
+          <User2 size={16} />
+          <span className="text-foreground font-medium">
+            {order?.customer.name}
+          </span>
+        </p>
+        <p className="flex space-x-2 capitalize">
+          <Phone size={16} />
+          <span className="text-muted-foreground font-medium tracking-wider">
+            {order?.customer.phone || order.customer.phone || "No phone"}
+          </span>
+        </p>
+      </article>
     </div>
     <Tabs defaultValue="table">
       <TabsList className="mt-3">
