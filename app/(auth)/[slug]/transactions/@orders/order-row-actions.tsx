@@ -2,7 +2,6 @@
 
 import { PrintReceipt } from "@/components/print-receipt"
 import { Button } from "@/components/ui/button"
-import { DrawerTrigger } from "@/components/ui/drawer"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +15,9 @@ import { StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
-import { Copy, Printer, ScrollText } from "lucide-react"
+import { Copy, Printer } from "lucide-react"
 import { useRef, useState } from "react"
 import { useReactToPrint } from "react-to-print"
-import { DetailButton } from "../../tables/pool-table-tab/pool-table-card/detail-button"
 import { UpdateCustomer } from "./update-customer"
 
 export function OrderRowActions({
@@ -84,23 +82,6 @@ export function OrderRowActions({
         />
         {/* </DropdownMenuItem> */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="group"
-          onSelect={(e) => e.preventDefault()}
-        >
-          <DetailButton
-            orderId={orderId}
-            customerName={customerName}
-            customerPhone={customerPhone}
-            orderStatus={orderStatus}
-            order={order}
-          >
-            <DrawerTrigger className="group disabled:text-muted-foreground flex w-full items-center text-sm disabled:pointer-events-auto disabled:cursor-not-allowed">
-              <ScrollText className="text-muted-foreground group-hover:text-primary mr-2 h-4 w-4" />
-              <span>Detail</span>
-            </DrawerTrigger>
-          </DetailButton>
-        </DropdownMenuItem>
         {statusPayment === "PAID" && (
           <DropdownMenuItem
             className="group"

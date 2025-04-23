@@ -109,7 +109,8 @@
 ✅ Remove Free Product
 
 ✅ Testing Stockable Feature
-❌ Testing Free Packet
+✅ Reconfig Detail Button on Transactions table
+❌ Customize update customer info on detail-button
 
 ## Backlog (Future Plan)
 

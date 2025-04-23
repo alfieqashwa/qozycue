@@ -26,6 +26,7 @@ import {
 } from "lucide-react"
 import { ArchiveOrder } from "./archive-order"
 import { OrderRowActions } from "./order-row-actions"
+import { TriggerDetailButton } from "./trigger-detail-button"
 
 export const columnsOrder: ColumnDef<
   FunctionReturnType<typeof api.orders.findAllSortedByDate>[0]
@@ -63,7 +64,7 @@ export const columnsOrder: ColumnDef<
       const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[300px] truncate">
             {id?.slice(-8, id.length)}
           </span>
@@ -90,7 +91,7 @@ export const columnsOrder: ColumnDef<
             <Badge variant="secondary" className="px-3 py-1.5">
               <Star
                 className={cn(
-                  "mr-2 h-4 w-4 text-primary",
+                  "text-primary mr-2 h-4 w-4",
                   poolRental.isBooking && "animate-pulse",
                 )}
               />
@@ -203,7 +204,7 @@ export const columnsOrder: ColumnDef<
       const discount = Number(row.getValue("discount")) * 100
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Tags className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Tags className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[500px] truncate uppercase">
             {!!discount ? discount + "%" : ""}
           </span>
@@ -220,7 +221,7 @@ export const columnsOrder: ColumnDef<
       const tax = Number(row.getValue("tax")) * 100
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Tags className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Tags className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[500px] truncate uppercase">
             {!!tax ? tax + "%" : ""}
           </span>
@@ -241,7 +242,7 @@ export const columnsOrder: ColumnDef<
       const orderlineLen = Number(row.getValue("orderlines"))
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
           <span
             className={cn(
               orderlineLen === 0 && "text-muted-foreground",
@@ -267,11 +268,11 @@ export const columnsOrder: ColumnDef<
           <WrapperTooltip
             side="right"
             icon={
-              createdBy.role && <Key className="mr-2 h-4 w-4 text-primary" />
+              createdBy.role && <Key className="text-primary mr-2 h-4 w-4" />
             }
             content={createdBy.role as string}
           >
-            <User2 className="mr-2 h-4 w-4 animate-pulse text-primary" />
+            <User2 className="text-primary mr-2 h-4 w-4 animate-pulse" />
           </WrapperTooltip>
           <span className="max-w-[500px] truncate capitalize">
             {row.getValue("createdBy")}
@@ -280,22 +281,6 @@ export const columnsOrder: ColumnDef<
       )
     },
   },
-  // {
-  //   accessorKey: "role",
-  //   accessorFn: (row) => row.createdBy?.role,
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Role As" />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Badge variant="secondary" className="px-3 py-1.5">
-  //       <Key className="mr-2 h-4 w-4 text-primary" />
-  //       <span className="max-w-[500px] truncate">{row.getValue("role")}</span>
-  //     </Badge>
-  //   ),
-  //   filterFn: (row, id, value: string) => {
-  //     return value.includes(row.getValue(id))
-  //   },
-  // },
   {
     accessorKey: "customer",
     accessorFn: (row) => row.customer?.name,
@@ -306,7 +291,7 @@ export const columnsOrder: ColumnDef<
       const customer = row.getValue("customer") as string
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <UserRoundCheck className="mr-2 h-4 w-4 text-muted-foreground" />
+          <UserRoundCheck className="text-muted-foreground mr-2 h-4 w-4" />
           <span
             className={cn(
               customer === "anonymous" && "text-muted-foreground",
@@ -349,16 +334,29 @@ export const columnsOrder: ColumnDef<
           <WrapperTooltip
             side="right"
             icon={
-              updatedBy.role && <Key className="mr-2 h-4 w-4 text-primary" />
+              updatedBy.role && <Key className="text-primary mr-2 h-4 w-4" />
             }
             content={updatedBy.role as string}
           >
-            <User2 className="mr-2 h-4 w-4 animate-pulse text-primary" />
+            <User2 className="text-primary mr-2 h-4 w-4 animate-pulse" />
           </WrapperTooltip>
           <span className="max-w-[500px] truncate capitalize">
             {row.getValue("updatedBy")}
           </span>
         </Badge>
+      )
+    },
+  },
+  {
+    id: "detail",
+    cell: ({ row }) => {
+      const { _id, customer } = row.original
+      return (
+        <TriggerDetailButton
+          orderId={_id}
+          customerName={customer.name}
+          customerPhone={customer.phone}
+        />
       )
     },
   },
