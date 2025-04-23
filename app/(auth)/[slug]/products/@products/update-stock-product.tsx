@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -55,20 +55,16 @@ export function UpdateStockProduct({
       <Dialog>
         <WrapperTooltip content="Update Stock" side="left">
           <DialogTrigger
-            asChild
-            className={cn(colorBasedOnCategory, getStockBackgroundColor(stock))}
+            disabled={status === "enabled"}
+            className={cn(
+              colorBasedOnCategory,
+              getStockBackgroundColor(stock),
+              buttonVariants({ variant: "secondary" }),
+              "flex size-10 items-center justify-center hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100",
+              "shadow-md",
+            )}
           >
-            <Button
-              disabled={status === "enabled"}
-              variant={"secondary"}
-              size={"sm"}
-              className={cn(
-                "flex items-center justify-center hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100",
-                // status === "enabled" && getStockBackgroundColor(stock),
-              )}
-            >
-              <span className="">{countInStock}</span>
-            </Button>
+            <span className="">{countInStock}</span>
           </DialogTrigger>
         </WrapperTooltip>
         <DialogContent className="sm:max-w-[425px]">
