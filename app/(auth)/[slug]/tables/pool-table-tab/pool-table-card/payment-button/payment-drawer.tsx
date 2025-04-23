@@ -37,8 +37,8 @@ export default function PaymentDrawer({
         </Button>
       </DrawerTrigger>
 
-      <DrawerContent className="bg-card min-h-[calc(100vh_-_7rem)] px-2">
-        <DrawerHeader>
+      <DrawerContent className="bg-card min-h-[calc(100vh_-_3rem)]">
+        <DrawerHeader className="-mb-2 text-center">
           <DrawerTitle className="whitespace-nowrap">
             {poolTableName ? `Table ${poolTableName}` : "Cafe Only"}
           </DrawerTitle>

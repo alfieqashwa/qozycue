@@ -260,9 +260,10 @@ export function PaymentForm({
     })
   }
 
+  // <ScrollArea className="thom h-[calc(100vh_-_10rem)] text-sm md:h-[calc(100vh_-_8rem)] md:text-base">
   return (
-    <ScrollArea className="text-sm md:mt-4 md:min-h-[calc(100vh_-_6rem)] md:text-base">
-      <div className="flex justify-center md:justify-end md:pr-5 md:pb-2">
+    <section className="px-6 text-sm md:text-base">
+      <div className="flex justify-center md:justify-end">
         <div className="hidden">
           <PrintReceipt
             orderId={orderId}
@@ -293,7 +294,7 @@ export function PaymentForm({
         <form
           id="payment"
           onSubmit={form.handleSubmit(onSubmit)}
-          className="gap-y-2 px-6 py-1"
+          className="gap-y-2 py-1"
         >
           {/* Tax */}
           <PaymentFormField
@@ -319,6 +320,7 @@ export function PaymentForm({
                 type="number"
                 placeholder="input uang dari customer"
                 onChange={(e) => handleCustomerMoney(e.target.value)}
+                className="text-sm md:text-base"
               />
               <article className="text-muted-foreground grid grid-cols-2 gap-x-2 py-4 text-sm font-medium">
                 <p className="text-right">Diterima:</p>
@@ -351,7 +353,7 @@ export function PaymentForm({
               )}
             />
           )}
-          <footer className="flex flex-col-reverse md:absolute md:right-2 md:bottom-6 md:flex-row md:justify-end md:gap-x-4">
+          <footer className="flex flex-col-reverse md:absolute md:right-6 md:bottom-4 md:flex-row md:justify-end md:gap-x-4">
             <Button
               type="button"
               variant="secondary"
@@ -377,7 +379,7 @@ export function PaymentForm({
           </footer>
         </form>
       </Form>
-    </ScrollArea>
+    </section>
   )
 }
 
@@ -396,7 +398,7 @@ const PaymentInformation = ({
   formattedSubTotal: string
   formattedFixedGrandTotal: string
 }) => (
-  <section className="px-6">
+  <section className="mt-2">
     <InfoRow label="customer name:" value={customerName ? customerName : "-"} />
     <InfoRow
       label="customer phone:"

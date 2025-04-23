@@ -37,7 +37,7 @@ export default function PaymentSheet({
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="bg-card h-svh min-w-full px-4 sm:min-w-[480px]">
+      <SheetContent className="bg-card min-w-full sm:min-w-[480px]">
         <SheetHeader>
           <SheetTitle className="whitespace-nowrap">
             {poolTableName ? `Table ${poolTableName}` : "Cafe Only"}
