@@ -5,6 +5,7 @@ import { Rate } from "@/types"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
+import { motion } from "motion/react"
 import { type CSSProperties, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { TimeCard } from "./time-card"
@@ -105,7 +106,7 @@ export function Countdown({
 
   return (
     <>
-      <div
+      <motion.div
         className={cn(
           "group radial-progress absolute inset-x-1/2 inset-y-1/2 -translate-x-1/2 -translate-y-1/2 text-sky-400",
           localTime?.hours === 0 && localTime.minutes < 5 && "text-rose-500",
@@ -118,6 +119,13 @@ export function Countdown({
             "--thickness": "0.25rem",
           } as CSSProperties
         }
+        initial={{ "--value": 0 }}
+        animate={{ "--value": percentageRemaining }}
+        transition={{
+          delay: 0.5,
+          duration: 1,
+          ease: "easeInOut",
+        }}
       >
         <div className="relative">
           {!!poolRentalId && duration && (
@@ -144,7 +152,7 @@ export function Countdown({
             </span>
           </p>
         </div>
-      </div>
+      </motion.div>
       {!stopCount && (
         <TimeCard
           hours={localTime?.hours as number}
