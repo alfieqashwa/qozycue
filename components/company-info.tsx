@@ -1,8 +1,6 @@
 "use client"
 
-import { buttonVariants } from "@/components/ui/button"
 import { api } from "@/convex/_generated/api"
-import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { useToggleStore } from "@/store/toggle-store"
 import { convexQuery } from "@convex-dev/react-query"
@@ -34,7 +32,7 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
   const displayPathname = configureDisplayPathname(pathname, data)
 
   return (
-    <div className="flex items-center space-x-4 pl-5.5">
+    <div className="flex items-center space-x-3 pl-4 md:pl-5.5">
       <Link href={`/${company?.slug}`}>
         <Building2
           className={cn("text-primary mr-2 size-8 hover:cursor-pointer")}
