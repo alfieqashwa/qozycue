@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react"
 
 import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 
 type Direction = "TOP" | "LEFT" | "BOTTOM" | "RIGHT"
 
@@ -97,7 +97,7 @@ export function HoverBorderGradient({
         }}
         transition={{ ease: "linear", duration: duration ?? 1 }}
       />
-      <div className="z-1 absolute inset-[2px] flex-none rounded-[100px] bg-black" />
+      <div className="absolute inset-[2px] z-1 flex-none rounded-[100px] bg-black" />
     </Tag>
   )
 }
