@@ -2,6 +2,7 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -57,11 +58,11 @@ export function UpdateStockProduct({
           <DialogTrigger
             disabled={status === "enabled"}
             className={cn(
-              colorBasedOnCategory,
               getStockBackgroundColor(stock),
               buttonVariants({ variant: "secondary" }),
-              "flex size-10 items-center justify-center hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100",
-              "shadow-md",
+              colorBasedOnCategory,
+              "flex size-9 items-center justify-center shadow-md hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100",
+              getStockBackgroundColor(stock),
             )}
           >
             <span className="">{countInStock}</span>
@@ -73,9 +74,9 @@ export function UpdateStockProduct({
               Update Stock{" "}
               <span className={cn(colorBasedOnCategory, "capitalize")}>
                 {name}
-              </span>{" "}
-              <span>({stock})</span>
+              </span>
             </DialogTitle>
+            <DialogDescription />
           </DialogHeader>
           <form
             onSubmit={(e) => {

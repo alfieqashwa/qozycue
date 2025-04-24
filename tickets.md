@@ -110,8 +110,9 @@
 ✅ Testing Stockable Feature
 ✅ Reconfig Detail Button on Transactions table
 ✅ Customize update customer info on detail-button
-❌ Coloring Stock on Products Table when it <=5 or eq to 0
-❌ Add Copy Order & Rental ID on Detail Drawer (I don't kno why those can't copied )
+✅ Animate Timer
+✅ Coloring Stock on Products Table when it <=5 or eq to 0
+❌ Change dewa -> zenith
 
 ## Backlog (Future Plan)
 
