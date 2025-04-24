@@ -59,7 +59,7 @@ export const create = zMutation({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "MANAGER"
     ) {

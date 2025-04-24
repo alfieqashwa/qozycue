@@ -58,8 +58,10 @@ export function WrapperDashboard({
 
   if (!hasHydrated) return null
 
-  const ownerAccessLevel = ["DEWA", "ADMIN", "OWNER"].includes(user.role ?? "")
-  const managerAccessLevel = ["DEWA", "ADMIN", "OWNER", "MANAGER"].includes(
+  const ownerAccessLevel = ["ZENITH", "ADMIN", "OWNER"].includes(
+    user.role ?? "",
+  )
+  const managerAccessLevel = ["ZENITH", "ADMIN", "OWNER", "MANAGER"].includes(
     user.role ?? "",
   )
 
@@ -106,14 +108,14 @@ export function WrapperDashboard({
               <TooltipTrigger asChild>
                 <Link
                   href={
-                    pathname.includes("dewa")
+                    pathname.includes("zenith")
                       ? `/${encodeURIComponent(user.company?.slug as string)}/dashboard`
-                      : `/dewa`
+                      : `/zenith`
                   }
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
                     "relative size-12",
-                    user.role === "DEWA" ? "block" : "hidden",
+                    user.role === "ZENITH" ? "block" : "hidden",
                   )}
                 >
                   <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -126,7 +128,7 @@ export function WrapperDashboard({
                 className="bg-muted flex items-center gap-4"
               >
                 <span className="text-primary text-sm tracking-wider capitalize">
-                  {pathname.includes("dewa") ? user.company?.name : "dewa"}
+                  {pathname.includes("zenith") ? user.company?.name : "zenith"}
                 </span>
               </TooltipContent>
             </Tooltip>
@@ -149,7 +151,7 @@ export function WrapperDashboard({
           isManager={managerAccessLevel}
           slug={user.company?.slug as string}
           links={linkList}
-          dewaRole={user.role === "DEWA"}
+          zenithRole={user.role === "ZENITH"}
           className={classNames}
         />
       </footer>

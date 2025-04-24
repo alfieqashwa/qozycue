@@ -2,10 +2,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { type Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Dewa",
+  title: "Zenith",
 }
 
-export default function DewaPage() {
+export default function ZenithPage() {
   return (
     <Tabs defaultValue="main-dashboard" className="mt-2">
       <TabsList className="mb-3">

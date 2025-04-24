@@ -6,7 +6,7 @@ export const userSchema = z.object({
   name: z.string().optional(),
   email: z.string().email(),
   role: z
-    .enum(["DEWA", "ADMIN", "OWNER", "MANAGER", "CASHIER", "USER"])
+    .enum(["ZENITH", "ADMIN", "OWNER", "MANAGER", "CASHIER", "USER"])
     .optional(),
   companyId: zid("companies").optional(),
 })

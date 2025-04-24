@@ -45,15 +45,16 @@ export const createCompanySchema = companySchema.omit({
   id: true,
   logo: true,
   subscription: true,
+  isStockable: true,
 })
 export type TCreateCompany = z.infer<typeof createCompanySchema>
 
-export const updateCompanyDewaSchema = companySchema.omit({
+export const updateCompanyZenithSchema = companySchema.omit({
   logo: true,
   isPublished: true,
   isStockable: true,
 })
-export type TUpdateCompanyDewa = z.infer<typeof updateCompanyDewaSchema>
+export type TUpdateCompanyZenith = z.infer<typeof updateCompanyZenithSchema>
 
 export const updateCompanyByAdminSchema = companySchema.pick({
   id: true,

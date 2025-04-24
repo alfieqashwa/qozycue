@@ -24,7 +24,7 @@ export function UserProfile({
   preloadedSession: Preloaded<typeof api.sessions.find>
 }) {
   const { user } = usePreloadedQuery(preloadedSession)
-  const adminAccessLevel = ["DEWA", "ADMIN"].includes(user.role ?? "")
+  const adminAccessLevel = ["ZENITH", "ADMIN"].includes(user.role ?? "")
 
   const bookingOrders = useTanstackQuery({
     ...convexQuery(api.orders.findAllBookingByCompanyId, {

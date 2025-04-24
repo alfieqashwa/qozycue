@@ -1,6 +1,6 @@
 "use client"
 
-import { ActiveUser } from "@/app/(auth)/dewa/companies/@userTab/active-user"
+import { ActiveUser } from "@/app/(auth)/zenith/companies/@userTab/active-user"
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Checkbox } from "@/components/ui/checkbox"
 import { api } from "@/convex/_generated/api"
@@ -57,7 +57,7 @@ export const columnsTeam: ColumnDef<
                 alt="username"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="rounded-full bg-background object-cover text-muted-foreground ring-2 ring-ring ring-offset-2 ring-offset-background"
+                className="bg-background text-muted-foreground ring-ring ring-offset-background rounded-full object-cover ring-2 ring-offset-2"
               />
             </span>
           </div>
@@ -68,7 +68,7 @@ export const columnsTeam: ColumnDef<
             <span className="relative ml-1">
               <User
                 size={40}
-                className="rounded-full bg-background object-cover p-1 text-muted-foreground ring-2 ring-ring ring-offset-2 ring-offset-background"
+                className="bg-background text-muted-foreground ring-ring ring-offset-background rounded-full object-cover p-1 ring-2 ring-offset-2"
               />
             </span>
           </div>
@@ -95,7 +95,7 @@ export const columnsTeam: ColumnDef<
     ),
     cell: ({ row }) => (
       <div className="flex items-center">
-        <Mail className="mr-2 h-4 w-4 text-muted-foreground" />
+        <Mail className="text-muted-foreground mr-2 h-4 w-4" />
         <span>{row.getValue("email")}</span>
       </div>
     ),
@@ -110,7 +110,7 @@ export const columnsTeam: ColumnDef<
       if (!role) return null
       return (
         <div className="flex items-center">
-          <Key className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Key className="text-muted-foreground mr-2 h-4 w-4" />
           <span>{row.getValue("role")}</span>
         </div>
       )
@@ -128,7 +128,7 @@ export const columnsTeam: ColumnDef<
     cell: ({ row }) => {
       return (
         <div className="flex items-center">
-          <Building2 className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Building2 className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="whitespace-nowrap capitalize">
             {row.getValue("companyName")}
           </span>

@@ -13,10 +13,10 @@ export function PoolTableTab({
   preloadedSession: Preloaded<typeof api.sessions.find>
 }) {
   const { user } = usePreloadedQuery(preloadedSession)
-  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+  const managerAccessLevel = ["ZENITH", "ADMIN", "MANAGER"].includes(
     user.role ?? "",
   )
-  const cashierAccessLevel = ["DEWA", "ADMIN", "CASHIER"].includes(
+  const cashierAccessLevel = ["ZENITH", "ADMIN", "CASHIER"].includes(
     user.role ?? "",
   )
 

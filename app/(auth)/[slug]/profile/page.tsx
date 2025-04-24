@@ -20,7 +20,7 @@ export default async function ProfilePage() {
 
   const session = preloadedQueryResult(preloadedSession)
   const adminAccessLevel =
-    session.user.role === "ADMIN" || session.user.role === "DEWA"
+    session.user.role === "ADMIN" || session.user.role === "ZENITH"
 
   return (
     <div className="relative">
@@ -38,7 +38,7 @@ export default async function ProfilePage() {
           </TabsContent>
         )}
       </Tabs>
-      {session.user.role !== "DEWA" && <ContactDeveloperWhatsapp />}
+      {session.user.role !== "ZENITH" && <ContactDeveloperWhatsapp />}
     </div>
   )
 }

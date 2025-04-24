@@ -36,7 +36,7 @@ export function RollbackOrder({ id }: RolebackOrderProps) {
     but only Manager can delete them.
   */
   const managerAndCashierAccessLevel = [
-    "DEWA",
+    "ZENITH",
     "ADMIN",
     "MANAGER",
     "CASHIER",

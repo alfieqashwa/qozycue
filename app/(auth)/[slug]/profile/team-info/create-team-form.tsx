@@ -111,10 +111,10 @@ export function CreateTeamForm({
                 <SelectContent>
                   {/* ADMIN CANNOT create a new team where the role is "ADMIN" */}
                   {profile.status === "success" &&
-                  profile.data?.role === "DEWA" ? (
+                  profile.data?.role === "ZENITH" ? (
                     <SelectGroup>
                       {roles
-                        .filter((r) => r.value !== "DEWA")
+                        .filter((r) => r.value !== "ZENITH")
                         .map((role, i) => (
                           <SelectItem value={role.value} key={i}>
                             {role.label}
@@ -125,7 +125,7 @@ export function CreateTeamForm({
                     <SelectGroup>
                       {roles
                         .filter(
-                          (r) => r.value !== "DEWA" && r.value !== "ADMIN",
+                          (r) => r.value !== "ZENITH" && r.value !== "ADMIN",
                         )
                         .map((role, i) => (
                           <SelectItem value={role.value} key={i}>

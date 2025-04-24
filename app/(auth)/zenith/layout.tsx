@@ -1,11 +1,11 @@
-import { DEWA_LINK_LIST } from "@/app/constants/link-list"
+import { ZENITH_LINK_LIST } from "@/app/constants/link-list"
 import { WrapperDashboard } from "@/components/wrapper-dashboard"
 import { api } from "@/convex/_generated/api"
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { preloadedQueryResult, preloadQuery } from "convex/nextjs"
 import { redirect } from "next/navigation"
 
-export default async function DewaLayout({
+export default async function ZenithLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -15,11 +15,11 @@ export default async function DewaLayout({
   const session = preloadedQueryResult(preloadedSession)
 
   if (!session) redirect("/signin")
-  if (session.user.role !== "DEWA") redirect("/portal/")
+  if (session.user.role !== "ZENITH") redirect("/portal/")
 
   return (
     <WrapperDashboard
-      linkList={DEWA_LINK_LIST}
+      linkList={ZENITH_LINK_LIST}
       preloadedSession={preloadedSession}
       classNames="size-9 shrink-0 animate-spin-slow text-foreground"
     >

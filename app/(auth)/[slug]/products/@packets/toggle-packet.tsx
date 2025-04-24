@@ -22,7 +22,7 @@ export function TogglePacket({
 }) {
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
   const managerAccessLevel =
-    me.data?.role === "DEWA" ||
+    me.data?.role === "ZENITH" ||
     me.data?.role === "ADMIN" ||
     me.data?.role === "MANAGER"
 

@@ -35,10 +35,10 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       }
 
       // Implement your own user creation:
-      const isDewa = args.profile.email === process.env.DEWA_EMAIL!
+      const isZenith = args.profile.email === process.env.ZENITH_EMAIL!
       return await ctx.db.insert("users", {
         ...args.profile,
-        role: isDewa ? "DEWA" : "USER",
+        role: isZenith ? "ZENITH" : "USER",
       })
     },
   },

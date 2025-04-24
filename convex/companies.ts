@@ -6,7 +6,7 @@ import {
   toggleIsPublishedSchema,
   toggleIsStockableSchema,
   updateCompanyByAdminSchema,
-  updateCompanyDewaSchema,
+  updateCompanyZenithSchema,
 } from "../types/schema/company-schema"
 import { mutation, query } from "./_generated/server"
 import {
@@ -126,10 +126,10 @@ export const create = zMutation({
 })
 
 export const update = zMutation({
-  args: { updateCompanyDewaSchema },
+  args: { updateCompanyZenithSchema },
   handler: async (
     ctx,
-    { updateCompanyDewaSchema: { id, name, phone, location, subscription } },
+    { updateCompanyZenithSchema: { id, name, phone, location, subscription } },
   ) => {
     await superAdminProcedure(ctx)
 

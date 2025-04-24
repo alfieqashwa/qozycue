@@ -30,7 +30,7 @@ export function ArchiveOrderList<TData>({
   const [open, setOpen] = useState(false)
 
   const { data: me, status } = useTanstackQuery(convexQuery(api.users.me, {}))
-  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+  const managerAccessLevel = ["ZENITH", "ADMIN", "MANAGER"].includes(
     me?.role ?? "",
   )
 

@@ -35,7 +35,7 @@ export function UpdateProduct({
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
-  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+  const managerAccessLevel = ["ZENITH", "ADMIN", "MANAGER"].includes(
     me.data?.role ?? "",
   )
 

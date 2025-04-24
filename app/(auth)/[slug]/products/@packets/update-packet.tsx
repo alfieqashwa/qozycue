@@ -38,7 +38,7 @@ export function UpdatePacket({
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
   const managerAccessLevel =
     me.status === "success" &&
-    (me.data?.role === "DEWA" ||
+    (me.data?.role === "ZENITH" ||
       me.data?.role === "ADMIN" ||
       me.data?.role === "MANAGER")
 

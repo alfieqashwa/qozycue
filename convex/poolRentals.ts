@@ -154,7 +154,7 @@ export const _sumRevenue = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["DEWA", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     const orders =
@@ -224,7 +224,7 @@ export const _sumByRate = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["DEWA", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     const orders =
@@ -278,7 +278,7 @@ export const _groupByPoolTableId = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["DEWA", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     // Step 1: Fetch all paid orders for the user's company

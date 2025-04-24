@@ -21,7 +21,7 @@ export function TeamInfo({
       companyId: session.user.companyId as Id<"companies">,
     }),
     enabled: Boolean(session.user.companyId),
-    select: (users) => users.filter((user) => user.role !== "DEWA"),
+    select: (users) => users.filter((user) => user.role !== "ZENITH"),
   })
 
   if (users.status !== "success") return <LoadingSpinner />

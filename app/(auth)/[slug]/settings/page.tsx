@@ -28,7 +28,7 @@ export default async function SettingPage() {
   if (!session) redirect("/signin")
 
   const companyId = session.user.companyId as Id<"companies">
-  const isSuperAdmin = session.user.role === "DEWA"
+  const isSuperAdmin = session.user.role === "ZENITH"
   const isAdmin = session.user.role === "ADMIN"
 
   if (session.user.role === "CASHIER")

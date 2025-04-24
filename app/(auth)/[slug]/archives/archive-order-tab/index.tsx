@@ -20,7 +20,7 @@ export function ArchiveOrderTab({
   const { user } = usePreloadedQuery(preloadSession)
   const managerAndCashierAccessLevel = [
     "ADMIN",
-    "DEWA",
+    "ZENITH",
     "MANAGER",
     "CASHIER",
   ].includes(user.role ?? "")

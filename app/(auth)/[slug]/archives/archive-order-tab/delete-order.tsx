@@ -31,7 +31,7 @@ export function DeleteOrder({ id }: DeleteOrderProps) {
   const { data: me, status } = useTanstackQuery(convexQuery(api.users.me, {}))
 
   // Only Manager can delete them.
-  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+  const managerAccessLevel = ["ZENITH", "ADMIN", "MANAGER"].includes(
     me?.role ?? "",
   )
   const { mutate, isPending } = useMutation({

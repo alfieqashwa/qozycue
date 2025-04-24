@@ -49,14 +49,14 @@ export function Nav({
               <TooltipTrigger asChild>
                 <Link
                   href={
-                    !pathname.includes("dewa")
+                    !pathname.includes("zenith")
                       ? `/${encodeURIComponent(slug)}${link.href}`
                       : link.href
                   }
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
                     "text-primary/70 hover:text-primary size-12",
-                    !pathname.includes("dewa")
+                    !pathname.includes("zenith")
                       ? pathname ===
                           `/${encodeURIComponent(slug)}${link.href}` &&
                           "bg-muted text-primary hover:bg-muted"
@@ -88,14 +88,14 @@ export function Nav({
             <Link
               key={index}
               href={
-                !pathname.includes("dewa")
+                !pathname.includes("zenith")
                   ? `/${encodeURIComponent(slug)}${link.href}`
                   : link.href
               }
               className={cn(
                 buttonVariants({ variant: "ghost", size: "default" }),
                 "text-primary/70 hover:text-primary h-12 justify-start",
-                !pathname.includes("dewa")
+                !pathname.includes("zenith")
                   ? pathname === `/${encodeURIComponent(slug)}${link.href}` &&
                       "bg-muted text-primary hover:bg-muted"
                   : pathname === link.href &&

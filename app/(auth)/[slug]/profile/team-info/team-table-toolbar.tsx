@@ -19,7 +19,7 @@ export function TeamTableToolbar<TData>({
 
   return (
     <div className="flex flex-col space-y-2 md:flex-row md:justify-between md:space-y-0">
-      <div className="flex w-full flex-col items-end space-x-2 space-y-2 md:flex-1 md:flex-row md:items-center md:space-y-0">
+      <div className="flex w-full flex-col items-end space-y-2 space-x-2 md:flex-1 md:flex-row md:items-center md:space-y-0">
         <Input
           placeholder="Filter Email..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
@@ -32,7 +32,7 @@ export function TeamTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("role")}
             title="Role"
-            options={roles.filter((r) => r.value !== "DEWA")}
+            options={roles.filter((r) => r.value !== "ZENITH")}
           />
         )}
         {isFiltered && (

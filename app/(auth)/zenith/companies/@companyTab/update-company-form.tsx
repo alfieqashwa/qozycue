@@ -21,8 +21,8 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { Subscription } from "@/types"
 import {
-  updateCompanyDewaSchema,
-  type TUpdateCompanyDewa,
+  updateCompanyZenithSchema,
+  type TUpdateCompanyZenith,
 } from "@/types/schema/company-schema"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -62,8 +62,8 @@ export function UpdateCompanyForm({
   })
 
   // 1. Define form.
-  const form = useForm<TUpdateCompanyDewa>({
-    resolver: zodResolver(updateCompanyDewaSchema),
+  const form = useForm<TUpdateCompanyZenith>({
+    resolver: zodResolver(updateCompanyZenithSchema),
     defaultValues: {
       id,
       name,
@@ -74,11 +74,11 @@ export function UpdateCompanyForm({
   })
 
   // 2. Define a submit handler.
-  function onSubmit(values: TUpdateCompanyDewa) {
+  function onSubmit(values: TUpdateCompanyZenith) {
     const { name, phone, location, subscription } = values
 
     mutate({
-      updateCompanyDewaSchema: {
+      updateCompanyZenithSchema: {
         id,
         name: name.toLowerCase(),
         phone,

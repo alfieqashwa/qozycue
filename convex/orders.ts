@@ -490,7 +490,7 @@ export const _sumRevenue = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "OWNER"
     )
@@ -535,7 +535,7 @@ export const _groupByPaymentMethod = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "OWNER"
     )
@@ -597,7 +597,7 @@ export const printTransaction = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "OWNER"
     )
@@ -692,7 +692,7 @@ export const startTimer = zMutation({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "CASHIER"
     )
@@ -952,7 +952,7 @@ export const payment = zMutation({
     const user = userId !== null ? await ctx.db.get(userId) : null
 
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "CASHIER"
     )

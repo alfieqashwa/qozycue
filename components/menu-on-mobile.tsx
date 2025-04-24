@@ -27,14 +27,14 @@ export function MenuOnMobile({
   isManager,
   slug,
   links,
-  dewaRole,
+  zenithRole,
   className,
 }: {
   isOwner: boolean
   isManager: boolean
   slug: string
   links: TLinkList[]
-  dewaRole: boolean
+  zenithRole: boolean
   className?: string
 }) {
   const pathname = usePathname()
@@ -100,14 +100,14 @@ export function MenuOnMobile({
                 <DrawerClose asChild>
                   <Link
                     href={
-                      !pathname.includes("dewa")
+                      !pathname.includes("zenith")
                         ? `/${encodeURIComponent(slug)}${link.href}`
                         : link.href
                     }
                     className={cn(
                       buttonVariants({ variant: "ghost", size: "icon" }),
                       "text-primary/70 hover:text-primary size-16",
-                      !pathname.includes("dewa")
+                      !pathname.includes("zenith")
                         ? pathname ===
                             `/${encodeURIComponent(slug)}${link.href}` &&
                             "bg-muted text-primary hover:bg-muted"
@@ -134,14 +134,14 @@ export function MenuOnMobile({
 
           <Link
             href={
-              pathname.includes("dewa")
+              pathname.includes("zenith")
                 ? `/${encodeURIComponent(slug)}/dashboard`
-                : `/dewa`
+                : `/zenith`
             }
             className={cn(
               buttonVariants({ variant: "ghost", size: "icon" }),
               "relative size-16",
-              dewaRole ? "block" : "hidden",
+              zenithRole ? "block" : "hidden",
             )}
           >
             <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">

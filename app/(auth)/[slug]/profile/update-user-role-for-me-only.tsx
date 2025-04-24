@@ -79,7 +79,7 @@ export function UpdateUserRoleForMeOnly({
           render={({ field }) => (
             <FormItem>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormLabel className="text-base text-primary">Role</FormLabel>
+                <FormLabel className="text-primary text-base">Role</FormLabel>
                 <FormControl className="w-[180px]">
                   <SelectTrigger>
                     <SelectValue placeholder="Select Role" />
@@ -87,7 +87,7 @@ export function UpdateUserRoleForMeOnly({
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    {["DEWA", "ADMIN", "OWNER", "MANAGER", "CASHIER"].map(
+                    {["ZENITH", "ADMIN", "OWNER", "MANAGER", "CASHIER"].map(
                       (role, i) => (
                         <SelectItem value={role} key={`${i}-${role}`}>
                           {role}

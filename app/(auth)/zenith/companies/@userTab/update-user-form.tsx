@@ -106,7 +106,7 @@ export function UpdateUserForm({
                   <SelectGroup>
                     <SelectLabel>Role</SelectLabel>
                     {roles
-                      .filter((role) => isSuperAdmin || role.value !== "DEWA") // short-circuiting || operator
+                      .filter((role) => isSuperAdmin || role.value !== "ZENITH") // short-circuiting || operator
                       .map((role, i) => (
                         <SelectItem
                           value={role.value}

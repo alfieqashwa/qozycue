@@ -23,7 +23,7 @@ export default async function Page() {
 
   // if user is not a USER & has a company, then redirect to their respective page
   if (session.user.role !== "USER" && !!session.user.company?.slug) {
-    if (session.user.role === "DEWA") redirect("/dewa/")
+    if (session.user.role === "ZENITH") redirect("/zenith/")
     if (session.user.role === "ADMIN" || session.user.role === "OWNER")
       redirect(`/${encodeURIComponent(session.user.company.slug)}/dashboard/`)
     if (session.user.role === "MANAGER")
@@ -65,10 +65,10 @@ export default async function Page() {
       </p>
       <p className="text-center">Terimakasih.</p>
 
-      {/* only show for dewa user when it has no company yet */}
-      {session.user.role === "DEWA" && (
+      {/* only show for zenith user when it has no company yet */}
+      {session.user.role === "ZENITH" && (
         <div className="absolute right-2 bottom-2">
-          <Link href="/dewa/">
+          <Link href="/zenith/">
             <LinkIcon />
           </Link>
         </div>

@@ -1,5 +1,5 @@
 export type Role =
-  | "DEWA"
+  | "ZENITH"
   | "ADMIN"
   | "OWNER"
   | "MANAGER"
@@ -7,7 +7,7 @@ export type Role =
   | "USER"
   | undefined
 export enum RoleEnum {
-  DEWA,
+  ZENITH,
   ADMIN,
   MANAGER,
   OWNER,

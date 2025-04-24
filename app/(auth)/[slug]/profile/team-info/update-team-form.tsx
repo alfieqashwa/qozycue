@@ -89,7 +89,7 @@ export const UpdateTeamForm = ({ id, role, setOpen }: UpdateTeamFormProps) => {
                   <SelectGroup>
                     <SelectLabel>Role</SelectLabel>
                     {roles
-                      .filter((r) => r.value !== "DEWA")
+                      .filter((r) => r.value !== "ZENITH")
                       .map((role, i) => (
                         <SelectItem value={role.value} key={`${role}-${i}`}>
                           {role.label}

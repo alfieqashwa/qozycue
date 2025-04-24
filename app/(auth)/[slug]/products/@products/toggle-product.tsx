@@ -21,7 +21,7 @@ export function ToggleProduct({
   status: Status
 }) {
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
-  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+  const managerAccessLevel = ["ZENITH", "ADMIN", "MANAGER"].includes(
     me.data?.role ?? "",
   )
 

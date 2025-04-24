@@ -19,10 +19,10 @@ type CafeOnlyTabProps = {
 }
 export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
   const { user } = usePreloadedQuery(preloadedSession)
-  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+  const managerAccessLevel = ["ZENITH", "ADMIN", "MANAGER"].includes(
     user.role ?? "",
   )
-  const cashierAccessLevel = ["DEWA", "ADMIN", "CASHIER"].includes(
+  const cashierAccessLevel = ["ZENITH", "ADMIN", "CASHIER"].includes(
     user.role ?? "",
   )
 
@@ -46,7 +46,7 @@ export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
         </div>
       ) : (
         <div>
-          <p className="text-center text-muted-foreground sm:text-xl">
+          <p className="text-muted-foreground text-center sm:text-xl">
             No order found ...
           </p>
         </div>
@@ -66,15 +66,15 @@ const CafeOnlyCard = ({
   managerAccessLevel,
   cashierAccessLevel,
 }: CafeOnlyTabCardProps) => (
-  <div className="rounded-xl border-2 bg-card px-5 py-4" key={order._id}>
+  <div className="bg-card rounded-xl border-2 px-5 py-4" key={order._id}>
     <article className="flex items-center justify-between truncate py-2 text-xs md:text-sm">
-      <h1 className="truncate font-semibold capitalize text-foreground">
-        <User2 size={16} className="mr-1 inline text-muted-foreground" />
+      <h1 className="text-foreground truncate font-semibold capitalize">
+        <User2 size={16} className="text-muted-foreground mr-1 inline" />
         {order.customer?.name}
       </h1>
       {!!order.customer?.phone && (
         <p>
-          <Phone size={14} className="mr-1 inline text-muted-foreground" />
+          <Phone size={14} className="text-muted-foreground mr-1 inline" />
           {order.customer.phone}
         </p>
       )}

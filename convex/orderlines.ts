@@ -158,7 +158,7 @@ export const _sumRevenue = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "OWNER"
     )
@@ -216,7 +216,7 @@ export const _sumByCategory = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "OWNER"
     )
@@ -306,7 +306,7 @@ export const _calculateProfit = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "OWNER"
     )
@@ -365,7 +365,7 @@ export const _groupByProductId = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "OWNER"
     )
@@ -470,7 +470,7 @@ export const upsert = zMutation({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "CASHIER"
     )
@@ -521,7 +521,7 @@ export const remove = mutation({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "DEWA" &&
+      user?.role !== "ZENITH" &&
       user?.role !== "ADMIN" &&
       user?.role !== "CASHIER"
     )

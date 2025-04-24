@@ -38,7 +38,7 @@ export function ArchiveOrder({ orderId, statusPayment }: ArchiveOrderProps) {
     "MANAGER",
     "CASHIER",
     "ADMIN",
-    "DEWA",
+    "ZENITH",
   ].includes(me?.role ?? "")
 
   const { mutate, isPending } = useMutation({

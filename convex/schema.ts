@@ -18,6 +18,7 @@ export default defineSchema({
     role: v.optional(
       v.union(
         v.literal("DEWA"),
+        v.literal("ZENITH"),
         v.literal("ADMIN"),
         v.literal("OWNER"),
         v.literal("MANAGER"),

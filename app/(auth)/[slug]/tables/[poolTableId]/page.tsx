@@ -6,14 +6,12 @@ import { redirect } from "next/navigation"
 import { BackButton } from "./back-button"
 import { PendingOrderList } from "./pending-order-list"
 
-export default async function PoolTableIdPage(
-  props: {
-    params: Promise<{ poolTableId: Id<"poolTables"> }>
-    searchParams: Promise<{ pool: string }>
-  }
-) {
-  const searchParams = await props.searchParams;
-  const params = await props.params;
+export default async function PoolTableIdPage(props: {
+  params: Promise<{ poolTableId: Id<"poolTables"> }>
+  searchParams: Promise<{ pool: string }>
+}) {
+  const searchParams = await props.searchParams
+  const params = await props.params
   const { poolTableId } = params
   const { pool } = searchParams
 
@@ -25,10 +23,10 @@ export default async function PoolTableIdPage(
 
   if (!session) redirect("/signin")
 
-  const managerAccessLevel = ["DEWA", "ADMIN", "MANAGER"].includes(
+  const managerAccessLevel = ["ZENITH", "ADMIN", "MANAGER"].includes(
     session.user.role ?? "",
   )
-  const cashierAccessLevel = ["DEWA", "ADMIN", "CASHIER"].includes(
+  const cashierAccessLevel = ["ZENITH", "ADMIN", "CASHIER"].includes(
     session.user.role ?? "",
   )
 

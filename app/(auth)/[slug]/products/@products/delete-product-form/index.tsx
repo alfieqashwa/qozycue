@@ -42,7 +42,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
 
   const adminAccessLevel =
     me.status === "success" &&
-    (me.data?.role === "DEWA" || me.data?.role === "ADMIN")
+    (me.data?.role === "ZENITH" || me.data?.role === "ADMIN")
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.products.remove),

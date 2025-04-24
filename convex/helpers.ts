@@ -35,7 +35,7 @@ export async function findUserByEmail(
 export const superAdminProcedure = async (ctx: QueryCtx) => {
   const userId = await getAuthUserId(ctx)
   const user = userId !== null ? await ctx.db.get(userId) : null
-  if (user?.email !== process.env.DEWA_EMAIL)
+  if (user?.email !== process.env.ZENITH_EMAIL)
     throw new ConvexError("You do not have access!")
   return userId
 }
@@ -43,7 +43,7 @@ export const superAdminProcedure = async (ctx: QueryCtx) => {
 export const adminProcedure = async (ctx: QueryCtx) => {
   const userId = await getAuthUserId(ctx)
   const user = userId !== null ? await ctx.db.get(userId) : null
-  if (user?.role !== "DEWA" && user?.role !== "ADMIN")
+  if (user?.role !== "ZENITH" && user?.role !== "ADMIN")
     throw new ConvexError("You do not have access!")
   return userId
 }
@@ -52,7 +52,7 @@ export const managerProcedure = async (ctx: QueryCtx) => {
   const userId = await getAuthUserId(ctx)
   const user = userId !== null ? await ctx.db.get(userId) : null
   if (
-    user?.role !== "DEWA" &&
+    user?.role !== "ZENITH" &&
     user?.role !== "ADMIN" &&
     user?.role !== "MANAGER"
   )
@@ -64,7 +64,7 @@ export const cashierProcedure = async (ctx: QueryCtx) => {
   const userId = await getAuthUserId(ctx)
   const user = userId !== null ? await ctx.db.get(userId) : null
   if (
-    user?.role !== "DEWA" &&
+    user?.role !== "ZENITH" &&
     user?.role !== "ADMIN" &&
     user?.role !== "CASHIER"
   )
@@ -373,7 +373,7 @@ export const subscriptions = async (
     .withIndex("companyId", (q) => q.eq("companyId", companyId))
     .collect()
 
-  const excludeSuperAdmin = users.filter((q) => q.role !== "DEWA")
+  const excludeSuperAdmin = users.filter((q) => q.role !== "ZENITH")
   const _count = {
     users: excludeSuperAdmin.length,
     poolTables: poolTables.length,

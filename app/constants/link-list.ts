@@ -56,22 +56,22 @@ export const DASHBOARD_LINK_LIST = [
   },
 ]
 
-export const DEWA_LINK_LIST = [
+export const ZENITH_LINK_LIST = [
   {
-    title: "dewa",
-    href: "/dewa",
+    title: "zenith",
+    href: "/zenith",
     icon: GaugeCircle,
     isGeneral: true,
   },
   {
     title: "companies",
-    href: "/dewa/companies",
+    href: "/zenith/companies",
     icon: Store,
     isGeneral: true,
   },
   {
     title: "transactions",
-    href: "/dewa/transactions",
+    href: "/zenith/transactions",
     icon: ShoppingCart,
     isGeneral: true,
   },

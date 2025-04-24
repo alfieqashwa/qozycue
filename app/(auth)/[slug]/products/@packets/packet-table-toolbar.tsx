@@ -25,16 +25,16 @@ export function PacketTableToolbar<TData>({
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
   const adminAccessLevel =
     me.status === "success" &&
-    (me.data?.role === "DEWA" || me.data?.role === "ADMIN")
+    (me.data?.role === "ZENITH" || me.data?.role === "ADMIN")
   const managerAccessLevel =
     me.status === "success" &&
-    (me.data?.role === "DEWA" ||
+    (me.data?.role === "ZENITH" ||
       me.data?.role === "ADMIN" ||
       me.data?.role === "MANAGER")
 
   return (
     <div className="flex flex-col items-center space-y-2 md:flex-row md:justify-between md:space-y-0">
-      <div className="flex w-full flex-col items-end space-x-2 space-y-2 md:flex-1 md:flex-row md:items-center md:space-y-0">
+      <div className="flex w-full flex-col items-end space-y-2 space-x-2 md:flex-1 md:flex-row md:items-center md:space-y-0">
         <Input
           placeholder="Filter name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
