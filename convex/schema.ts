@@ -46,7 +46,7 @@ export default defineSchema({
       v.literal("PRO"),
       v.literal("ENTERPRISE"),
     ),
-    isStockable: v.optional(v.boolean()),
+    isStockable: v.boolean(),
   }).index("by_slug", ["slug"]),
 
   taxes: defineTable({
@@ -148,7 +148,7 @@ export default defineSchema({
     costPrice: v.float64(),
     salePrice: v.float64(),
     status: v.union(v.literal("disabled"), v.literal("enabled")),
-    countInStock: v.optional(v.number()), // Todos: next feature: create Model Invetories
+    countInStock: v.number(), // Todos: next feature: create Model Invetories
     unitOfMeasureId: v.id("unitOfMeasures"),
     categoryId: v.id("categories"),
     companyId: v.id("companies"),

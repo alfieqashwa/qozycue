@@ -264,7 +264,7 @@ export const createTrialCompany = async (
   const itemUomId = itemUom._id as Id<"unitOfMeasures">
 
   type TProduct = {
-    countInStock?: number | undefined
+    countInStock: number
     name: string
     companyId: Id<"companies">
     status: "disabled" | "enabled"
@@ -278,6 +278,7 @@ export const createTrialCompany = async (
       name: "mineral water",
       costPrice: 25000,
       salePrice: 30000,
+      countInStock: 0,
       status: "enabled",
       categoryId: drinkCategoryId,
       unitOfMeasureId: itemUomId,
@@ -287,6 +288,7 @@ export const createTrialCompany = async (
       name: "cappuccino hot",
       costPrice: 25000,
       salePrice: 30000,
+      countInStock: 0,
       status: "enabled",
       categoryId: drinkCategoryId,
       unitOfMeasureId: itemUomId,
@@ -296,6 +298,7 @@ export const createTrialCompany = async (
       name: "nasi goreng kornet",
       costPrice: 30000,
       salePrice: 35000,
+      countInStock: 0,
       status: "enabled",
       categoryId: foodCategoryId,
       unitOfMeasureId: itemUomId,
@@ -305,6 +308,7 @@ export const createTrialCompany = async (
       name: "chicken wings",
       costPrice: 30000,
       salePrice: 35000,
+      countInStock: 0,
       status: "enabled",
       categoryId: foodCategoryId,
       unitOfMeasureId: itemUomId,
@@ -314,6 +318,7 @@ export const createTrialCompany = async (
       name: "a mild merah",
       costPrice: 45000,
       salePrice: 55000,
+      countInStock: 0,
       status: "enabled",
       categoryId: othersCategoryId,
       unitOfMeasureId: itemUomId,
@@ -323,6 +328,7 @@ export const createTrialCompany = async (
       name: "marlboro putih",
       costPrice: 45000,
       salePrice: 55000,
+      countInStock: 0,
       status: "enabled",
       categoryId: othersCategoryId,
       unitOfMeasureId: itemUomId,
