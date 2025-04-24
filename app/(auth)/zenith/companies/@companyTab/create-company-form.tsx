@@ -50,7 +50,6 @@ export function CreateCompanyForm({
       phone: "",
       location: "",
       isPublished: false,
-      isStockable: false,
     },
   })
 
@@ -64,7 +63,6 @@ export function CreateCompanyForm({
         phone,
         location: location.toLowerCase(),
         isPublished,
-        isStockable: false,
       },
     })
   }
