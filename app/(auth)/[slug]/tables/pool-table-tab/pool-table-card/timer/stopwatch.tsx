@@ -1,13 +1,13 @@
-import { Rate } from "@/types"
-import { useEffect, useState } from "react"
-import { TimeCard } from "./time-card"
-import { useMutation } from "@tanstack/react-query"
-import { useConvexMutation } from "@convex-dev/react-query"
-import { api } from "@/convex/_generated/api"
-import { toast } from "sonner"
-import { ConvexError } from "convex/values"
 import { MAX_END_TIME } from "@/app/constants/max-duration"
+import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { Rate } from "@/types"
+import { useConvexMutation } from "@convex-dev/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { ConvexError } from "convex/values"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import { TimeCard } from "./time-card"
 
 export function Stopwatch({
   isActive,

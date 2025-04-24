@@ -25,8 +25,9 @@ export function Timer({
     <div className="p-2">
       <div
         className={cn(
-          "inset-shadow-lg relative size-[6rem] shrink-0 rounded-full bg-zinc-900 p-2",
-          isActive && "mx-1 ring-4 ring-offset-4 ring-offset-black",
+          "inset-shadow-lg bg-primary/5 relative size-[6rem] shrink-0 rounded-full p-2",
+          isActive &&
+            "bg-primary/10 mx-1 ring-4 ring-offset-4 ring-offset-black",
           hasEndTime ? "ring-muted" : "ring-sky-400",
         )}
       >

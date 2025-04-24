@@ -16,41 +16,31 @@ export function TimeCard({
   seconds,
   className,
 }: TimeCardProps) {
+  const renderSegment = (value: number | null, label: string) => {
+    if (value == null) {
+      return <GiPoolTriangle className="animate-pulse" />
+    }
+    const display = value.toString().padStart(2, "0")
+    return (
+      <span
+        className="countdown py-0.5 text-lg"
+        aria-live="polite"
+        aria-label={`${label}: ${display}`}
+      >
+        <span style={{ "--value": value } as React.CSSProperties}>
+          {display}
+        </span>
+      </span>
+    )
+  }
+
   return (
-    <div
-      className={cn(
-        "flex items-center justify-center text-lg font-semibold",
-        className,
-      )}
-    >
-      <FormatTime time={hours} label="Hours" />
-      <Divider />
-      <FormatTime time={minutes} label="Mins" />
-      <Divider />
-      <FormatTime time={seconds} label="Secs" />
+    <div role="timer" className={cn("flex items-center font-bold", className)}>
+      {renderSegment(hours, "Hours")}
+      <span aria-hidden="true">:</span>
+      {renderSegment(minutes, "Minutes")}
+      <span aria-hidden="true">:</span>
+      {renderSegment(seconds, "Seconds")}
     </div>
   )
 }
-
-const FormatTime = ({
-  time,
-  label,
-}: {
-  time: number | null
-  label?: string
-}) => {
-  // const singularLabel = label.slice(0, -1)
-  return (
-    <>
-      <span className="sr-only">{label}</span>
-      {time != null ? (
-        <span>{time?.toString().padStart(2, "0")}</span>
-      ) : (
-        <GiPoolTriangle className="animate-pulse" />
-      )}
-      {/* <span>{time === 1 ? singularLabel : label}</span> */}
-    </>
-  )
-}
-
-const Divider = () => <span>:</span>

@@ -114,7 +114,7 @@ export function Countdown({
         role="progressbar"
         style={
           {
-            "--value": percentageRemaining,
+            "--value": 0,
             "--size": "7.05rem",
             "--thickness": "0.25rem",
           } as CSSProperties
@@ -123,7 +123,7 @@ export function Countdown({
         animate={{ "--value": percentageRemaining }}
         transition={{
           delay: 0.5,
-          duration: 1,
+          duration: 0.5,
           ease: "easeInOut",
         }}
       >
