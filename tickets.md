@@ -112,7 +112,11 @@
 ✅ Customize update customer info on detail-button
 ✅ Animate Timer
 ✅ Coloring Stock on Products Table when it <=5 or eq to 0
-❌ Change dewa -> zenith
+✅ Change dewa -> zenith
+❌ Add 2 Tabs: Minute & Hourly on Start Drawer
+❌ Limit the number of Phone value on UpdateCustomerInfo and others
+❌ Check Payment Drawer UI on mobile view
+❌ Update Package Version from 0.3.0 -> 0.4.0
 
 ## Backlog (Future Plan)
 
