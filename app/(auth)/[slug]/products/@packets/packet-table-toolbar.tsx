@@ -67,7 +67,7 @@ export function PacketTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <div className="w-full pr-2 text-end">
+      <div className="w-full space-y-1 pr-2 text-end">
         <CreatePacket disabledBasedOnAccessLevel={!managerAccessLevel} />
         <DataTableViewOptions table={table} />
       </div>
