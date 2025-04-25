@@ -81,7 +81,7 @@ export function UpdateCompanyForm({
       updateCompanyZenithSchema: {
         id,
         name: name.toLowerCase(),
-        phone,
+        phone: phone.trim(),
         location: location.toLowerCase(),
         subscription,
       },
@@ -112,7 +112,7 @@ export function UpdateCompanyForm({
             <FormItem>
               <FormLabel>Phone</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="phone" {...field} />
+                <Input type="tel" placeholder="phone" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

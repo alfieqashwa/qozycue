@@ -65,7 +65,7 @@ export function CreateTrialCompanyForm({
     mutate({
       createTrialCompanySchema: {
         name: name.toLowerCase(),
-        phone,
+        phone: phone.trim(),
         location: location.toLowerCase(),
       },
     })
@@ -94,7 +94,7 @@ export function CreateTrialCompanyForm({
             <FormItem>
               <FormLabel>Phone</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Phone" {...field} />
+                <Input type="tel" placeholder="Phone" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

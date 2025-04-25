@@ -341,7 +341,7 @@ export function CreateBookingForm({
                   <FormLabel>Customer Phone</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="tel"
                       placeholder="max 12 chars"
                       className="w-[280px]"
                       {...field}

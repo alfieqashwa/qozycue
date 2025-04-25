@@ -79,7 +79,7 @@ export function UpdateCompanyInfo({
     mutate({
       updateCompanyByAdminSchema: {
         id: companyId,
-        phone,
+        phone: phone.trim(),
         location: location.toLowerCase(),
       },
     })
@@ -116,7 +116,7 @@ export function UpdateCompanyInfo({
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="tel"
                       placeholder="Phone"
                       className="w-[200px]"
                       {...field}

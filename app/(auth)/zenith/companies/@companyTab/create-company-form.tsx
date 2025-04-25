@@ -60,7 +60,7 @@ export function CreateCompanyForm({
     mutate({
       createCompanySchema: {
         name: name.toLowerCase(),
-        phone,
+        phone: phone.trim(),
         location: location.toLowerCase(),
         isPublished,
       },
@@ -90,7 +90,7 @@ export function CreateCompanyForm({
             <FormItem>
               <FormLabel>Phone</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Phone" {...field} />
+                <Input type="tel" placeholder="Phone" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

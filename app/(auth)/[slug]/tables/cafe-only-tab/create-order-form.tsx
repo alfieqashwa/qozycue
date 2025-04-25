@@ -69,7 +69,7 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
     mutate({
       createCustomerSchema: {
         name: name.toLowerCase(),
-        phone,
+        phone: phone.trim(),
       },
     })
   }
@@ -118,7 +118,7 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
                   <FormLabel className="sr-only">Phone</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="tel"
                       placeholder="Phone"
                       {...field}
                       className="max-w-[280px]"

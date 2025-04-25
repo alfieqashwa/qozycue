@@ -181,7 +181,7 @@ export function UpdateBookingForm({
                 <FormLabel>Customer Phone</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
+                    type="tel"
                     placeholder="max 12 chars"
                     className="w-[280px]"
                     {...field}
@@ -260,7 +260,7 @@ export function UpdateBookingForm({
               <FormItem>
                 <FormLabel>
                   Packet{" "}
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground text-xs">
                     (Hourly Only)
                   </span>
                 </FormLabel>

@@ -134,7 +134,7 @@ const UpdateCustomerInfoFrom = ({
       updateCustomerByOrderIdSchema: {
         orderId,
         name: name.toLowerCase(),
-        phone,
+        phone: phone.trim(),
       },
     })
   }
@@ -169,7 +169,7 @@ const UpdateCustomerInfoFrom = ({
               </FormLabel>
               <FormControl>
                 <Input
-                  type="number"
+                  type="tel"
                   placeholder="max 12 chars"
                   className="w-[280px]"
                   {...field}
