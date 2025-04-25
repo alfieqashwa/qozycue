@@ -48,9 +48,9 @@ export function PendingStatusCounter({
                   pool: poolTableName,
                 },
               }}
-              className="duration absolute right-0 top-0 z-10 size-7 animate-pulse rounded-md rounded-br-none rounded-tl-none rounded-tr-2xl bg-primary/30 shadow-xl transition-opacity hover:bg-primary/50 disabled:pointer-events-auto disabled:cursor-not-allowed"
+              className="duration bg-primary/30 hover:bg-primary/50 absolute top-0 right-0 z-10 size-7 animate-pulse rounded-md rounded-tl-none rounded-tr-2xl rounded-br-none shadow-xl transition-opacity disabled:pointer-events-auto disabled:cursor-not-allowed"
             >
-              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-bold capitalize text-primary">
+              <span className="text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-bold capitalize">
                 {/* {countPendingStatusp */}p
               </span>
             </Link>
@@ -72,7 +72,7 @@ const TooltipPendingNotification = ({
     <Tooltip>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent side="left" className="bg-muted">
-        <p className="space-x-1 font-sans text-xs font-medium text-muted-foreground">
+        <p className="text-muted-foreground space-x-1 font-sans text-xs font-medium">
           <span>{count}</span>
           <span>Pending Payment</span>
         </p>

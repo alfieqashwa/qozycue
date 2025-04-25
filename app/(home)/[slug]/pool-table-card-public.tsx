@@ -49,19 +49,17 @@ export function PoolTableCardPublic({
       <div
         className={cn(
           "group-transition-colors absolute -inset-[1px] h-44 w-full rounded-2xl duration-500 ease-in-out",
-          !isActive &&
-            !poolTableStartTime &&
-            !poolTableEndTime &&
-            "bg-zinc-900 blur-md group-hover/card:bg-zinc-800 group-hover/card:shadow-lg group-hover/card:blur-lg",
-          isActive &&
-            poolTableStartTime &&
-            "bg-sky-400 blur-md group-hover/card:blur-lg",
-          !isActive &&
-            !!poolTableStartTime &&
-            "bg-amber-300 blur-xs group-hover/card:blur-md",
+          "blur group-hover:blur-md",
+          {
+            "bg-primary/10 group-hover:bg-primary/20 group-hover:shadow-lg":
+              !isActive && !poolTableStartTime && !poolTableEndTime,
+            "bg-sky-400": isActive && poolTableStartTime,
+            "bg-amber-300 blur-xs group-hover:blur-md":
+              !isActive && !!poolTableStartTime,
+          },
         )}
       />
-      <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow-sm">
+      <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-black/[94%] via-50% to-black to-70% p-3 shadow-sm">
         <section className="flex justify-between">
           <PublicTimer isActive={isActive} hasEndTime={!!poolTableEndTime}>
             {order.status === "success" &&
@@ -100,7 +98,7 @@ export function PoolTableCardPublic({
           poolTableName={poolTableName}
         />
       </div>
-      <div className="absolute right-3 bottom-3">
+      <div className="absolute right-0 bottom-0">
         <ContactBooking
           BOOKING={BOOKING}
           poolTableName={poolTableName}

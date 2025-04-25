@@ -31,12 +31,12 @@ export const ContactBooking = ({
           alt="whatsapp-logo"
           width={width}
           height={height}
-          className="animate-pulse"
+          className="size-8 animate-pulse rounded-tr-none rounded-br-2xl rounded-bl-none"
         />
       </a>
     </TooltipTrigger>
-    <TooltipContent side={side} className="flex items-center gap-4 bg-muted">
-      <span className="whitespace-nowrap text-xs capitalize text-muted-foreground">
+    <TooltipContent side={side} className="bg-muted flex items-center gap-4">
+      <span className="text-muted-foreground text-xs whitespace-nowrap capitalize">
         Booking Pool {poolTableName}
       </span>
     </TooltipContent>
