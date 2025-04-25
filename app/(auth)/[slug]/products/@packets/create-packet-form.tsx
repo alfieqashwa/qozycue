@@ -8,15 +8,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
@@ -153,25 +146,28 @@ export function CreatePacketForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Rate</FormLabel>
-                <Select
+                <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  className="flex flex-row items-center space-x-6"
                 >
-                  <FormControl className="w-[200px] uppercase">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      {["MINUTE", "HOUR"].map((rate, i) => (
-                        <SelectItem value={rate} className="uppercase" key={i}>
-                          {rate}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                  <FormItem className="flex items-center">
+                    <FormControl>
+                      <RadioGroupItem value="MINUTE" />
+                    </FormControl>
+                    <FormLabel className="tracking-wider text-amber-300">
+                      MINUTE
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center">
+                    <FormControl>
+                      <RadioGroupItem value="HOUR" />
+                    </FormControl>
+                    <FormLabel className="tracking-wider text-sky-400">
+                      HOURLY
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
                 <FormMessage />
               </FormItem>
             )}

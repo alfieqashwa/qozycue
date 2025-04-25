@@ -204,7 +204,7 @@ export function StartTimerButton({
               control={form.control}
               name="rate"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel>Rate</FormLabel>
                   <FormControl>
                     <RadioGroup
