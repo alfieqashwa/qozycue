@@ -128,9 +128,6 @@ const UpdateCustomerInfoFrom = ({
     },
   })
 
-  const nameWatch = form.watch("name")
-  const phoneWatch = form.watch("phone")
-
   function onSubmit(values: TUpdateCustomerByOrderId) {
     const { name, phone } = values
     mutate({
@@ -187,12 +184,10 @@ const UpdateCustomerInfoFrom = ({
             Cancel
           </DialogClose>
           <Button
+            type="submit"
+            disabled={isPending}
             variant={isPending ? "destructive" : "default"}
             size={"sm"}
-            disabled={
-              isPending || nameWatch.length < 3 || phoneWatch!.length < 12
-            }
-            type="submit"
           >
             {isPending ? (
               <>
