@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { motion } from "motion/react"
 import { type CSSProperties, useEffect, useState } from "react"
 import { TimeCard } from "../../(auth)/[slug]/tables/pool-table-tab/pool-table-card/timer/time-card"
 
@@ -51,7 +52,7 @@ export function PublicCountdown({
 
   return (
     <>
-      <div
+      <motion.div
         className={cn(
           "radial-progress absolute inset-x-1/2 inset-y-1/2 -translate-x-1/2 -translate-y-1/2 text-sky-400",
           localTime?.hours === 0 && localTime.minutes < 5 && "text-rose-500",
@@ -64,6 +65,13 @@ export function PublicCountdown({
             "--thickness": "0.25rem",
           } as CSSProperties
         }
+        initial={{ "--value": 0 }}
+        animate={{ "--value": percentageRemaining }}
+        transition={{
+          delay: 0.5,
+          duration: 0.5,
+          ease: "easeInOut",
+        }}
       >
         <p className="mt-14">
           <span
@@ -78,7 +86,7 @@ export function PublicCountdown({
             {percentageRemaining}%
           </span>
         </p>
-      </div>
+      </motion.div>
       {!stopCount && (
         <TimeCard
           hours={localTime?.hours as number}
