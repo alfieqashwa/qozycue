@@ -116,9 +116,9 @@
 ✅ Limit the number of Phone value on UpdateCustomerInfo and others
 ✅ Animate Timer on Public Tables (i forgot!)
 ✅ Check Payment Drawer UI on mobile view
-❌ Reconfig Public Site
-❌ Add 2 Tabs: Minute & Hourly on Start Drawer
-❌ Update Package Version from 0.3.0 -> 0.4.0
+✅ Add Radio Group: Minute & Hourly on Start Drawer
+✅ Reconfig Public Site
+✅ Update Package Version from 0.3.0 -> 0.4.0
 
 ## Backlog (Future Plan)
 
