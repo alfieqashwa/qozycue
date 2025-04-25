@@ -1,19 +1,14 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { ContactBooking } from "./contact-booking"
 
 export function PublicTimer({
   isActive,
-  poolTableName,
   hasEndTime,
-  BOOKING,
   children,
 }: {
   isActive: boolean
-  poolTableName: string
   hasEndTime: boolean
-  BOOKING: string
   children: React.ReactNode
 }) {
   return (
@@ -27,11 +22,7 @@ export function PublicTimer({
         )}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          {isActive ? (
-            children
-          ) : (
-            <ContactBooking BOOKING={BOOKING} poolTableName={poolTableName} />
-          )}
+          {isActive && children}
         </div>
       </div>
     </div>

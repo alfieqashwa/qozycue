@@ -63,12 +63,7 @@ export function PoolTableCardPublic({
       />
       <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70% p-3 shadow-sm">
         <section className="flex justify-between">
-          <PublicTimer
-            isActive={isActive}
-            poolTableName={poolTableName}
-            hasEndTime={!!poolTableEndTime}
-            BOOKING={BOOKING}
-          >
+          <PublicTimer isActive={isActive} hasEndTime={!!poolTableEndTime}>
             {order.status === "success" &&
               order.data?.poolRental?.packet.rate === "HOUR" && (
                 <PublicCountdown
@@ -105,17 +100,15 @@ export function PoolTableCardPublic({
           poolTableName={poolTableName}
         />
       </div>
-      {isActive && (
-        <div className="absolute bottom-3 right-3">
-          <ContactBooking
-            BOOKING={BOOKING}
-            poolTableName={poolTableName}
-            width={24}
-            height={24}
-            side="left"
-          />
-        </div>
-      )}
+      <div className="absolute right-3 bottom-3">
+        <ContactBooking
+          BOOKING={BOOKING}
+          poolTableName={poolTableName}
+          width={24}
+          height={24}
+          side="left"
+        />
+      </div>
     </div>
   )
 }

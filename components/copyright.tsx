@@ -3,7 +3,7 @@ import packageJson from "../package.json"
 
 export const Copyright = () => (
   <div className="fixed bottom-0 w-full">
-    <footer className="flex h-6 items-center justify-center bg-linear-to-t from-white to-foreground bg-clip-text text-xs font-medium tracking-widest text-transparent text-zinc-400">
+    <footer className="to-foreground flex h-6 items-center justify-center bg-linear-to-t from-white bg-clip-text text-xs font-medium tracking-widest text-zinc-400">
       <p className="whitespace-nowrap">
         © {new Date().getFullYear()} Made with{" "}
       </p>
@@ -13,7 +13,7 @@ export const Copyright = () => (
       />
       <span>by</span>
       <a
-        className="ml-1 whitespace-nowrap text-foreground transition-colors duration-300 ease-in-out hover:text-cyan-400"
+        className="text-foreground ml-1 whitespace-nowrap transition-colors duration-300 ease-in-out hover:text-cyan-400"
         href="https://github.com/alfieqashwa"
         target="_blank"
         rel="noopener noreferrer"
