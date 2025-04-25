@@ -23,7 +23,7 @@ export function TimeCard({
     const display = value.toString().padStart(2, "0")
     return (
       <span
-        className="countdown py-0.5 text-lg"
+        className="countdown py-0.5"
         aria-live="polite"
         aria-label={`${label}: ${display}`}
       >
@@ -35,7 +35,10 @@ export function TimeCard({
   }
 
   return (
-    <div role="timer" className={cn("flex items-center font-bold", className)}>
+    <div
+      role="timer"
+      className={cn("flex items-center text-lg font-semibold", className)}
+    >
       {renderSegment(hours, "Hours")}
       <span aria-hidden="true">:</span>
       {renderSegment(minutes, "Minutes")}
