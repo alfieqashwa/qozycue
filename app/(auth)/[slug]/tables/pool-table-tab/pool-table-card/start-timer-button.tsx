@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -30,7 +31,6 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
-import { Rate } from "@/types"
 import { startTimerSchema, type TStartTimer } from "@/types/schema/order-schema"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -84,11 +84,12 @@ export function StartTimerButton({
       poolTableId,
       packetId: "",
       duration: 0,
-      rate: "MINUTE",
+      rate: countIsBooking && !!countIsBooking.data ? "HOUR" : "MINUTE",
       cost: 0,
     },
   })
 
+  const rateWatch = form.watch("rate")
   const packetIdWatch = form.watch("packetId")
   const durationWatch = form.watch("duration")
   const isHourly =
@@ -115,13 +116,12 @@ export function StartTimerButton({
 
   // 2. Define a submit handler.
   function onSubmit(values: TStartTimer) {
-    const { customerName, customerPhone, packetId, duration } = values
+    const { customerName, customerPhone, rate, packetId, duration } = values
 
     if (packets.status !== "success" && packetId === "") return
 
     const costCalc = packets.data?.find((p) => p._id === packetId)
       ?.cost as number
-    const rate = packets.data?.find((p) => p._id === packetId)?.rate as Rate
 
     const durationCalc = rate === "MINUTE" ? 0 : Number(duration)
 
@@ -194,9 +194,49 @@ export function StartTimerButton({
                 <FormItem>
                   <FormLabel>Customer Phone</FormLabel>
                   <FormControl className="w-[200px]">
-                    <Input type="number" placeholder="Optional" {...field} />
+                    <Input type="tel" placeholder="Optional" {...field} />
                   </FormControl>
                   <FormDescription>max 12 chars.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rate"
+              render={({ field }) => (
+                <FormItem className="">
+                  <FormLabel>Rate</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-row items-center space-x-6"
+                    >
+                      {/* check if there's customer which has already booked the pool, then a new customer cannot have MINUTE rate options. */}
+                      <FormItem
+                        className={cn(
+                          "flex items-center",
+                          !!countIsBooking.data && "hidden",
+                        )}
+                      >
+                        <FormControl>
+                          <RadioGroupItem value="MINUTE" />
+                        </FormControl>
+                        <FormLabel className="tracking-wider text-amber-300">
+                          MINUTE
+                        </FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center">
+                        <FormControl>
+                          <RadioGroupItem value="HOUR" />
+                        </FormControl>
+                        <FormLabel className="tracking-wider text-sky-400">
+                          HOURLY
+                        </FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -218,27 +258,9 @@ export function StartTimerButton({
                     </FormControl>
                     <SelectContent>
                       {packets.status === "success" &&
-                      countIsBooking &&
-                      !!countIsBooking.data
-                        ? packets.data
-                            ?.filter((p) => p.rate === "HOUR")
-                            .map((p) => (
-                              <SelectItem
-                                value={p._id}
-                                className="capitalize"
-                                key={p._id}
-                              >
-                                {p.name}
-                                <span className="pl-2 text-xs text-sky-400">
-                                  (
-                                  {p.cost < 1
-                                    ? "free"
-                                    : formattedPrice.format(p.cost)}
-                                  )
-                                </span>
-                              </SelectItem>
-                            ))
-                        : packets.data?.map((p) => (
+                        packets.data
+                          .filter((p) => p.rate === rateWatch)
+                          .map((p) => (
                             <SelectItem
                               value={p._id}
                               className="capitalize"
