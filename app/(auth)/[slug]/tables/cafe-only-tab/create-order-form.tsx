@@ -69,7 +69,7 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
     mutate({
       createCustomerSchema: {
         name: name.toLowerCase(),
-        phone: phone.trim(),
+        phone: phone?.trim(),
       },
     })
   }

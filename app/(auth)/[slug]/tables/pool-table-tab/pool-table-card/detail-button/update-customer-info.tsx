@@ -134,7 +134,7 @@ const UpdateCustomerInfoFrom = ({
       updateCustomerByOrderIdSchema: {
         orderId,
         name: name.toLowerCase(),
-        phone: phone.trim(),
+        phone: phone?.trim(),
       },
     })
   }
