@@ -260,126 +260,127 @@ export function PaymentForm({
     })
   }
 
-  // <ScrollArea className="thom h-[calc(100vh_-_10rem)] text-sm md:h-[calc(100vh_-_8rem)] md:text-base">
   return (
-    <section className="px-6 text-sm md:text-base">
-      <div className="flex justify-center md:justify-end">
-        <div className="hidden">
-          <PrintReceipt
-            orderId={orderId}
-            poolTableName={poolTableName}
-            customerName={customerName}
-            printStatus="bill"
-            ref={billRef}
-          />
-        </div>
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => handleBillPrintFn()}
-        >
-          <Printer className="size-4" />
-          <span>Bill</span>
-        </Button>
-      </div>
-      <PaymentInformation
-        customerName={customerName}
-        customerPhone={customerPhone}
-        formattedTotalCost={formattedTotalCost}
-        formattedTotalOrder={formattedTotalOrder}
-        formattedSubTotal={formattedSubTotal}
-        formattedFixedGrandTotal={formattedFixedGrandTotal}
-      />
-      <Form {...form}>
-        <form
-          id="payment"
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="gap-y-2 py-1"
-        >
-          {/* Tax */}
-          <PaymentFormField
-            control={form.control}
-            name="tax"
-            data={taxes.data}
-            status={taxes.status}
-            defaultValue={defaultTax}
-          />
-          {/* Discount */}
-          <PaymentFormField
-            control={form.control}
-            name="discount"
-            data={discounts.data}
-            status={discounts.status}
-          />
-          {/* Payment Method */}
-          <PaymentFormField control={form.control} name="paymentMethod" />
-
-          {paymentMethod === "CASH" ? (
-            <section className="py-4">
-              <Input
-                type="number"
-                placeholder="input uang dari customer"
-                onChange={(e) => handleCustomerMoney(e.target.value)}
-                className="text-sm md:text-base"
-              />
-              <article className="text-muted-foreground grid grid-cols-2 gap-x-2 py-4 text-sm font-medium">
-                <p className="text-right">Diterima:</p>
-                <p>{formattedPriceWithRupiah.format(Number(changeMoney))}</p>
-                <p className="text-right">Kembalian:</p>
-                <p className="text-primary">
-                  {changeCustomerMoney(changeMoney)}
-                </p>
-              </article>
-            </section>
-          ) : (
-            // Note
-            <FormField
-              control={form.control}
-              name="note"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-muted-foreground capitalize">
-                    Note
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Catatan sebagai referensi... (optional)"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+    <ScrollArea className="h-[calc(100vh_-_9.4rem)] text-sm md:h-[calc(100vh_-_6.21rem)] md:text-base">
+      <section className="px-6 py-2 text-sm md:text-base">
+        <div className="flex justify-center md:justify-end">
+          <div className="hidden">
+            <PrintReceipt
+              orderId={orderId}
+              poolTableName={poolTableName}
+              customerName={customerName}
+              printStatus="bill"
+              ref={billRef}
             />
-          )}
-          <footer className="flex flex-col-reverse md:absolute md:right-6 md:bottom-4 md:flex-row md:justify-end md:gap-x-4">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => setOpen(false)}
-              className="mt-1.5 sm:mt-0"
-            >
-              Cancel
-            </Button>
-            {isPending ? (
-              <Button disabled>
-                <Loader2 className="size-4 animate-spin disabled:pointer-events-auto disabled:cursor-not-allowed" />
-                Please wait
-              </Button>
+          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => handleBillPrintFn()}
+          >
+            <Printer className="size-4" />
+            <span>Bill</span>
+          </Button>
+        </div>
+        <PaymentInformation
+          customerName={customerName}
+          customerPhone={customerPhone}
+          formattedTotalCost={formattedTotalCost}
+          formattedTotalOrder={formattedTotalOrder}
+          formattedSubTotal={formattedSubTotal}
+          formattedFixedGrandTotal={formattedFixedGrandTotal}
+        />
+        <Form {...form}>
+          <form
+            id="payment"
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="gap-y-2 py-1"
+          >
+            {/* Tax */}
+            <PaymentFormField
+              control={form.control}
+              name="tax"
+              data={taxes.data}
+              status={taxes.status}
+              defaultValue={defaultTax}
+            />
+            {/* Discount */}
+            <PaymentFormField
+              control={form.control}
+              name="discount"
+              data={discounts.data}
+              status={discounts.status}
+            />
+            {/* Payment Method */}
+            <PaymentFormField control={form.control} name="paymentMethod" />
+
+            {paymentMethod === "CASH" ? (
+              <section className="py-4">
+                <Input
+                  type="number"
+                  placeholder="input uang dari customer"
+                  onChange={(e) => handleCustomerMoney(e.target.value)}
+                  className="font-mono text-sm placeholder:font-sans md:text-base"
+                />
+                <article className="text-muted-foreground grid grid-cols-2 gap-x-2 py-4 font-mono font-medium">
+                  <p className="text-right">Diterima:</p>
+                  <p>{formattedPriceWithRupiah.format(Number(changeMoney))}</p>
+                  <p className="text-right">Kembalian:</p>
+                  <p className="text-primary">
+                    {changeCustomerMoney(changeMoney)}
+                  </p>
+                </article>
+              </section>
             ) : (
-              <Button
-                disabled={isPending}
-                type="submit"
-                className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-              >
-                Make Payment
-              </Button>
+              // Note
+              <FormField
+                control={form.control}
+                name="note"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground capitalize">
+                      Note
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Catatan sebagai referensi... (optional)"
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-          </footer>
-        </form>
-      </Form>
-    </section>
+            <footer className="mt-8 flex flex-col-reverse md:flex-row md:justify-end md:gap-4">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setOpen(false)}
+                className="mt-1.5 sm:mt-0"
+              >
+                Cancel
+              </Button>
+              {isPending ? (
+                <Button disabled>
+                  <Loader2 className="size-4 animate-spin disabled:pointer-events-auto disabled:cursor-not-allowed" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button
+                  disabled={isPending}
+                  type="submit"
+                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+                >
+                  Make Payment
+                </Button>
+              )}
+            </footer>
+          </form>
+        </Form>
+      </section>
+    </ScrollArea>
   )
 }
 
@@ -404,13 +405,25 @@ const PaymentInformation = ({
       label="customer phone:"
       value={customerPhone ? customerPhone : "-"}
     />
-    <InfoRow label="total rental:" value={formattedTotalCost} />
-    <InfoRow label="total order:" value={formattedTotalOrder} />
-    <InfoRow label="sub total:" value={formattedSubTotal} />
+    <InfoRow
+      label="total rental:"
+      value={formattedTotalCost}
+      className="font-mono"
+    />
+    <InfoRow
+      label="total order:"
+      value={formattedTotalOrder}
+      className="font-mono"
+    />
+    <InfoRow
+      label="sub total:"
+      value={formattedSubTotal}
+      className="font-mono"
+    />
     <InfoRow
       label="grand total:"
       value={formattedFixedGrandTotal}
-      className="text-primary font-semibold"
+      className="text-primary font-mono font-semibold"
     />
   </section>
 )
