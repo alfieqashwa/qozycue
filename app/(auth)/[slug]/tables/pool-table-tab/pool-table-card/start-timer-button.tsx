@@ -92,8 +92,7 @@ export function StartTimerButton({
   const rateWatch = form.watch("rate")
   const packetIdWatch = form.watch("packetId")
   const durationWatch = form.watch("duration")
-  const isHourly =
-    packets.data?.find((p) => p._id === packetIdWatch)?.rate === "HOUR"
+  const isHourly = rateWatch === "HOUR"
 
   const handleOnCloseAutoFocus = () => {
     form.reset()
@@ -269,7 +268,7 @@ export function StartTimerButton({
                               {p.name}
                               <span
                                 className={cn(
-                                  "pl-2 text-xs",
+                                  "text-xs",
                                   p.rate === "HOUR"
                                     ? "text-sky-400"
                                     : "text-amber-300",
@@ -285,18 +284,6 @@ export function StartTimerButton({
                           ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    {!!countIsBooking.data ? (
-                      <span>
-                        <i className="font-medium text-sky-400">Hourly</i> Only
-                      </span>
-                    ) : (
-                      <span className="font-medium">
-                        <i className="text-amber-300">Minute</i> Or{" "}
-                        <i className="text-sky-400">Hourly</i>
-                      </span>
-                    )}
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -322,8 +309,8 @@ export function StartTimerButton({
                           (i, _) => (
                             <SelectItem value={i.toString()} key={i}>
                               {i}
-                              <span className="ml-1.5 text-sky-400">
-                                {i <= 1 ? "hour" : "hours"}
+                              <span className="text-sky-400">
+                                {i === 1 ? "hour" : "hours"}
                               </span>
                             </SelectItem>
                           ),

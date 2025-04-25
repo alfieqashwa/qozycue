@@ -55,31 +55,29 @@ export function DescriptionTable({
 
   const formattedRate = packetRate === "HOUR" ? "hr" : "min"
 
+  // "text-sky-400": isActive && orderStatusSucceed && packetRate === "HOUR"
+  //  "text-amber-400": orderStatusSucceed && packetRate === "MINUTE"
   return (
     <section className="-ml-4">
       <h1
-        className={cn(
-          "text-center font-bold uppercase",
-          isActive && orderStatusSucceed && packetRate === "HOUR"
-            ? "text-sky-400"
-            : orderStatusSucceed && packetRate === "MINUTE"
-              ? "text-amber-400"
-              : "text-muted-foreground",
-        )}
+        className={cn("text-muted-foreground text-center font-bold uppercase", {
+          "text-sky-400": orderStatusSucceed && packetRate === "HOUR",
+          "text-amber-400": orderStatusSucceed && packetRate === "MINUTE",
+        })}
       >
         Table {poolTableName}
       </h1>
 
-      <article className="mt-1 grid grid-cols-2 gap-x-2 text-xs text-muted-foreground sm:text-sm">
+      <article className="text-muted-foreground mt-1 grid grid-cols-2 gap-x-2 text-xs sm:text-sm">
         <p className="text-right">Packet:</p>
         {orderStatusSucceed && !!packetName ? (
-          <p className="capitalize text-foreground">{packetName}</p>
+          <p className="text-foreground capitalize">{packetName}</p>
         ) : (
           <InvisibleParagraph />
         )}
         <p className="text-right">Cost:</p>
         {orderStatusSucceed && !!packetCost ? (
-          <p className="tracking-tight text-foreground">
+          <p className="text-foreground tracking-tight">
             {formattedPrice.format(Number(packetCost))}/
             <span>{formattedRate}</span>
           </p>
@@ -102,7 +100,7 @@ export function DescriptionTable({
         )}
         <p className="text-right">Price:</p>
         {orderStatusSucceed && !!totalCost ? (
-          <p className="tracking-tight text-foreground">
+          <p className="text-foreground tracking-tight">
             {formattedPrice.format(Number(totalCost))}
           </p>
         ) : isActive && !!realtimeDuration ? (

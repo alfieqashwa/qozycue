@@ -48,8 +48,7 @@ export function PoolTableCardPublic({
     <div className="group/card relative">
       <div
         className={cn(
-          "group-transition-colors absolute -inset-[1px] h-44 w-full rounded-2xl duration-500 ease-in-out",
-          "blur group-hover:blur-md",
+          "group-transition-colors absolute -inset-[1px] h-44 w-full rounded-2xl blur duration-500 ease-in-out group-hover:blur-md",
           {
             "bg-primary/10 group-hover:bg-primary/20 group-hover:shadow-lg":
               !isActive && !poolTableStartTime && !poolTableEndTime,
