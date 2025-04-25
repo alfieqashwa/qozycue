@@ -93,16 +93,7 @@ export const update = zMutation({
   args: { updateProductSchema },
   handler: async (
     ctx,
-    {
-      updateProductSchema: {
-        id,
-        name,
-        costPrice,
-        salePrice,
-        unitOfMeasureId,
-        categoryId,
-      },
-    },
+    { updateProductSchema: { id, name, costPrice, salePrice, categoryId } },
   ) => {
     await managerProcedure(ctx)
 
@@ -110,7 +101,6 @@ export const update = zMutation({
       name,
       costPrice,
       salePrice,
-      unitOfMeasureId,
       categoryId,
     })
   },

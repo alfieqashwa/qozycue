@@ -68,7 +68,7 @@ export function PacketTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <div className="flex flex-col space-y-1 md:flex-row-reverse md:space-y-0">
+      <div className="w-full pr-2 text-end">
         {!table.getSelectedRowModel().rows.length ? (
           <CreatePacket disabledBasedOnAccessLevel={!managerAccessLevel} />
         ) : (

@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -79,13 +80,14 @@ export function CreateProductForm({
   })
 
   function onSubmit(values: TCreateProduct) {
-    const { name, costPrice, salePrice, unitOfMeasureId, categoryId } = values
+    const { name, costPrice, salePrice, categoryId } = values
+    const defaultUomId = uoms?.data?.[0]._id
     mutate({
       createProductSchema: {
         name: name.toLowerCase(),
         costPrice,
         salePrice,
-        unitOfMeasureId,
+        unitOfMeasureId: defaultUomId,
         categoryId,
       },
     })
@@ -95,151 +97,120 @@ export function CreateProductForm({
   const disabledPriceComparison =
     Number(form.watch("costPrice")) >= Number(form.watch("salePrice"))
   const disabled =
-    hasProductName ||
-    disabledPriceComparison ||
-    form.watch("unitOfMeasureId") === "" ||
-    form.watch("categoryId") === ""
+    hasProductName || disabledPriceComparison || form.watch("categoryId") === ""
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-        {/* Name */}
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="name" {...field} className="capitalize" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Cost Price */}
-        <FormField
-          control={form.control}
-          name="costPrice"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cost Price</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="cost price"
-                  className="w-[200px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Sale Price */}
-        <FormField
-          control={form.control}
-          name="salePrice"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sale Price</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="sale price"
-                  className="w-[200px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Unit of Measure */}
-        <FormField
-          control={form.control}
-          name="unitOfMeasureId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Unit of Measure</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="w-[200px] capitalize">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select UoM" />
-                  </SelectTrigger>
+    <ScrollArea className="h-[calc(100vh_-_7.5rem)]">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          {/* Name */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="name" {...field} className="capitalize" />
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {uoms.status === "success" &&
-                      !!uoms.data.length &&
-                      uoms.data.map((uom) => (
-                        <SelectItem
-                          value={uom._id}
-                          className="capitalize"
-                          key={uom._id}
-                        >
-                          {uom.name}
-                        </SelectItem>
-                      ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Category */}
-        <FormField
-          control={form.control}
-          name="categoryId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="w-[200px] uppercase">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Cost Price */}
+          <FormField
+            control={form.control}
+            name="costPrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cost Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="cost price"
+                    className="w-[200px]"
+                    {...field}
+                  />
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {categories.status === "success" &&
-                      !!categories.data.length &&
-                      categories.data.map((category) => (
-                        <SelectItem
-                          value={category._id}
-                          className="uppercase"
-                          key={category._id}
-                        >
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <SheetFooter className="absolute right-0 bottom-4 left-0 px-6">
-          {isPending ? (
-            <Button disabled>
-              <Loader2 className="size-4 animate-spin" />
-              Please wait
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Sale Price */}
+          <FormField
+            control={form.control}
+            name="salePrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sale Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="sale price"
+                    className="w-[200px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Category */}
+          <FormField
+            control={form.control}
+            name="categoryId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="w-[200px] uppercase">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {categories.status === "success" &&
+                        !!categories.data.length &&
+                        categories.data.map((category) => (
+                          <SelectItem
+                            value={category._id}
+                            className="uppercase"
+                            key={category._id}
+                          >
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SheetFooter className="mt-24 flex flex-col-reverse md:flex-row md:justify-end md:gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
             </Button>
-          ) : (
-            <Button disabled={disabled} type="submit">
-              Create Product
-            </Button>
-          )}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setOpen(false)}
-          >
-            Cancel
-          </Button>
-        </SheetFooter>
-      </form>
-    </Form>
+            {isPending ? (
+              <Button disabled>
+                <Loader2 className="size-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button disabled={disabled} type="submit" size={"sm"}>
+                Create Product
+              </Button>
+            )}
+          </SheetFooter>
+        </form>
+      </Form>
+    </ScrollArea>
   )
 }

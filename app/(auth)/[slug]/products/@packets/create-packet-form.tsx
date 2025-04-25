@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -87,106 +88,113 @@ export function CreatePacketForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-        {/* Name */}
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="name"
-                  {...field}
-                  className="w-[200px] capitalize"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Description */}
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Desc</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="description"
-                  className="w-[200px] capitalize"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Price */}
-        <FormField
-          control={form.control}
-          name="cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Price"
-                  className="w-[200px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Rate */}
-        <FormField
-          control={form.control}
-          name="rate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Rate</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="w-[200px] uppercase">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
+    <ScrollArea className="h-[calc(100vh_-_7.5rem)]">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          {/* Name */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="name"
+                    {...field}
+                    className="w-[200px] capitalize"
+                  />
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {["MINUTE", "HOUR"].map((rate, i) => (
-                      <SelectItem value={rate} className="uppercase" key={i}>
-                        {rate}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <SheetFooter className="absolute right-0 bottom-4 left-0 px-6">
-          <SheetClose className={cn(buttonVariants({ variant: "secondary" }))}>
-            Cancel
-          </SheetClose>
-          {isPending ? (
-            <Button disabled>
-              <Loader2 className="size-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button disabled={hasPacketName} type="submit">
-              Create Packet
-            </Button>
-          )}
-        </SheetFooter>
-      </form>
-    </Form>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Description */}
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Desc</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="description"
+                    className="w-[200px] capitalize"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Price */}
+          <FormField
+            control={form.control}
+            name="cost"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Price"
+                    className="w-[200px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Rate */}
+          <FormField
+            control={form.control}
+            name="rate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rate</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="w-[200px] uppercase">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {["MINUTE", "HOUR"].map((rate, i) => (
+                        <SelectItem value={rate} className="uppercase" key={i}>
+                          {rate}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SheetFooter className="mt-20 flex flex-col-reverse md:flex-row md:justify-end md:gap-4">
+            <SheetClose
+              className={cn(buttonVariants({ variant: "secondary" }))}
+            >
+              Cancel
+            </SheetClose>
+            {isPending ? (
+              <Button disabled>
+                <Loader2 className="size-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button disabled={hasPacketName} type="submit">
+                Create Packet
+              </Button>
+            )}
+          </SheetFooter>
+        </form>
+      </Form>
+    </ScrollArea>
   )
 }

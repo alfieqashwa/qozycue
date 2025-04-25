@@ -21,6 +21,17 @@ const DeleteDrawer = dynamic(() => import("./delete-product-drawer.tsx"), {
   ssr: false,
 })
 
+export type DeleteDialogProps = {
+  disabledBasedOnAccessLevel: boolean
+  hasSoldProduct: boolean
+  description: string
+  name: string
+  status: Status
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  children: React.ReactNode
+}
+
 type DeleteProductProps = {
   id: Id<"products">
   name: string
@@ -43,6 +54,9 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
   const adminAccessLevel =
     me.status === "success" &&
     (me.data?.role === "ZENITH" || me.data?.role === "ADMIN")
+
+  const hasSoldProduct =
+    orderline.status === "success" && Boolean(orderline?.data?._id) // if there's orderline data, cannot delete
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.products.remove),
@@ -70,9 +84,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
     return (
       <DeleteDialog
         disabledBasedOnAccessLevel={!adminAccessLevel}
-        hasProductId={
-          orderline.status === "success" && Boolean(orderline?.data?._id) // if there's orderline data, cannot delete
-        }
+        hasSoldProduct={hasSoldProduct}
         description={DESCRIPTION}
         name={name}
         status={status}
@@ -97,7 +109,7 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
   return (
     <DeleteDrawer
       disabledBasedOnAccessLevel={!adminAccessLevel}
-      hasProductId={Boolean(orderline?.data?._id)}
+      hasSoldProduct={hasSoldProduct}
       description={DESCRIPTION}
       name={name}
       status={status}

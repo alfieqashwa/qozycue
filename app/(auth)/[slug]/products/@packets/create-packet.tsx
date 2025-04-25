@@ -25,13 +25,13 @@ export function CreatePacket({
           variant="secondary"
           size="sm"
           disabled={disabledBasedOnAccessLevel}
-          className="ml-2 h-8 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <FilePlus2 className="mr-2 h-4 w-4" />
+          <FilePlus2 className="text-primary size-4" />
           Create Packet
         </Button>
       </SheetTrigger>
-      <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
+      <SheetContent className="bg-card min-w-full px-6 pt-4 sm:min-w-[480px]">
         <SheetHeader>
           <SheetTitle>Create New Packet</SheetTitle>
           <SheetDescription>

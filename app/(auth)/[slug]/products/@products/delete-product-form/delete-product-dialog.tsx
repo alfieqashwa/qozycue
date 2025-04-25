@@ -8,33 +8,24 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
-import { Status } from "@/types"
 import { Trash } from "lucide-react"
+import { DeleteDialogProps } from "."
 
 export default function DeleteDialog({
   disabledBasedOnAccessLevel,
-  hasProductId,
+  hasSoldProduct,
   description,
   name,
   status,
   open,
   setOpen,
   children,
-}: {
-  disabledBasedOnAccessLevel: boolean
-  hasProductId: boolean
-  description: string
-  name: string
-  status: Status
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  children: React.ReactNode
-}) {
+}: DeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         disabled={
-          status === "enabled" || disabledBasedOnAccessLevel || hasProductId
+          status === "enabled" || disabledBasedOnAccessLevel || hasSoldProduct
         }
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),

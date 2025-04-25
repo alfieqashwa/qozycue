@@ -27,9 +27,9 @@ export function CreateProduct({
           variant="secondary"
           size="sm"
           disabled={disabledBasedOnAccessLevel}
-          className="ml-2 h-8 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <FilePlus2 className="size-4" />
+          <FilePlus2 className="text-primary size-4" />
           Create Product
         </Button>
       </SheetTrigger>

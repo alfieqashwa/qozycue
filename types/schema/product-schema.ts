@@ -61,6 +61,7 @@ export const createProductSchema = productSchema
 export const updateProductSchema = productSchema.omit({
   status: true,
   countInStock: true,
+  unitOfMeasureId: true,
 })
 export type TUpdateProduct = z.infer<typeof updateProductSchema>
 /*

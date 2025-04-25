@@ -10,33 +10,24 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { cn } from "@/lib/utils"
-import { Status } from "@/types"
 import { Trash } from "lucide-react"
+import { DeleteDialogProps } from "."
 
 export default function DeleteDrawer({
   disabledBasedOnAccessLevel,
-  hasProductId,
+  hasSoldProduct,
   description,
   name,
   status,
   open,
   setOpen,
   children,
-}: {
-  disabledBasedOnAccessLevel: boolean
-  hasProductId: boolean
-  description: string
-  name: string
-  status: Status
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  children: React.ReactNode
-}) {
+}: DeleteDialogProps) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger
         disabled={
-          status === "enabled" || disabledBasedOnAccessLevel || hasProductId
+          status === "enabled" || disabledBasedOnAccessLevel || hasSoldProduct
         }
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -16,8 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import {
   updateProductSchema,
   type TUpdateProduct,
@@ -26,35 +29,31 @@ import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   useMutation,
-  useQueries as useTanstackQueries,
+  useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
+type UpdateProductFormProps = {
+  id: Id<"products">
+  name: string
+  costPrice: number
+  salePrice: number
+  categoryId: Id<"categories">
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
 export function UpdateProductForm({
   id,
   name,
   costPrice,
   salePrice,
   categoryId,
-  unitOfMeasureId,
   setOpen,
-}: {
-  id: Id<"products">
-  name: string
-  costPrice: number
-  salePrice: number
-  categoryId: Id<"categories">
-  unitOfMeasureId: Id<"unitOfMeasures">
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-}) {
-  const [uoms, categories] = useTanstackQueries({
-    queries: [
-      convexQuery(api.unitOfMeasures.findAll, {}),
-      convexQuery(api.categories.findAll, {}),
-    ],
+}: UpdateProductFormProps) {
+  const categories = useTanstackQuery({
+    ...convexQuery(api.categories.findAll, {}),
   })
 
   const { mutate, isPending } = useMutation({
@@ -79,12 +78,10 @@ export function UpdateProductForm({
       costPrice,
       salePrice,
       categoryId,
-      unitOfMeasureId,
     },
   })
   function onSubmit(values: TUpdateProduct) {
-    const { id, name, costPrice, salePrice, categoryId, unitOfMeasureId } =
-      values
+    const { id, name, costPrice, salePrice, categoryId } = values
     mutate({
       updateProductSchema: {
         id,
@@ -92,7 +89,6 @@ export function UpdateProductForm({
         costPrice,
         salePrice,
         categoryId,
-        unitOfMeasureId,
       },
     })
   }
@@ -100,147 +96,136 @@ export function UpdateProductForm({
   const disabled = form.watch("costPrice") >= form.watch("salePrice")
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Name */}
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="name"
-                  {...field}
-                  className="w-[280px] capitalize"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Cost Price */}
-        <FormField
-          control={form.control}
-          name="costPrice"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cost Price</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="cost price"
-                  className="w-[200px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Sale Price */}
-        <FormField
-          control={form.control}
-          name="salePrice"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sale Price</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="sale price"
-                  className="w-[200px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Unit of Measure */}
-        <FormField
-          control={form.control}
-          name="unitOfMeasureId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Unit of Measure</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="w-[200px] capitalize">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select UoM" />
-                  </SelectTrigger>
+    <ScrollArea className="h-[calc(100vh_-_8.6rem)]">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Name */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="name"
+                    {...field}
+                    className="w-[280px] capitalize"
+                  />
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {uoms.status === "success" &&
-                      !!uoms.data.length &&
-                      uoms.data.map((uom) => (
-                        <SelectItem
-                          value={uom._id}
-                          className="capitalize"
-                          key={uom._id}
-                        >
-                          {uom.name}
-                        </SelectItem>
-                      ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Category */}
-        <FormField
-          control={form.control}
-          name="categoryId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="w-[200px] uppercase">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Cost Price */}
+          <FormField
+            control={form.control}
+            name="costPrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cost Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="cost price"
+                    className="w-[200px]"
+                    {...field}
+                  />
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {categories.status === "success" &&
-                      !!categories.data.length &&
-                      categories.data.map((category) => (
-                        <SelectItem
-                          value={category._id}
-                          className="uppercase"
-                          key={category._id}
-                        >
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="px-4 pt-4 md:absolute md:right-4 md:bottom-4 md:px-0 md:pt-0">
-          {isPending ? (
-            <Button disabled className="w-full md:w-auto">
-              <Loader2 className="size-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button
-              disabled={isPending || disabled}
-              type="submit"
-              className="w-full disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Sale Price */}
+          <FormField
+            control={form.control}
+            name="salePrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sale Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="sale price"
+                    className="w-[200px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Category */}
+          <FormField
+            control={form.control}
+            name="categoryId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="w-[200px] uppercase">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {categories.status === "success" &&
+                        !!categories.data.length &&
+                        categories.data.map((category) => (
+                          <SelectItem
+                            value={category._id}
+                            className="uppercase"
+                            key={category._id}
+                          >
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SheetFooter className="mt-20 flex flex-col-reverse md:flex-row md:items-center md:justify-end md:gap-4">
+            <SheetClose
+              className={cn(
+                buttonVariants({ variant: "secondary", size: "sm" }),
+              )}
             >
-              Update Product
-            </Button>
-          )}
-        </div>
-      </form>
-    </Form>
+              Cancel
+            </SheetClose>
+            <SubmitButton isPending={isPending} disabled={disabled} />
+          </SheetFooter>
+        </form>
+      </Form>
+    </ScrollArea>
   )
 }
+const SubmitButton = ({
+  isPending,
+  disabled,
+}: {
+  isPending: boolean
+  disabled: boolean
+}) => (
+  <Button
+    disabled={isPending || disabled}
+    type="submit"
+    size={"sm"}
+    className="w-full disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
+  >
+    {isPending ? (
+      <>
+        <Loader2 className="size-4 animate-spin" />
+        <span>Please wait</span>
+      </>
+    ) : (
+      <span>Update</span>
+    )}
+  </Button>
+)

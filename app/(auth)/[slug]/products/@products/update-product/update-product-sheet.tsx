@@ -1,10 +1,8 @@
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -54,11 +52,6 @@ export function UpdateProductSheet({
           </SheetDescription>
         </SheetHeader>
         {children}
-        <SheetFooter className="px-4 pt-4 md:absolute md:right-44 md:bottom-0 md:px-0 md:pt-0">
-          <SheetClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </SheetClose>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   )
