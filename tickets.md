@@ -113,8 +113,9 @@
 ✅ Animate Timer
 ✅ Coloring Stock on Products Table when it <=5 or eq to 0
 ✅ Change dewa -> zenith
-❌ Limit the number of Phone value on UpdateCustomerInfo and others
+✅ Limit the number of Phone value on UpdateCustomerInfo and others
 ✅ Animate Timer on Public Tables (i forgot!)
+❌ Reconfig Public Site
 ❌ Check Payment Drawer UI on mobile view
 ❌ Add 2 Tabs: Minute & Hourly on Start Drawer
 ❌ Update Package Version from 0.3.0 -> 0.4.0

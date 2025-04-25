@@ -124,9 +124,12 @@ const UpdateCustomerInfoFrom = ({
     defaultValues: {
       orderId,
       name: customerName,
-      phone: customerPhone ?? "",
+      phone: customerPhone,
     },
   })
+
+  const nameWatch = form.watch("name")
+  const phoneWatch = form.watch("phone")
 
   function onSubmit(values: TUpdateCustomerByOrderId) {
     const { name, phone } = values
@@ -138,6 +141,7 @@ const UpdateCustomerInfoFrom = ({
       },
     })
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -149,8 +153,8 @@ const UpdateCustomerInfoFrom = ({
               <FormLabel className="whitespace-nowrap">Customer Name</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="customer name"
-                  className="capitalize"
+                  placeholder="max 25 chars"
+                  className="w-[280px] capitalize"
                   {...field}
                 />
               </FormControl>
@@ -169,8 +173,8 @@ const UpdateCustomerInfoFrom = ({
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="Customer Phone"
-                  className="w-[200px]"
+                  placeholder="max 12 chars"
+                  className="w-[280px]"
                   {...field}
                 />
               </FormControl>
@@ -182,17 +186,26 @@ const UpdateCustomerInfoFrom = ({
           <DialogClose className={cn(buttonVariants({ variant: "secondary" }))}>
             Cancel
           </DialogClose>
-          {isPending ? (
-            <Button disabled variant="destructive" size="sm">
-              <Loader2 className="size-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button type="submit">
-              <User2 className="size-4" />
-              Update
-            </Button>
-          )}
+          <Button
+            variant={isPending ? "destructive" : "default"}
+            size={"sm"}
+            disabled={
+              isPending || nameWatch.length < 3 || phoneWatch!.length < 12
+            }
+            type="submit"
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                <span>Please wait</span>
+              </>
+            ) : (
+              <>
+                <User2 className="size-4" />
+                <span>Update</span>
+              </>
+            )}
+          </Button>
         </DialogFooter>
       </form>
     </Form>
