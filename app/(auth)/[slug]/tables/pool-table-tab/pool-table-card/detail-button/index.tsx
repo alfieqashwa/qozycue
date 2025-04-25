@@ -48,7 +48,6 @@ export function DetailButton({
 }: DetailButtonProps) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
-  console.log(pathname)
 
   const { data: poolTable } = useQuery({
     ...convexQuery(api.poolTables.findById, {
