@@ -103,15 +103,3 @@ export const remove = zMutation({
     return await ctx.db.delete(id)
   },
 })
-export const removeSelected = mutation({
-  args: { ids: v.array(v.id("packets")) },
-  handler: async (ctx, { ids }) => {
-    await adminProcedure(ctx)
-
-    const removeAll = await Promise.all(
-      ids.map(async (id) => await ctx.db.delete(id)),
-    )
-
-    return { ...removeAll }
-  },
-})

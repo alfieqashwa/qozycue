@@ -1,19 +1,16 @@
 "use client"
 
-import { Cross2Icon } from "@radix-ui/react-icons"
-import { type Table } from "@tanstack/react-table"
-
+import { categories, statusEnabled } from "@/app/constants/options"
 import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-filter"
 import { DataTableViewOptions } from "@/components/table/data-table-view-options"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
-import { categories, statusEnabled } from "@/app/constants/options"
 import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
+import { Cross2Icon } from "@radix-ui/react-icons"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { type Table } from "@tanstack/react-table"
 import { CreateProduct } from "./create-product"
-import { DeleteProductList } from "./delete-product-list"
 
 interface ProductTableToolbarProps<TData> {
   table: Table<TData>
@@ -71,14 +68,7 @@ export function ProductTableToolbar<TData>({
         )}
       </div>
       <div className="w-full pr-2 text-end">
-        {!table.getSelectedRowModel().rows.length ? (
-          <CreateProduct disabledBasedOnAccessLevel={!managerAccessLevel} />
-        ) : (
-          <DeleteProductList
-            table={table}
-            disabledBasedOnAccessLevel={!adminAccessLevel}
-          />
-        )}
+        <CreateProduct disabledBasedOnAccessLevel={!managerAccessLevel} />
         <DataTableViewOptions table={table} />
       </div>
     </div>

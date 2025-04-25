@@ -11,7 +11,6 @@ import { Cross2Icon } from "@radix-ui/react-icons"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { type Table } from "@tanstack/react-table"
 import { CreatePacket } from "./create-packet"
-import { DeletePacketList } from "./delete-packet-list"
 
 interface PacketTableToolbarProps<TData> {
   table: Table<TData>
@@ -69,14 +68,7 @@ export function PacketTableToolbar<TData>({
         )}
       </div>
       <div className="w-full pr-2 text-end">
-        {!table.getSelectedRowModel().rows.length ? (
-          <CreatePacket disabledBasedOnAccessLevel={!managerAccessLevel} />
-        ) : (
-          <DeletePacketList
-            table={table}
-            disabledBasedOnAccessLevel={!adminAccessLevel}
-          />
-        )}
+        <CreatePacket disabledBasedOnAccessLevel={!managerAccessLevel} />
         <DataTableViewOptions table={table} />
       </div>
     </div>
