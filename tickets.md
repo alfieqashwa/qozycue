@@ -119,6 +119,10 @@
 ✅ Add Radio Group: Minute & Hourly on Start Drawer
 ✅ Reconfig Public Site
 ✅ Update Package Version from 0.3.0 -> 0.4.0
+✅ Convert Category Product from Select-UI -> Radio-Button-UI (Create & Update Form)
+❌ UI cursor when disabled on Edit Product & Packet form
+❌ Config unique name on update product & packet form
+❌ Check if the company's name is unique
 
 ## Backlog (Future Plan)
 

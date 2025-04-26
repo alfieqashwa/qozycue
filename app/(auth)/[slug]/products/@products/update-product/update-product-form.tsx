@@ -8,15 +8,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
@@ -32,7 +25,7 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2 } from "lucide-react"
+import { Coffee, Loader2, ShoppingBasket, Soup } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -92,6 +85,23 @@ export function UpdateProductForm({
       },
     })
   }
+
+  const colorBasedOnCategory = (category: string) =>
+    category === "food"
+      ? "text-emerald-200"
+      : category === "drink"
+        ? "text-fuchsia-200"
+        : "text-lime-200"
+
+  const iconBasedOnCategory = (category: string) =>
+    category === "food" ? (
+      <Soup className="ml-1 size-6 text-emerald-200" />
+    ) : category === "drink" ? (
+      <Coffee className="ml-1 size-6 text-fuchsia-200" />
+    ) : (
+      <ShoppingBasket className="ml-1 size-6 text-lime-200" />
+    )
+
   // disabled submitting whenever costPrice is greater than or equal to salePrice
   const disabled = form.watch("costPrice") >= form.watch("salePrice")
 
@@ -162,31 +172,34 @@ export function UpdateProductForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl className="w-[200px] uppercase">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      {categories.status === "success" &&
-                        !!categories.data.length &&
-                        categories.data.map((category) => (
-                          <SelectItem
-                            value={category._id}
-                            className="uppercase"
-                            key={category._id}
+                <FormControl className="w-[200px] uppercase">
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-row items-center space-x-6"
+                  >
+                    {categories.status === "success" &&
+                      categories.data &&
+                      categories.data.map((category, i) => (
+                        <FormItem
+                          className={cn("mt-1 flex items-center")}
+                          key={`${category}-${i}`}
+                        >
+                          <FormControl>
+                            <RadioGroupItem value={category._id} />
+                          </FormControl>
+                          <FormLabel
+                            className={cn(
+                              "tracking-wider",
+                              colorBasedOnCategory(category.name),
+                            )}
                           >
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                            {iconBasedOnCategory(category.name)}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                  </RadioGroup>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
