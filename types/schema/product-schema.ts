@@ -53,16 +53,22 @@ export const createProductSchema = productSchema
     status: true,
     countInStock: true,
   })
-  .refine((val) => val.costPrice < val.salePrice, {
+  .refine((val) => val.costPrice <= val.salePrice, {
     path: ["comparison price"],
     message: "Cost Price must be less than Sale Price",
   })
 
-export const updateProductSchema = productSchema.omit({
-  status: true,
-  countInStock: true,
-  unitOfMeasureId: true,
-})
+export const updateProductSchema = productSchema
+  .omit({
+    status: true,
+    countInStock: true,
+    unitOfMeasureId: true,
+  })
+  .refine((val) => val.costPrice <= val.salePrice, {
+    path: ["comparison price"],
+    message: "Cost Price must be less than Sale Price",
+  })
+
 export type TUpdateProduct = z.infer<typeof updateProductSchema>
 /*
   Unanswered how to display zod-refine error-message. 

@@ -73,6 +73,15 @@ export function UpdateProductForm({
       categoryId,
     },
   })
+
+  const { data: findAllExceptCurrentProduct } = useTanstackQuery({
+    ...convexQuery(api.products.findAllExceptCurrentProduct, { productId: id }),
+    enabled: Boolean(id),
+    select(data) {
+      return data.some((product) => product.name === form.watch("name"))
+    },
+  })
+
   function onSubmit(values: TUpdateProduct) {
     const { id, name, costPrice, salePrice, categoryId } = values
     mutate({
@@ -103,7 +112,12 @@ export function UpdateProductForm({
     )
 
   // disabled submitting whenever costPrice is greater than or equal to salePrice
-  const disabled = form.watch("costPrice") >= form.watch("salePrice")
+  const disabledPriceComparison =
+    Number(form.watch("costPrice")) >= Number(form.watch("salePrice"))
+  const disabled =
+    findAllExceptCurrentProduct ||
+    disabledPriceComparison ||
+    form.watch("categoryId") === ""
 
   return (
     <ScrollArea className="h-[calc(100vh_-_8.6rem)]">
