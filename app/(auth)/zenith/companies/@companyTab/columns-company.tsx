@@ -15,7 +15,7 @@ import { FunctionReturnType } from "convex/server"
 import { api } from "@/convex/_generated/api"
 
 export const columnsCompany: ColumnDef<
-  FunctionReturnType<typeof api.companies.findAll>[0]
+  FunctionReturnType<typeof api.companies.findAllSuperAdminProcedure>[0]
 >[] = [
   {
     id: "select",
@@ -50,7 +50,7 @@ export const columnsCompany: ColumnDef<
       const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-primary" />
+          <Hash className="text-primary mr-2 h-4 w-4" />
           <span className="max-w-[300px] truncate">
             {id?.slice(-8, id.length)}
           </span>
@@ -67,7 +67,7 @@ export const columnsCompany: ColumnDef<
     ),
     cell: ({ row }) => (
       <Badge variant="secondary" className="px-3 py-1.5">
-        <Building2 className="mr-2 h-4 w-4 text-primary" />
+        <Building2 className="text-primary mr-2 h-4 w-4" />
         <span className="whitespace-nowrap capitalize">
           {row.getValue("name")}
         </span>
@@ -81,7 +81,7 @@ export const columnsCompany: ColumnDef<
     ),
     cell: ({ row }) => (
       <Badge variant="secondary" className="px-3 py-1.5">
-        <Layers className="mr-2 h-4 w-4 text-primary" />
+        <Layers className="text-primary mr-2 h-4 w-4" />
         <span className="whitespace-nowrap capitalize">
           {row.getValue("subscription")}
         </span>
@@ -115,7 +115,7 @@ export const columnsCompany: ColumnDef<
     ),
     cell: ({ row }) => (
       <Badge variant="secondary" className="px-3 py-1.5">
-        <Phone className="mr-2 h-4 w-4 text-primary" />
+        <Phone className="text-primary mr-2 h-4 w-4" />
         <span className="whitespace-nowrap capitalize">
           {row.getValue("phone")}
         </span>

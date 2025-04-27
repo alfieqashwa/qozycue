@@ -29,7 +29,7 @@ export const findPublicProcedure = query({
   },
 })
 
-export const findAll = query({
+export const findAllSuperAdminProcedure = query({
   args: {},
   handler: async (ctx) => {
     await superAdminProcedure(ctx)

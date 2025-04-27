@@ -49,7 +49,9 @@ export function UpdateUserForm({
 }: UpdateUserFormProps) {
   const router = useRouter()
 
-  const companies = useTanstackQuery(convexQuery(api.companies.findAll, {}))
+  const companies = useTanstackQuery(
+    convexQuery(api.companies.findAllSuperAdminProcedure, {}),
+  )
 
   const { mutate, isPending, reset } = useMutation({
     mutationFn: useConvexMutation(api.users.updateRoleAndCompanyId),

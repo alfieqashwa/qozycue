@@ -43,7 +43,7 @@ export function CreateUserForm({
   const [{ data: profile, status }, companies] = useTanstackQueries({
     queries: [
       convexQuery(api.users.me, {}),
-      convexQuery(api.companies.findAll, {}),
+      convexQuery(api.companies.findAllSuperAdminProcedure, {}),
     ],
   })
 
