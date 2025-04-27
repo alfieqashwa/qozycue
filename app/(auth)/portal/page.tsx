@@ -41,14 +41,15 @@ export default async function Page() {
         Welcome to Qozy Cue App.
       </h2>
       <p className="max-w-4xl pt-4 text-center">
-        Click
         <TriggerTrialButton
           userRole={
             session.user.role === "USER" || session.user.role === "ZENITH"
           }
         />
         to try this
-        <span className="text-primary pl-1">free app</span>. Click this icon
+        <span className="text-primary pl-1">free app</span>.
+      </p>
+      <p>
         <a
           href={CONTACT}
           target="_blank"
@@ -65,13 +66,13 @@ export default async function Page() {
         to ask me questions.
       </p>
       <p>
-        Click <SignOutButton size="sm" /> to logout.
+        OR <SignOutButton size="sm" /> to logout.
       </p>
       <p className="text-center">Thanks.</p>
 
       {/* only show for zenith user when it has no company yet */}
       {session.user.role === "ZENITH" && (
-        <div className="absolute right-2 bottom-2">
+        <div className="animate-pulse-slow absolute right-2 bottom-2">
           <Link href="/zenith/">
             <LinkIcon />
           </Link>

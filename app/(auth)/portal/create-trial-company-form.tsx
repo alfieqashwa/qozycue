@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { DialogClose, DialogFooter } from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -8,8 +9,10 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import {
   createTrialCompanySchema,
   TCreateTrialCompany,
@@ -81,65 +84,81 @@ export function CreateTrialCompanyForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem className="pt-4">
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="name" {...field} className="capitalize" />
-              </FormControl>
-              <p className="text-destructive text-sm">
-                {hasCompanyName && "Error: duplicate name."}
-              </p>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone</FormLabel>
-              <FormControl>
-                <Input type="tel" placeholder="Phone" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Location"
-                  {...field}
-                  className="capitalize"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {isPending ? (
-          <Button disabled size="sm">
-            <Loader2 className="size-4 animate-spin" />
-            Please wait
-          </Button>
-        ) : (
-          <Button disabled={hasCompanyName || isPending} type="submit">
-            Submit
-          </Button>
-        )}
-      </form>
-    </Form>
+    <ScrollArea className="h-[calc(100vh_-_12rem)] lg:h-[calc(100vh_-_35rem)]">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-2">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="pt-4">
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="name"
+                    {...field}
+                    className="w-[280px] capitalize"
+                  />
+                </FormControl>
+                <p className="text-destructive text-sm">
+                  {hasCompanyName && "Error: duplicate name."}
+                </p>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone</FormLabel>
+                <FormControl>
+                  <Input
+                    type="tel"
+                    placeholder="Phone"
+                    {...field}
+                    className="w-[180px]"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Location</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Location"
+                    {...field}
+                    className="h-[120px] capitalize"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <DialogFooter className="mt-20 flex flex-col-reverse md:flex-row md:items-center md:justify-end md:gap-4">
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
+              Cancel
+            </DialogClose>
+            {isPending ? (
+              <Button disabled size="sm">
+                <Loader2 className="size-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button disabled={hasCompanyName || isPending} type="submit">
+                Submit
+              </Button>
+            )}
+          </DialogFooter>
+        </form>
+      </Form>
+    </ScrollArea>
   )
 }
