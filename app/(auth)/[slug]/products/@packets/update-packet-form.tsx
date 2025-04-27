@@ -23,9 +23,12 @@ import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Rate } from "@/types"
 import { TUpdatePacket, updatePacketSchema } from "@/types/schema/packet-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -70,6 +73,20 @@ export function UpdatePacketForm({
       rate,
     },
   })
+
+  const { data: hasPacketName } = useTanstackQuery({
+    ...convexQuery(api.packets.findAll, {}),
+    enabled: Boolean(id),
+    select(data) {
+      const filteredPacket = data.filter((packet) => packet._id !== id)
+      return filteredPacket.some(
+        (packet) =>
+          packet.name === form.watch("name") &&
+          packet.rate === form.watch("rate"),
+      )
+    },
+  })
+
   function onSubmit(values: TUpdatePacket) {
     const { id, name, description, cost, rate } = values
     mutate({
@@ -178,7 +195,7 @@ export function UpdatePacketForm({
             >
               Cancel
             </SheetClose>
-            <Button disabled={isPending} type="submit">
+            <Button disabled={hasPacketName || isPending} type="submit">
               {isPending ? (
                 <>
                   <Loader2 className="animate-spin" />
