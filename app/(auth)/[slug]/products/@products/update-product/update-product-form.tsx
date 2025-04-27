@@ -74,11 +74,13 @@ export function UpdateProductForm({
     },
   })
 
-  const { data: findAllExceptCurrentProduct } = useTanstackQuery({
-    ...convexQuery(api.products.findAllExceptCurrentProduct, { productId: id }),
+  const { data: hasProductName } = useTanstackQuery({
+    ...convexQuery(api.products.findAll, {}),
     enabled: Boolean(id),
     select(data) {
-      return data.some((product) => product.name === form.watch("name"))
+      return data
+        .filter((p) => p._id !== id)
+        .some((product) => product.name === form.watch("name"))
     },
   })
 
@@ -115,9 +117,7 @@ export function UpdateProductForm({
   const disabledPriceComparison =
     Number(form.watch("costPrice")) >= Number(form.watch("salePrice"))
   const disabled =
-    findAllExceptCurrentProduct ||
-    disabledPriceComparison ||
-    form.watch("categoryId") === ""
+    hasProductName || disabledPriceComparison || form.watch("categoryId") === ""
 
   return (
     <ScrollArea className="h-[calc(100vh_-_8.6rem)]">

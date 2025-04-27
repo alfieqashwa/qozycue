@@ -10,7 +10,6 @@ import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
   managerProcedure,
-  protectedProcedure,
   subscriptions,
   validateSubscriptionLimits,
   zMutation,
@@ -40,25 +39,6 @@ export const findAll = query({
         return { ...product, unitOfMeasure, category }
       }),
     )
-  },
-})
-
-export const findAllExceptCurrentProduct = query({
-  args: { productId: v.id("products") },
-  handler: async (ctx, args) => {
-    // await protectedProcedure(ctx)
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw new ConvexError("Please signed in!")
-
-    const user = await ctx.db.get(userId)
-    if (!user || !user?.companyId) throw new ConvexError("No user!")
-
-    const products = await ctx.db
-      .query("products")
-      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .collect()
-
-    return products.filter((product) => product._id !== args.productId)
   },
 })
 
