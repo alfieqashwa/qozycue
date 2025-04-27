@@ -70,7 +70,9 @@ export function CreateProductForm({
   const { data: hasProductName } = useTanstackQuery({
     ...convexQuery(api.products.findAll, {}),
     select(data) {
-      return data.some((product) => product.name === form.watch("name"))
+      return data.some(
+        (product) => product.name === form.watch("name").toLowerCase(),
+      )
     },
   })
 

@@ -62,8 +62,8 @@ export function CreatePacketForm({
     select(data) {
       return data.some(
         (packet) =>
-          packet.name === form.watch("name") &&
-          packet.rate === form.watch("rate"),
+          packet.name === form.watch("name").toLowerCase() &&
+          packet.rate === form.watch("rate").toLowerCase(),
       )
     },
   })

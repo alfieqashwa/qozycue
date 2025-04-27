@@ -81,7 +81,7 @@ export function UpdateProductForm({
     select(data) {
       return data
         .filter((p) => p._id !== id)
-        .some((product) => product.name === form.watch("name"))
+        .some((product) => product.name === form.watch("name").toLowerCase())
     },
   })
 

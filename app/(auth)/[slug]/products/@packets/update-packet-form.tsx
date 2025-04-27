@@ -81,8 +81,8 @@ export function UpdatePacketForm({
       const filteredPacket = data.filter((packet) => packet._id !== id)
       return filteredPacket.some(
         (packet) =>
-          packet.name === form.watch("name") &&
-          packet.rate === form.watch("rate"),
+          packet.name === form.watch("name").toLowerCase() &&
+          packet.rate === form.watch("rate").toLowerCase(),
       )
     },
   })
