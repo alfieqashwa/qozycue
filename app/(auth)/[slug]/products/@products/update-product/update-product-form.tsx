@@ -1,4 +1,4 @@
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -25,9 +25,10 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Coffee, Loader2, ShoppingBasket, Soup } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { CategoryFormLabel } from "../category-form-label"
+import { SubmitButton } from "../submit-button"
 
 type UpdateProductFormProps = {
   id: Id<"products">
@@ -96,23 +97,6 @@ export function UpdateProductForm({
       },
     })
   }
-
-  const colorBasedOnCategory = (category: string) =>
-    category === "food"
-      ? "text-emerald-200"
-      : category === "drink"
-        ? "text-fuchsia-200"
-        : "text-lime-200"
-
-  const iconBasedOnCategory = (category: string) =>
-    category === "food" ? (
-      <Soup className="ml-1 size-6 text-emerald-200" />
-    ) : category === "drink" ? (
-      <Coffee className="ml-1 size-6 text-fuchsia-200" />
-    ) : (
-      <ShoppingBasket className="ml-1 size-6 text-lime-200" />
-    )
-
   // disabled submitting whenever costPrice is greater than or equal to salePrice
   const disabledPriceComparison =
     Number(form.watch("costPrice")) >= Number(form.watch("salePrice"))
@@ -196,20 +180,16 @@ export function UpdateProductForm({
                       categories.data &&
                       categories.data.map((category, i) => (
                         <FormItem
-                          className={cn("mt-1 flex items-center")}
+                          className="mt-1 ml-1 flex items-center"
                           key={`${category}-${i}`}
                         >
                           <FormControl>
-                            <RadioGroupItem value={category._id} />
+                            <RadioGroupItem
+                              value={category._id}
+                              className="peer hidden" // hide radio button
+                            />
                           </FormControl>
-                          <FormLabel
-                            className={cn(
-                              "tracking-wider",
-                              colorBasedOnCategory(category.name),
-                            )}
-                          >
-                            {iconBasedOnCategory(category.name)}
-                          </FormLabel>
+                          <CategoryFormLabel categoryName={category.name} />
                         </FormItem>
                       ))}
                   </RadioGroup>
@@ -219,40 +199,17 @@ export function UpdateProductForm({
             )}
           />
           <SheetFooter className="mt-20 flex flex-col-reverse md:flex-row md:items-center md:justify-end md:gap-4">
-            <SheetClose
-              className={cn(
-                buttonVariants({ variant: "secondary", size: "sm" }),
-              )}
-            >
+            <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </SheetClose>
-            <SubmitButton isPending={isPending} disabled={disabled} />
+            <SubmitButton
+              title="Update Product"
+              isPending={isPending}
+              disabled={disabled}
+            />
           </SheetFooter>
         </form>
       </Form>
     </ScrollArea>
   )
 }
-const SubmitButton = ({
-  isPending,
-  disabled,
-}: {
-  isPending: boolean
-  disabled: boolean
-}) => (
-  <Button
-    disabled={isPending || disabled}
-    type="submit"
-    size={"sm"}
-    className="w-full disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
-  >
-    {isPending ? (
-      <>
-        <Loader2 className="size-4 animate-spin" />
-        <span>Please wait</span>
-      </>
-    ) : (
-      <span>Update</span>
-    )}
-  </Button>
-)

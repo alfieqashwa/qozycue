@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { SheetFooter } from "@/components/ui/sheet"
+import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
 import {
@@ -25,9 +25,10 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Coffee, Loader2, ShoppingBasket, Soup } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { CategoryFormLabel } from "./category-form-label"
+import { SubmitButton } from "./submit-button"
 
 export function CreateProductForm({
   setOpen,
@@ -86,22 +87,6 @@ export function CreateProductForm({
       },
     })
   }
-
-  const colorBasedOnCategory = (category: string) =>
-    category === "food"
-      ? "text-emerald-200"
-      : category === "drink"
-        ? "text-fuchsia-200"
-        : "text-lime-200"
-
-  const iconBasedOnCategory = (category: string) =>
-    category === "food" ? (
-      <Soup className="ml-1 size-6 text-emerald-200" />
-    ) : category === "drink" ? (
-      <Coffee className="ml-1 size-6 text-fuchsia-200" />
-    ) : (
-      <ShoppingBasket className="ml-1 size-6 text-lime-200" />
-    )
 
   // disabled submitting whenever costPrice is greater than or equal to salePrice
   const disabledPriceComparison =
@@ -181,20 +166,16 @@ export function CreateProductForm({
                       categories.data &&
                       categories.data.map((category, i) => (
                         <FormItem
-                          className={cn("mt-1 flex items-center")}
+                          className="mt-1 ml-1 flex items-center"
                           key={`${category}-${i}`}
                         >
                           <FormControl>
-                            <RadioGroupItem value={category._id} />
+                            <RadioGroupItem
+                              value={category._id}
+                              className="peer hidden" //hide radio button
+                            />
                           </FormControl>
-                          <FormLabel
-                            className={cn(
-                              "tracking-wider",
-                              colorBasedOnCategory(category.name),
-                            )}
-                          >
-                            {iconBasedOnCategory(category.name)}
-                          </FormLabel>
+                          <CategoryFormLabel categoryName={category.name} />
                         </FormItem>
                       ))}
                   </RadioGroup>
@@ -204,23 +185,14 @@ export function CreateProductForm({
             )}
           />
           <SheetFooter className="mt-24 flex flex-col-reverse md:flex-row md:justify-end md:gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
+            <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
-            </Button>
-            {isPending ? (
-              <Button disabled>
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button disabled={disabled} type="submit" size={"sm"}>
-                Create Product
-              </Button>
-            )}
+            </SheetClose>
+            <SubmitButton
+              title="Create Product"
+              isPending={isPending}
+              disabled={disabled}
+            />
           </SheetFooter>
         </form>
       </Form>
