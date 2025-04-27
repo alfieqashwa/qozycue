@@ -41,10 +41,10 @@ export default async function Page() {
         Welcome to Qozy Cue App.
       </h2>
       <p className="max-w-4xl pt-4 text-center">
-        Tekan
+        Click
         <TriggerTrialButton userRole={session.user.role === "USER"} />
-        untuk mencoba aplikasi kami
-        <span className="text-primary pl-1">secara gratis</span>. Tekan ikon
+        to try this
+        <span className="text-primary pl-1">free app</span>. Click this icon
         <a
           href={CONTACT}
           target="_blank"
@@ -58,12 +58,12 @@ export default async function Page() {
             height={25}
           />
         </a>
-        untuk informasi lebih lanjut.
+        to ask me questions.
       </p>
       <p>
-        Tekan <SignOutButton size="sm" /> untuk keluar.
+        Click <SignOutButton size="sm" /> to logout.
       </p>
-      <p className="text-center">Terimakasih.</p>
+      <p className="text-center">Thanks.</p>
 
       {/* only show for zenith user when it has no company yet */}
       {session.user.role === "ZENITH" && (
