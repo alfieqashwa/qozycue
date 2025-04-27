@@ -123,7 +123,7 @@
 ✅ UI cursor when disabled on Edit Product & Packet form
 ✅ Config unique name on update product & packet form
 ✅ Customize product category radio button
-❌ Check if the company's name is unique
+✅ Check if the company's name is unique
 
 ## Backlog (Future Plan)
 
