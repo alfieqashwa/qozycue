@@ -14,9 +14,12 @@ import {
   createTrialCompanySchema,
   TCreateTrialCompany,
 } from "@/types/schema/company-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -29,6 +32,7 @@ export function CreateTrialCompanyForm({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   const router = useRouter()
+
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.companies.createTrial),
     onSuccess: () => {
@@ -57,11 +61,16 @@ export function CreateTrialCompanyForm({
     },
   })
 
+  const { data: hasCompanyName } = useTanstackQuery({
+    ...convexQuery(api.companies.findAll, {}),
+    select(data) {
+      return data.some((c) => c.name === form.watch("name").toLowerCase())
+    },
+  })
+
   // 2. Define a submit handler
   function onSubmit(values: TCreateTrialCompany) {
     const { name, phone, location } = values
-    // Do something with the form values.
-    // This will b type-safe and validated.
     mutate({
       createTrialCompanySchema: {
         name: name.toLowerCase(),
@@ -83,6 +92,9 @@ export function CreateTrialCompanyForm({
               <FormControl>
                 <Input placeholder="name" {...field} className="capitalize" />
               </FormControl>
+              <p className="text-destructive text-sm">
+                {hasCompanyName && "Error: duplicate name."}
+              </p>
               <FormMessage />
             </FormItem>
           )}
@@ -123,7 +135,7 @@ export function CreateTrialCompanyForm({
             Please wait
           </Button>
         ) : (
-          <Button disabled={isPending} type="submit">
+          <Button disabled={hasCompanyName || isPending} type="submit">
             Submit
           </Button>
         )}

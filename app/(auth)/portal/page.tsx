@@ -23,7 +23,7 @@ export default async function Page() {
 
   // if user is not a USER & has a company, then redirect to their respective page
   if (session.user.role !== "USER" && !!session.user.company?.slug) {
-    if (session.user.role === "ZENITH") redirect("/zenith/")
+    // if (session.user.role === "ZENITH") redirect("/zenith/")
     if (session.user.role === "ADMIN" || session.user.role === "OWNER")
       redirect(`/${encodeURIComponent(session.user.company.slug)}/dashboard/`)
     if (session.user.role === "MANAGER")
@@ -42,7 +42,11 @@ export default async function Page() {
       </h2>
       <p className="max-w-4xl pt-4 text-center">
         Click
-        <TriggerTrialButton userRole={session.user.role === "USER"} />
+        <TriggerTrialButton
+          userRole={
+            session.user.role === "USER" || session.user.role === "ZENITH"
+          }
+        />
         to try this
         <span className="text-primary pl-1">free app</span>. Click this icon
         <a

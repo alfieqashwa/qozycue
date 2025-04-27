@@ -38,6 +38,19 @@ export const findAllSuperAdminProcedure = query({
   },
 })
 
+export const findAll = query({
+  args: {},
+  handler: async (ctx) => {
+    // protectedProcedure
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw new ConvexError("Please signed in!")
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (!user) throw new ConvexError("No user provided!")
+
+    return await ctx.db.query("companies").collect()
+  },
+})
+
 export const find = query({
   args: { id: v.optional(v.id("companies")) },
   handler: async (ctx, { id }) => {
