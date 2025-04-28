@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -81,89 +82,89 @@ export function CreateTeamForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="pt-4">
-              <FormLabel>User Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Email" className="w-[200px]" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem className="pt-4">
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormLabel>Role</FormLabel>
-                <FormControl className="w-[200px]">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Role" />
-                  </SelectTrigger>
+    <ScrollArea className="h-[calc(100vh_-_7.5rem)]">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="px-6 pt-4">
+                <FormLabel>User Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Email" className="w-[200px]" {...field} />
                 </FormControl>
-                <SelectContent>
-                  {/* ADMIN CANNOT create a new team where the role is "ADMIN" */}
-                  {profile.status === "success" &&
-                  profile.data?.role === "ZENITH" ? (
-                    <SelectGroup>
-                      {roles
-                        .filter((r) => r.value !== "ZENITH")
-                        .map((role, i) => (
-                          <SelectItem value={role.value} key={i}>
-                            {role.label}
-                          </SelectItem>
-                        ))}
-                    </SelectGroup>
-                  ) : (
-                    <SelectGroup>
-                      {roles
-                        .filter(
-                          (r) => r.value !== "ZENITH" && r.value !== "ADMIN",
-                        )
-                        .map((role, i) => (
-                          <SelectItem value={role.value} key={i}>
-                            {role.label}
-                          </SelectItem>
-                        ))}
-                    </SelectGroup>
-                  )}
-                </SelectContent>
-              </Select>
-              <FormDescription className="pt-2">
-                Select your team&apos;s access level.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <SheetFooter className="pt-8">
-          <SheetClose
-            className={cn(
-              buttonVariants({ variant: "secondary" }),
-              "mt-1.5 md:mt-0",
+                <FormMessage />
+              </FormItem>
             )}
-          >
-            Cancel
-          </SheetClose>
-          {isPending ? (
-            <Button disabled>
-              <Loader2 className="size-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button disabled={isPending} type="submit">
-              Create Team
-            </Button>
-          )}
-        </SheetFooter>
-      </form>
-    </Form>
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem className="px-6 pt-4">
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormLabel>Role</FormLabel>
+                  <FormControl className="w-[200px]">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Role" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {/* ADMIN CANNOT create a new team where the role is "ADMIN" */}
+                    {profile.status === "success" &&
+                    profile.data?.role === "ZENITH" ? (
+                      <SelectGroup>
+                        {roles
+                          .filter((r) => r.value !== "ZENITH")
+                          .map((role, i) => (
+                            <SelectItem value={role.value} key={i}>
+                              {role.label}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    ) : (
+                      <SelectGroup>
+                        {roles
+                          .filter(
+                            (r) => r.value !== "ZENITH" && r.value !== "ADMIN",
+                          )
+                          .map((role, i) => (
+                            <SelectItem value={role.value} key={i}>
+                              {role.label}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormDescription className="pt-2">
+                  Select your team&apos;s access level.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SheetFooter className="mt-20 flex w-full flex-col-reverse md:flex-row md:justify-end">
+            <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
+              Cancel
+            </SheetClose>
+            {isPending ? (
+              <Button disabled>
+                <Loader2 className="size-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button disabled={isPending} type="submit">
+                Create Team
+              </Button>
+            )}
+          </SheetFooter>
+        </form>
+      </Form>
+    </ScrollArea>
   )
 }

@@ -1,20 +1,17 @@
-import Image from "next/image"
 import { CONTACT } from "@/app/constants/contact"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { TooltipTrigger } from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
+import Image from "next/image"
 
 export const ContactDeveloperWhatsapp = () => (
-  <div className="fixed bottom-2 right-2">
-    <Tooltip>
-      <TooltipTrigger asChild>
+  <div className="fixed right-2 bottom-2">
+    <WrapperTooltip content="Contact Us">
+      <TooltipTrigger>
         <a
           href={CONTACT}
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-2 inline-block animate-pulse-slow"
+          className="animate-pulse-slow mx-2 inline-block"
         >
           <Image
             src="/images/icon-whatsapp.svg"
@@ -24,7 +21,6 @@ export const ContactDeveloperWhatsapp = () => (
           />
         </a>
       </TooltipTrigger>
-      <TooltipContent className="font-medium">Contact Us</TooltipContent>
-    </Tooltip>
+    </WrapperTooltip>
   </div>
 )
