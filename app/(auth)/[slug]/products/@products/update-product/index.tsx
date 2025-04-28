@@ -26,7 +26,6 @@ export function UpdateProduct({
   categoryId,
 }: UpdateProductProps) {
   const [open, setOpen] = useState(false)
-  const description = "Click Update Product when you're sure to delete"
 
   const me = useTanstackQuery(convexQuery(api.users.me, {}))
   const managerAccessLevel = ["ZENITH", "ADMIN", "MANAGER"].includes(
@@ -39,7 +38,6 @@ export function UpdateProduct({
       setOpen={setOpen}
       status={status}
       name={name}
-      description={description}
       managerAccessLevel={managerAccessLevel}
     >
       <UpdateProductForm

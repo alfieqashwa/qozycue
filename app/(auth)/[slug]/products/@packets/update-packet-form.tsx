@@ -51,16 +51,17 @@ export function UpdatePacketForm({
 }) {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.packets.update),
-    onSuccess: () =>
+    onSuccess: () => {
       toast.success("Succeed!", {
         description: "Your packet has been updated.",
-      }),
+      })
+      setOpen(false)
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   const form = useForm<TUpdatePacket>({

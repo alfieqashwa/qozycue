@@ -76,8 +76,8 @@ export function DeleteProductForm({ id, name, status }: DeleteProductProps) {
     e.preventDefault()
     mutate({ deleteProductSchema: { id } })
   }
-  const DESCRIPTION = `You can&apos;t undo this changes. Click Delete Product when
-            you&apos;re sure to delete`
+  const DESCRIPTION = `You can't undo this changes. Click Delete Product when
+            you're sure to delete`
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
   if (isDesktop) {

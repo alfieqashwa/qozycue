@@ -39,10 +39,10 @@ export function CreateTrialCompanyForm({
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.companies.createTrial),
     onSuccess: () => {
-      toast.success("Succeed!", {
-        description: "Your company/tenant has been created.",
-      })
       setOpen(false)
+      toast.success("Succeed!", {
+        description: "Your company / tenant has been created.",
+      })
       router.push(
         `/${variables?.createTrialCompanySchema.name.replace(/ /g, "-")}/dashboard/`,
       )

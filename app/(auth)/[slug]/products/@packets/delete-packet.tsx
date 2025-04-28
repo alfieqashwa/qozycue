@@ -69,7 +69,7 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
         disabled={
           status === "enabled" ||
           !adminAccessLevel ||
-          (poolRental.status === "success" && Boolean(poolRental.data?._id))
+          (poolRental.status === "success" && Boolean(poolRental.data?._id)) // disabled delete button if its packet has already been use.
         }
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),

@@ -52,16 +52,17 @@ export function UpdateProductForm({
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.products.update),
-    onSuccess: () =>
+    onSuccess: () => {
       toast.success("Succeed!", {
         description: "Your product has been updated.",
-      }),
+      })
+      setOpen(false)
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   const form = useForm<TUpdateProduct>({

@@ -16,7 +16,6 @@ type UpdateProductSheetProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
   managerAccessLevel: boolean
   name: string
-  description: string
   status: Status
   children: React.ReactNode
 }
@@ -26,7 +25,6 @@ export function UpdateProductSheet({
   setOpen,
   managerAccessLevel,
   name,
-  description,
   status,
   children,
 }: UpdateProductSheetProps) {
@@ -47,7 +45,7 @@ export function UpdateProductSheet({
         <SheetHeader>
           <SheetTitle>Update Product</SheetTitle>
           <SheetDescription>
-            {description}
+            Click Update Product when you&apos;re done.
             <span className="text-primary pl-1 uppercase">{name}</span>.
           </SheetDescription>
         </SheetHeader>
