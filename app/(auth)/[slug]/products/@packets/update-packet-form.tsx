@@ -83,7 +83,7 @@ export function UpdatePacketForm({
       return filteredPacket.some(
         (packet) =>
           packet.name === form.watch("name").toLowerCase() &&
-          packet.rate === form.watch("rate").toLowerCase(),
+          packet.rate === form.watch("rate"),
       )
     },
   })
