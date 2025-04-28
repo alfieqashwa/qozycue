@@ -124,6 +124,7 @@
 ✅ Config unique name on update product & packet form
 ✅ Customize product category radio button
 ✅ Check if the company's name is unique
+✅ Update Team Info Create & Update Form
 
 ## Backlog (Future Plan)
 
