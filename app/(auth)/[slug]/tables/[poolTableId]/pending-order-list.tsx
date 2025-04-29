@@ -5,11 +5,12 @@ import { PoolRentalDetail } from "@/components/pool-rental-detail"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
-import { Phone, User2 } from "lucide-react"
 import { CafeButton } from "../pool-table-tab/pool-table-card/cafe-button"
+import { UpdateCustomerInfo } from "../pool-table-tab/pool-table-card/detail-button/update-customer-info"
 import { PaymentButton } from "../pool-table-tab/pool-table-card/payment-button"
 
 type PendingOrderListProps = {
@@ -65,21 +66,15 @@ const PendingOrderCard = ({
     className="bg-card rounded-2xl border-2 p-4 shadow-lg"
     key={order._id}
   >
-    <div className="flex justify-between space-x-2 text-sm font-medium tracking-widest">
+    <div className="flex justify-between font-medium tracking-widest">
       <h2 className="text-foreground">Table {poolTableName}</h2>
-      <article className="space-y-1">
-        <p className="flex space-x-2 capitalize">
-          <User2 size={16} />
-          <span className="text-foreground font-medium">
-            {order?.customer.name}
-          </span>
-        </p>
-        <p className="flex space-x-2 capitalize">
-          <Phone size={16} />
-          <span className="text-muted-foreground font-medium tracking-wider">
-            {order?.customer.phone || order.customer.phone || "No phone"}
-          </span>
-        </p>
+      <article className="">
+        <UpdateCustomerInfo
+          orderId={order._id!}
+          customerName={order.customer.name || "Anonymous"}
+          customerPhone={order.customer.phone || "No Phone"}
+          statusPayment={order.statusPayment as StatusPayment}
+        />
       </article>
     </div>
     <Tabs defaultValue="table">

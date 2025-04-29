@@ -129,8 +129,8 @@
 ✅ Avoid user to delete PoolTable when it has been used
 ✅ Reconfig All Tabs on Page Settings
 ✅ (Style): Setting Icon below Avatar should be colorized when user on the Settings Page
-❌ Implement Update Customer Info on Reset Card
-❌ Implement Update Customer Info on Cafe-Only Card
+✅ Implement Update Customer Info on Reset Card
+✅ Implement Update Customer Info on Cafe-Only Card
 ❌ Hide Radio Button Rate (Minute & Hourly)
 ✅ Re-Animate Time from left to right
 ❌ Start Time default should be null

@@ -7,9 +7,9 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
 import { FunctionReturnType } from "convex/server"
-import { Phone, User2 } from "lucide-react"
 import { Fragment } from "react"
 import { CafeButton } from "../pool-table-tab/pool-table-card/cafe-button"
+import { UpdateCustomerInfo } from "../pool-table-tab/pool-table-card/detail-button/update-customer-info"
 import { PaymentButton } from "../pool-table-tab/pool-table-card/payment-button"
 import { CreateOrderForm } from "./create-order-form"
 import { RemoveOrder } from "./remove-order"
@@ -67,17 +67,13 @@ const CafeOnlyCard = ({
   cashierAccessLevel,
 }: CafeOnlyTabCardProps) => (
   <div className="bg-card rounded-xl border-2 px-5 py-4" key={order._id}>
-    <article className="flex items-center justify-between truncate py-2 text-xs md:text-sm">
-      <h1 className="text-foreground truncate font-semibold capitalize">
-        <User2 size={16} className="text-muted-foreground mr-1 inline" />
-        {order.customer?.name}
-      </h1>
-      {!!order.customer?.phone && (
-        <p>
-          <Phone size={14} className="text-muted-foreground mr-1 inline" />
-          {order.customer.phone}
-        </p>
-      )}
+    <article className="flex items-center justify-end truncate">
+      <UpdateCustomerInfo
+        orderId={order._id}
+        customerName={order.customer?.name as string}
+        customerPhone={order.customer?.phone || "No Phone"}
+        statusPayment={order.statusPayment}
+      />
     </article>
     <OrderlineDetail orderId={order._id} />
     <div className="flex items-center justify-between space-x-2 py-2">
