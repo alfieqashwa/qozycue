@@ -29,9 +29,9 @@ export function TimeCard({
         className="countdown py-0.5"
         initial={{
           opacity: 0,
-          y: -15,
+          x: -15,
         }}
-        animate={{ opacity: 100, y: 0 }}
+        animate={{ opacity: 100, x: 0 }}
         transition={{
           delay: 0.5,
           duration: 0.5,

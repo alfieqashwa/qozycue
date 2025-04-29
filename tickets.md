@@ -133,7 +133,7 @@
 ❌ Implement Update Customer Info on Reset Card
 ❌ Implement Update Customer Info on Cafe-Only Card
 ❌ Hide Radio Button Rate (Minute & Hourly)
-❌ Re-Animate Time from left to right
+✅ Re-Animate Time from left to right
 ❌ Start Time default should be null
 ✅ (Style): Fix Booking Sheet UI
 
