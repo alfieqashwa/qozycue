@@ -178,13 +178,14 @@ export const upsertAdminProcedure = zMutation({
         companyId,
       })
     } else {
+      // if there is user, but has company which is not equal with this company, then throw an error
       if (user.companyId !== companyId) {
         throw new ConvexError("User is already registered on other company!")
       } else {
         /*
-         * this is for user who's already on portal page,
-         * which didn't create a company.
-         * And whether user has companyId or not,
+         * this is for user who's already been on portal page,
+         * but didn't create a company yet.
+         * And whether the user has companyId or not,
          * retrieve anyway. No impact for this case!
          */
         return await ctx.db.patch(user._id, {

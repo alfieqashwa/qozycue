@@ -379,7 +379,14 @@ export const subscriptions = async (
     .withIndex("companyId", (q) => q.eq("companyId", companyId))
     .collect()
 
-  const excludeSuperAdmin = users.filter((q) => q.role !== "ZENITH")
+  /*
+   * Don't count the creator's email.
+   * The actual parameter is ZENITH_EMAIL instead of "ZENITH" role,
+   * because sometimes, the creator switch its role (eg. "ADMIN" role).
+   */
+  const excludeSuperAdmin = users.filter(
+    (q) => q.email !== process.env.ZENITH_EMAIL,
+  )
   const _count = {
     users: excludeSuperAdmin.length,
     poolTables: poolTables.length,
