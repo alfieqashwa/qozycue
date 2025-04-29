@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { motion } from "motion/react"
 import { GiPoolTriangle } from "react-icons/gi"
 
 type TimeCardProps = {
@@ -22,21 +23,31 @@ export function TimeCard({
     }
     const display = value.toString().padStart(2, "0")
     return (
-      <span
-        className="countdown py-0.5"
+      <motion.span
         aria-live="polite"
         aria-label={`${label}: ${display}`}
+        className="countdown py-0.5"
+        initial={{
+          opacity: 0,
+          y: -15,
+        }}
+        animate={{ opacity: 100, y: 0 }}
+        transition={{
+          delay: 0.5,
+          duration: 0.5,
+          ease: "easeOut",
+        }}
+        role="timer"
       >
         <span style={{ "--value": value } as React.CSSProperties}>
           {display}
         </span>
-      </span>
+      </motion.span>
     )
   }
 
   return (
-    <div
-      role="timer"
+    <motion.div
       className={cn("flex items-center text-lg font-semibold", className)}
     >
       {renderSegment(hours, "Hours")}
@@ -44,6 +55,6 @@ export function TimeCard({
       {renderSegment(minutes, "Minutes")}
       <span aria-hidden="true">:</span>
       {renderSegment(seconds, "Seconds")}
-    </div>
+    </motion.div>
   )
 }
