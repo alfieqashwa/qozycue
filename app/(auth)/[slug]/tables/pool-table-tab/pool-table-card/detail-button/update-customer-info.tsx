@@ -72,7 +72,7 @@ export function UpdateCustomerInfo({
               className="group-hover:text-primary transition-colors duration-500 ease-in-out"
             />
             <span className="text-muted-foreground font-medium tracking-wider">
-              {customerPhone ?? "No Phone"}
+              {customerPhone || "No Phone"}
             </span>
           </DrawerDescription>
         </DialogTrigger>
