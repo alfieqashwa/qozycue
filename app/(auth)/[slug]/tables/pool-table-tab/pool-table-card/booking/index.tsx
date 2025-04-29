@@ -17,6 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
@@ -78,16 +79,17 @@ export function Booking({
 
   const { mutate } = useMutation({
     mutationFn: useConvexMutation(api.poolRentals.startBookingTimer),
-    onSuccess: () =>
+    onSuccess: () => {
+      setStopCount(false)
       toast.success("Succeed!", {
         description: `Booking Table ${poolTableName} has been started automatically.`,
-      }),
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setStopCount(false),
   })
 
   useEffect(() => {
@@ -173,16 +175,20 @@ export function Booking({
         {hours === 0 && minutes! < 5 && (
           <DisplayBookingTimer minutes={minutes!} seconds={seconds!} />
         )}
-        <SheetContent side="top" className="px-2 pt-4">
-          <div className="mb-4">
-            <CreateBooking poolTableId={poolTableId} />
-          </div>
+        <SheetContent side="top" className="px-2 pt-8">
           <SheetHeader>
             <SheetTitle className="text-center text-xl font-semibold tracking-widest">
               Table {poolTableName}
             </SheetTitle>
+            <WrapperTooltip content="Minimum time difference between each order">
+              <TooltipTrigger asChild>
+                <SheetDescription className="animate-pulse-slow text-primary text-center text-xs font-medium tracking-widest capitalize hover:cursor-text md:text-sm">
+                  gap duration time = {gapDuration} minutes
+                </SheetDescription>
+              </TooltipTrigger>
+            </WrapperTooltip>
           </SheetHeader>
-          <GapDurationDescription gapDuration={gapDuration} />
+          <CreateBooking poolTableId={poolTableId} />
           {findAllBookingByCompanyId.status === "success" &&
             !!findAllBookingByCompanyId.data && (
               <BookingRentalTable
@@ -249,21 +255,6 @@ const TooltipIsBookingNotification = ({
       <p className="text-muted-foreground space-x-1 font-sans text-xs font-medium tracking-wider">
         <span>{count}</span>
         <span>{title}</span>
-      </p>
-    </TooltipContent>
-  </Tooltip>
-)
-
-const GapDurationDescription = ({ gapDuration }: { gapDuration: number }) => (
-  <Tooltip>
-    <TooltipTrigger asChild>
-      <SheetDescription className="animate-pulse-slow text-primary pt-1 pb-2 text-center text-xs font-medium tracking-widest capitalize hover:cursor-text md:pb-4 md:text-sm">
-        gap duration time = {gapDuration} minutes
-      </SheetDescription>
-    </TooltipTrigger>
-    <TooltipContent className="bg-muted">
-      <p className="text-muted-foreground text-xs font-medium">
-        Minimum time difference between each order
       </p>
     </TooltipContent>
   </Tooltip>

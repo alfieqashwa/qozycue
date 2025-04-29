@@ -1,9 +1,10 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { FilePlus2 } from "lucide-react"
@@ -24,11 +25,14 @@ export const CreateBooking = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="ml-2 h-8 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed">
-          <FilePlus2 className="mr-2 h-4 w-4" />
-          Booking
-        </Button>
+      <DialogTrigger
+        className={cn(
+          buttonVariants({ variant: "secondary" }),
+          "h-10 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <FilePlus2 className="text-primary size-4" />
+        New Booking
       </DialogTrigger>
       {status === "success" && (
         <CreateBookingForm

@@ -135,7 +135,7 @@
 ❌ Hide Radio Button Rate (Minute & Hourly)
 ❌ Re-Animate Time from left to right
 ❌ Start Time default should be null
-❌ (Style): Fix Booking Sheet UI
+✅ (Style): Fix Booking Sheet UI
 
 ## Backlog (Future Plan)
 
