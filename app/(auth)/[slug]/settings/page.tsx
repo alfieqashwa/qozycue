@@ -16,6 +16,7 @@ import { CreatePoolTable } from "./pool-table-tab/create-pool-table"
 import { TaxTab } from "./tax-tab"
 import { CreateTax } from "./tax-tab/create-tax"
 import { UoMTab } from "./uom-tab"
+import { CreateUom } from "./uom-tab/create-uom"
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -77,41 +78,46 @@ export default async function SettingPage() {
         <Suspense fallback={<LoadingSpinner />}>
           <TabsContent
             value="category"
-            className="flex flex-col space-y-1 md:items-end"
+            className="flex flex-col space-y-1 sm:items-end"
           >
             <CreateCategory />
             <CategoryTab />
           </TabsContent>
-          <TabsContent value="uom">
+          <TabsContent
+            value="uom"
+            className="flex flex-col space-y-1 sm:items-end"
+          >
+            <CreateUom />
             <UoMTab />
           </TabsContent>
         </Suspense>
       )}
       {(isSuperAdmin || isAdmin) && (
-        <TabsContent value="pool">
-          <div className="text-right">
-            <CreatePoolTable companyId={companyId} />
-          </div>
+        <TabsContent
+          value="pool"
+          className="flex flex-col space-y-1 sm:items-end"
+        >
+          <CreatePoolTable companyId={companyId} />
           <Suspense fallback={<LoadingSpinner />}>
             <PoolTableTab companyId={companyId} />
           </Suspense>
         </TabsContent>
       )}
-      {/* // TODO: Migrate Tax Tab */}
-      <TabsContent value="tax">
-        <Suspense fallback={<LoadingSpinner />}>
-          <div className="text-right">
-            <CreateTax companyId={companyId} />
-          </div>
-          <TaxTab />
-        </Suspense>
-      </TabsContent>
-      {/* // TODO: Check what's the different with the other tabs */}
       <Suspense fallback={<LoadingSpinner />}>
-        <TabsContent value="discount">
-          <div className="text-right">
-            <CreateDiscount companyId={companyId} />
-          </div>
+        <TabsContent
+          value="tax"
+          className="flex flex-col space-y-1 sm:items-end"
+        >
+          <CreateTax companyId={companyId} />
+          <TaxTab />
+        </TabsContent>
+      </Suspense>
+      <Suspense fallback={<LoadingSpinner />}>
+        <TabsContent
+          value="discount"
+          className="flex flex-col space-y-1 sm:items-end"
+        >
+          <CreateDiscount companyId={companyId} />
           <DiscountTab companyId={companyId} />
         </TabsContent>
       </Suspense>

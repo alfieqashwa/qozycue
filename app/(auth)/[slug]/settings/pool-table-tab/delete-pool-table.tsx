@@ -69,7 +69,7 @@ export const DeletePoolTable = ({
           <DialogHeader>
             <DialogTitle>Are You Sure?</DialogTitle>
             <DialogDescription>
-              You can&apos;t undo this changes. Click <b>Delete UoM</b> when
+              You can&apos;t undo this changes. Click <b>Delete</b> when
               you&apos;re sure to delete Table{" "}
               <span className="text-primary px-1.5 font-medium uppercase">
                 {name}.

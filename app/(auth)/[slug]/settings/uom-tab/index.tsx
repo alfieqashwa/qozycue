@@ -25,9 +25,6 @@ export function UoMTab() {
   if (status === "pending") return <LoadingSpinner />
   return (
     <>
-      <section className="text-right">
-        <CreateUom />
-      </section>
       {status === "success" && !!unitOfMeasures?.length && (
         <Table>
           <TableCaption>A list of unit of measures.</TableCaption>
