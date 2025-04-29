@@ -98,9 +98,11 @@ export const findAllByOrderId = query({
 })
 
 export const findAllByIds = query({
-  args: { ids: v.array(v.id("orderlines")) },
+  args: { ids: v.optional(v.array(v.id("orderlines"))) },
   handler: async (ctx, { ids }) => {
     await protectedProcedure(ctx)
+
+    if (!ids) return []
 
     return await Promise.all(
       ids.map(async (id) => {
