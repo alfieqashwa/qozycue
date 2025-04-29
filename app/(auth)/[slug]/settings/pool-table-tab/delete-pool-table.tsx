@@ -12,8 +12,11 @@ import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Status } from "@/types"
-import { useConvexMutation } from "@convex-dev/react-query"
-import { useMutation } from "@tanstack/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2, Trash } from "lucide-react"
 import { useState } from "react"
@@ -31,6 +34,11 @@ export const DeletePoolTable = ({
   status: Status
 }) => {
   const [open, setOpen] = useState(false)
+
+  const poolRental = useTanstackQuery({
+    ...convexQuery(api.poolRentals.findByPoolTableId, { poolTableId: id }),
+    enabled: Boolean(id),
+  })
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.poolTables.remove),
@@ -52,10 +60,15 @@ export const DeletePoolTable = ({
     mutate({ id })
   }
 
+  const hasSoldPoolRental =
+    poolRental.status === "success" && Boolean(poolRental.data?._id)
+
+  const disabled = isActive || status === "enabled" || hasSoldPoolRental
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        disabled={isActive || status === "enabled"}
+        disabled={disabled}
         className={cn(
           buttonVariants({ variant: "destructive", size: "sm" }),
           "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
@@ -84,21 +97,21 @@ export const DeletePoolTable = ({
             >
               Cancel
             </Button>
-            {isPending ? (
-              <Button disabled variant="destructive">
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button
-                disabled={isActive || status === "enabled"}
-                type="submit"
-                variant="destructive"
-                className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-              >
-                Delete
-              </Button>
-            )}
+            <Button
+              disabled={disabled}
+              type="submit"
+              variant="destructive"
+              className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span>Please wait</span>
+                </>
+              ) : (
+                <span>Delete</span>
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

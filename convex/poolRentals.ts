@@ -117,6 +117,18 @@ export const findAllBookingByPoolTableIdPublicProcedure = query({
   },
 })
 
+export const findByPoolTableId = query({
+  args: { poolTableId: v.id("poolTables") },
+  handler: async (ctx, args) => {
+    await adminProcedure(ctx)
+
+    return await ctx.db
+      .query("poolRentals")
+      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
+      .first()
+  },
+})
+
 export const findByPacketId = query({
   args: { packetId: v.id("packets") },
   handler: async (ctx, { packetId }) => {
