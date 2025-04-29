@@ -125,6 +125,7 @@
 ✅ Customize product category radio button
 ✅ Check if the company's name is unique
 ✅ Update Team Info Create & Update Form
+✅ Exclude SUPERADMIN from the list on Team Table
 
 ## Backlog (Future Plan)
 

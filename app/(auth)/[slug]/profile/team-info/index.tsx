@@ -21,7 +21,11 @@ export function TeamInfo({
       companyId: session.user.companyId as Id<"companies">,
     }),
     enabled: Boolean(session.user.companyId),
-    select: (users) => users.filter((user) => user.role !== "ZENITH"),
+    select: (users) =>
+      users.filter(
+        // exclude SUPER_ADMIN from the list so any ADMIN cannot see it.
+        (user) => user.email !== process.env.NEXT_PUBLIC_SUPER_ADMIN!,
+      ),
   })
 
   if (users.status !== "success") return <LoadingSpinner />
