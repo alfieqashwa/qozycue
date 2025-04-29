@@ -17,7 +17,11 @@ export function CreateTeam() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="secondary" size="sm" className="h-8 whitespace-nowrap">
+        <Button
+          variant="secondary"
+          size="sm"
+          className="h-8 whitespace-nowrap md:ml-2"
+        >
           <FilePlus2 className="text-primary size-4" />
           Create Team
         </Button>

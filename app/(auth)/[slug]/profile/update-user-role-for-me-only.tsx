@@ -104,7 +104,7 @@ export function UpdateUserRoleForMeOnly({
           type="submit"
           disabled={disabled || isPending}
           size="default"
-          className="mt-8"
+          className="mt-8 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           Update Role
         </Button>
