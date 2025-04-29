@@ -28,7 +28,7 @@ import { Rate } from "@/types"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { ArrowRightLeft, Loader2 } from "lucide-react"
+import { Loader2, Move } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -107,13 +107,13 @@ export function TransferTable({
         className={cn(
           "text-muted-foreground pr-2 disabled:pointer-events-auto disabled:cursor-not-allowed",
           (isCashier || isManager) &&
-            "hover:text-foreground transition-colors duration-300 ease-in-out",
+            "hover:text-primary transition-colors duration-300 ease-in-out",
           pathname.includes("transactions") && "invisible",
         )}
       >
         <Tooltip>
           <TooltipTrigger asChild>
-            <ArrowRightLeft size={20} />
+            <Move size={24} />
           </TooltipTrigger>
           <TooltipContent
             side="left"
