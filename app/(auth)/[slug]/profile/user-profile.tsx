@@ -11,7 +11,14 @@ import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
-import { Building2, Layers, LayoutTemplate, MapPin, Phone } from "lucide-react"
+import {
+  Building2,
+  Layers,
+  LayoutTemplate,
+  MapPin,
+  Phone,
+  Utensils,
+} from "lucide-react"
 import Image from "next/image"
 import { TogglePublished } from "./toggle-published"
 import { ToggleStockable } from "./toggle-stockable"
@@ -134,7 +141,7 @@ export function UserProfile({
               <div className="flex space-x-1 pb-4">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <LayoutTemplate className="text-primary mr-2 shrink-0 animate-pulse" />
+                    <Utensils className="text-primary mr-2 shrink-0 animate-pulse" />
                   </TooltipTrigger>
                   <TooltipContent
                     side="right"
