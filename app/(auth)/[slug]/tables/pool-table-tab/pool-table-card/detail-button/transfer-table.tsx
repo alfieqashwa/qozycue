@@ -127,10 +127,10 @@ export function TransferTable({
         {/* {status === "success" && (
           <pre>{JSON.stringify(transferPoolTableList, null, 2)}</pre>
         )} */}
-        <SheetHeader>
+        <SheetHeader className="text-center md:text-left">
           <SheetTitle>Transfer Table {poolTableName}</SheetTitle>
           <SheetDescription>
-            Click Transfer when you&apos;re ready.
+            Click Transfer Table when you&apos;re ready.
           </SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit} className="mt-4 space-y-8">
@@ -159,7 +159,7 @@ export function TransferTable({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <SheetFooter className="pt-16">
+          <SheetFooter className="mt-20 flex flex-col-reverse md:flex-row md:items-center md:justify-end md:space-x-2">
             <Button
               type="button"
               variant="outline"
@@ -179,7 +179,7 @@ export function TransferTable({
                   Please wait
                 </>
               ) : (
-                "Transfer"
+                "Transfer Table"
               )}
             </Button>
           </SheetFooter>
