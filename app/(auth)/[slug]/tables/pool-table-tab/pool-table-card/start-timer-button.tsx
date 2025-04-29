@@ -182,7 +182,7 @@ export function StartTimerButton({
                     <FormControl className="max-w-[360px]">
                       <Input
                         placeholder="max 25 chars (optional)"
-                        className="text-sm capitalize placeholder:text-sm md:text-base"
+                        className="text-sm capitalize placeholder:text-sm placeholder:normal-case md:text-base"
                         {...field}
                       />
                     </FormControl>
