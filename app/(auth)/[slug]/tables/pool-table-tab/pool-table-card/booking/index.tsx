@@ -205,7 +205,7 @@ export function Booking({
             )}
           <SheetFooter>
             <SheetClose
-              className={cn("mt-6", buttonVariants({ variant: "outline" }))}
+              className={cn("mt-6", buttonVariants({ variant: "secondary" }))}
             >
               Close
             </SheetClose>

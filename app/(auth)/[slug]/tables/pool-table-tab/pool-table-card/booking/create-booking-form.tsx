@@ -22,6 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -76,7 +77,7 @@ export function CreateBookingForm({
     resolver: zodResolver(createBookingSchema),
     defaultValues: {
       gapDuration,
-      startTime: currentTime,
+      startTime: undefined,
       customerName: "",
       customerPhone: "",
       poolTableId,
@@ -160,210 +161,209 @@ export function CreateBookingForm({
 
   return (
     <DialogContent onCloseAutoFocus={handleOnCloseAutoFocus}>
-      <DialogHeader>
-        <DialogTitle>New Booking Table {poolTableName}</DialogTitle>
-        <DialogDescription className="text-xs font-medium tracking-widest text-amber-300">
-          Minimal {gapDuration} minutes duration gap
-        </DialogDescription>
-        {countIsBooking.status === "success" && countIsBooking.data === 0 && (
-          // Only shows up if there's no waiting list
-          <SetupGapDuration
-            poolTableId={poolTableId}
-            gapDuration={gapDuration}
-          />
-        )}
-      </DialogHeader>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="mt-2 space-y-4 md:space-y-4"
-        >
-          <FormField
-            control={form.control}
-            name="startTime"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Start Time</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[280px] items-center justify-start text-left font-normal",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        <Calendar className="size-4 opacity-50" />
-                        {field.value ? (
-                          <span>{formatTimeForDisplay(field.value)}</span>
-                        ) : (
-                          <span>Pick a time</span>
-                        )}
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[280px] p-4" align="start">
-                    <div className="space-y-2">
-                      <FormLabel>Select Time</FormLabel>
-                      {/* Source -> https://chatgpt.com/c/675c2f06-320c-8002-9ab3-2c6d7164431d */}
-                      <TimePicker
-                        date={new Date(field.value || currentTime)} // Pass a valid Date object
-                        setDate={(date) => {
-                          const now = new Date() // Get the current time
-                          const selectedDate = date ?? now // Fallback to now if no date is provided
+      <ScrollArea className="m-0 max-h-[calc(100vh_-_7rem)] md:m-2">
+        <DialogHeader>
+          <DialogTitle>New Booking Table {poolTableName}</DialogTitle>
+          <DialogDescription className="text-xs font-medium tracking-widest text-amber-300">
+            Minimal {gapDuration} minutes duration gap
+          </DialogDescription>
+          {countIsBooking.status === "success" && countIsBooking.data === 0 && (
+            // Only shows up if there's no waiting list
+            <SetupGapDuration
+              poolTableId={poolTableId}
+              gapDuration={gapDuration}
+            />
+          )}
+        </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="mt-2 space-y-4 md:space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="startTime"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Start Time</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[280px] items-center justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          <Calendar className="size-4 opacity-50" />
+                          {field.value ? (
+                            <span>{formatTimeForDisplay(field.value)}</span>
+                          ) : (
+                            <span>Pick a time</span>
+                          )}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[280px] p-4" align="start">
+                      <div className="space-y-2">
+                        <FormLabel>Select Time</FormLabel>
+                        {/* Source -> https://chatgpt.com/c/675c2f06-320c-8002-9ab3-2c6d7164431d */}
+                        <TimePicker
+                          date={new Date(field.value || currentTime)} // Pass a valid Date object
+                          setDate={(date) => {
+                            const now = new Date() // Get the current time
+                            const selectedDate = date ?? now // Fallback to now if no date is provided
 
-                          // Ensure time is valid: if today and time is in the past, adjust to current time
-                          if (
-                            isToday(selectedDate) &&
-                            isBefore(selectedDate, now)
-                          ) {
-                            const adjustedDate = set(selectedDate, {
-                              hours: now.getHours(),
-                              minutes: now.getMinutes(),
-                            })
-                            field.onChange(adjustedDate.getTime())
-                          } else {
-                            field.onChange(selectedDate.getTime())
-                          }
-                        }}
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
+                            // Ensure time is valid: if today and time is in the past, adjust to current time
+                            if (
+                              isToday(selectedDate) &&
+                              isBefore(selectedDate, now)
+                            ) {
+                              const adjustedDate = set(selectedDate, {
+                                hours: now.getHours(),
+                                minutes: now.getMinutes(),
+                              })
+                              field.onChange(adjustedDate.getTime())
+                            } else {
+                              field.onChange(selectedDate.getTime())
+                            }
+                          }}
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {!!startTimeWatch && (
+              <FormField
+                control={form.control}
+                name="packetId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Packet{" "}
+                      <span className="text-xs text-sky-400">
+                        (Hourly Only)
+                      </span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="w-[200px] capitalize">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Packet" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {packets.status === "success" &&
+                          packets.data?.map((p) => (
+                            <SelectItem
+                              value={p._id}
+                              className="capitalize"
+                              key={p._id}
+                            >
+                              {p.name}
+                              <span className="pl-2 text-xs text-sky-400">
+                                (
+                                {p.cost < 1
+                                  ? "free"
+                                  : formattedPrice.format(p.cost)}
+                                )
+                              </span>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-          />
-          {!!startTimeWatch && (
-            <FormField
-              control={form.control}
-              name="packetId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Packet{" "}
-                    <span className="text-xs text-sky-400">(Hourly Only)</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl className="w-[200px] capitalize">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Packet" />
-                      </SelectTrigger>
+            {!!packetIdWatch && (
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Duration</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value.toString()}
+                    >
+                      <FormControl className="w-[200px]">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Duration" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Array.from({ length: 6 }, (_, i) => 1 + i).map(
+                          (i, _) => (
+                            <SelectItem value={i.toString()} key={i}>
+                              {i}
+                              <span className="ml-1.5 text-sky-400">
+                                {i <= 1 ? "hour" : "hours"}
+                              </span>
+                            </SelectItem>
+                          ),
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {!!durationWatch && (
+              <FormField
+                control={form.control}
+                name="customerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Customer Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="max 25 chars"
+                        className="w-[280px] text-sm capitalize md:text-base"
+                        {...field}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      {packets.status === "success" &&
-                        packets.data?.map((p) => (
-                          <SelectItem
-                            value={p._id}
-                            className="capitalize"
-                            key={p._id}
-                          >
-                            {p.name}
-                            <span className="pl-2 text-xs text-sky-400">
-                              (
-                              {p.cost < 1
-                                ? "free"
-                                : formattedPrice.format(p.cost)}
-                              )
-                            </span>
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {!!packetIdWatch && (
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value.toString()}
-                  >
-                    <FormControl className="w-[200px]">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Duration" />
-                      </SelectTrigger>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {!!customerNameWatch && (
+              <FormField
+                control={form.control}
+                name="customerPhone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Customer Phone</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        placeholder="max 12 chars"
+                        className="w-[280px] text-sm md:text-base"
+                        {...field}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      {Array.from({ length: 6 }, (_, i) => 1 + i).map(
-                        (i, _) => (
-                          <SelectItem value={i.toString()} key={i}>
-                            {i}
-                            <span className="ml-1.5 text-sky-400">
-                              {i <= 1 ? "hour" : "hours"}
-                            </span>
-                          </SelectItem>
-                        ),
-                      )}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {!!durationWatch && (
-            <FormField
-              control={form.control}
-              name="customerName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Customer Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="max 25 chars"
-                      className="w-[280px] capitalize"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {!!customerNameWatch && (
-            <FormField
-              control={form.control}
-              name="customerPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Customer Phone</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="max 12 chars"
-                      className="w-[280px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-          {/* //? SOURCE -> https://v0.dev/chat/zQaq5Yg */}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {/* //? SOURCE -> https://v0.dev/chat/zQaq5Yg */}
 
-          <DialogFooter className="flex flex-row items-center justify-end space-x-2 pt-8">
-            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
-              Cancel
-            </DialogClose>
-            {isPending ? (
-              <Button disabled>
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
+            <DialogFooter className="pt-8 sm:space-x-2">
+              <DialogClose
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                Cancel
+              </DialogClose>
               <Button
                 disabled={
                   customerNameWatch.length < 3 || customerPhoneWatch.length < 12
@@ -371,12 +371,19 @@ export function CreateBookingForm({
                 type="submit"
                 className="disabled:pointer-events-auto disabled:cursor-not-allowed"
               >
-                Booking
+                {isPending ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    <span className="whitespace-nowrap">Please wait</span>
+                  </>
+                ) : (
+                  <span>Booking</span>
+                )}
               </Button>
-            )}
-          </DialogFooter>
-        </form>
-      </Form>
+            </DialogFooter>
+          </form>
+        </Form>
+      </ScrollArea>
     </DialogContent>
   )
 }

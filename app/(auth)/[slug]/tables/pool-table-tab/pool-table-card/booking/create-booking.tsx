@@ -27,12 +27,12 @@ export const CreateBooking = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         className={cn(
-          buttonVariants({ variant: "secondary" }),
-          "h-10 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed",
+          buttonVariants({ variant: "default" }),
+          "h-10 font-semibold whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <FilePlus2 className="text-primary size-4" />
-        New Booking
+        <FilePlus2 className="size-5" />
+        <span className="md:text-lg">New Booking</span>
       </DialogTrigger>
       {status === "success" && (
         <CreateBookingForm
