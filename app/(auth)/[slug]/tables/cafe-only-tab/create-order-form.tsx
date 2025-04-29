@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import {
   createCustomerSchema,
   TCreateCustomer,
@@ -79,7 +80,6 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
       <DialogTrigger asChild className="absolute -top-14 right-0">
         <Button
           disabled={isPending || !isCashier}
-          variant="secondary"
           className="disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
           <Plus size={16} />
@@ -129,20 +129,23 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
               )}
             />
             <DialogFooter className="flex flex-row items-center justify-end space-x-2 pt-8">
-              <DialogClose asChild>
-                <Button variant="secondary">Cancel</Button>
+              <DialogClose
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "sm" }),
+                )}
+              >
+                Cancel
               </DialogClose>
-              {isPending ? (
-                <Button
-                  disabled
-                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-                >
-                  <Loader2 className="size-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button type="submit">Create Order</Button>
-              )}
+              <Button disabled={isPending} type="submit" size="sm">
+                {isPending ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin disabled:pointer-events-auto disabled:cursor-not-allowed" />
+                    <span>Please wait</span>
+                  </>
+                ) : (
+                  <span>Create Order</span>
+                )}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

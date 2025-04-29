@@ -55,11 +55,11 @@ export function RemoveOrder({
       <DialogTrigger
         disabled={!isCashier}
         className={cn(
-          buttonVariants({ variant: "secondary" }),
+          buttonVariants({ variant: "destructive", size: "sm" }),
           "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash2 className="size-4" />
+        <Trash2 className="size-5" />
         <span>Remove</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -74,26 +74,29 @@ export function RemoveOrder({
               </span>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-4">
-            <DialogClose className={cn(buttonVariants({ variant: "ghost" }))}>
+          <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </DialogClose>
-            {isPending ? (
-              <Button
-                disabled
-                variant="destructive"
-                size="sm"
-                className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-              >
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button type="submit" variant="destructive">
-                <Trash2 className="size-4" />
-                Remove
-              </Button>
-            )}
+            <Button
+              type="submit"
+              disabled={isPending}
+              variant="destructive"
+              size="sm"
+              className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span>Please wait</span>
+                </>
+              ) : (
+                <>
+                  <Trash2 className="size-4" />
+                  <span>Remove</span>
+                </>
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
