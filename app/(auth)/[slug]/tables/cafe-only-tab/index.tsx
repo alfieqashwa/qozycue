@@ -70,8 +70,8 @@ const CafeOnlyCard = ({
     <article className="flex items-center justify-end truncate">
       <UpdateCustomerInfo
         orderId={order._id}
-        customerName={order.customer?.name as string}
-        customerPhone={order.customer?.phone || "No Phone"}
+        customerName={order.customer?.name}
+        customerPhone={order.customer?.phone}
         statusPayment={order.statusPayment}
       />
     </article>

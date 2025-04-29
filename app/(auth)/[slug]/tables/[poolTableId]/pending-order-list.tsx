@@ -71,8 +71,8 @@ const PendingOrderCard = ({
       <article className="">
         <UpdateCustomerInfo
           orderId={order._id!}
-          customerName={order.customer.name || "Anonymous"}
-          customerPhone={order.customer.phone || "No Phone"}
+          customerName={order.customer.name}
+          customerPhone={order.customer.phone}
           statusPayment={order.statusPayment as StatusPayment}
         />
       </article>

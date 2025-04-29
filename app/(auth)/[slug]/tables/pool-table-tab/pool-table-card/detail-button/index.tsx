@@ -90,8 +90,8 @@ export function DetailButton({
           {order?._id && (
             <UpdateCustomerInfo
               orderId={order._id}
-              customerName={order?.customer.name ?? customerName ?? "Anonymous"}
-              customerPhone={order?.customer.phone || customerPhone || ""}
+              customerName={order?.customer.name ?? customerName}
+              customerPhone={order?.customer.phone || customerPhone}
               statusPayment={order.statusPayment as StatusPayment}
             />
           )}

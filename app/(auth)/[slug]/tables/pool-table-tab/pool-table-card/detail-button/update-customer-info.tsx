@@ -44,8 +44,8 @@ export function UpdateCustomerInfo({
   statusPayment,
 }: {
   orderId: Id<"orders">
-  customerName: string
-  customerPhone: string
+  customerName: string | undefined
+  customerPhone: string | null | undefined
   statusPayment: StatusPayment
 }) {
   const [openDialog, setOpenDialog] = useState(false)
@@ -62,7 +62,9 @@ export function UpdateCustomerInfo({
               size={16}
               className="group-hover:text-primary transition-colors duration-500 ease-in-out"
             />
-            <span className="text-foreground font-medium">{customerName}</span>
+            <span className="text-foreground font-medium">
+              {customerName ?? "Anonymous"}
+            </span>
           </DrawerDescription>
           <DrawerDescription className="flex space-x-2 text-xs capitalize">
             <Phone
@@ -70,7 +72,7 @@ export function UpdateCustomerInfo({
               className="group-hover:text-primary transition-colors duration-500 ease-in-out"
             />
             <span className="text-muted-foreground font-medium tracking-wider">
-              {customerPhone}
+              {customerPhone ?? "No Phone"}
             </span>
           </DrawerDescription>
         </DialogTrigger>
@@ -82,10 +84,10 @@ export function UpdateCustomerInfo({
             Click <b>Update Customer</b> when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <UpdateCustomerInfoFrom
+        <UpdateCustomerInfoForm
           orderId={orderId}
-          customerName={customerName}
-          customerPhone={customerPhone}
+          customerName={customerName ?? ""}
+          customerPhone={customerPhone ?? ""}
           setOpenDialog={setOpenDialog}
         />
       </DialogContent>
@@ -93,7 +95,7 @@ export function UpdateCustomerInfo({
   )
 }
 
-const UpdateCustomerInfoFrom = ({
+const UpdateCustomerInfoForm = ({
   orderId,
   customerName,
   customerPhone,
@@ -106,24 +108,24 @@ const UpdateCustomerInfoFrom = ({
 }) => {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.customers.update),
-    onSuccess: () =>
-      // delete user from team
-      toast.success("Succeed!", {
-        description: "Updated customer info.",
-      }),
+    onSuccess: () => {
+      setOpenDialog(false),
+        toast.success("Succeed!", {
+          description: "Updated customer info.",
+        })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpenDialog(false),
   })
 
   const form = useForm<TUpdateCustomerByOrderId>({
     resolver: zodResolver(updateCustomerByOrderIdSchema),
     defaultValues: {
       orderId,
-      name: customerName,
+      name: customerName.trim(),
       phone: customerPhone,
     },
   })
