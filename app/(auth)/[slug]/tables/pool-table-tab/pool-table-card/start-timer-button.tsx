@@ -12,7 +12,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,6 +19,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -170,208 +170,203 @@ export function StartTimerButton({
             Play with fun
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="customerName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl className="max-w-[360px]">
-                    <Input
-                      placeholder="Optional"
-                      className="text-sm capitalize placeholder:text-sm md:text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription className="text-center text-xs text-amber-300 italic">
-                    max 25 chars.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="customerPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl className="max-w-[200px]">
-                    <Input
-                      type="tel"
-                      placeholder="Optional"
-                      className="text-sm placeholder:text-sm md:text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription className="text-center text-xs text-amber-300 italic">
-                    max 12 chars.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="rate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rate</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-row items-center space-x-6 pt-1"
-                    >
-                      {/* check if there's customer which has already booked the pool, then a new customer cannot have MINUTE rate options. */}
-                      {[
-                        { value: "MINUTE", label: "MINUTE" },
-                        { value: "HOUR", label: "HOURLY" },
-                      ].map((rate, i) => (
-                        <FormItem
-                          className={cn(
-                            "flex items-center",
-                            rate.value === "MINUTE" &&
-                              !!countIsBooking.data &&
-                              "hidden",
-                          )}
-                          key={`${rate}-${i}`}
-                        >
-                          <FormControl>
-                            <RadioGroupItem
-                              value={rate.value}
-                              className="peer hidden"
-                            />
-                          </FormControl>
-                          <FormLabel
-                            className={cn(
-                              "cursor-pointer rounded-md border-2 px-2 py-1.5 tracking-wider opacity-50 ring-1 peer-aria-checked:opacity-100",
-                              {
-                                "text-amber-300 peer-aria-checked:ring-2":
-                                  rate.value === "MINUTE",
-                                "text-sky-400 peer-aria-checked:ring-2":
-                                  rate.value === "HOUR",
-                              },
-                            )}
-                          >
-                            {rate.label}
-                          </FormLabel>
-                        </FormItem>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="packetId"
-              render={({ field }) => (
-                <FormItem className="pt-1">
-                  <FormLabel>Packet</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl className="w-[200px] capitalize">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Packet" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {packets.status === "success" &&
-                        packets.data
-                          .filter((p) => p.rate === rateWatch)
-                          .map((p) => (
-                            <SelectItem
-                              value={p._id}
-                              className="capitalize"
-                              key={p._id}
-                            >
-                              {p.name}
-                              <span
-                                className={cn(
-                                  "text-xs",
-                                  p.rate === "HOUR"
-                                    ? "text-sky-400"
-                                    : "text-amber-300",
-                                )}
-                              >
-                                (
-                                {p.cost < 1
-                                  ? "free"
-                                  : formattedPrice.format(p.cost)}
-                                )
-                              </span>
-                            </SelectItem>
-                          ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {isHourly && (
+        <ScrollArea className="max-h-[calc(100vh_-_7rem)] lg:h-auto">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="duration"
+                name="customerName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sky-400">Hourly</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value.toString()}
-                    >
-                      <FormControl className="w-[200px]">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Duration" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Array.from({ length: 6 }, (_, i) => 1 + i).map(
-                          (i, _) => (
-                            <SelectItem value={i.toString()} key={i}>
-                              {i}
-                              <span className="text-sky-400">
-                                {i === 1 ? "hour" : "hours"}
-                              </span>
-                            </SelectItem>
-                          ),
-                        )}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>Duration</FormDescription>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl className="max-w-[360px]">
+                      <Input
+                        placeholder="max 25 chars (optional)"
+                        className="text-sm capitalize placeholder:text-sm md:text-base"
+                        {...field}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            )}
-            <DialogFooter className="">
-              <DialogClose
-                className={cn(buttonVariants({ variant: "secondary" }))}
-              >
-                Cancel
-              </DialogClose>
-              {isPending ? (
-                <Button disabled>
-                  <Loader2 className="size-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button
-                  disabled={disabled}
-                  type="submit"
-                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-                >
-                  Start Timer
-                </Button>
+              <FormField
+                control={form.control}
+                name="customerPhone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl className="max-w-[200px]">
+                      <Input
+                        type="tel"
+                        placeholder="max 12 (optional)"
+                        className="text-sm placeholder:text-sm md:text-base"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="rate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rate</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-row items-center space-x-6 pt-1 pl-1"
+                      >
+                        {/* check if there's customer which has already booked the pool, then a new customer cannot have MINUTE rate options. */}
+                        {[
+                          { value: "MINUTE", label: "MINUTE" },
+                          { value: "HOUR", label: "HOURLY" },
+                        ].map((rate, i) => (
+                          <FormItem
+                            className={cn(
+                              "flex items-center",
+                              rate.value === "MINUTE" &&
+                                !!countIsBooking.data &&
+                                "hidden",
+                            )}
+                            key={`${rate}-${i}`}
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                value={rate.value}
+                                className="peer hidden"
+                              />
+                            </FormControl>
+                            <FormLabel
+                              className={cn(
+                                "cursor-pointer rounded-md border-2 px-2 py-1.5 text-xs tracking-wider opacity-50 ring-1 peer-aria-checked:opacity-100 md:text-sm",
+                                {
+                                  "text-amber-300 peer-aria-checked:ring-2":
+                                    rate.value === "MINUTE",
+                                  "text-sky-400 peer-aria-checked:ring-2":
+                                    rate.value === "HOUR",
+                                },
+                              )}
+                            >
+                              {rate.label}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="packetId"
+                render={({ field }) => (
+                  <FormItem className="pt-4">
+                    <FormLabel>Packet</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="w-[200px] capitalize">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Packet" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {packets.status === "success" &&
+                          packets.data
+                            .filter((p) => p.rate === rateWatch)
+                            .map((p) => (
+                              <SelectItem
+                                value={p._id}
+                                className="capitalize"
+                                key={p._id}
+                              >
+                                {p.name}
+                                <span
+                                  className={cn(
+                                    "text-xs",
+                                    p.rate === "HOUR"
+                                      ? "text-sky-400"
+                                      : "text-amber-300",
+                                  )}
+                                >
+                                  (
+                                  {p.cost < 1
+                                    ? "free"
+                                    : formattedPrice.format(p.cost)}
+                                  )
+                                </span>
+                              </SelectItem>
+                            ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {isHourly && packetIdWatch && (
+                <FormField
+                  control={form.control}
+                  name="duration"
+                  render={({ field }) => (
+                    <FormItem className="pt-1">
+                      <FormLabel>Duration</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value.toString()}
+                      >
+                        <FormControl className="w-[200px]">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Duration" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Array.from({ length: 6 }, (_, i) => 1 + i).map(
+                            (i, _) => (
+                              <SelectItem value={i.toString()} key={i}>
+                                {i}
+                                <span className="text-sky-400">
+                                  {i === 1 ? "hour" : "hours"}
+                                </span>
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            </DialogFooter>
-          </form>
-        </Form>
+              <DialogFooter className="px-0 pt-20 sm:space-x-2">
+                <DialogClose
+                  className={cn(buttonVariants({ variant: "secondary" }))}
+                >
+                  Cancel
+                </DialogClose>
+                {isPending ? (
+                  <Button disabled>
+                    <Loader2 className="size-4 animate-spin" />
+                    Please wait
+                  </Button>
+                ) : (
+                  <Button
+                    disabled={disabled}
+                    type="submit"
+                    className="disabled:pointer-events-auto disabled:cursor-not-allowed"
+                  >
+                    Start Timer
+                  </Button>
+                )}
+              </DialogFooter>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   )
