@@ -113,114 +113,119 @@ export function PrintOrder({
   )
 
   return (
-    <WrapperDialog
-      contentText="Cashier Only"
-      title="Print Order"
-      disabled={
-        !isCashier ||
-        isPending ||
-        orderlines.every((o) => o.orderlineStatus === "ORDERED")
-      }
-      onCloseAutoFocus={handleCloseAutoFocus}
-    >
-      <div className="mt-4 grid grid-cols-3 gap-x-2 gap-y-4 md:gap-x-4">
-        <Input
-          placeholder="Order by"
-          name="orderBy"
-          value={orderBy}
-          onChange={(e) => setOrderBy(e.target.value)}
-          className="col-span-3 capitalize"
-        />
-        <Textarea
-          disabled={!hasOrderBy}
-          placeholder="Notes... (optional)"
-          name="note"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          className={cn(
-            "col-span-3 resize-none",
-            hasOrderBy ? "block" : "hidden",
-          )}
-        />
-        <Button
-          disabled={isPending || !hasFood || !hasOrderBy}
-          variant="secondary"
-          size="lg"
-          onClick={() => handleUpdateOrderlineStatusList("food")}
-          className="flex items-center justify-center text-emerald-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <Soup className="size-5 shrink-0 md:size-6" />
-          <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
-            Food
-          </span>
-        </Button>
-        <Button
-          disabled={isPending || !hasDrink || !hasOrderBy}
-          variant="secondary"
-          size="lg"
-          onClick={() => handleUpdateOrderlineStatusList("drink")}
-          className="flex items-center justify-center text-fuchsia-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <Coffee className="size-5 shrink-0 md:size-6" />
-          <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
-            Drink
-          </span>
-        </Button>
-        <Button
-          disabled={isPending || !hasOthers || !hasOrderBy}
-          variant="secondary"
-          size="lg"
-          onClick={() => handleUpdateOrderlineStatusList("others")}
-          className="flex items-center justify-center text-lime-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <ShoppingBasket className="size-5 shrink-0 md:size-6" />
-          <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
-            Others
-          </span>
-        </Button>
-        <Button
-          disabled={
-            isPending ||
-            orderlines.every((o) => o.orderlineStatus === "ORDERED") ||
-            !hasOrderBy
-          }
-          variant="secondary"
-          size="lg"
-          onClick={() => handleUpdateOrderlineStatusList("all")}
-          className="col-span-3 flex items-center justify-center space-x-4"
-        >
-          <Soup size={24} className="size-6 shrink-0 text-emerald-200" />
-          <Coffee size={24} className="size-6 shrink-0 text-fuchsia-200" />
-          <ShoppingBasket size={24} className="size-6 shrink-0 text-lime-200" />
-        </Button>
-      </div>
-      <div
-        className={cn(
-          open === false ? "hidden" : "flex flex-col items-center",
-          "shrink-0 space-y-6",
-        )}
+    <section>
+      <WrapperDialog
+        contentText="Cashier Only"
+        title="Print Order"
+        disabled={
+          !isCashier ||
+          isPending ||
+          orderlines.every((o) => o.orderlineStatus === "ORDERED")
+        }
+        onCloseAutoFocus={handleCloseAutoFocus}
       >
-        <ScrollArea className="h-[20rem] w-8/12 md:h-[28rem] md:pt-4">
-          <PrintOrderButton
-            ids={variables?.ids}
-            // ids={variables?.ids as Array<{ id: string }>}
-            poolTableName={poolTableName}
-            customerName={customerName}
-            orderBy={orderBy}
-            notes={notes}
-            ref={orderRef}
+        <div className="mt-4 grid grid-cols-3 gap-x-2 gap-y-4 md:gap-x-4">
+          <Input
+            placeholder="Order by"
+            name="orderBy"
+            value={orderBy}
+            onChange={(e) => setOrderBy(e.target.value)}
+            className="col-span-3 capitalize"
           />
-        </ScrollArea>
-        <div className="flex items-center space-x-4">
-          <Button variant="secondary" onClick={() => handleCloseAutoFocus()}>
-            Close
+          <Textarea
+            disabled={!hasOrderBy}
+            placeholder="Notes... (optional)"
+            name="note"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className={cn(
+              "col-span-3 resize-none",
+              hasOrderBy ? "block" : "hidden",
+            )}
+          />
+          <Button
+            disabled={isPending || !hasFood || !hasOrderBy}
+            variant="secondary"
+            size="lg"
+            onClick={() => handleUpdateOrderlineStatusList("food")}
+            className="flex items-center justify-center text-emerald-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          >
+            <Soup className="size-5 shrink-0 md:size-6" />
+            <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
+              Food
+            </span>
           </Button>
-          <Button onClick={() => handleOrderPrintFn()}>
-            <Printer className="size-4" />
-            <span>Print</span>
+          <Button
+            disabled={isPending || !hasDrink || !hasOrderBy}
+            variant="secondary"
+            size="lg"
+            onClick={() => handleUpdateOrderlineStatusList("drink")}
+            className="flex items-center justify-center text-fuchsia-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          >
+            <Coffee className="size-5 shrink-0 md:size-6" />
+            <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
+              Drink
+            </span>
+          </Button>
+          <Button
+            disabled={isPending || !hasOthers || !hasOrderBy}
+            variant="secondary"
+            size="lg"
+            onClick={() => handleUpdateOrderlineStatusList("others")}
+            className="flex items-center justify-center text-lime-200 disabled:pointer-events-auto disabled:cursor-not-allowed"
+          >
+            <ShoppingBasket className="size-5 shrink-0 md:size-6" />
+            <span className="text-xs font-semibold tracking-widest uppercase md:text-base">
+              Others
+            </span>
+          </Button>
+          <Button
+            disabled={
+              isPending ||
+              orderlines.every((o) => o.orderlineStatus === "ORDERED") ||
+              !hasOrderBy
+            }
+            variant="secondary"
+            size="lg"
+            onClick={() => handleUpdateOrderlineStatusList("all")}
+            className="col-span-3 flex items-center justify-center space-x-4"
+          >
+            <Soup size={24} className="size-6 shrink-0 text-emerald-200" />
+            <Coffee size={24} className="size-6 shrink-0 text-fuchsia-200" />
+            <ShoppingBasket
+              size={24}
+              className="size-6 shrink-0 text-lime-200"
+            />
           </Button>
         </div>
-      </div>
-    </WrapperDialog>
+        <div
+          className={cn(
+            open === false ? "hidden" : "flex flex-col items-center",
+            "shrink-0 space-y-6",
+          )}
+        >
+          <ScrollArea className="h-[20rem] w-8/12 md:h-[28rem] md:pt-4">
+            <PrintOrderButton
+              ids={variables?.ids}
+              // ids={variables?.ids as Array<{ id: string }>}
+              poolTableName={poolTableName}
+              customerName={customerName}
+              orderBy={orderBy}
+              notes={notes}
+              ref={orderRef}
+            />
+          </ScrollArea>
+          <div className="flex items-center space-x-4">
+            <Button variant="secondary" onClick={() => handleCloseAutoFocus()}>
+              Close
+            </Button>
+            <Button onClick={() => handleOrderPrintFn()}>
+              <Printer className="size-4" />
+              <span>Print</span>
+            </Button>
+          </div>
+        </div>
+      </WrapperDialog>
+    </section>
   )
 }

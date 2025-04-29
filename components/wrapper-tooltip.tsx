@@ -15,7 +15,7 @@ export const WrapperTooltip = (props: {
     <TooltipContent
       side={props.side}
       className={cn(
-        "bg-muted font-sans text-xs font-medium tracking-wider text-muted-foreground",
+        "bg-muted text-muted-foreground font-sans text-xs font-medium tracking-wider",
         props.className,
       )}
     >

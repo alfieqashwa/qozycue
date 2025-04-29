@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -6,7 +6,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { PrintTooltip } from "./print-tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
+import { cn } from "@/lib/utils"
 import { DialogDescription } from "@radix-ui/react-dialog"
 
 export const WrapperDialog = ({
@@ -23,18 +24,17 @@ export const WrapperDialog = ({
   children: React.ReactNode
 }) => (
   <Dialog>
-    <PrintTooltip contentText={contentText}>
-      <DialogTrigger asChild>
-        <Button
-          disabled={disabled}
-          variant="secondary"
-          size="sm"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          {title}
-        </Button>
+    <WrapperTooltip content={contentText}>
+      <DialogTrigger
+        disabled={disabled}
+        className={cn(
+          buttonVariants({ variant: "secondary", size: "sm" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        {title}
       </DialogTrigger>
-    </PrintTooltip>
+    </WrapperTooltip>
     <DialogHeader>
       <DialogTitle />
       <DialogDescription />
