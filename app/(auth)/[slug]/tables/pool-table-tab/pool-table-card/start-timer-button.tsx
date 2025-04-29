@@ -160,11 +160,15 @@ export function StartTimerButton({
       </DialogTrigger>
       <DialogContent
         onCloseAutoFocus={handleOnCloseAutoFocus}
-        className="bg-card sm:max-w-[450px]"
+        className="bg-card"
       >
         <DialogHeader>
-          <DialogTitle>Start Timer Table {poolTableName}</DialogTitle>
-          <DialogDescription>Play with fun</DialogDescription>
+          <DialogTitle className="text-center">
+            Start Timer Table {poolTableName}
+          </DialogTitle>
+          <DialogDescription className="text-center">
+            Play with fun
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -173,15 +177,17 @@ export function StartTimerButton({
               name="customerName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Customer Name</FormLabel>
-                  <FormControl>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl className="max-w-[360px]">
                     <Input
                       placeholder="Optional"
-                      className="capitalize"
+                      className="text-sm capitalize placeholder:text-sm md:text-base"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>max 25 chars.</FormDescription>
+                  <FormDescription className="text-center text-xs text-amber-300 italic">
+                    max 25 chars.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -191,11 +197,18 @@ export function StartTimerButton({
               name="customerPhone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Customer Phone</FormLabel>
-                  <FormControl className="w-[200px]">
-                    <Input type="tel" placeholder="Optional" {...field} />
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl className="max-w-[200px]">
+                    <Input
+                      type="tel"
+                      placeholder="Optional"
+                      className="text-sm placeholder:text-sm md:text-base"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>max 12 chars.</FormDescription>
+                  <FormDescription className="text-center text-xs text-amber-300 italic">
+                    max 12 chars.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -210,30 +223,43 @@ export function StartTimerButton({
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="flex flex-row items-center space-x-6"
+                      className="flex flex-row items-center space-x-6 pt-1"
                     >
                       {/* check if there's customer which has already booked the pool, then a new customer cannot have MINUTE rate options. */}
-                      <FormItem
-                        className={cn(
-                          "flex items-center",
-                          !!countIsBooking.data && "hidden",
-                        )}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value="MINUTE" />
-                        </FormControl>
-                        <FormLabel className="tracking-wider text-amber-300">
-                          MINUTE
-                        </FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center">
-                        <FormControl>
-                          <RadioGroupItem value="HOUR" />
-                        </FormControl>
-                        <FormLabel className="tracking-wider text-sky-400">
-                          HOURLY
-                        </FormLabel>
-                      </FormItem>
+                      {[
+                        { value: "MINUTE", label: "MINUTE" },
+                        { value: "HOUR", label: "HOURLY" },
+                      ].map((rate, i) => (
+                        <FormItem
+                          className={cn(
+                            "flex items-center",
+                            rate.value === "MINUTE" &&
+                              !!countIsBooking.data &&
+                              "hidden",
+                          )}
+                          key={`${rate}-${i}`}
+                        >
+                          <FormControl>
+                            <RadioGroupItem
+                              value={rate.value}
+                              className="peer hidden"
+                            />
+                          </FormControl>
+                          <FormLabel
+                            className={cn(
+                              "cursor-pointer rounded-md border-2 px-2 py-1.5 tracking-wider opacity-50 ring-1 peer-aria-checked:opacity-100",
+                              {
+                                "text-amber-300 peer-aria-checked:ring-2":
+                                  rate.value === "MINUTE",
+                                "text-sky-400 peer-aria-checked:ring-2":
+                                  rate.value === "HOUR",
+                              },
+                            )}
+                          >
+                            {rate.label}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
@@ -244,7 +270,7 @@ export function StartTimerButton({
               control={form.control}
               name="packetId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="pt-1">
                   <FormLabel>Packet</FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -323,7 +349,7 @@ export function StartTimerButton({
                 )}
               />
             )}
-            <DialogFooter className="pt-24 md:pt-8">
+            <DialogFooter className="">
               <DialogClose
                 className={cn(buttonVariants({ variant: "secondary" }))}
               >
