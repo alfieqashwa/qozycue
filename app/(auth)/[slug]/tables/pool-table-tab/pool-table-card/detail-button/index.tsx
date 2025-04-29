@@ -91,9 +91,7 @@ export function DetailButton({
             <UpdateCustomerInfo
               orderId={order._id}
               customerName={order?.customer.name ?? customerName ?? "Anonymous"}
-              customerPhone={
-                order?.customer.phone || customerPhone || "No Phone"
-              }
+              customerPhone={order?.customer.phone || customerPhone || ""}
               statusPayment={order.statusPayment as StatusPayment}
             />
           )}
