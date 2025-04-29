@@ -24,23 +24,25 @@ export const CreateBooking = ({
   })
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        className={cn(
-          buttonVariants({ variant: "default" }),
-          "h-10 font-semibold whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed",
+    <section className="pr-4 text-end">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger
+          className={cn(
+            buttonVariants({ variant: "default", size: "sm" }),
+            "disabled:pointer-events-auto disabled:cursor-not-allowed",
+          )}
+        >
+          <FilePlus2 />
+          <span>New Booking</span>
+        </DialogTrigger>
+        {status === "success" && (
+          <CreateBookingForm
+            poolTableId={poolTableId}
+            gapDuration={data?.gapDuration!}
+            setOpen={setOpen}
+          />
         )}
-      >
-        <FilePlus2 className="size-5" />
-        <span className="md:text-lg">New Booking</span>
-      </DialogTrigger>
-      {status === "success" && (
-        <CreateBookingForm
-          poolTableId={poolTableId}
-          gapDuration={data?.gapDuration!}
-          setOpen={setOpen}
-        />
-      )}
-    </Dialog>
+      </Dialog>
+    </section>
   )
 }

@@ -20,12 +20,9 @@ export function DeleteBookingDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
-          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
-        )}
+        className={cn(buttonVariants({ variant: "destructive", size: "sm" }))}
       >
-        <Trash size={16} />
+        <Trash className="size-4" />
         <span>Delete</span>
       </DialogTrigger>
 

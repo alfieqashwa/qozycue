@@ -22,12 +22,9 @@ export function DeleteBookingDrawer({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger
-        className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
-          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
-        )}
+        className={cn(buttonVariants({ variant: "destructive", size: "sm" }))}
       >
-        <Trash className="text-muted-foreground group-hover:text-primary size-4" />
+        <Trash className="size-4" />
         <span>Delete</span>
       </DrawerTrigger>
 

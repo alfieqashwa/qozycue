@@ -64,16 +64,10 @@ export const UpdateBooking = ({
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
-          className={cn(
-            buttonVariants({ variant: "secondary", size: "sm" }),
-            "hover:bg-accent flex w-full items-center rounded pl-2 disabled:pointer-events-auto disabled:cursor-not-allowed",
-          )}
+          className={cn(buttonVariants({ variant: "secondary", size: "sm" }))}
         >
-          <FilePlus2
-            size={16}
-            className="text-muted-foreground group-hover:text-primary"
-          />
-          <span className="text-xs">{content.trigger}</span>
+          <FilePlus2 className="group-hover:text-primary size-4" />
+          <span>{content.trigger}</span>
         </DialogTrigger>
         <DialogContent className="bg-card">
           <DialogHeader>
