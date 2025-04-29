@@ -31,7 +31,7 @@ export function UserAvatar({
   const pathname = usePathname()
 
   return (
-    <Menubar className="h-12 w-12 items-center justify-center rounded-full border-[3px] border-primary/80 p-0 transition-colors duration-300 ease-in-out hover:border-primary">
+    <Menubar className="border-primary/80 hover:border-primary h-12 w-12 items-center justify-center rounded-full border-[3px] p-0 transition-colors duration-300 ease-in-out">
       <MenubarMenu>
         <MenubarTrigger className="relative h-10 w-10 rounded-full px-0 py-0 hover:cursor-pointer">
           {user.image ? (
@@ -44,14 +44,14 @@ export function UserAvatar({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center rounded-full">
-              <h3 className="text-4xl font-bold capitalize text-primary">
+              <h3 className="text-primary text-4xl font-bold capitalize">
                 {user.name ? user.name.at(0) : user.email?.at(0)}
               </h3>
             </div>
           )}
         </MenubarTrigger>
         {/* // Mobile View */}
-        <MenubarContent className="mr-2 mt-3.5 w-52">
+        <MenubarContent className="mt-3.5 mr-2 w-52">
           <UserInfo
             userAccount={user?.name ?? user?.email}
             userRole={user?.role}
@@ -67,19 +67,22 @@ export function UserAvatar({
               >
                 <MenubarItem
                   className={cn(
-                    "capitalize text-muted-foreground hover:cursor-pointer",
+                    "text-muted-foreground capitalize hover:cursor-pointer",
                     pathname === `/${slug}${link.href}` && "bg-muted",
                   )}
                 >
                   {link.title}
-                  <MenubarShortcut
-                    className={cn(
-                      pathname === `/${slug}${link.href}`
-                        ? "text-primary"
-                        : "text-muted-foreground",
-                    )}
-                  >
-                    <link.icon size={18} className="shrink-0" />
+                  <MenubarShortcut>
+                    <link.icon
+                      size={18}
+                      className={cn(
+                        "shrink-0",
+                        pathname ===
+                          `/${encodeURIComponent(slug as string)}${link.href}`
+                          ? "text-primary"
+                          : "text-muted-foreground",
+                      )}
+                    />
                   </MenubarShortcut>
                 </MenubarItem>
                 <MenubarSeparator />
