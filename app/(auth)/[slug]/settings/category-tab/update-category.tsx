@@ -96,7 +96,7 @@ export const UpdateCategory = ({
         <DialogHeader>
           <DialogTitle>Edit Category</DialogTitle>
           <DialogDescription>
-            Klik Update setelah selesai memperbarui form.
+            Click Update when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

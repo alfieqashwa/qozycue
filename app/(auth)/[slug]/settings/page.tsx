@@ -75,10 +75,11 @@ export default async function SettingPage() {
       </TabsList>
       {isSuperAdmin && (
         <Suspense fallback={<LoadingSpinner />}>
-          <TabsContent value="category">
-            <div className="text-right">
-              <CreateCategory />
-            </div>
+          <TabsContent
+            value="category"
+            className="flex flex-col space-y-1 md:items-end"
+          >
+            <CreateCategory />
             <CategoryTab />
           </TabsContent>
           <TabsContent value="uom">

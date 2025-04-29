@@ -87,7 +87,7 @@ export const CreateCategory = () => {
           <span>Create</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-card sm:max-w-[425px]">
+      <DialogContent className="bg-card">
         <DialogHeader>
           <DialogTitle>Create Category</DialogTitle>
           <DialogDescription>
