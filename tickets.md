@@ -126,6 +126,8 @@
 ✅ Check if the company's name is unique
 ✅ Update Team Info Create & Update Form
 ✅ Exclude SUPERADMIN from the list on Team Table
+✅ Avoid user to delete PoolTable when it has been used
+✅ Reconfig All Tabs on Page Settings
 
 ## Backlog (Future Plan)
 
