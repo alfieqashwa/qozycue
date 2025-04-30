@@ -1,4 +1,5 @@
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -34,7 +35,7 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2, Pencil } from "lucide-react"
+import { Pencil } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -102,12 +103,12 @@ export const UpdatePoolTable = ({
       <DialogTrigger
         disabled={isActive || status === "enabled"}
         className={cn(
-          buttonVariants({ variant: "secondary", size: "sm" }),
-          "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+          buttonVariants({ variant: "secondary" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Pencil size={16} />
-        <span className="text-sm">Edit</span>
+        <Pencil />
+        <span>Edit</span>
       </DialogTrigger>
       <DialogContent
         className="bg-card sm:max-w-[425px]"
@@ -145,24 +146,15 @@ export const UpdatePoolTable = ({
             />
             <DialogFooter>
               <DialogClose
-                className={cn(buttonVariants({ variant: "secondary" }))}
+                className={cn(buttonVariants({ variant: "outline" }))}
               >
                 Cancel
               </DialogClose>
-              {isPending ? (
-                <Button
-                  disabled
-                  variant="destructive"
-                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-                >
-                  <Loader2 className="size-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button disabled={disabledUpdateButton} type="submit">
-                  Update
-                </Button>
-              )}
+              <SubmitButton
+                title="Update"
+                isPending={isPending}
+                disabled={disabledUpdateButton}
+              />
             </DialogFooter>
           </form>
         </Form>

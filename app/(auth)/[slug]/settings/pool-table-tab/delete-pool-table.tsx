@@ -1,6 +1,8 @@
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -18,7 +20,7 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2, Trash } from "lucide-react"
+import { Trash } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -70,11 +72,11 @@ export const DeletePoolTable = ({
       <DialogTrigger
         disabled={disabled}
         className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
-          "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+          buttonVariants({ variant: "destructive" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash size={16} />
+        <Trash />
         <span>Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -90,28 +92,14 @@ export const DeletePoolTable = ({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setOpen(!open)}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
-            </Button>
-            <Button
-              disabled={disabled}
-              type="submit"
+            </DialogClose>
+            <SubmitButton
+              title="Delete"
+              isPending={isPending}
               variant="destructive"
-              className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  <span>Please wait</span>
-                </>
-              ) : (
-                <span>Delete</span>
-              )}
-            </Button>
+            />
           </DialogFooter>
         </form>
       </DialogContent>
