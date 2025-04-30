@@ -1,6 +1,7 @@
 "use client"
 
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -34,7 +35,7 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { FilePlus2, Loader2 } from "lucide-react"
+import { FilePlus2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -85,11 +86,11 @@ export function CreateUom() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         className={cn(
-          buttonVariants({ variant: "secondary" }),
+          buttonVariants(),
           "disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <FilePlus2 size={16} />
+        <FilePlus2 className="size-5" />
         <span>Create</span>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
@@ -121,24 +122,15 @@ export function CreateUom() {
             />
             <DialogFooter>
               <DialogClose
-                className={cn(buttonVariants({ variant: "secondary" }))}
+                className={cn(buttonVariants({ variant: "outline" }))}
               >
                 Cancel
               </DialogClose>
-              {isPending ? (
-                <Button
-                  disabled
-                  variant="destructive"
-                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-                >
-                  <Loader2 className="size-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button disabled={hasUomName} type="submit">
-                  Create UoM
-                </Button>
-              )}
+              <SubmitButton
+                title="Create UoM"
+                isPending={isPending}
+                disabled={hasUomName}
+              />
             </DialogFooter>
           </form>
         </Form>
