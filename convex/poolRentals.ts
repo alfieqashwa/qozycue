@@ -481,7 +481,6 @@ export const createBooking = zMutation({
       createdBy: user._id,
       statusPayment: "OPEN",
       customerId,
-      updatedTime: Date.now(),
       isDeleted: false,
     })
     const poolRentalId = await ctx.db.insert("poolRentals", {
