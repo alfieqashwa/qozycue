@@ -1,7 +1,7 @@
 import { authTables, getAuthUserId } from "@convex-dev/auth/server"
 import { NoOp } from "convex-helpers/server/customFunctions"
 import { zCustomMutation, zCustomQuery } from "convex-helpers/server/zod"
-import { ConvexError } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import { Id } from "./_generated/dataModel"
 import {
   internalQuery,
@@ -455,3 +455,10 @@ export function decimalToPercent(decimal: number): number {
   const percentage = decimal * 100
   return parseFloat(percentage.toFixed(0))
 }
+
+export const normalizeCompanyId = query({
+  args: { id: v.string() },
+  handler: (ctx, args) => {
+    return ctx.db.normalizeId("companies", args.id)
+  },
+})
