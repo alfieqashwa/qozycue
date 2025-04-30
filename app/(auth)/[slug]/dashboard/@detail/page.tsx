@@ -43,14 +43,12 @@ export default function DetailPage() {
       <CustomDatePicker date={date} setDate={setDate} className="md:right-32" />
       <section className="absolute -top-14 right-0">
         {isLoading ? (
-          <Button disabled variant="destructive">
+          <Button disabled>
             <Loader2 className="size-4 animate-spin" />
             Please wait
           </Button>
         ) : (
-          <Button variant={"secondary"} onClick={() => handlePrintFn()}>
-            Download
-          </Button>
+          <Button onClick={() => handlePrintFn()}>Download</Button>
         )}
       </section>
 
