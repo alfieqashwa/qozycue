@@ -146,28 +146,44 @@ export function CreatePacketForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Rate</FormLabel>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-row items-center space-x-6"
-                >
-                  <FormItem className="flex items-center">
-                    <FormControl>
-                      <RadioGroupItem value="MINUTE" />
-                    </FormControl>
-                    <FormLabel className="tracking-wider text-amber-300">
-                      MINUTE
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center">
-                    <FormControl>
-                      <RadioGroupItem value="HOUR" />
-                    </FormControl>
-                    <FormLabel className="tracking-wider text-sky-400">
-                      HOURLY
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-row items-center space-x-6 pt-1 pl-1"
+                  >
+                    {/* check if there's customer which has already booked the pool, then a new customer cannot have MINUTE rate options. */}
+                    {[
+                      { value: "MINUTE", label: "MINUTE" },
+                      { value: "HOUR", label: "HOURLY" },
+                    ].map((rate, i) => (
+                      <FormItem
+                        className={cn("flex items-center")}
+                        key={`${rate}-${i}`}
+                      >
+                        <FormControl>
+                          <RadioGroupItem
+                            value={rate.value}
+                            className="peer hidden"
+                          />
+                        </FormControl>
+                        <FormLabel
+                          className={cn(
+                            "cursor-pointer rounded-md border-2 px-2 py-1.5 text-xs tracking-wider opacity-50 ring-1 peer-aria-checked:opacity-100 md:text-sm",
+                            {
+                              "text-amber-300 peer-aria-checked:ring-2":
+                                rate.value === "MINUTE",
+                              "text-sky-400 peer-aria-checked:ring-2":
+                                rate.value === "HOUR",
+                            },
+                          )}
+                        >
+                          {rate.label}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
