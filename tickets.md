@@ -135,7 +135,7 @@
 ✅ Re-Animate Time from left to right
 ✅ Start Time default should be null or undefined
 ✅ (Style): Fix Booking Sheet UI
-❌ Transactions & Archives Page on Mobile (Buttons)
+✅ Transactions & Archives Page on Mobile (Buttons)
 
 ## Backlog (Future Plan)
 

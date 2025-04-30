@@ -65,7 +65,7 @@ export function DeleteOrderList<TData>({
           variant="destructive"
           size="sm"
           disabled={disabledBasedOnAccessLevel}
-          className="ml-2 h-8 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
+          className="ml-0 h-8 w-full whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed sm:ml-2 sm:w-auto"
         >
           <Trash2 />
           Delete Selected ({table.getFilteredSelectedRowModel().rows.length})

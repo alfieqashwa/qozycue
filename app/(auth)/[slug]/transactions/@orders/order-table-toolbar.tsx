@@ -97,7 +97,7 @@ export function OrderTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <div className="flex flex-col space-y-1 md:flex-row-reverse md:space-y-0">
+      <div className="flex w-full flex-col space-y-1 sm:w-auto md:flex-row-reverse md:space-y-0">
         {!!table.getSelectedRowModel().rows.length && (
           <ArchiveOrderList table={table} />
         )}

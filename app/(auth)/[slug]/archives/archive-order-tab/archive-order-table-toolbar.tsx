@@ -2,7 +2,6 @@
 
 import { paymentMethods, type Options } from "@/app/constants/options"
 import { DataTableFacetedFilter } from "@/components/table/data-table-faceted-filter"
-import { DataTableViewOptions } from "@/components/table/data-table-view-options"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
@@ -89,9 +88,9 @@ export function ArchiveOrderTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <div className="flex flex-col space-y-1 md:flex-row-reverse md:items-center md:space-y-0">
+      <div className="flex flex-col lg:flex-col-reverse lg:space-y-2">
         {!!table.getSelectedRowModel().rows.length && (
-          <section className="sm:space-y-2 lg:space-y-0">
+          <section className="space-y-2 lg:space-y-0">
             <RollbackOrderList
               table={table}
               disabledBasedOnAccessLevel={disabledBasedOnAccessLevel}
@@ -102,7 +101,7 @@ export function ArchiveOrderTableToolbar<TData>({
             />
           </section>
         )}
-        <DataTableViewOptions table={table} />
+        {/* <DataTableViewOptions table={table} /> */}
       </div>
     </div>
   )
