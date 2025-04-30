@@ -1,6 +1,7 @@
 "use client"
 
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -31,7 +32,7 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { FilePlus2, Loader2 } from "lucide-react"
+import { FilePlus2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -87,14 +88,14 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          <FilePlus2 size={16} />
-          <span>Create</span>
-        </Button>
+      <DialogTrigger
+        className={cn(
+          buttonVariants(),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <FilePlus2 />
+        <span>Create</span>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
         <DialogHeader>
@@ -125,24 +126,15 @@ export const CreateTax = ({ companyId }: { companyId: Id<"companies"> }) => {
             />
             <DialogFooter>
               <DialogClose
-                className={cn(buttonVariants({ variant: "secondary" }))}
+                className={cn(buttonVariants({ variant: "outline" }))}
               >
                 Cancel
               </DialogClose>
-              {isPending ? (
-                <Button
-                  disabled
-                  variant="destructive"
-                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-                >
-                  <Loader2 className="size-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button disabled={hasTaxValue} type="submit">
-                  Submit
-                </Button>
-              )}
+              <SubmitButton
+                title="Submit"
+                isPending={isPending}
+                disabled={hasTaxValue}
+              />
             </DialogFooter>
           </form>
         </Form>
