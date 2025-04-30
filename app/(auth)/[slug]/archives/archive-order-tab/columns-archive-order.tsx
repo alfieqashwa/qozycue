@@ -64,7 +64,7 @@ export const columnsArchiveOrder: ColumnDef<
       const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[300px] truncate">
             {id.slice(-8, id.length)}
           </span>
@@ -87,7 +87,7 @@ export const columnsArchiveOrder: ColumnDef<
         <>
           {!!poolTable ? (
             <Badge variant="secondary" className="px-3 py-1.5">
-              <Star className="mr-2 h-4 w-4 text-primary" />
+              <Star className="text-primary mr-2 h-4 w-4" />
               <span className="whitespace-nowrap capitalize">
                 Table {poolTable as string}
               </span>
@@ -184,7 +184,7 @@ export const columnsArchiveOrder: ColumnDef<
       const discount = Number(row.getValue("discount")) * 100
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Tags className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Tags className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[500px] truncate uppercase">
             {!!discount ? discount + "%" : ""}
           </span>
@@ -201,7 +201,7 @@ export const columnsArchiveOrder: ColumnDef<
       const tax = Number(row.getValue("tax")) * 100
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Tags className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Tags className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[500px] truncate uppercase">
             {!!tax ? tax + "%" : ""}
           </span>
@@ -222,7 +222,7 @@ export const columnsArchiveOrder: ColumnDef<
       const orderlineLen = Number(row.getValue("orderlines"))
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
           <span
             className={cn(
               orderlineLen === 0 && "text-muted-foreground",
@@ -248,11 +248,11 @@ export const columnsArchiveOrder: ColumnDef<
           <WrapperTooltip
             side="right"
             icon={
-              createdBy.role && <Key className="mr-2 h-4 w-4 text-primary" />
+              createdBy.role && <Key className="text-primary mr-2 h-4 w-4" />
             }
             content={createdBy.role as string}
           >
-            <User2 className="mr-2 h-4 w-4 animate-pulse text-primary" />
+            <User2 className="text-primary mr-2 h-4 w-4 animate-pulse" />
           </WrapperTooltip>
           <span className="max-w-[500px] truncate capitalize">
             {row.getValue("createdBy")}
@@ -269,7 +269,7 @@ export const columnsArchiveOrder: ColumnDef<
     ),
     cell: ({ row }) => (
       <Badge variant="secondary" className="px-3 py-1.5">
-        <UserRoundCheck className="mr-2 h-4 w-4 text-muted-foreground" />
+        <UserRoundCheck className="text-muted-foreground mr-2 h-4 w-4" />
         <span className="max-w-[500px] truncate capitalize">
           {row.getValue("customer")}
         </span>
@@ -306,11 +306,11 @@ export const columnsArchiveOrder: ColumnDef<
           <WrapperTooltip
             side="right"
             icon={
-              updatedBy.role && <Key className="mr-2 h-4 w-4 text-primary" />
+              updatedBy.role && <Key className="text-primary mr-2 h-4 w-4" />
             }
             content={updatedBy.role as string}
           >
-            <User2 className="mr-2 h-4 w-4 animate-pulse text-primary" />
+            <User2 className="text-primary mr-2 h-4 w-4 animate-pulse" />
           </WrapperTooltip>
           <span className="max-w-[500px] truncate capitalize">
             {row.getValue("updatedBy")}

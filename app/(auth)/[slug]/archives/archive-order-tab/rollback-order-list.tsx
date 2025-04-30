@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -9,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { type Table } from "@tanstack/react-table"
@@ -61,7 +63,6 @@ export function RollbackOrderList<TData>({
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          size="sm"
           disabled={disabledBasedOnAccessLevel}
           className="ml-2 h-8 bg-amber-600 whitespace-nowrap hover:bg-amber-700 disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
@@ -73,25 +74,17 @@ export function RollbackOrderList<TData>({
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                Anda tidak dapat membatalkan perubahan ini. Klik Rollback All
-                untuk mengembalikan order yang dipilih ke Table Transactions.
-              </p>
+            <DialogTitle className="text-center">Are You Sure?</DialogTitle>
+            <DialogDescription className="text-center">
+              You can&apos;t undo this.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setOpen(false)}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
-            </Button>
+            </DialogClose>
             {isPending ? (
-              <Button disabled variant="destructive" size="sm">
+              <Button disabled variant="destructive">
                 <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
@@ -99,7 +92,6 @@ export function RollbackOrderList<TData>({
               <Button
                 type="submit"
                 variant="destructive"
-                size="sm"
                 className="bg-amber-600 hover:bg-amber-700"
               >
                 Rollback All

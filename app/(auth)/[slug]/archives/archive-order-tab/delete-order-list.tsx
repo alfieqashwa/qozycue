@@ -75,12 +75,9 @@ export function DeleteOrderList<TData>({
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                Anda tidak dapat membatalkan perubahan ini. Klik Delete All
-                untuk menghapus order yang dipilih.
-              </p>
+            <DialogTitle className="text-center">Are You Sure?</DialogTitle>
+            <DialogDescription className="text-center">
+              You can&apos;t undo this.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">

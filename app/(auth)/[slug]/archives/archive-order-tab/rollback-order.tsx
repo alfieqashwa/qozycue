@@ -68,7 +68,7 @@ export function RollbackOrder({ id }: RolebackOrderProps) {
       <DialogTrigger
         disabled={status === "success" && !managerAndCashierAccessLevel}
         className={cn(
-          buttonVariants({ variant: "secondary", size: "sm" }),
+          buttonVariants({ variant: "secondary" }),
           "flex w-full items-center bg-amber-600 hover:bg-amber-700 disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
@@ -79,26 +79,21 @@ export function RollbackOrder({ id }: RolebackOrderProps) {
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription asChild>
-              <p>
-                Anda tidak dapat membatalkan perubahan ini. Klik Rollback untuk
-                mengembalikan Order ID
-                <span className="text-primary px-1.5 font-medium uppercase">
-                  {id.slice(-10, id.length)}
-                </span>
-                ke Table Transactions.
-              </p>
+            <DialogTitle className="text-center">Are You Sure?</DialogTitle>
+            <DialogDescription className="text-center">
+              You can&apos;t undo this. Click Rollback to rollback the Order ID
+              <span className="text-primary px-1.5 font-medium uppercase">
+                {id.slice(-10, id.length)}
+              </span>
+              into Transactions Table.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <DialogClose
-              className={cn(buttonVariants({ variant: "secondary" }))}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </DialogClose>
             {isPending ? (
-              <Button disabled variant="destructive" size="sm">
+              <Button disabled variant="destructive">
                 <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>

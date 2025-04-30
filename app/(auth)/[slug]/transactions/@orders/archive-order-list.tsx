@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -9,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import {
   useMutation,
@@ -80,7 +82,6 @@ export function ArchiveOrderList<TData>({
       <DialogTrigger asChild>
         <Button
           variant="destructive"
-          size="sm"
           disabled={disabled}
           className="ml-2 h-8 whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
@@ -99,21 +100,16 @@ export function ArchiveOrderList<TData>({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setOpen(false)}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
-            </Button>
+            </DialogClose>
             {isPending ? (
-              <Button disabled variant="destructive" size="sm">
+              <Button disabled variant="destructive">
                 <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
-              <Button type="submit" variant="destructive" size="sm">
+              <Button type="submit" variant="destructive">
                 Archive All
               </Button>
             )}

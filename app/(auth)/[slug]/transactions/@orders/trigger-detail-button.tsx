@@ -34,8 +34,8 @@ export function TriggerDetailButton({
     >
       <DrawerTrigger
         className={cn(
-          buttonVariants({ variant: "secondary", size: "sm" }),
-          "disabled:text-muted-foreground flex w-full items-center text-sm disabled:pointer-events-auto disabled:cursor-not-allowed",
+          buttonVariants({ variant: "secondary" }),
+          "disabled:text-muted-foreground flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <ScrollText className="text-primary size-4" />

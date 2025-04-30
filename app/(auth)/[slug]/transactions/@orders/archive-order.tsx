@@ -69,7 +69,7 @@ export function ArchiveOrder({ orderId, statusPayment }: ArchiveOrderProps) {
       <DialogTrigger
         disabled={disabled}
         className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
+          buttonVariants({ variant: "destructive" }),
           "disabled:text-muted-foreground flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
@@ -89,13 +89,11 @@ export function ArchiveOrder({ orderId, statusPayment }: ArchiveOrderProps) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-8 flex flex-row items-center justify-end space-x-2">
-            <DialogClose
-              className={cn(buttonVariants({ variant: "secondary" }))}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </DialogClose>
             {isPending ? (
-              <Button disabled variant="destructive" size="sm">
+              <Button disabled variant="destructive">
                 <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>

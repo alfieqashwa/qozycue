@@ -65,19 +65,19 @@ export function DeleteOrder({ id }: DeleteOrderProps) {
       <DialogTrigger
         disabled={status === "success" && !managerAccessLevel}
         className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
+          buttonVariants({ variant: "destructive" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash2 className="text-muted-foreground group-hover:text-primary" />
+        <Trash2 className="size-4" />
         <span>Delete</span>
       </DialogTrigger>
 
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Are You Sure?</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-center">Are You Sure?</DialogTitle>
+            <DialogDescription className="text-center">
               You can&apos;t undo this change. Click <b>Delete</b> to remove
               Order ID
               <span className="text-primary px-1.5 font-medium uppercase">
@@ -86,13 +86,11 @@ export function DeleteOrder({ id }: DeleteOrderProps) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <DialogClose
-              className={cn(buttonVariants({ variant: "secondary" }))}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </DialogClose>
             {isPending ? (
-              <Button disabled variant="destructive" size="sm">
+              <Button disabled variant="destructive">
                 <Loader2 className="size-4 animate-spin" />
                 Please wait
               </Button>
