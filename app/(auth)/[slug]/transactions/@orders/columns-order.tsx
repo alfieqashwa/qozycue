@@ -256,6 +256,29 @@ export const columnsOrder: ColumnDef<
     },
   },
   {
+    accessorKey: "customer",
+    accessorFn: (row) => row.customer?.name,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Customer" />
+    ),
+    cell: ({ row }) => {
+      const customer = row.getValue("customer") as string
+      return (
+        <Badge variant="secondary" className="px-3 py-1.5">
+          <UserRoundCheck className="text-muted-foreground mr-2 h-4 w-4" />
+          <span
+            className={cn(
+              customer === "anonymous" && "text-muted-foreground",
+              "max-w-[500px] truncate capitalize",
+            )}
+          >
+            {customer}
+          </span>
+        </Badge>
+      )
+    },
+  },
+  {
     accessorKey: "createdBy",
     accessorFn: (row) => row.createdBy?.name,
     header: ({ column }) => (
@@ -282,29 +305,6 @@ export const columnsOrder: ColumnDef<
     },
   },
   {
-    accessorKey: "customer",
-    accessorFn: (row) => row.customer?.name,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Customer" />
-    ),
-    cell: ({ row }) => {
-      const customer = row.getValue("customer") as string
-      return (
-        <Badge variant="secondary" className="px-3 py-1.5">
-          <UserRoundCheck className="text-muted-foreground mr-2 h-4 w-4" />
-          <span
-            className={cn(
-              customer === "anonymous" && "text-muted-foreground",
-              "max-w-[500px] truncate capitalize",
-            )}
-          >
-            {customer}
-          </span>
-        </Badge>
-      )
-    },
-  },
-  {
     accessorKey: "_creationTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created At" />
@@ -314,7 +314,7 @@ export const columnsOrder: ColumnDef<
       const createdAt = format(timestamp as number, "PPpp", {
         locale: id,
       })
-      return <div className="whitespace-nowrap">{createdAt}</div>
+      return <p className="whitespace-nowrap">{createdAt}</p>
     },
   },
   {
@@ -345,6 +345,19 @@ export const columnsOrder: ColumnDef<
           </span>
         </Badge>
       )
+    },
+  },
+  {
+    accessorKey: "updatedTime",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated At" />
+    ),
+    cell: ({ row }) => {
+      const timestamp = row.getValue("updatedTime")
+      const updatedAt = format(timestamp as number, "PPpp", {
+        locale: id,
+      })
+      return <p className="whitespace-nowrap">{updatedAt}</p>
     },
   },
   {

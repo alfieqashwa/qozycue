@@ -51,7 +51,7 @@ export const columnsProduct = (
       const id: Id<"products"> = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
+          <Hash className="text-muted-foreground mr-2 size-4" />
           <span className="max-w-[300px] truncate font-medium">
             {id?.slice(-8, id?.length)}
           </span>

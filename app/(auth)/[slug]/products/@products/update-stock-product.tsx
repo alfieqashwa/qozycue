@@ -61,11 +61,11 @@ export function UpdateStockProduct({
               getStockBackgroundColor(stock),
               buttonVariants({ variant: "secondary" }),
               colorBasedOnCategory,
-              "flex size-9 items-center justify-center shadow-md hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100",
+              "flex h-8 w-12 items-center justify-center shadow-md hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100",
               getStockBackgroundColor(stock),
             )}
           >
-            <span className="">{countInStock}</span>
+            <span>{countInStock}</span>
           </DialogTrigger>
         </WrapperTooltip>
         <DialogContent className="sm:max-w-[425px]">

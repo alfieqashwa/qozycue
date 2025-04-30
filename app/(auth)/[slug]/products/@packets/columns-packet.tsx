@@ -49,8 +49,8 @@ export const columnsPacket: ColumnDef<
       const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
-          <span className="max-w-[300px] truncate">
+          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
+          <span className="max-w-[300px] truncate font-medium">
             {id?.slice(-8, id?.length)}
           </span>
         </Badge>
@@ -93,7 +93,7 @@ export const columnsPacket: ColumnDef<
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <ScrollText className={cn("mr-2 h-4 w-4", colorBasedOnRate)} />
-          <span className="whitespace-nowrap">
+          <span className="font-medium whitespace-nowrap">
             {row.getValue("description")}
           </span>
         </Badge>
