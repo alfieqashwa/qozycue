@@ -204,9 +204,14 @@ export const columnsOrder: ColumnDef<
       const discount = Number(row.getValue("discount")) * 100
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Tags className="text-muted-foreground mr-2 h-4 w-4" />
+          <Tags
+            className={cn(
+              "mr-2 size-4",
+              discount ? "text-primary" : "text-muted-foreground",
+            )}
+          />
           <span className="max-w-[500px] truncate uppercase">
-            {!!discount ? discount + "%" : ""}
+            {!!discount ? discount + "%" : "-"}
           </span>
         </Badge>
       )
@@ -221,9 +226,14 @@ export const columnsOrder: ColumnDef<
       const tax = Number(row.getValue("tax")) * 100
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Tags className="text-muted-foreground mr-2 h-4 w-4" />
+          <Tags
+            className={cn(
+              "mr-2 size-4",
+              tax ? "text-primary" : "text-muted-foreground",
+            )}
+          />
           <span className="max-w-[500px] truncate uppercase">
-            {!!tax ? tax + "%" : ""}
+            {!!tax ? tax + "%" : "-"}
           </span>
         </Badge>
       )
@@ -242,13 +252,13 @@ export const columnsOrder: ColumnDef<
       const orderlineLen = Number(row.getValue("orderlines"))
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
-          <span
+          <UtensilsCrossed
             className={cn(
-              orderlineLen === 0 && "text-muted-foreground",
-              "max-w-[500px] truncate",
+              "mr-2 size-4",
+              orderlineLen ? "text-primary" : "text-muted-foreground",
             )}
-          >
+          />
+          <span className={cn(orderlineLen === 0 && "text-muted-foreground")}>
             {orderlineLen}
           </span>
         </Badge>
@@ -265,7 +275,14 @@ export const columnsOrder: ColumnDef<
       const customer = row.getValue("customer") as string
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <UserRoundCheck className="text-muted-foreground mr-2 h-4 w-4" />
+          <UserRoundCheck
+            className={cn(
+              "mr-2 size-4",
+              customer !== "anonymous"
+                ? "text-primary"
+                : "text-muted-foreground",
+            )}
+          />
           <span
             className={cn(
               customer === "anonymous" && "text-muted-foreground",
@@ -354,10 +371,13 @@ export const columnsOrder: ColumnDef<
     ),
     cell: ({ row }) => {
       const timestamp = row.getValue("updatedTime")
-      const updatedAt = format(timestamp as number, "PPpp", {
-        locale: id,
-      })
-      return <p className="whitespace-nowrap">{updatedAt}</p>
+      const updatedAt = timestamp
+        ? format(timestamp as number, "PPpp", {
+            locale: id,
+          })
+        : undefined
+
+      return <p className={cn("space-y-2 whitespace-nowrap")}>{updatedAt}</p>
     },
   },
   {
