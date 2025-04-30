@@ -1,6 +1,8 @@
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -14,7 +16,7 @@ import { cn } from "@/lib/utils"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2, Trash } from "lucide-react"
+import { Trash } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -51,12 +53,12 @@ export const DeleteDiscount = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
-          "flex items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+          buttonVariants({ variant: "destructive" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash size={16} />
-        <span className="text-sm">Delete</span>
+        <Trash />
+        <span>Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
@@ -69,23 +71,14 @@ export const DeleteDiscount = ({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setOpen(!open)}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
-            </Button>
-            {isPending ? (
-              <Button disabled variant="destructive">
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button type="submit" variant="destructive">
-                Delete
-              </Button>
-            )}
+            </DialogClose>
+            <SubmitButton
+              title="Delete"
+              isPending={isPending}
+              variant="destructive"
+            />
           </DialogFooter>
         </form>
       </DialogContent>
