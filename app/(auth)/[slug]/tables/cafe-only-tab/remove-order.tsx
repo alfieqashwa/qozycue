@@ -82,7 +82,6 @@ export function RemoveOrder({
               type="submit"
               disabled={isPending}
               variant="destructive"
-              size="sm"
               className="disabled:pointer-events-auto disabled:cursor-not-allowed"
             >
               {isPending ? (

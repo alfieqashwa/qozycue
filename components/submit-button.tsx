@@ -4,11 +4,11 @@ import { Loader2 } from "lucide-react"
 export const SubmitButton = ({
   title,
   isPending,
-  disabled,
+  disabled = false,
 }: {
   title: string
   isPending: boolean
-  disabled: boolean
+  disabled?: boolean
 }) => (
   <Button
     disabled={disabled || isPending}

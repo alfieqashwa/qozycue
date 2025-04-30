@@ -1,5 +1,6 @@
 "use client"
 
+import { SubmitButton } from "@/components/submit-button"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
@@ -30,7 +31,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { DialogClose } from "@radix-ui/react-dialog"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2, Plus } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -130,22 +131,11 @@ export function CreateOrderForm({ isCashier }: { isCashier: boolean }) {
             />
             <DialogFooter className="flex flex-row items-center justify-end space-x-2 pt-8">
               <DialogClose
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "sm" }),
-                )}
+                className={cn(buttonVariants({ variant: "outline" }))}
               >
                 Cancel
               </DialogClose>
-              <Button disabled={isPending} type="submit" size="sm">
-                {isPending ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin disabled:pointer-events-auto disabled:cursor-not-allowed" />
-                    <span>Please wait</span>
-                  </>
-                ) : (
-                  <span>Create Order</span>
-                )}
-              </Button>
+              <SubmitButton title="Create order" isPending={isPending} />
             </DialogFooter>
           </form>
         </Form>
