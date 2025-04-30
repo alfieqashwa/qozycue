@@ -977,6 +977,7 @@ export const payment = zMutation({
         tax,
         note,
         updatedBy: user._id,
+        updatedTime: Date.now(),
       })
       return { updateOrder }
     }
@@ -990,6 +991,7 @@ export const payment = zMutation({
       tax,
       note,
       updatedBy: user._id,
+      updatedTime: Date.now(),
     })
 
     // for cafe-only use case
