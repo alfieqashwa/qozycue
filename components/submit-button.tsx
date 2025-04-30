@@ -13,7 +13,7 @@ export const SubmitButton = ({
   <Button
     disabled={disabled || isPending}
     type="submit"
-    className="disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
+    className="whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
   >
     {isPending ? (
       <>

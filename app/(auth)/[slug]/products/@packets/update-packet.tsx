@@ -47,12 +47,12 @@ export function UpdatePacket({
       <SheetTrigger
         disabled={status === "enabled" || !managerAccessLevel}
         className={cn(
-          buttonVariants({ variant: "secondary", size: "sm" }),
+          buttonVariants({ variant: "secondary" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <Pen className="size-4" />
-        <span className="text-sm">Edit</span>
+        <span>Edit</span>
       </SheetTrigger>
 
       <SheetContent className="bg-card min-w-full pt-4 text-center sm:min-w-[480px] md:text-start">

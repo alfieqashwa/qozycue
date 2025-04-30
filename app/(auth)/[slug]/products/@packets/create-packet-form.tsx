@@ -1,4 +1,5 @@
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -24,7 +25,6 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -57,7 +57,7 @@ export function CreatePacketForm({
     },
   })
 
-  const { data: hasPacketName } = useTanstackQuery({
+  const { data: hasPacketName, status } = useTanstackQuery({
     ...convexQuery(api.packets.findAll, {}),
     select(data) {
       return data.some(
@@ -173,21 +173,14 @@ export function CreatePacketForm({
             )}
           />
           <SheetFooter className="mt-20 flex flex-col-reverse md:flex-row md:justify-end md:gap-4">
-            <SheetClose
-              className={cn(buttonVariants({ variant: "secondary" }))}
-            >
+            <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </SheetClose>
-            {isPending ? (
-              <Button disabled>
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button disabled={hasPacketName} type="submit">
-                Create Packet
-              </Button>
-            )}
+            <SubmitButton
+              title="Create Packet"
+              isPending={isPending}
+              disabled={status === "success" && hasPacketName}
+            />
           </SheetFooter>
         </form>
       </Form>

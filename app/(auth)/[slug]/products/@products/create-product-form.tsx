@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Form,
@@ -28,7 +29,6 @@ import { ConvexError } from "convex/values"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { CategoryFormLabel } from "./category-form-label"
-import { SubmitButton } from "./submit-button"
 
 export function CreateProductForm({
   setOpen,

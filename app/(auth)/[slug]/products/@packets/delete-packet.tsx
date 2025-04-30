@@ -13,6 +13,7 @@ import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Status } from "@/types"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { DialogClose } from "@radix-ui/react-dialog"
 import {
   useMutation,
   useQueries as useTanstackQueries,
@@ -72,12 +73,12 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
           (poolRental.status === "success" && Boolean(poolRental.data?._id)) // disabled delete button if its packet has already been use.
         }
         className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
+          buttonVariants({ variant: "destructive" }),
           "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
-        <Trash />
-        <span className="text-sm">Delete</span>
+        <Trash className="size-4" />
+        <span>Delete</span>
       </DialogTrigger>
 
       <DialogContent className="bg-card">
@@ -93,24 +94,24 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setOpen(false)}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
+            </DialogClose>
+            <Button
+              type="submit"
+              disabled={isPending}
+              variant="destructive"
+              className="whitespace-nowrap"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span>Please wait</span>
+                </>
+              ) : (
+                <span>Delete Packet</span>
+              )}
             </Button>
-            {isPending ? (
-              <Button disabled variant="destructive" size="sm">
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button type="submit" variant="destructive" size="sm">
-                Delete Packet
-              </Button>
-            )}
           </DialogFooter>
         </form>
       </DialogContent>
