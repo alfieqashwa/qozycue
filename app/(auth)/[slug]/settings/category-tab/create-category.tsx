@@ -1,6 +1,7 @@
 "use client"
 
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -34,7 +35,7 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { FilePlus2, Loader2 } from "lucide-react"
+import { FilePlus2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -81,11 +82,9 @@ export const CreateCategory = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="secondary">
-          <FilePlus2 size={16} />
-          <span>Create</span>
-        </Button>
+      <DialogTrigger className={cn(buttonVariants())}>
+        <FilePlus2 className="size-5" />
+        <span>Create</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
         <DialogHeader>
@@ -135,24 +134,15 @@ export const CreateCategory = () => {
             />
             <DialogFooter>
               <DialogClose
-                className={cn(buttonVariants({ variant: "secondary" }))}
+                className={cn(buttonVariants({ variant: "outline" }))}
               >
                 Cancel
               </DialogClose>
-              {isPending ? (
-                <Button
-                  disabled
-                  variant="destructive"
-                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-                >
-                  <Loader2 className="size-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button disabled={hasCategoryName} type="submit">
-                  Submit
-                </Button>
-              )}
+              <SubmitButton
+                title="Submit"
+                isPending={isPending}
+                disabled={hasCategoryName}
+              />
             </DialogFooter>
           </form>
         </Form>

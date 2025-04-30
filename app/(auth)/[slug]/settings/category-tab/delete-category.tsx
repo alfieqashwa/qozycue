@@ -1,4 +1,5 @@
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -15,7 +16,7 @@ import { cn } from "@/lib/utils"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2, Trash } from "lucide-react"
+import { Trash } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -49,13 +50,8 @@ export const DeleteCategory = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
-          "flex items-center",
-        )}
-      >
-        <Trash size={16} />
+      <DialogTrigger className={cn(buttonVariants({ variant: "destructive" }))}>
+        <Trash />
         <span>Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -71,21 +67,14 @@ export const DeleteCategory = ({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <DialogClose
-              className={cn(buttonVariants({ variant: "secondary" }))}
-            >
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </DialogClose>
-            {isPending ? (
-              <Button disabled variant="destructive">
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button type="submit" variant="destructive">
-                Delete
-              </Button>
-            )}
+            <SubmitButton
+              title="Delete"
+              isPending={isPending}
+              variant="destructive"
+            />
           </DialogFooter>
         </form>
       </DialogContent>
