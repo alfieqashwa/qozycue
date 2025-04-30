@@ -1,4 +1,5 @@
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -19,7 +20,7 @@ import {
   useQueries as useTanstackQueries,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2, Trash } from "lucide-react"
+import { Trash } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -74,7 +75,7 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
         }
         className={cn(
           buttonVariants({ variant: "destructive" }),
-          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+          "flex w-full items-center justify-center disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <Trash className="size-4" />
@@ -97,21 +98,11 @@ export function DeletePacket({ id, name, status }: DeletePacketProps) {
             <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </DialogClose>
-            <Button
-              type="submit"
-              disabled={isPending}
+            <SubmitButton
+              title="Delete Packet"
+              isPending={isPending}
               variant="destructive"
-              className="whitespace-nowrap"
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  <span>Please wait</span>
-                </>
-              ) : (
-                <span>Delete Packet</span>
-              )}
-            </Button>
+            />
           </DialogFooter>
         </form>
       </DialogContent>

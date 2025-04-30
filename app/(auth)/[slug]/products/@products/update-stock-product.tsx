@@ -18,6 +18,7 @@ import { Status } from "@/types"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
+import { Tags } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -61,10 +62,11 @@ export function UpdateStockProduct({
               getStockBackgroundColor(stock),
               buttonVariants({ variant: "secondary" }),
               colorBasedOnCategory,
-              "flex h-8 w-12 items-center justify-center shadow-md hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100",
               getStockBackgroundColor(stock),
+              "flex items-center shadow-md hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-100",
             )}
           >
+            <Tags />
             <span>{countInStock}</span>
           </DialogTrigger>
         </WrapperTooltip>

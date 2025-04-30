@@ -191,9 +191,7 @@ export function UpdatePacketForm({
             )}
           />
           <SheetFooter className="mt-24 flex flex-col-reverse md:flex-row md:justify-end md:space-x-2">
-            <SheetClose
-              className={cn(buttonVariants({ variant: "secondary" }))}
-            >
+            <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </SheetClose>
             <SubmitButton
