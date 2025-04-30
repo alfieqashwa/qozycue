@@ -136,7 +136,7 @@
 ✅ Start Time default should be null or undefined
 ✅ (Style): Fix Booking Sheet UI
 ✅ Transactions & Archives Page on Mobile (Buttons)
-❌ Reconfig all buttons on Page Settings
+✅ Reconfig all buttons on Page Settings
 
 ## Backlog (Future Plan)
 
