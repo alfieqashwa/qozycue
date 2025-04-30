@@ -28,8 +28,8 @@ export default function DeleteDialog({
           status === "enabled" || disabledBasedOnAccessLevel || hasSoldProduct
         }
         className={cn(
-          buttonVariants({ variant: "destructive", size: "sm" }),
-          "flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed",
+          buttonVariants({ variant: "destructive" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
         )}
       >
         <Trash className="size-4" />

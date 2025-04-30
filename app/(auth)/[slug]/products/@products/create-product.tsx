@@ -24,12 +24,10 @@ export function CreateProduct({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
-          variant="secondary"
-          size="sm"
           disabled={disabledBasedOnAccessLevel}
           className="whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
         >
-          <FilePlus2 className="text-primary size-4" />
+          <FilePlus2 className="size-4" />
           Create Product
         </Button>
       </SheetTrigger>

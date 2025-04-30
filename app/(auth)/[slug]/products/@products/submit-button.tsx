@@ -11,10 +11,9 @@ export const SubmitButton = ({
   disabled: boolean
 }) => (
   <Button
-    disabled={isPending || disabled}
+    disabled={disabled || isPending}
     type="submit"
-    size={"sm"}
-    className="w-full disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
+    className="disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
   >
     {isPending ? (
       <>

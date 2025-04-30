@@ -100,7 +100,6 @@ export function UpdateStockProduct({
               <Button
                 disabled={isPending}
                 type="submit"
-                size={"sm"}
                 className="disabled:pointer-events-auto disabled:cursor-not-allowed"
               >
                 Save changes

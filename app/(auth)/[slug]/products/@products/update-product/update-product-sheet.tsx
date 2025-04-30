@@ -33,12 +33,12 @@ export function UpdateProductSheet({
       <SheetTrigger
         disabled={status === "enabled" || !managerAccessLevel}
         className={cn(
-          buttonVariants({ variant: "secondary", size: "sm" }),
+          buttonVariants({ variant: "secondary" }),
           "flex w-full items-center",
         )}
       >
         <Pen className="size-4" />
-        <span className="text-sm">Edit</span>
+        <span>Edit</span>
       </SheetTrigger>
 
       <SheetContent className="bg-card min-w-full px-8 py-4 sm:min-w-[480px]">
