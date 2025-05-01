@@ -18,7 +18,10 @@ export function PoolTableList({
   companyName: string
   companyPhone: string
 }) {
-  const [{ data: poolTables, status }, { data: company }] = useTanstackQueries({
+  const [
+    { data: poolTables, status },
+    { data: company, status: companyStatus },
+  ] = useTanstackQueries({
     queries: [
       {
         ...convexQuery(api.poolTables.findAllPublicProcedure, {
@@ -40,7 +43,7 @@ export function PoolTableList({
   return (
     <div className="mb-11 grid w-full grid-cols-1 gap-6 p-2 font-mono sm:gap-8 md:mb-6 md:p-8 lg:grid-cols-2 2xl:grid-cols-3">
       {poolTables?.map((t) => {
-        if (status !== "success") {
+        if (status !== "success" || companyStatus !== "success") {
           return (
             <SkeletonDashboardCard
               key={t._id}

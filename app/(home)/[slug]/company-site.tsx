@@ -7,11 +7,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { api } from "@/convex/_generated/api"
+import { countries } from "@/lib/countries"
 import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
-import { Building2, Phone } from "lucide-react"
+import { Phone } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { PoolTableList } from "./pool-table-list"
 
@@ -29,6 +31,7 @@ export function CompanySite({
     enabled: Boolean(slug),
   })
 
+  const country = countries.find((c) => c.code === company?.countryCode)
   return (
     <div className="min-h-screen w-full">
       {status === "success" && (
@@ -46,12 +49,19 @@ export function CompanySite({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Link href={user ? `/${slug}/tables` : "/"}>
-                          <Building2
-                            size={32}
-                            className={cn(
-                              "text-foreground mr-4 size-8 hover:cursor-pointer",
-                            )}
+                          <Image
+                            src={country?.flag as string}
+                            width={500}
+                            height={500}
+                            alt={country?.country as string}
+                            className="animate-pulse-slow w-12 shadow-md ring hover:cursor-pointer"
                           />
+                          {/* <Building2 */}
+                          {/*   size={32} */}
+                          {/*   className={cn( */}
+                          {/*     "text-foreground mr-4 size-8 hover:cursor-pointer", */}
+                          {/*   )} */}
+                          {/* /> */}
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent className="bg-muted text-muted-foreground">
