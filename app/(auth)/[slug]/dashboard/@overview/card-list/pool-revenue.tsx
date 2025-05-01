@@ -1,13 +1,13 @@
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { api } from "@/convex/_generated/api"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
-import { DateRange } from "react-day-picker"
 import { GiPoolTriangle } from "react-icons/gi"
+import { type ListProps } from "../page"
 
-export function PoolRevenue({ date }: { date: DateRange | undefined }) {
+export function PoolRevenue({ date, country }: ListProps) {
   const { from, to } = {
     from: date?.from?.getTime(),
     to: date?.to?.getTime(),
@@ -46,6 +46,8 @@ export function PoolRevenue({ date }: { date: DateRange | undefined }) {
     (byHourRate.data._sum.duration ?? 0) +
     (byMinuteRate.data._sum.duration ?? 0)
 
+  const { locale, currency } = country
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -56,7 +58,9 @@ export function PoolRevenue({ date }: { date: DateRange | undefined }) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
-          {formattedPriceWithRupiah.format(totalRevenue)}
+          {formattedPriceBasedOnCountryCode(locale, currency).format(
+            totalRevenue,
+          )}
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total duration{" "}

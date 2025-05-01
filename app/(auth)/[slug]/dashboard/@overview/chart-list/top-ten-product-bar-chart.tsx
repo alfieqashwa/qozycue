@@ -1,4 +1,8 @@
-import { formattedPrice, formattedPriceWithRupiah } from "@/lib/format-price"
+import {
+  formattedPrice,
+  formattedPriceBasedOnCountryCode,
+} from "@/lib/format-price"
+import { type ICountry } from "@/types"
 import {
   Bar,
   BarChart,
@@ -17,6 +21,7 @@ interface ChartProps<TData> {
   data: TData[]
   name?: string
   colorBar?: string
+  country: ICountry
 }
 
 /**
@@ -40,13 +45,22 @@ function CustomTooltip({
   active,
   payload,
   label,
-}: TooltipProps<ValueType, NameType>) {
+  locale,
+  currency,
+}: TooltipProps<ValueType, NameType> & {
+  locale: string
+  currency: string
+}) {
   return active && !!payload && !!payload.length ? (
-    <div className="rounded-lg border border-muted-foreground bg-card p-4 shadow-md">
-      <article className="flex flex-col space-y-1 text-sm font-semibold text-foreground">
-        <p className="capitalize text-primary">{label}</p>
-        <p>{formattedPriceWithRupiah.format(Number(payload[0]?.value))}</p>
-        <p className="text-xs text-muted-foreground">
+    <div className="border-muted-foreground bg-card rounded-lg border p-4 shadow-md">
+      <article className="text-foreground flex flex-col space-y-1 text-sm font-semibold">
+        <p className="text-primary capitalize">{label}</p>
+        <p>
+          {formattedPriceBasedOnCountryCode(locale, currency).format(
+            Number(payload[0]?.value),
+          )}
+        </p>
+        <p className="text-muted-foreground text-xs">
           {`${payload[1]?.value as number} ${(payload[1]?.value as number) > 1 ? "transactions" : "transaction"}`}
         </p>
       </article>
@@ -57,7 +71,9 @@ function CustomTooltip({
 export function TopTenProductBarChart<TData>({
   data,
   colorBar = "fill-primary",
+  country,
 }: ChartProps<TData>) {
+  const { locale, currency } = country
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>
@@ -74,9 +90,14 @@ export function TopTenProductBarChart<TData>({
           fontSize={10}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `${formattedPrice.format(Number(value))}`}
+          tickFormatter={(value) =>
+            `${formattedPrice(locale).format(Number(value))}`
+          }
         />
-        <Tooltip cursor={false} content={<CustomTooltip />} />
+        <Tooltip
+          cursor={false}
+          content={<CustomTooltip locale={locale} currency={currency} />}
+        />
         <Bar
           dataKey="total"
           stackId="a"

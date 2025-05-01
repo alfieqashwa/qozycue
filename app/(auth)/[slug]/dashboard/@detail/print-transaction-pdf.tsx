@@ -9,7 +9,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { api } from "@/convex/_generated/api"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { countries } from "@/lib/countries"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
+import { type ICountry } from "@/types"
 import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
@@ -23,6 +25,11 @@ type Props = {
 }
 
 export const PrintTransactionPdf = ({ company, orders, ref }: Props) => {
+  const country = countries.find(
+    (c) => c.code === company?.countryCode,
+  ) as ICountry
+
+  const { locale, currency } = country
   return (
     <div ref={ref} className="bg-white px-4 pb-20 text-sm text-zinc-700">
       <section className="py-4 text-center">
@@ -88,7 +95,9 @@ export const PrintTransactionPdf = ({ company, orders, ref }: Props) => {
                 {order.paymentMethod}
               </TableCell>
               <TableCell className="text-right text-xs whitespace-nowrap">
-                {formattedPriceWithRupiah.format(Number(order.totalAmount))}
+                {formattedPriceBasedOnCountryCode(locale, currency).format(
+                  Number(order.totalAmount),
+                )}
               </TableCell>
             </TableRow>
           ))}
@@ -97,7 +106,11 @@ export const PrintTransactionPdf = ({ company, orders, ref }: Props) => {
       <div className="absolute right-2 my-4 py-2 pr-4 text-right font-medium">
         <article className="grid grid-cols-2 gap-x-2">
           <p className="text-right whitespace-nowrap">Total Revenue:</p>
-          <p>{formattedPriceWithRupiah.format(Number(orders.totalRevenue))}</p>
+          <p>
+            {formattedPriceBasedOnCountryCode(locale, currency).format(
+              Number(orders.totalRevenue),
+            )}
+          </p>
           <p className="text-right">Total:</p>
           <p className="whitespace-nowrap">
             {orders.totalTransaction}{" "}

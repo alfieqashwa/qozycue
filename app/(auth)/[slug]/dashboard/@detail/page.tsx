@@ -37,7 +37,6 @@ export default function DetailPage() {
   })
 
   const isLoading = company.status !== "success" || orders.status !== "success"
-
   return (
     <div className="relative">
       <CustomDatePicker date={date} setDate={setDate} className="md:right-32" />

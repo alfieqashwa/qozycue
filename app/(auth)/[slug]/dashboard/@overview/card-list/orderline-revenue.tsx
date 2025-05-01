@@ -1,13 +1,13 @@
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { api } from "@/convex/_generated/api"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Utensils } from "lucide-react"
-import { DateRange } from "react-day-picker"
+import { type ListProps } from "../page"
 
-export function OrderlineRevenue({ date }: { date: DateRange | undefined }) {
+export function OrderlineRevenue({ date, country }: ListProps) {
   const { data: orderlineRevenue, status } = useTanstackQuery({
     ...convexQuery(api.orderlines._sumRevenue, {
       from: date?.from?.getTime(),
@@ -15,7 +15,10 @@ export function OrderlineRevenue({ date }: { date: DateRange | undefined }) {
     }),
     enabled: !!date?.from && !!date.to,
   })
+  const { locale, currency } = country
+
   if (status !== "success") return <SkeletonDashboardCard className="h-36" />
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -26,7 +29,7 @@ export function OrderlineRevenue({ date }: { date: DateRange | undefined }) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
-          {formattedPriceWithRupiah.format(
+          {formattedPriceBasedOnCountryCode(locale, currency).format(
             Number(orderlineRevenue._sum.amount),
           )}
         </div>

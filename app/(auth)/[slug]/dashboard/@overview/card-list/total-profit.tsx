@@ -1,13 +1,18 @@
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { api } from "@/convex/_generated/api"
-import { formattedPrice, formattedPriceWithRupiah } from "@/lib/format-price"
+import {
+  formattedPrice,
+  formattedPriceBasedOnCountryCode,
+} from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries } from "@tanstack/react-query"
-import { DateRange } from "react-day-picker"
 import { GiMoneyStack } from "react-icons/gi"
+import { type ListProps } from "../page"
 
-export function TotalProfit({ date }: { date: DateRange | undefined }) {
+export function TotalProfit({ date, country }: ListProps) {
+  const { locale, currency } = country
+
   const [poolRentalRevenue, _calculateProfit] = useQueries({
     queries: [
       {
@@ -64,12 +69,14 @@ export function TotalProfit({ date }: { date: DateRange | undefined }) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
-          {formattedPriceWithRupiah.format(Number(totalProfit))}
+          {formattedPriceBasedOnCountryCode(locale, currency).format(
+            Number(totalProfit),
+          )}
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Profit Cafe{" "}
           <span className="text-primary">
-            {formattedPrice.format(Number(totalOrderlineProfit))}
+            {formattedPrice(locale).format(Number(totalOrderlineProfit))}
           </span>
         </p>
       </CardContent>

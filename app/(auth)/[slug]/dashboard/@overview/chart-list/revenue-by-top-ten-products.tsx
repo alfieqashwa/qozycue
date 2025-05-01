@@ -1,6 +1,7 @@
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { Card, CardContent } from "@/components/ui/card"
 import { api } from "@/convex/_generated/api"
+import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { TopTenProductBarChart } from "./top-ten-product-bar-chart"
@@ -8,9 +9,11 @@ import { TopTenProductBarChart } from "./top-ten-product-bar-chart"
 export default function RevenueByTopTenProducts({
   from,
   to,
+  country,
 }: {
   from?: number
   to?: number
+  country: ICountry
 }) {
   const products = useTanstackQuery(convexQuery(api.products.findAll, {}))
 
@@ -38,10 +41,10 @@ export default function RevenueByTopTenProducts({
       <div className="absolute flex w-full flex-col space-y-1.5 p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between md:pl-20">
           <article className="space-y-2">
-            <h3 className="whitespace-nowrap font-semibold leading-none tracking-tight">
+            <h3 className="leading-none font-semibold tracking-tight whitespace-nowrap">
               Revenue By Product
             </h3>
-            <p className="text-sm font-semibold text-muted-foreground">
+            <p className="text-muted-foreground text-sm font-semibold">
               Top 10 of Products
             </p>
           </article>
@@ -51,8 +54,11 @@ export default function RevenueByTopTenProducts({
         <SkeletonDashboardCard className="h-[505px] sm:h-[455px]" />
       ) : (
         <Card className="col-span-4">
-          <CardContent className="pt-40 sm:pl-6 sm:pt-20">
-            <TopTenProductBarChart data={groupByProductId.data} />
+          <CardContent className="pt-40 sm:pt-20 sm:pl-6">
+            <TopTenProductBarChart
+              data={groupByProductId.data}
+              country={country}
+            />
           </CardContent>
         </Card>
       )}

@@ -4,13 +4,16 @@ import { api } from "@/convex/_generated/api"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { PoolTableBarChartDashboard } from "./pool-table-bar-chart"
+import { type ICountry } from "@/types"
 
 export function RevenueByPoolTable({
   from,
   to,
+  country,
 }: {
   from?: number
   to?: number
+  country: ICountry
 }) {
   const poolTables = useTanstackQuery(convexQuery(api.poolTables.findAll, {}))
   const groupPoolRentalByPoolTableId = useTanstackQuery({
@@ -40,7 +43,7 @@ export function RevenueByPoolTable({
     <div className="grid grid-cols-1 gap-4">
       <div className="absolute flex w-full flex-col space-y-1.5 p-6">
         <section className="flex flex-col items-start space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
-          <h3 className="whitespace-nowrap font-semibold leading-none tracking-tight md:pl-20">
+          <h3 className="leading-none font-semibold tracking-tight whitespace-nowrap md:pl-20">
             Revenue By Pool Table
           </h3>
         </section>
@@ -50,9 +53,10 @@ export function RevenueByPoolTable({
         <SkeletonDashboardCard className="h-[505px] sm:h-[455px]" />
       ) : (
         <Card className="col-span-4">
-          <CardContent className="pt-44 sm:pl-6 sm:pt-20">
+          <CardContent className="pt-44 sm:pt-20 sm:pl-6">
             <PoolTableBarChartDashboard
               data={groupPoolRentalByPoolTableId.data}
+              country={country}
             />
           </CardContent>
         </Card>

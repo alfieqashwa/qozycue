@@ -8,9 +8,17 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/convex/_generated/api"
+import { countries } from "@/lib/countries"
 import {
   createCompanySchema,
   type TCreateCompany,
@@ -20,6 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
+import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -49,19 +58,21 @@ export function CreateCompanyForm({
       name: "",
       phone: "",
       location: "",
+      countryCode: "",
       isPublished: false,
     },
   })
 
   // 2. Define a submit handler
   function onSubmit(values: TCreateCompany) {
-    const { name, phone, location, isPublished } = values
+    const { name, phone, location, isPublished, countryCode } = values
 
     mutate({
       createCompanySchema: {
         name: name.toLowerCase(),
         phone: phone.trim(),
         location: location.toLowerCase(),
+        countryCode,
         isPublished,
       },
     })
@@ -109,6 +120,37 @@ export function CreateCompanyForm({
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="countryCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Country</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl className="w-[280px]">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your country" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {countries?.map((c, i) => (
+                    <SelectItem value={c.code} key={`${c.code}-${i}`}>
+                      <Image
+                        src={c.flag}
+                        alt={c.country}
+                        width={300}
+                        height={150}
+                        className="flex h-4 w-6 items-center"
+                      />
+                      <span className="font-medium">{c.country}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

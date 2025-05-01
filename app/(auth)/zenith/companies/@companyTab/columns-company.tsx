@@ -153,7 +153,8 @@ export const columnsCompany: ColumnDef<
   {
     id: "actions",
     cell: ({ row }) => {
-      const { _id, name, phone, location, subscription } = row.original
+      const { _id, name, phone, location, countryCode, subscription } =
+        row.original
       return (
         <div className="relative">
           <CompanyRowActions
@@ -161,6 +162,7 @@ export const columnsCompany: ColumnDef<
             name={name}
             phone={phone}
             location={location}
+            countryCode={countryCode as string}
             subscription={subscription}
           />
         </div>

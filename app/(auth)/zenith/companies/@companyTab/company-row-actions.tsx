@@ -22,6 +22,7 @@ type CompanyRowActionProps = {
   name: string
   phone: string
   location: string
+  countryCode: string
   subscription: Subscription
 }
 
@@ -30,6 +31,7 @@ export function CompanyRowActions({
   name,
   phone,
   location,
+  countryCode,
   subscription,
 }: CompanyRowActionProps) {
   const [open, setOpen] = useState(false)
@@ -39,7 +41,7 @@ export function CompanyRowActions({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          className="data-[state=open]:bg-muted flex h-8 w-8 p-0"
         >
           <DotsHorizontalIcon className="h-4 w-4" />
           <span className="sr-only">Open menu</span>
@@ -50,7 +52,7 @@ export function CompanyRowActions({
           onClick={() => navigator.clipboard.writeText(id)}
           className="group hover:cursor-pointer"
         >
-          <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70 group-hover:text-primary" />
+          <Copy className="text-muted-foreground/70 group-hover:text-primary mr-2 h-3.5 w-3.5" />
           <span className="group-hover:text-primary">Copy ID</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -61,6 +63,7 @@ export function CompanyRowActions({
             phone={phone}
             location={location}
             subscription={subscription}
+            countryCode={countryCode}
             setOpen={setOpen}
           />
         </UpdateCompany>

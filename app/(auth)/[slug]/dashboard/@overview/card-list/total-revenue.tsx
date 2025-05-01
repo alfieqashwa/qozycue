@@ -8,14 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { api } from "@/convex/_generated/api"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Activity } from "lucide-react"
 import { useState } from "react"
-import { DateRange } from "react-day-picker"
+import { type ListProps } from "../page"
 
-export function TotalRevenue({ date }: { date: DateRange | undefined }) {
+export function TotalRevenue({ date, country }: ListProps) {
   const [isIncludeTaxes, setIsIncludeTaxes] = useState(true)
 
   const { data: totalRevenue, status } = useTanstackQuery({
@@ -25,13 +25,15 @@ export function TotalRevenue({ date }: { date: DateRange | undefined }) {
     }),
     enabled: !!date?.from && !!date.to,
   })
-
-  const revenueIncludeTaxes = formattedPriceWithRupiah.format(
-    Number(totalRevenue?._sum.totalAmount),
-  )
-  const revenueExcludeTaxes = formattedPriceWithRupiah.format(
-    Number(totalRevenue?._sum.revenue),
-  )
+  const { locale, currency } = country
+  const revenueIncludeTaxes = formattedPriceBasedOnCountryCode(
+    locale,
+    currency,
+  ).format(Number(totalRevenue?._sum.totalAmount))
+  const revenueExcludeTaxes = formattedPriceBasedOnCountryCode(
+    locale,
+    currency,
+  ).format(Number(totalRevenue?._sum.revenue))
   const totalTransactions = totalRevenue?._count
 
   if (status !== "success") return <SkeletonDashboardCard className="h-36" />

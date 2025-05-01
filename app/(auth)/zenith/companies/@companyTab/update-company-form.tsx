@@ -19,6 +19,7 @@ import { SheetFooter } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { countries } from "@/lib/countries"
 import { Subscription } from "@/types"
 import {
   updateCompanyZenithSchema,
@@ -29,6 +30,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
+import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -37,6 +39,7 @@ export function UpdateCompanyForm({
   name,
   phone,
   location,
+  countryCode,
   subscription,
   setOpen,
 }: {
@@ -44,6 +47,7 @@ export function UpdateCompanyForm({
   name: string
   phone: string
   location: string
+  countryCode: string
   subscription: Subscription
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
@@ -68,6 +72,7 @@ export function UpdateCompanyForm({
       id,
       name,
       phone,
+      countryCode,
       location,
       subscription,
     },
@@ -75,7 +80,7 @@ export function UpdateCompanyForm({
 
   // 2. Define a submit handler.
   function onSubmit(values: TUpdateCompanyZenith) {
-    const { name, phone, location, subscription } = values
+    const { name, phone, location, subscription, countryCode } = values
 
     mutate({
       updateCompanyZenithSchema: {
@@ -83,6 +88,7 @@ export function UpdateCompanyForm({
         name: name.toLowerCase(),
         phone: phone.trim(),
         location: location.toLowerCase(),
+        countryCode,
         subscription,
       },
     })
@@ -131,6 +137,37 @@ export function UpdateCompanyForm({
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="countryCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Country</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl className="w-[280px]">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your country" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {countries?.map((c, i) => (
+                    <SelectItem value={c.code} key={`${c.code}-${i}`}>
+                      <Image
+                        src={c.flag}
+                        alt={c.country}
+                        width={300}
+                        height={150}
+                        className="flex h-4 w-6 items-center"
+                      />
+                      <span className="font-medium">{c.country}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
