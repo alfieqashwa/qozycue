@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
@@ -17,6 +17,8 @@ import { UpdateStockProduct } from "./update-stock-product"
 
 export const columnsProduct = (
   isStockable: boolean,
+  locale: string,
+  currency: string,
 ): ColumnDef<FunctionReturnType<typeof api.products.findAll>[0]>[] => [
   {
     id: "select",
@@ -108,7 +110,9 @@ export const columnsProduct = (
           className={cn("px-3 py-1.5", colorBasedOnCategory)}
         >
           <span className="max-w-[500px] truncate font-medium capitalize">
-            {formattedPriceWithRupiah.format(Number(costPrice))}
+            {formattedPriceBasedOnCountryCode(locale, currency).format(
+              Number(costPrice),
+            )}
           </span>
         </Badge>
       )
@@ -134,7 +138,9 @@ export const columnsProduct = (
           className={cn("px-3 py-1.5", colorBasedOnCategory)}
         >
           <span className="max-w-[500px] truncate font-medium capitalize">
-            {formattedPriceWithRupiah.format(Number(salePrice))}
+            {formattedPriceBasedOnCountryCode(locale, currency).format(
+              Number(salePrice),
+            )}
           </span>
         </Badge>
       )

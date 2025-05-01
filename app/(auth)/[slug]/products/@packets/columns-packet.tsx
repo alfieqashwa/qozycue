@@ -4,7 +4,7 @@ import { DataTableColumnHeader } from "@/components/table/data-table-column-head
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { api } from "@/convex/_generated/api"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
@@ -13,9 +13,10 @@ import { DeletePacket } from "./delete-packet"
 import { TogglePacket } from "./toggle-packet"
 import { UpdatePacket } from "./update-packet"
 
-export const columnsPacket: ColumnDef<
-  FunctionReturnType<typeof api.packets.findAll>[0]
->[] = [
+export const columnsPacket = (
+  locale: string,
+  currency: string,
+): ColumnDef<FunctionReturnType<typeof api.packets.findAll>[0]>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -116,7 +117,9 @@ export const columnsPacket: ColumnDef<
           className={cn("px-3 py-1.5", colorBasedOnRate)}
         >
           <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceWithRupiah.format(Number(cost))}
+            {formattedPriceBasedOnCountryCode(locale, currency).format(
+              Number(cost),
+            )}
           </span>
         </Badge>
       )
