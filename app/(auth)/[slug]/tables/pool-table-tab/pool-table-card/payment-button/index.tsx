@@ -19,6 +19,8 @@ export function PaymentButton({
   customerName,
   customerPhone,
   totalCost,
+  locale,
+  currency,
 }: {
   isCashier: boolean
   orderId: Id<"orders"> | undefined
@@ -26,6 +28,8 @@ export function PaymentButton({
   customerName?: string
   customerPhone?: string
   totalCost?: number
+  locale: string
+  currency: string
 }) {
   const [open, setOpen] = useState(false)
 
@@ -58,6 +62,8 @@ export function PaymentButton({
             totalCost={totalCost}
             orderlines={orderlines}
             defaultTax={defaultTax?.value}
+            locale={locale}
+            currency={currency}
             setOpen={setOpen}
           />
         )}
@@ -83,6 +89,8 @@ export function PaymentButton({
           totalCost={totalCost}
           orderlines={orderlines}
           defaultTax={defaultTax?.value}
+          locale={locale}
+          currency={currency}
           setOpen={setOpen}
         />
       )}

@@ -24,11 +24,15 @@ export function OrderRowActions({
   statusPayment,
   poolTableName,
   customerName,
+  locale,
+  currency,
 }: {
   orderId: Id<"orders">
   statusPayment: StatusPayment
   poolTableName?: string
   customerName?: string
+  locale: string
+  currency: string
 }) {
   const [open, setOpen] = useState(false)
 
@@ -75,6 +79,8 @@ export function OrderRowActions({
                 poolTableName={poolTableName!}
                 orderId={orderId}
                 customerName={customerName}
+                locale={locale}
+                currency={currency}
                 ref={contentRef}
               />
             </div>

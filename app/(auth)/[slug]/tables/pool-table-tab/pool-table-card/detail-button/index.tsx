@@ -34,6 +34,7 @@ type DetailButtonProps = {
     | FunctionReturnType<typeof api.orders.findByPoolTableId>
     | FunctionReturnType<typeof api.orders.findById>
     | undefined
+  locale: string
   children: React.ReactNode
 }
 export function DetailButton({
@@ -44,6 +45,7 @@ export function DetailButton({
   customerPhone,
   orderStatus,
   order,
+  locale,
   children,
 }: DetailButtonProps) {
   const [open, setOpen] = useState(false)
@@ -145,11 +147,12 @@ export function DetailButton({
                 poolRentalId={order?.poolRental?._id}
                 createdBy={order?.createdBy?.name}
                 createdAt={order?.poolRental?._creationTime}
+                locale={locale}
               />
             )}
           </TabsContent>
           <TabsContent value="cafe">
-            <OrderlineDetail orderId={order?._id} />
+            <OrderlineDetail orderId={order?._id} locale={locale} />
           </TabsContent>
         </Tabs>
         <DrawerFooter>

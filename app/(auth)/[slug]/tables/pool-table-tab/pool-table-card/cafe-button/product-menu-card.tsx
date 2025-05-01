@@ -30,6 +30,7 @@ type ProductMenuCardProps = {
   countInStock: number
   bgColor?: string
   stockTextColor?: string
+  locale: string
   children: React.ReactNode
 }
 
@@ -45,6 +46,7 @@ export function ProductMenuCard({
   countInStock,
   bgColor,
   stockTextColor,
+  locale,
   children,
 }: ProductMenuCardProps) {
   const [qty, setQty] = useState(0)
@@ -108,7 +110,7 @@ export function ProductMenuCard({
             {name}
           </h2>
           <p className="text-sm font-medium md:text-base">
-            {formattedPrice.format(Number(price))}
+            {formattedPrice(locale).format(Number(price))}
           </p>
         </article>
       </ProductTitleTooltip>

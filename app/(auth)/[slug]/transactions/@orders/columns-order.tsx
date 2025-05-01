@@ -394,6 +394,7 @@ export const columnsOrder = (
           orderId={_id}
           customerName={customer.name}
           customerPhone={customer.phone}
+          locale={locale}
         />
       )
     },
@@ -418,6 +419,8 @@ export const columnsOrder = (
             poolTableName={poolRental.poolTable.name}
             statusPayment={statusPayment}
             customerName={customer?.name}
+            locale={locale}
+            currency={currency}
           />
         </div>
       )

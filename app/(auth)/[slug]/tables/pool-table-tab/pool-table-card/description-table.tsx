@@ -13,6 +13,7 @@ export function DescriptionTable({
   packetName,
   duration,
   totalCost,
+  locale,
 }: {
   isActive: boolean
   startTime: number
@@ -23,6 +24,7 @@ export function DescriptionTable({
   packetCost?: number
   duration?: number | null
   totalCost?: number
+  locale: string
 }) {
   const [realtimeDuration, setRealtimeDuration] = useState<null | number>(null)
   const [realtimeTotalCost, setRealtimeTotalCost] = useState<null | number>(
@@ -78,7 +80,7 @@ export function DescriptionTable({
         <p className="text-right">Cost:</p>
         {orderStatusSucceed && !!packetCost ? (
           <p className="text-foreground tracking-tight">
-            {formattedPrice.format(Number(packetCost))}/
+            {formattedPrice(locale).format(Number(packetCost))}/
             <span>{formattedRate}</span>
           </p>
         ) : (
@@ -101,11 +103,11 @@ export function DescriptionTable({
         <p className="text-right">Price:</p>
         {orderStatusSucceed && !!totalCost ? (
           <p className="text-foreground tracking-tight">
-            {formattedPrice.format(Number(totalCost))}
+            {formattedPrice(locale).format(Number(totalCost))}
           </p>
         ) : isActive && !!realtimeDuration ? (
           <p className="text-amber-400">
-            {formattedPrice.format(Number(realtimeTotalCost))}
+            {formattedPrice(locale).format(Number(realtimeTotalCost))}
           </p>
         ) : (
           <InvisibleParagraph />

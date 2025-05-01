@@ -21,12 +21,14 @@ export function OrderList({
   orderlines,
   poolTableName,
   customerName,
+  locale,
 }: {
   isManager: boolean
   isCashier: boolean
   orderlines: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   poolTableName?: string
   customerName?: string
+  locale: string
 }) {
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.orderlines.remove),
@@ -136,7 +138,7 @@ export function OrderList({
                         </h3>
                         <p className="text-muted-foreground text-sm">
                           <span>
-                            {formattedPrice.format(
+                            {formattedPrice(locale).format(
                               Number(orderline.product.salePrice),
                             )}
                             /{orderline.product.unitOfMeasure?.name}
@@ -157,7 +159,9 @@ export function OrderList({
                             "text-muted-foreground line-through",
                         )}
                       >
-                        {formattedPrice.format(Number(orderline.amount))}
+                        {formattedPrice(locale).format(
+                          Number(orderline.amount),
+                        )}
                       </p>
                     </div>
                     <Button

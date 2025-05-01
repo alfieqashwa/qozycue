@@ -1,14 +1,14 @@
 "use client"
 
-import { format } from "date-fns"
-import { id } from "date-fns/locale"
-import { useEffect, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { Id } from "@/convex/_generated/dataModel"
 import { formattedPrice } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { Rate } from "@/types"
-import { Id } from "@/convex/_generated/dataModel"
+import { format } from "date-fns"
+import { id } from "date-fns/locale"
+import { useEffect, useState } from "react"
 
 type PoolRentalDetailProps = {
   isActive: boolean
@@ -24,6 +24,7 @@ type PoolRentalDetailProps = {
   poolRentalId?: Id<"poolRentals">
   createdBy?: string
   createdAt?: number
+  locale: string
 }
 
 export function PoolRentalDetail({
@@ -40,6 +41,7 @@ export function PoolRentalDetail({
   poolRentalId,
   createdBy,
   createdAt,
+  locale,
 }: PoolRentalDetailProps) {
   const [realtimeDuration, setRealtimeDuration] = useState<null | number>(null)
   const [realtimeTotalCost, setRealtimeTotalCost] = useState<null | number>(
@@ -70,10 +72,10 @@ export function PoolRentalDetail({
     return () => clearInterval(interval)
   }, [isActive, packetCost, setRealtimeDuration, startTime])
 
-  const formattedPacketCost = formattedPrice.format(Number(packetCost))
+  const formattedPacketCost = formattedPrice(locale).format(Number(packetCost))
   const formattedRate = packetRate === "HOUR" ? "hr" : "min"
-  const formattedTotalCost = formattedPrice.format(Number(totalCost))
-  const formattedRealtimeTotalCost = formattedPrice.format(
+  const formattedTotalCost = formattedPrice(locale).format(Number(totalCost))
+  const formattedRealtimeTotalCost = formattedPrice(locale).format(
     Number(realtimeTotalCost),
   )
 

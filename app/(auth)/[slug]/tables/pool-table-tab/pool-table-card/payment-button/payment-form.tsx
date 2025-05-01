@@ -33,7 +33,10 @@ import {
 } from "@/components/ui/tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { formattedPrice, formattedPriceWithRupiah } from "@/lib/format-price"
+import {
+  formattedPrice,
+  formattedPriceBasedOnCountryCode,
+} from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import {
   submitPaymentSchema,
@@ -63,6 +66,8 @@ export function PaymentForm({
   totalCost = 0,
   orderlines,
   defaultTax,
+  locale,
+  currency,
   setOpen,
 }: {
   orderId: Id<"orders">
@@ -72,6 +77,8 @@ export function PaymentForm({
   totalCost?: number
   orderlines?: FunctionReturnType<typeof api.orderlines.findAllByOrderId>
   defaultTax: number | undefined
+  locale: string
+  currency: string
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   const receiptRef = useRef(null)
@@ -117,6 +124,8 @@ export function PaymentForm({
                 orderId={orderId}
                 poolTableName={poolTableName}
                 customerName={customerName}
+                locale={locale}
+                currency={currency}
                 ref={receiptRef}
               />
             </div>
@@ -198,20 +207,23 @@ export function PaymentForm({
   )
 
   const formattedTotalCost = useMemo(
-    () => formattedPrice.format(Number(totalCost)),
-    [totalCost],
+    () => formattedPrice(locale).format(Number(totalCost)),
+    [totalCost, locale],
   )
   const formattedTotalOrder = useMemo(
-    () => formattedPrice.format(Number(totalAmount)),
-    [totalAmount],
+    () => formattedPrice(locale).format(Number(totalAmount)),
+    [totalAmount, locale],
   )
   const formattedSubTotal = useMemo(
-    () => formattedPrice.format(Number(totalCost + totalAmount)), // subTotal = totalCost + totalAmount
-    [totalAmount, totalCost],
+    () => formattedPrice(locale).format(Number(totalCost + totalAmount)), // subTotal = totalCost + totalAmount
+    [totalAmount, totalCost, locale],
   )
   const formattedFixedGrandTotal = useMemo(
-    () => formattedPriceWithRupiah.format(Number(fixedGrandTotal.totalAmount)),
-    [fixedGrandTotal.totalAmount],
+    () =>
+      formattedPriceBasedOnCountryCode(locale, currency).format(
+        Number(fixedGrandTotal.totalAmount),
+      ),
+    [fixedGrandTotal.totalAmount, locale, currency],
   )
 
   /**
@@ -228,9 +240,9 @@ export function PaymentForm({
         parseFloat(customerMoney) - fixedGrandTotal.totalAmount
       return isNaN(changeMoney) || changeMoney < 0
         ? undefined
-        : formattedPriceWithRupiah.format(changeMoney)
+        : formattedPriceBasedOnCountryCode(locale, currency).format(changeMoney)
     },
-    [fixedGrandTotal.totalAmount],
+    [fixedGrandTotal.totalAmount, locale, currency],
   )
 
   /**
@@ -270,6 +282,8 @@ export function PaymentForm({
               poolTableName={poolTableName}
               customerName={customerName}
               printStatus="bill"
+              locale={locale}
+              currency={currency}
               ref={billRef}
             />
           </div>
@@ -324,7 +338,11 @@ export function PaymentForm({
                 />
                 <article className="text-muted-foreground grid grid-cols-2 gap-x-2 py-4 font-mono font-medium">
                   <p className="text-right">Diterima:</p>
-                  <p>{formattedPriceWithRupiah.format(Number(changeMoney))}</p>
+                  <p>
+                    {formattedPriceBasedOnCountryCode(locale, currency).format(
+                      Number(changeMoney),
+                    )}
+                  </p>
                   <p className="text-right">Kembalian:</p>
                   <p className="text-primary">
                     {changeCustomerMoney(changeMoney)}

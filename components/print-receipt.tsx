@@ -1,6 +1,9 @@
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { formattedPrice, formattedPriceWithRupiah } from "@/lib/format-price"
+import {
+  formattedPrice,
+  formattedPriceBasedOnCountryCode,
+} from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { format } from "date-fns"
@@ -13,6 +16,8 @@ type PrintReceiptProps = {
   poolTableName?: string
   customerName?: string
   printStatus?: "receipt" | "bill"
+  locale: string
+  currency: string
   ref: RefObject<HTMLDivElement | null>
 }
 export const PrintReceipt = ({
@@ -20,6 +25,8 @@ export const PrintReceipt = ({
   poolTableName,
   customerName,
   printStatus = "receipt",
+  locale,
+  currency,
   ref,
 }: PrintReceiptProps) => {
   const [{ data: order, status }, { data: orderlines }, defaultTax] =
@@ -46,16 +53,16 @@ export const PrintReceipt = ({
   const totalAmount =
     orderlines?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0
 
-  const formattedPacketCost = formattedPrice.format(
+  const formattedPacketCost = formattedPrice(locale).format(
     Number(order?.poolRental.packet?.cost),
   )
   const formattedRate = order?.poolRental.packet?.rate === "HOUR" ? "hr" : "min"
-  const formattedTotalCost = formattedPrice.format(
+  const formattedTotalCost = formattedPrice(locale).format(
     Number(order?.poolRental.totalCost?.toFixed(0)),
   )
-  const formattedTotalOrder = formattedPrice.format(Number(totalAmount))
+  const formattedTotalOrder = formattedPrice(locale).format(Number(totalAmount))
   const subTotal = totalCost + totalAmount
-  const formattedSubTotal = formattedPrice.format(Number(subTotal))
+  const formattedSubTotal = formattedPrice(locale).format(Number(subTotal))
 
   const discount = order?.discount
   const tax =
@@ -187,13 +194,17 @@ export const PrintReceipt = ({
                         <p className="capitalize">{orderline.product.name}</p>
                         <p className="italic">
                           <span>@</span>
-                          {formattedPrice.format(
+                          {formattedPrice(locale).format(
                             Number(orderline.product.salePrice),
                           )}
                         </p>
                       </div>
                       <div className="w-3/12 text-right">
-                        <p>{formattedPrice.format(Number(orderline.amount))}</p>
+                        <p>
+                          {formattedPrice(locale).format(
+                            Number(orderline.amount),
+                          )}
+                        </p>
                       </div>
                     </li>
                   )
@@ -225,13 +236,17 @@ export const PrintReceipt = ({
             {printStatus === "receipt" && !!discount && discount > 0 && (
               <div className="flex items-center justify-between">
                 <p>Disc ({discount * 100}%):</p>
-                <p>{formattedPrice.format(Number(discount * subTotal * -1))}</p>
+                <p>
+                  {formattedPrice(locale).format(
+                    Number(discount * subTotal * -1),
+                  )}
+                </p>
               </div>
             )}
             {!!tax && tax > 0 && (
               <div className="flex items-center justify-between">
                 <p>PPN ({tax * 100}%):</p>
-                <p>{formattedPrice.format(Number(tax * subTotal))}</p>
+                <p>{formattedPrice(locale).format(Number(tax * subTotal))}</p>
               </div>
             )}
             {printStatus === "receipt" && (
@@ -249,9 +264,11 @@ export const PrintReceipt = ({
               <p>Grand Total:</p>
               <p>
                 {printStatus === "receipt"
-                  ? formattedPriceWithRupiah.format(Number(order.totalAmount))
+                  ? formattedPriceBasedOnCountryCode(locale, currency).format(
+                      Number(order.totalAmount),
+                    )
                   : !!tax &&
-                    formattedPriceWithRupiah.format(
+                    formattedPriceBasedOnCountryCode(locale, currency).format(
                       Number(subTotal + tax * subTotal),
                     )}
               </p>

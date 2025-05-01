@@ -4,8 +4,10 @@ import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
-import { useQuery as useTanstackQuery } from "@tanstack/react-query"
+import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { PoolTableCardPublic } from "./pool-table-card-public"
+import { type ICountry } from "@/types"
+import { countries } from "@/lib/countries"
 
 export function PoolTableList({
   companyId,
@@ -16,12 +18,24 @@ export function PoolTableList({
   companyName: string
   companyPhone: string
 }) {
-  const { data: poolTables, status } = useTanstackQuery({
-    ...convexQuery(api.poolTables.findAllPublicProcedure, {
-      companyId,
-    }),
-    enabled: Boolean(companyId),
+  const [{ data: poolTables, status }, { data: company }] = useTanstackQueries({
+    queries: [
+      {
+        ...convexQuery(api.poolTables.findAllPublicProcedure, {
+          companyId,
+        }),
+        enabled: Boolean(companyId),
+      },
+      {
+        ...convexQuery(api.companies.find, { id: companyId }),
+        enabled: Boolean(companyId),
+      },
+    ],
   })
+
+  const country = countries.find(
+    (c) => c.code === (company?.countryCode as string),
+  ) as ICountry
 
   return (
     <div className="mb-11 grid w-full grid-cols-1 gap-6 p-2 font-mono sm:gap-8 md:mb-6 md:p-8 lg:grid-cols-2 2xl:grid-cols-3">
@@ -44,6 +58,7 @@ export function PoolTableList({
             poolTableName={t.name}
             poolTableStartTime={t.startTime as number}
             poolTableEndTime={t.endTime as number}
+            locale={country.locale}
             key={t._id}
           />
         )

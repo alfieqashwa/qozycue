@@ -22,6 +22,7 @@ export function PoolTableCardPublic({
   poolTableStartTime,
   poolTableEndTime,
   isActive,
+  locale,
 }: {
   companyName: string
   companyPhone: string
@@ -30,6 +31,7 @@ export function PoolTableCardPublic({
   poolTableStartTime: number
   poolTableEndTime: number
   isActive: boolean
+  locale: string
 }) {
   const pathname = usePathname()
   const order = useTanstackQuery({
@@ -86,6 +88,7 @@ export function PoolTableCardPublic({
             packetRate={order.data?.poolRental?.packet.rate}
             duration={order.data?.poolRental?.duration}
             totalCost={order.data?.poolRental?.totalCost}
+            locale={locale}
           />
           <TimeDisplay
             startTime={poolTableStartTime}

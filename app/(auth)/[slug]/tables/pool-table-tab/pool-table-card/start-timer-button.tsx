@@ -49,11 +49,13 @@ export function StartTimerButton({
   poolTableId,
   poolTableName,
   gapDuration,
+  locale,
 }: {
   isCashier: boolean
   poolTableId: Id<"poolTables">
   poolTableName: string
   gapDuration: number
+  locale: string
 }) {
   const [open, setOpen] = useState(false)
 
@@ -298,7 +300,7 @@ export function StartTimerButton({
                                   (
                                   {p.cost < 1
                                     ? "free"
-                                    : formattedPrice.format(p.cost)}
+                                    : formattedPrice(locale).format(p.cost)}
                                   )
                                 </span>
                               </SelectItem>

@@ -12,12 +12,14 @@ type TriggerDetailButtonProps = {
   orderId: Id<"orders">
   customerName?: string
   customerPhone?: string | null
+  locale: string
 }
 
 export function TriggerDetailButton({
   orderId,
   customerName,
   customerPhone,
+  locale,
 }: TriggerDetailButtonProps) {
   const { data: order, status: orderStatus } = useTanstackQuery({
     ...convexQuery(api.orders.findById, { id: orderId }),
@@ -30,6 +32,7 @@ export function TriggerDetailButton({
       customerName={customerName}
       customerPhone={customerPhone}
       orderStatus={orderStatus}
+      locale={locale}
       order={order}
     >
       <DrawerTrigger

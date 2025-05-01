@@ -3,6 +3,7 @@ import { DrawerTrigger } from "@/components/ui/drawer"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { ScrollText } from "lucide-react"
@@ -18,7 +19,6 @@ import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
 import { Countdown } from "./timer/count-down"
 import { Stopwatch } from "./timer/stopwatch"
-import { type ICountry } from "@/types"
 
 export function PoolTableCard({
   managerAccessLevel,
@@ -128,6 +128,7 @@ export function PoolTableCard({
             packetRate={order.data?.poolRental?.packet.rate}
             duration={order.data?.poolRental?.duration}
             totalCost={order.data?.poolRental?.totalCost}
+            locale={country.locale}
           />
           <TimeDisplay
             startTime={poolTableStartTime}
@@ -143,6 +144,7 @@ export function PoolTableCard({
               isManager={managerAccessLevel}
               orderStatus={order.status}
               order={order.data}
+              locale={country.locale}
             >
               <DrawerTrigger asChild>
                 <Button
@@ -162,6 +164,7 @@ export function PoolTableCard({
                 poolTableId={poolTableId}
                 poolTableName={poolTableName}
                 gapDuration={gapDuration}
+                locale={country.locale}
               />
             ) : isActive === true && !!poolTableStartTime ? (
               <StopTimerButton
@@ -181,6 +184,8 @@ export function PoolTableCard({
                 customerName={order.data?.customer?.name}
                 customerPhone={order.data?.customer?.phone}
                 totalCost={order.data?.poolRental?.totalCost}
+                locale={country.locale}
+                currency={country.currency}
               />
             )}
             <CafeButton
@@ -188,6 +193,7 @@ export function PoolTableCard({
               isCashier={cashierAccessLevel}
               order={order.data}
               poolTableName={poolTableName}
+              locale={country.locale}
             />
           </div>
         </section>

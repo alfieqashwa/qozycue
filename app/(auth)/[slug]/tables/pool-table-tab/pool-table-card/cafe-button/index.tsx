@@ -29,12 +29,14 @@ type CafeButtonProps = {
     | FunctionReturnType<typeof api.orders.findAllPendingStatusByPoolTableId>[0]
     | FunctionReturnType<typeof api.orders.findAllCafeOnlyByCompanyId>[0]
   poolTableName?: string
+  locale: string
 }
 export function CafeButton({
   isManager,
   isCashier,
   order,
   poolTableName,
+  locale,
 }: CafeButtonProps) {
   const [openDrawer, setOpenDrawer] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
@@ -135,6 +137,7 @@ export function CafeButton({
                         isStockable={company?.isStockable as boolean}
                         countInStock={p.countInStock as number}
                         bgColor="bg-emerald-200/70"
+                        locale={locale}
                         key={p._id}
                       >
                         <Soup strokeWidth={2.5} className="text-emerald-900" />
@@ -157,6 +160,7 @@ export function CafeButton({
                         isStockable={company?.isStockable as boolean}
                         countInStock={p.countInStock as number}
                         bgColor="bg-fuchsia-200/70"
+                        locale={locale}
                         key={p._id}
                       >
                         <Coffee
@@ -182,6 +186,7 @@ export function CafeButton({
                         isStockable={company?.isStockable as boolean}
                         countInStock={p.countInStock as number}
                         bgColor="bg-lime-200/70"
+                        locale={locale}
                         key={p._id}
                       >
                         <ShoppingBasket
@@ -199,6 +204,7 @@ export function CafeButton({
                   poolTableName={poolTableName}
                   customerName={order?.customer?.name}
                   orderlines={orderlines}
+                  locale={locale}
                 />
               )}
             </div>

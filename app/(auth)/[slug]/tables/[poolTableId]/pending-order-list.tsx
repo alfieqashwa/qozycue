@@ -5,9 +5,10 @@ import { PoolRentalDetail } from "@/components/pool-rental-detail"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { StatusPayment } from "@/types"
+import { countries } from "@/lib/countries"
+import type { ICountry, StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
-import { useQuery } from "@tanstack/react-query"
+import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
 import { CafeButton } from "../pool-table-tab/pool-table-card/cafe-button"
 import { UpdateCustomerInfo } from "../pool-table-tab/pool-table-card/detail-button/update-customer-info"
@@ -25,12 +26,21 @@ export function PendingOrderList({
   isManager,
   isCashier,
 }: PendingOrderListProps) {
-  const pendingOrderList = useQuery({
-    ...convexQuery(api.orders.findAllPendingStatusByPoolTableId, {
-      poolTableId,
-    }),
-    enabled: Boolean(poolTableId),
+  const [pendingOrderList, company] = useTanstackQueries({
+    queries: [
+      {
+        ...convexQuery(api.orders.findAllPendingStatusByPoolTableId, {
+          poolTableId,
+        }),
+        enabled: Boolean(poolTableId),
+      },
+      convexQuery(api.companies.find, {}),
+    ],
   })
+
+  const country = countries.find(
+    (c) => c.code === (company.data?.countryCode as string),
+  ) as ICountry
 
   return (
     <div className="mt-4 grid min-w-max grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 xl:grid-cols-3">
@@ -41,6 +51,8 @@ export function PendingOrderList({
             isManager={isManager}
             isCashier={isCashier}
             order={order}
+            locale={country.locale}
+            currency={country.currency}
             key={order._id}
           />
         ))}
@@ -55,12 +67,16 @@ type PendingOrderCardProps = Omit<
   order: FunctionReturnType<
     typeof api.orders.findAllPendingStatusByPoolTableId
   >[0]
+  locale: string
+  currency: string
 }
 const PendingOrderCard = ({
   poolTableName,
   isManager,
   isCashier,
   order,
+  locale,
+  currency,
 }: PendingOrderCardProps) => (
   <section
     className="bg-card rounded-2xl border-2 p-4 shadow-lg"
@@ -108,11 +124,12 @@ const PendingOrderCard = ({
             timeEnd={order.poolRental.timeEnd!}
             poolRentalId={order.poolRental._id}
             createdAt={order.poolRental._creationTime}
+            locale={locale}
           />
         )}
       </TabsContent>
       <TabsContent value="cafe">
-        <OrderlineDetail orderId={order._id} />
+        <OrderlineDetail orderId={order._id} locale={locale} />
       </TabsContent>
     </Tabs>
 
@@ -123,6 +140,7 @@ const PendingOrderCard = ({
         isManager={isManager}
         isCashier={isCashier}
         order={order}
+        locale={locale}
         poolTableName={poolTableName}
       />
       {/* === ENDS Cafe Button === */}
@@ -134,6 +152,8 @@ const PendingOrderCard = ({
           customerName={order.customer.name}
           customerPhone={order.customer.phone}
           totalCost={order.poolRental.totalCost}
+          locale={locale}
+          currency={currency}
         />
       </div>
     </div>

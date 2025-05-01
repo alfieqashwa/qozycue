@@ -3,6 +3,8 @@
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { OrderlineDetail } from "@/components/orderline-detail"
 import { api } from "@/convex/_generated/api"
+import { countries } from "@/lib/countries"
+import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
@@ -29,7 +31,19 @@ export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
   const { data: filteredOrders, status } = useTanstackQuery(
     convexQuery(api.orders.findAllCafeOnlyByCompanyId, {}),
   )
-  if (status !== "success") return <LoadingSpinner />
+
+  const company = useTanstackQuery({
+    ...convexQuery(api.companies.find, { id: user.companyId }),
+    enabled: !!user.companyId,
+  })
+
+  if (status !== "success" || company.status !== "success")
+    return <LoadingSpinner />
+
+  const country = countries.find(
+    (c) => c.code === (company.data?.countryCode as string),
+  ) as ICountry
+
   return (
     <Fragment>
       <CreateOrderForm isCashier={cashierAccessLevel} />
@@ -40,6 +54,8 @@ export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
               managerAccessLevel={managerAccessLevel}
               cashierAccessLevel={cashierAccessLevel}
               order={order}
+              locale={country.locale}
+              currency={country.currency}
               key={order._id}
             />
           ))}
@@ -59,12 +75,16 @@ type CafeOnlyTabCardProps = {
   managerAccessLevel: boolean
   cashierAccessLevel: boolean
   order: FunctionReturnType<typeof api.orders.findAllCafeOnlyByCompanyId>[0]
+  locale: string
+  currency: string
 }
 
 const CafeOnlyCard = ({
   order,
   managerAccessLevel,
   cashierAccessLevel,
+  locale,
+  currency,
 }: CafeOnlyTabCardProps) => (
   <div className="bg-card rounded-xl border-2 px-5 py-4" key={order._id}>
     <article className="flex items-center justify-end truncate">
@@ -75,7 +95,7 @@ const CafeOnlyCard = ({
         statusPayment={order.statusPayment}
       />
     </article>
-    <OrderlineDetail orderId={order._id} />
+    <OrderlineDetail orderId={order._id} locale={locale} />
     <div className="flex items-center justify-between space-x-2 py-2">
       {!!order.orderlinesLen ? (
         <PaymentButton
@@ -83,6 +103,8 @@ const CafeOnlyCard = ({
           orderId={order._id}
           customerName={order.customer?.name}
           customerPhone={order.customer?.phone}
+          locale={locale}
+          currency={currency}
         />
       ) : (
         <RemoveOrder
@@ -97,6 +119,7 @@ const CafeOnlyCard = ({
         isManager={managerAccessLevel}
         isCashier={cashierAccessLevel}
         order={order}
+        locale={locale}
       />
       {/* === ENDS Cafe Button === */}
     </div>
