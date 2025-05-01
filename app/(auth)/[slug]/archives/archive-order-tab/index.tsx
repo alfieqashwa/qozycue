@@ -3,6 +3,8 @@
 import { CustomDatePicker } from "@/components/custom-date-picker"
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
+import { countries } from "@/lib/countries"
+import { ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
@@ -39,6 +41,14 @@ export function ArchiveOrderTab({
     enabled: !!date?.from && !!date.to,
   })
 
+  const company = useTanstackQuery({
+    ...convexQuery(api.companies.find, {}),
+  })
+
+  const { locale, currency } = countries.find(
+    (c) => c.code === (company.data?.countryCode as string),
+  ) as ICountry
+
   return (
     <div className="relative">
       <CustomDatePicker date={date} setDate={setDate} />
@@ -48,7 +58,7 @@ export function ArchiveOrderTab({
       ) : (
         <OrderTable
           data={orders.data}
-          columns={columnsArchiveOrder}
+          columns={columnsArchiveOrder(locale, currency)}
           disabledBasedOnAccessLevel={!managerAndCashierAccessLevel}
         />
       )}

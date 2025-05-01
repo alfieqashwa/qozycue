@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { PaymentMethod } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
@@ -28,9 +28,12 @@ import { ArchiveOrderRowActions } from "./archive-order-row-actions"
 import { DeleteOrder } from "./delete-order"
 import { RollbackOrder } from "./rollback-order"
 
-export const columnsArchiveOrder: ColumnDef<
+export const columnsArchiveOrder = (
+  locale: string,
+  currency: string,
+): ColumnDef<
   FunctionReturnType<typeof api.orders.findAllArchiveOrderSortedByDate>[0]
->[] = [
+>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -117,7 +120,9 @@ export const columnsArchiveOrder: ColumnDef<
         <Badge variant="secondary" className="px-3 py-1.5">
           {!!costPrice ? (
             <span className="max-w-[500px] truncate capitalize">
-              {formattedPriceWithRupiah.format(Number(costPrice))}
+              {formattedPriceBasedOnCountryCode(locale, currency).format(
+                Number(costPrice),
+              )}
             </span>
           ) : (
             <span className="text-muted-foreground">Rp</span>
