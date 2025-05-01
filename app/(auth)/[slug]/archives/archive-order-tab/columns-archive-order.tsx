@@ -11,7 +11,6 @@ import { PaymentMethod } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
-import { id } from "date-fns/locale"
 import {
   Banknote,
   CreditCard,
@@ -313,9 +312,7 @@ export const columnsArchiveOrder = (
     ),
     cell: ({ row }) => {
       const timestamp = row.getValue("_creationTime")
-      const createdAt = format(timestamp as number, "PPpp", {
-        locale: id,
-      })
+      const createdAt = format(timestamp as number, "PPpp")
       return <div className="whitespace-nowrap">{createdAt}</div>
     },
   },
@@ -357,9 +354,7 @@ export const columnsArchiveOrder = (
     cell: ({ row }) => {
       const timestamp = row.getValue("updatedTime")
       const updatedAt = timestamp
-        ? format(timestamp as number, "PPpp", {
-            locale: id,
-          })
+        ? format(timestamp as number, "PPpp")
         : undefined
 
       return <p className={cn("space-y-2 whitespace-nowrap")}>{updatedAt}</p>

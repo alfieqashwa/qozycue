@@ -15,7 +15,6 @@ import { OrderlineStatus, StatusPayment } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
-import { id } from "date-fns/locale"
 import {
   Coffee,
   Hash,
@@ -299,9 +298,7 @@ export const columnsOrderline = (
     ),
     cell: ({ row }) => {
       const timestamp = row.getValue("_creationTime")
-      const formattedCreatedAt = format(timestamp as number, "PPpp", {
-        locale: id,
-      })
+      const formattedCreatedAt = format(timestamp as number, "PPpp")
       return <div className="whitespace-nowrap">{formattedCreatedAt}</div>
     },
   },

@@ -10,7 +10,6 @@ import { StatusPayment } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
 import { format, isValid } from "date-fns"
-import { id } from "date-fns/locale"
 import { Hash, Star } from "lucide-react"
 
 export const columnsRental = (
@@ -218,7 +217,7 @@ export const columnsRental = (
       return (
         <div className="whitespace-nowrap text-sky-400">
           {timeStart && isValid(new Date(timeStart as number))
-            ? format(timeStart as number, "pp", { locale: id })
+            ? format(timeStart as number, "pp")
             : "-"}
         </div>
       )
@@ -232,9 +231,7 @@ export const columnsRental = (
     cell: ({ row }) => {
       const timeEnd = row.getValue("timeEnd")
       if (!timeEnd) return "-"
-      const formattedTimeEnd = format(timeEnd as number, "pp", {
-        locale: id,
-      })
+      const formattedTimeEnd = format(timeEnd as number, "pp")
       return (
         <div className="whitespace-nowrap text-amber-300">
           {formattedTimeEnd}
@@ -252,9 +249,7 @@ export const columnsRental = (
       return (
         <div className="whitespace-nowrap">
           {timestamp && isValid(new Date(timestamp as number))
-            ? format(timestamp as number, "PP", {
-                locale: id,
-              })
+            ? format(timestamp as number, "PP")
             : "-"}
         </div>
       )

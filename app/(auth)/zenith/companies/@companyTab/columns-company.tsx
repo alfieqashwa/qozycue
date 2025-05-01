@@ -3,16 +3,14 @@
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Doc } from "@/convex/_generated/dataModel"
+import { api } from "@/convex/_generated/api"
 import { type ColumnDef } from "@tanstack/react-table"
+import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
-import { id } from "date-fns/locale"
 import { Building2, Hash, Layers, Phone } from "lucide-react"
 import { CompanyRowActions } from "./company-row-actions"
 import { ToggleIsPublished } from "./toggle-is-published"
 import { UserList } from "./user-list"
-import { FunctionReturnType } from "convex/server"
-import { api } from "@/convex/_generated/api"
 
 export const columnsCompany: ColumnDef<
   FunctionReturnType<typeof api.companies.findAllSuperAdminProcedure>[0]
@@ -145,7 +143,7 @@ export const columnsCompany: ColumnDef<
       const timestamp = row.getValue("_creationTime")
       return (
         <div className="whitespace-nowrap">
-          {format(new Date(timestamp as Date), "PPpp", { locale: id })}
+          {format(new Date(timestamp as Date), "PPpp")}
         </div>
       )
     },

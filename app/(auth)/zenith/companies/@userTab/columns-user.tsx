@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils"
 import type { ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
-import { id } from "date-fns/locale"
 import { Building2, Key, Mail, User } from "lucide-react"
 import Image from "next/image"
 import { ActiveUser } from "./active-user"
@@ -59,14 +58,14 @@ export const columnsUser: ColumnDef<
                 alt="username"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="rounded-full bg-background object-cover text-muted-foreground ring-2 ring-ring ring-offset-2 ring-offset-background"
+                className="bg-background text-muted-foreground ring-ring ring-offset-background rounded-full object-cover ring-2 ring-offset-2"
               />
             </span>
           ) : (
             <span className="relative ml-1">
               <User
                 size={40}
-                className="rounded-full bg-background object-cover p-1 text-muted-foreground ring-2 ring-ring ring-offset-2 ring-offset-background"
+                className="bg-background text-muted-foreground ring-ring ring-offset-background rounded-full object-cover p-1 ring-2 ring-offset-2"
               />
             </span>
           )}
@@ -93,7 +92,7 @@ export const columnsUser: ColumnDef<
     ),
     cell: ({ row }) => (
       <div className="flex items-center">
-        <Mail className="mr-2 h-4 w-4 text-primary" />
+        <Mail className="text-primary mr-2 h-4 w-4" />
         <span>{row.getValue("email")}</span>
       </div>
     ),
@@ -108,7 +107,7 @@ export const columnsUser: ColumnDef<
       if (!role) return null
       return (
         <div className="flex items-center">
-          <Key className="mr-2 h-4 w-4 text-primary" />
+          <Key className="text-primary mr-2 h-4 w-4" />
           <span>{row.getValue("role")}</span>
         </div>
       )
@@ -152,7 +151,7 @@ export const columnsUser: ColumnDef<
       const timestamp = row.getValue("_creationTime")
       return (
         <div className="whitespace-nowrap">
-          {format(new Date(timestamp as Date), "PPpp", { locale: id })}
+          {format(new Date(timestamp as Date), "PPpp")}
         </div>
       )
     },

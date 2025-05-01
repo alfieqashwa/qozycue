@@ -7,7 +7,6 @@ import { api } from "@/convex/_generated/api"
 import type { ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
-import { id } from "date-fns/locale"
 import { Building2, Key, Mail, User } from "lucide-react"
 import Image from "next/image"
 import { DeleteTeam } from "./delete-team"
@@ -143,9 +142,7 @@ export const columnsTeam: ColumnDef<
     ),
     cell: ({ row }) => {
       const timestamp = row.getValue("_creationTime")
-      const createdAt = format(new Date(timestamp as Date), "PPPPpp", {
-        locale: id,
-      })
+      const createdAt = format(new Date(timestamp as Date), "PPpp")
       return <div className="whitespace-nowrap">{createdAt}</div>
     },
   },
