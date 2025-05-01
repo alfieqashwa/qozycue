@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
@@ -32,6 +32,8 @@ export function BookingRentalTable({
   hours,
   minutes,
   seconds,
+  locale,
+  currency,
 }: {
   bookingList: FunctionReturnType<
     typeof api.poolRentals.findAllBookingByPoolTableId
@@ -44,6 +46,8 @@ export function BookingRentalTable({
   hours: number | null
   minutes: number | null
   seconds: number | null
+  locale: string
+  currency: string
 }) {
   return (
     <div className="px-2">
@@ -116,7 +120,7 @@ export function BookingRentalTable({
               <TableCell>
                 <Badge variant="secondary" className="px-3 py-1.5">
                   <span className="max-w-[500px] truncate capitalize">
-                    {formattedPriceWithRupiah.format(
+                    {formattedPriceBasedOnCountryCode(locale, currency).format(
                       Number(booking.packet?.cost),
                     )}
                   </span>
@@ -140,7 +144,9 @@ export function BookingRentalTable({
               <TableCell>
                 <Badge variant="secondary" className="px-3 py-1.5">
                   <span className="max-w-[500px] truncate capitalize">
-                    {formattedPriceWithRupiah.format(Number(booking.totalCost))}
+                    {formattedPriceBasedOnCountryCode(locale, currency).format(
+                      Number(booking.totalCost),
+                    )}
                   </span>
                 </Badge>
               </TableCell>
@@ -198,6 +204,7 @@ export function BookingRentalTable({
                   totalCost={booking.totalCost!}
                   customerName={booking.order?.customer?.name}
                   customerPhone={booking.order?.customer?.phone}
+                  locale={locale}
                 />
               </TableCell>
               <TableCell className="w-[100px] font-medium capitalize">

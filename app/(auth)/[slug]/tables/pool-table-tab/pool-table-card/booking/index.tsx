@@ -21,6 +21,7 @@ import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { type ICountry } from "@/types"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import {
   useMutation,
@@ -40,12 +41,14 @@ export function Booking({
   poolTableName,
   gapDuration,
   openAndNotBookingOrderId,
+  country,
 }: {
   isCashierOrIsManagerAccessLevel: boolean
   poolTableId: Id<"poolTables">
   poolTableName: string
   gapDuration: number
   openAndNotBookingOrderId?: Id<"orders">
+  country: ICountry
 }) {
   const [openBooking, setOpenBooking] = useState(false)
   const [openWaitingList, setOpenWaitingList] = useState(false)
@@ -148,7 +151,7 @@ export function Booking({
     // mutate, //exclude mutate
   ])
   // ENDS BOOKING AUTOMATICALLY
-
+  const { locale, currency } = country
   if (status === "success" && !!countIsBooking) {
     return (
       <Sheet open={openWaitingList} onOpenChange={setOpenWaitingList}>
@@ -188,7 +191,7 @@ export function Booking({
               </TooltipTrigger>
             </WrapperTooltip>
           </SheetHeader>
-          <CreateBooking poolTableId={poolTableId} />
+          <CreateBooking poolTableId={poolTableId} locale={locale} />
           {findAllBookingByCompanyId.status === "success" &&
             !!findAllBookingByCompanyId.data && (
               <BookingRentalTable
@@ -201,6 +204,8 @@ export function Booking({
                 hours={hours}
                 minutes={minutes}
                 seconds={seconds}
+                locale={locale}
+                currency={currency}
               />
             )}
           <SheetFooter>
@@ -232,6 +237,7 @@ export function Booking({
         poolTableId={poolTableId}
         poolTableName={poolTableName}
         gapDuration={gapDuration}
+        locale={locale}
         setOpen={setOpenBooking}
       />
     </Drawer>

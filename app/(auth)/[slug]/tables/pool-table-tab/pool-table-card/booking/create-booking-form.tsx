@@ -57,11 +57,13 @@ export function CreateBookingForm({
   poolTableId,
   poolTableName,
   gapDuration,
+  locale,
   setOpen,
 }: {
   poolTableId: Id<"poolTables">
   poolTableName?: string
   gapDuration: number
+  locale: string
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) {
   const [currentTime, setCurrentTime] = useState(Date.now())
@@ -271,7 +273,7 @@ export function CreateBookingForm({
                                 (
                                 {p.cost < 1
                                   ? "free"
-                                  : formattedPrice.format(p.cost)}
+                                  : formattedPrice(locale).format(p.cost)}
                                 )
                               </span>
                             </SelectItem>

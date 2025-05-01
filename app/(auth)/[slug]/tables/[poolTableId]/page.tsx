@@ -40,7 +40,6 @@ export default async function PoolTableIdPage(props: {
     redirect(
       `/${encodeURIComponent(session.user.company?.slug as string)}/tables/`,
     )
-
   return (
     <div>
       <BackButton />

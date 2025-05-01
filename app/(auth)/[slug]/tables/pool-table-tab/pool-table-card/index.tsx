@@ -18,6 +18,7 @@ import { TimeDisplay } from "./time-display"
 import { Timer } from "./timer"
 import { Countdown } from "./timer/count-down"
 import { Stopwatch } from "./timer/stopwatch"
+import { type ICountry } from "@/types"
 
 export function PoolTableCard({
   managerAccessLevel,
@@ -29,6 +30,7 @@ export function PoolTableCard({
   poolTableEndTime,
   isActive,
   gapDuration,
+  country,
 }: {
   managerAccessLevel: boolean
   cashierAccessLevel: boolean
@@ -39,6 +41,7 @@ export function PoolTableCard({
   poolTableEndTime: number
   isActive: boolean
   gapDuration: number
+  country: ICountry
 }) {
   const order = useTanstackQuery({
     ...convexQuery(api.orders.findByPoolTableId, {
@@ -63,6 +66,7 @@ export function PoolTableCard({
           poolTableName={poolTableName}
           gapDuration={gapDuration}
           openAndNotBookingOrderId={order.data?._id}
+          country={country}
         />
       )}
       <div

@@ -13,8 +13,10 @@ import { CreateBookingForm } from "./create-booking-form"
 
 export const CreateBooking = ({
   poolTableId,
+  locale,
 }: {
   poolTableId: Id<"poolTables">
+  locale: string
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -39,6 +41,7 @@ export const CreateBooking = ({
           <CreateBookingForm
             poolTableId={poolTableId}
             gapDuration={data?.gapDuration!}
+            locale={locale}
             setOpen={setOpen}
           />
         )}

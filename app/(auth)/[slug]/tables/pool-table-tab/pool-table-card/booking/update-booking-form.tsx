@@ -42,6 +42,20 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { BookingDialogFooter, BookingDrawerFooter } from "./update-booking"
 
+type UpdateBookingFormProps = {
+  orderId: Id<"orders">
+  poolTableId: Id<"poolTables">
+  poolTableName: string
+  gapDuration: number
+  packetId: Id<"packets">
+  startTime: number
+  duration: number
+  totalCost: number
+  customerName?: string
+  customerPhone?: string | null
+  locale: string
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
 export function UpdateBookingForm({
   orderId,
   poolTableId,
@@ -53,20 +67,9 @@ export function UpdateBookingForm({
   totalCost,
   customerName,
   customerPhone,
+  locale,
   setOpen,
-}: {
-  orderId: Id<"orders">
-  poolTableId: Id<"poolTables">
-  poolTableName: string
-  gapDuration: number
-  packetId: Id<"packets">
-  startTime: number
-  duration: number
-  totalCost: number
-  customerName?: string
-  customerPhone?: string | null
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+}: UpdateBookingFormProps) {
   const [currentTime, setCurrentTime] = useState(Date.now())
 
   // Update current time every minute
@@ -286,7 +289,7 @@ export function UpdateBookingForm({
                             (
                             {p.cost < 1
                               ? "free"
-                              : formattedPrice.format(p.cost)}
+                              : formattedPrice(locale).format(p.cost)}
                             )
                           </span>
                         </SelectItem>

@@ -39,6 +39,7 @@ type UpdateBookingProps = {
   totalCost: number
   customerName?: string
   customerPhone?: string | null
+  locale: string
 }
 export const UpdateBooking = ({
   orderId,
@@ -51,6 +52,7 @@ export const UpdateBooking = ({
   totalCost,
   customerName,
   customerPhone,
+  locale,
 }: UpdateBookingProps) => {
   const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
@@ -87,6 +89,7 @@ export const UpdateBooking = ({
             totalCost={totalCost}
             customerName={customerName}
             customerPhone={customerPhone}
+            locale={locale}
             setOpen={setOpen}
           />
         </DialogContent>
@@ -125,6 +128,7 @@ export const UpdateBooking = ({
           totalCost={totalCost}
           customerName={customerName}
           customerPhone={customerPhone}
+          locale={locale}
           setOpen={setOpen}
         />
       </DrawerContent>
