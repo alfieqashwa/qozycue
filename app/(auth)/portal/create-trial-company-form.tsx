@@ -10,8 +10,16 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/convex/_generated/api"
+import { countries } from "@/lib/countries"
 import { cn } from "@/lib/utils"
 import {
   createTrialCompanySchema,
@@ -25,6 +33,7 @@ import {
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -61,6 +70,7 @@ export function CreateTrialCompanyForm({
       name: "",
       phone: "",
       location: "",
+      countryCode: "",
     },
   })
 
@@ -73,12 +83,14 @@ export function CreateTrialCompanyForm({
 
   // 2. Define a submit handler
   function onSubmit(values: TCreateTrialCompany) {
-    const { name, phone, location } = values
+    const { name, phone, location, countryCode } = values
+
     mutate({
       createTrialCompanySchema: {
         name: name.toLowerCase(),
         phone: phone.trim(),
         location: location.toLowerCase(),
+        countryCode,
       },
     })
   }
@@ -97,7 +109,7 @@ export function CreateTrialCompanyForm({
                   <Input
                     placeholder="name"
                     {...field}
-                    className="w-[280px] capitalize"
+                    className="capitalize md:w-[280px]"
                   />
                 </FormControl>
                 <p className="text-destructive text-sm">
@@ -142,7 +154,41 @@ export function CreateTrialCompanyForm({
               </FormItem>
             )}
           />
-          <DialogFooter className="mt-20 flex flex-col-reverse md:flex-row md:items-center md:justify-end md:gap-4">
+          <FormField
+            control={form.control}
+            name="countryCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Country</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="w-[280px]">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your country" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {countries?.map((c, i) => (
+                      <SelectItem value={c.code} key={`${c.code}-${i}`}>
+                        <Image
+                          src={c.flag}
+                          alt={c.country}
+                          width={300}
+                          height={150}
+                          className="flex h-4 w-6 items-center"
+                        />
+                        <span className="font-medium">{c.country}</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <DialogFooter className="mt-16 flex flex-col-reverse md:flex-row md:items-center md:justify-end md:gap-4">
             <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </DialogClose>

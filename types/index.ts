@@ -55,3 +55,11 @@ export enum StatusPaymentEnum {
 }
 
 export type OrderlineStatus = "ORDERED" | "UNORDERED"
+
+export interface ICountry {
+  code: string
+  country: string
+  currency: string
+  locale: string
+  flag: string
+}

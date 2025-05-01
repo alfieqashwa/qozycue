@@ -30,6 +30,10 @@ export const companySchema = z
         invalid_type_error: "Must be a string.",
       })
       .min(10),
+    countryCode: z.string({
+      required_error: "Country Code is required.",
+      invalid_type_error: "Country Code must be a string.",
+    }),
     subscription: z.enum(["TRIAL", "BASIC", "PRO", "ENTERPRISE"]).optional(),
   })
   .required()
@@ -38,6 +42,7 @@ export const createTrialCompanySchema = companySchema.pick({
   name: true,
   phone: true,
   location: true,
+  countryCode: true,
 })
 export type TCreateTrialCompany = z.infer<typeof createTrialCompanySchema>
 
