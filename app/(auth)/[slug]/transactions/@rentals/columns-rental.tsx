@@ -4,7 +4,7 @@ import { DataTableColumnHeader } from "@/components/table/data-table-column-head
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { api } from "@/convex/_generated/api"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { StatusPayment } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
@@ -13,9 +13,10 @@ import { format, isValid } from "date-fns"
 import { id } from "date-fns/locale"
 import { Hash, Star } from "lucide-react"
 
-export const columnsRental: ColumnDef<
-  FunctionReturnType<typeof api.poolRentals.findAll>[0]
->[] = [
+export const columnsRental = (
+  locale: string,
+  currency: string,
+): ColumnDef<FunctionReturnType<typeof api.poolRentals.findAll>[0]>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -49,7 +50,7 @@ export const columnsRental: ColumnDef<
       const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[300px] truncate">
             {id?.slice(-8, id.length)}
           </span>
@@ -71,7 +72,7 @@ export const columnsRental: ColumnDef<
         <Badge variant="secondary" className="px-3 py-1.5">
           <Star
             className={cn(
-              "mr-2 h-4 w-4 text-primary",
+              "text-primary mr-2 h-4 w-4",
               isBooking && "animate-pulse",
             )}
           />
@@ -129,7 +130,9 @@ export const columnsRental: ColumnDef<
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceWithRupiah.format(Number(costPrice))}
+            {formattedPriceBasedOnCountryCode(locale, currency).format(
+              Number(costPrice),
+            )}
           </span>
         </Badge>
       )
@@ -168,7 +171,9 @@ export const columnsRental: ColumnDef<
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceWithRupiah.format(Number(costPrice))}
+            {formattedPriceBasedOnCountryCode(locale, currency).format(
+              Number(costPrice),
+            )}
           </span>
         </Badge>
       )

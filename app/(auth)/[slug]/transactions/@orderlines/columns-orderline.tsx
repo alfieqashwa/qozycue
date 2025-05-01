@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { api } from "@/convex/_generated/api"
-import { formattedPriceWithRupiah } from "@/lib/format-price"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
 import { OrderlineStatus, StatusPayment } from "@/types"
 import { type ColumnDef } from "@tanstack/react-table"
@@ -26,9 +26,10 @@ import {
 } from "lucide-react"
 import { OrderlineRowActions } from "./orderline-row-actions"
 
-export const columnsOrderline: ColumnDef<
-  FunctionReturnType<typeof api.orderlines.findAll>[0]
->[] = [
+export const columnsOrderline = (
+  locale: string,
+  currency: string,
+): ColumnDef<FunctionReturnType<typeof api.orderlines.findAll>[0]>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -62,7 +63,7 @@ export const columnsOrderline: ColumnDef<
       const id: string = row.getValue("_id")
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
-          <Hash className="mr-2 h-4 w-4 text-muted-foreground" />
+          <Hash className="text-muted-foreground mr-2 h-4 w-4" />
           <span className="max-w-[300px] truncate">
             {id.slice(-8, id.length)}
           </span>
@@ -84,7 +85,7 @@ export const columnsOrderline: ColumnDef<
         <>
           {!!poolTable ? (
             <Badge variant="secondary" className="px-3 py-1.5">
-              <Star className="mr-2 h-4 w-4 text-primary" />
+              <Star className="text-primary mr-2 h-4 w-4" />
               <span className="whitespace-nowrap capitalize">
                 Table {poolTable as string}
               </span>
@@ -201,7 +202,9 @@ export const columnsOrderline: ColumnDef<
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceWithRupiah.format(Number(productPrice))}
+            {formattedPriceBasedOnCountryCode(locale, currency).format(
+              Number(productPrice),
+            )}
           </span>
         </Badge>
       )
@@ -241,14 +244,16 @@ export const columnsOrderline: ColumnDef<
                   isFree && "text-muted-foreground line-through",
                 )}
               >
-                {formattedPriceWithRupiah.format(Number(costPrice))}
+                {formattedPriceBasedOnCountryCode(locale, currency).format(
+                  Number(costPrice),
+                )}
               </span>
             </Badge>
           </TooltipTrigger>
           <TooltipContent
             side="left"
             className={cn(
-              "bg-muted capitalize text-muted-foreground",
+              "bg-muted text-muted-foreground capitalize",
               isFree ? "visible" : "invisible",
             )}
           >
