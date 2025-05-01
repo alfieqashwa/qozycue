@@ -46,7 +46,7 @@ export function PoolTableTab({
     <div className="relative">
       <div className="grid w-full grid-cols-1 gap-6 font-mono sm:gap-8 lg:grid-cols-2 2xl:grid-cols-3">
         {sortedPoolTableList?.map((t) => {
-          if (status !== "success")
+          if (status !== "success" || company.status !== "success")
             return (
               <SkeletonDashboardCard
                 key={t._id}

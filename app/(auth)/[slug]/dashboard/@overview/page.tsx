@@ -26,18 +26,17 @@ export default function DashboardPage() {
     ...convexQuery(api.companies.find, {}),
   })
 
-  const country = countries.find((c) => {
-    if (!status) return { message: "No Company ID!" }
-    return c.code === data?.countryCode
-  })
+  const country = countries.find((c) => c.code === data?.countryCode)
 
   return (
     <div className="relative">
       <CustomDatePicker date={date} setDate={setDate} />
-      <div className="space-y-4">
-        <CardList date={date} country={country as ICountry} />
-        <ChartList date={date} country={country as ICountry} />
-      </div>
+      {status === "success" && (
+        <div className="space-y-4">
+          <CardList date={date} country={country as ICountry} />
+          <ChartList date={date} country={country as ICountry} />
+        </div>
+      )}
     </div>
   )
 }
