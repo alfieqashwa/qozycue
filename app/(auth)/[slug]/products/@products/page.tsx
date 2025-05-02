@@ -3,7 +3,6 @@
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { countries } from "@/lib/countries"
-import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { columnsProduct } from "./columns-product"
@@ -19,17 +18,24 @@ export default function Page() {
     enabled: !!products?.[0]?.companyId,
   })
 
-  const { locale, currency } = countries.find(
+  const country = countries.find(
     (c) => c.code === (company.data?.countryCode as string),
-  ) as ICountry
+  )
 
-  if (status !== "success")
+  if (
+    status !== "success" ||
+    company.status !== "success" ||
+    !country // ensure country is defined
+  ) {
     return <SkeletonDashboardCard className="h-[700px]" />
+  }
+
+  const { locale, currency } = country
   return (
     <ProductTable
       data={products}
       columns={columnsProduct(
-        company.data?.isStockable as boolean,
+        company.data?.isStockable ?? false, // fallback if needed
         locale,
         currency,
       )}

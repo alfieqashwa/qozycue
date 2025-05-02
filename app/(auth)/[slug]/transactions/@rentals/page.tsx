@@ -5,7 +5,6 @@ import { CustomDatePicker } from "@/components/custom-date-picker"
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { countries } from "@/lib/countries"
-import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { columnsRental } from "./columns-rental"
@@ -41,19 +40,19 @@ export default function RentalPage() {
     ...convexQuery(api.companies.find, {}),
   })
 
-  const { locale, currency } = countries.find(
+  const country = countries.find(
     (c) => c.code === (company.data?.countryCode as string),
-  ) as ICountry
+  )
 
   return (
     <div className="relative">
       <CustomDatePicker date={date} setDate={setDate} />
-      {poolRentals.status !== "success" ? (
+      {poolRentals.status !== "success" || !country ? (
         <SkeletonDashboardCard className="h-[700px]" />
       ) : (
         <RentalTable
           data={poolRentals.data}
-          columns={columnsRental(locale, currency)}
+          columns={columnsRental(country.locale, country.currency)}
         />
       )}
     </div>

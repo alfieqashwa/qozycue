@@ -5,6 +5,7 @@ import { CustomDatePicker } from "@/components/custom-date-picker"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import { Button } from "@/components/ui/button"
 import { api } from "@/convex/_generated/api"
+import { countries } from "@/lib/countries"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
@@ -36,6 +37,10 @@ export default function DetailPage() {
     // onPrintError: () => alert("there is an error when printing"),
   })
 
+  const country = countries.find(
+    (c) => c.code === (company.data?.countryCode as string),
+  )
+
   const isLoading = company.status !== "success" || orders.status !== "success"
   return (
     <div className="relative">
@@ -52,13 +57,16 @@ export default function DetailPage() {
       </section>
 
       {isLoading && <LoadingSpinner />}
-      {company.status === "success" && orders.status === "success" && (
-        <PrintTransactionPdf
-          company={company.data}
-          orders={orders.data}
-          ref={contentRef}
-        />
-      )}
+      {company.status === "success" &&
+        orders.status === "success" &&
+        !!country && (
+          <PrintTransactionPdf
+            company={company.data}
+            country={country}
+            orders={orders.data}
+            ref={contentRef}
+          />
+        )}
     </div>
   )
 }

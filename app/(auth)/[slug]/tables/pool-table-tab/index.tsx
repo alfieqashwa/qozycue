@@ -3,7 +3,6 @@
 import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { countries } from "@/lib/countries"
-import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
@@ -46,7 +45,7 @@ export function PoolTableTab({
     <div className="relative">
       <div className="grid w-full grid-cols-1 gap-6 font-mono sm:gap-8 lg:grid-cols-2 2xl:grid-cols-3">
         {sortedPoolTableList?.map((t) => {
-          if (status !== "success" || company.status !== "success")
+          if (status !== "success" || company.status !== "success" || !country)
             return (
               <SkeletonDashboardCard
                 key={t._id}
@@ -64,7 +63,7 @@ export function PoolTableTab({
               poolTableStartTime={t.startTime as number}
               poolTableEndTime={t.endTime as number}
               gapDuration={t.gapDuration as number}
-              country={country as ICountry}
+              country={country}
               key={t._id}
             />
           )

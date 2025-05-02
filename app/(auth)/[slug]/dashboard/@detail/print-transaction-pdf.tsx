@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { api } from "@/convex/_generated/api"
-import { countries } from "@/lib/countries"
 import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { type ICountry } from "@/types"
 import { FunctionReturnType } from "convex/server"
@@ -21,14 +20,16 @@ import { RefObject } from "react"
 type Props = {
   company: FunctionReturnType<typeof api.companies.find>
   orders: FunctionReturnType<typeof api.orders.printTransaction>
+  country: ICountry
   ref: RefObject<HTMLDivElement | null>
 }
 
-export const PrintTransactionPdf = ({ company, orders, ref }: Props) => {
-  const country = countries.find(
-    (c) => c.code === company?.countryCode,
-  ) as ICountry
-
+export const PrintTransactionPdf = ({
+  company,
+  orders,
+  country,
+  ref,
+}: Props) => {
   const { locale, currency } = country
   return (
     <div ref={ref} className="bg-white px-4 pb-20 text-sm text-zinc-700">
@@ -51,7 +52,7 @@ export const PrintTransactionPdf = ({ company, orders, ref }: Props) => {
             <TableHead className="text-center font-medium text-zinc-50">
               Date
             </TableHead>
-            <TableHead className="text-foreground w-[100px] pl-4 font-medium whitespace-nowrap text-zinc-50">
+            <TableHead className="w-[100px] pl-4 font-medium whitespace-nowrap text-zinc-50">
               Order ID
             </TableHead>
             <TableHead className="font-medium whitespace-nowrap text-zinc-50">

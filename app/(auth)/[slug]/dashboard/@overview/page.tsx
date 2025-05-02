@@ -26,15 +26,17 @@ export default function DashboardPage() {
     ...convexQuery(api.companies.find, {}),
   })
 
-  const country = countries.find((c) => c.code === data?.countryCode)
+  const country = countries.find(
+    (c) => c.code === (data?.countryCode as string),
+  )
 
   return (
     <div className="relative">
       <CustomDatePicker date={date} setDate={setDate} />
-      {status === "success" && (
+      {status === "success" && !!country && (
         <div className="space-y-4">
-          <CardList date={date} country={country as ICountry} />
-          <ChartList date={date} country={country as ICountry} />
+          <CardList date={date} country={country} />
+          <ChartList date={date} country={country} />
         </div>
       )}
     </div>
