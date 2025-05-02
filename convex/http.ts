@@ -1,55 +1,11 @@
-import { HonoWithConvex, HttpRouterWithHono } from "convex-helpers/server/hono"
-import { Hono } from "hono"
-import { prettyJSON } from "hono/pretty-json"
-import { api } from "./_generated/api"
-import { ActionCtx } from "./_generated/server"
+import { httpRouter } from "convex/server" // Convex’s built-in HTTP router:contentReference[oaicite:0]{index=0}
+import { auth } from "./auth" // Your convex-auth config:contentReference[oaicite:1]{index=1}
 
-// Initialize Hono with Convex context
-const app: HonoWithConvex<ActionCtx> = new Hono()
-app.use(prettyJSON()) // With options: prettyJSON({ space: 4 })
+const http = httpRouter() // ✔ Create the router:contentReference[oaicite:2]{index=2}
 
-// Define your routes
-app.get("/", (c) => {
-  return c.text("Hello from Convex + Hono!")
-})
+// Mount all OAuth/JWT endpoints & OpenID config
+auth.addHttpRoutes(http) // ✔ Wire up /api/auth/signin/*, /api/auth/callback/*, /.well-known/*:contentReference[oaicite:3]{index=3}
 
-app.get("/api/pooltables/:companyId", async (c) => {
-  const companyIdParam = c.req.param("companyId")
+// (Optionally) define more routes here via http.route({ … })
 
-  // Use normalizeId to validate and convert the string to a proper Convex ID
-  const companyId = await c.env.runQuery(api.helpers.normalizeCompanyId, {
-    id: companyIdParam,
-  })
-
-  if (!companyId) {
-    return c.json({ error: "Invalid ID format" }, 400)
-  }
-
-  const poolTables = await c.env.runQuery(
-    api.poolTables.findAllPublicProcedure,
-    { companyId },
-  )
-
-  return c.json(poolTables || { error: "Not found" })
-})
-
-// Add CORS middleware to all API routes
-import { cors } from "hono/cors"
-import { Id } from "./_generated/dataModel"
-app.use(
-  "/api/*",
-  cors({
-    origin: ["https://qozycue.com", "http://localhost:3000"],
-    allowMethods: ["GET", "POST", "PUT", "DELETE"],
-    allowHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  }),
-)
-
-// Custom 404 response
-app.notFound((c) => {
-  return c.json({ error: "Endpoint not found" }, 404)
-})
-
-// Export the router
-export default new HttpRouterWithHono(app)
+export default http // Convex expects this default export:contentReference[oaicite:4]{index=4}
