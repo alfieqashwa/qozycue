@@ -125,7 +125,7 @@ export function UpdatePacketForm({
                 <FormLabel>Desc</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="name"
+                    placeholder="description"
                     className="w-[200px] capitalize"
                     {...field}
                   />

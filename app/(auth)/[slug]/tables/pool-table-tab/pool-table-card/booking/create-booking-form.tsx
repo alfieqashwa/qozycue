@@ -329,7 +329,7 @@ export function CreateBookingForm({
                     <FormControl>
                       <Input
                         placeholder="max 25 chars"
-                        className="w-[280px] text-sm capitalize md:text-base"
+                        className="w-[280px] capitalize"
                         {...field}
                       />
                     </FormControl>
@@ -349,7 +349,7 @@ export function CreateBookingForm({
                       <Input
                         type="tel"
                         placeholder="max 12 chars"
-                        className="w-[280px] text-sm md:text-base"
+                        className="w-[280px]"
                         {...field}
                       />
                     </FormControl>
