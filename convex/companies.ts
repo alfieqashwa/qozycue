@@ -99,7 +99,7 @@ export const createTrial = zMutation({
   args: { createTrialCompanySchema },
   handler: async (
     ctx,
-    { createTrialCompanySchema: { name, phone, location } },
+    { createTrialCompanySchema: { name, phone, countryCode, location } },
   ) => {
     const userId = await getAuthUserId(ctx)
     if (!userId) {
@@ -111,6 +111,7 @@ export const createTrial = zMutation({
       slug: name.replace(/ /g, "-"),
       phone,
       location,
+      countryCode,
       isPublished: true,
       isStockable: true,
       subscription: "TRIAL",
@@ -123,13 +124,17 @@ export const createTrial = zMutation({
 
 export const create = zMutation({
   args: { createCompanySchema },
-  handler: async (ctx, { createCompanySchema: { name, phone, location } }) => {
+  handler: async (
+    ctx,
+    { createCompanySchema: { name, phone, countryCode, location } },
+  ) => {
     await superAdminProcedure(ctx)
 
     return await ctx.db.insert("companies", {
       name,
       slug: name.replace(/ /g, "-"),
       phone,
+      countryCode,
       location,
       isPublished: true,
       isStockable: true,

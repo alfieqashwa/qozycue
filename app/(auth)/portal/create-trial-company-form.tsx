@@ -74,12 +74,13 @@ export function CreateTrialCompanyForm({
     },
   })
 
-  const { data: hasCompanyName } = useTanstackQuery({
-    ...convexQuery(api.companies.findAll, {}),
-    select(data) {
-      return data.some((c) => c.name === form.watch("name").toLowerCase())
-    },
-  })
+  const { data: hasCompanyName, status: hasCompanyNameStatus } =
+    useTanstackQuery({
+      ...convexQuery(api.companies.findAll, {}),
+      select(data) {
+        return data.some((c) => c.name === form.watch("name").toLowerCase())
+      },
+    })
 
   // 2. Define a submit handler
   function onSubmit(values: TCreateTrialCompany) {
@@ -99,26 +100,29 @@ export function CreateTrialCompanyForm({
     <ScrollArea className="h-[calc(100vh_-_12rem)] lg:h-[calc(100vh_-_35rem)]">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-2">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="pt-4">
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="name"
-                    {...field}
-                    className="capitalize md:w-[280px]"
-                  />
-                </FormControl>
-                <p className="text-destructive text-sm">
-                  {hasCompanyName && "Duplicate name! Please add another name."}
-                </p>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {hasCompanyNameStatus === "success" && (
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="pt-4">
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="name"
+                      {...field}
+                      className="capitalize md:w-[280px]"
+                    />
+                  </FormControl>
+                  <p className="text-destructive text-sm">
+                    {hasCompanyName &&
+                      "Duplicate name! Please add another name."}
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           {form.watch("name").length >= 3 && (
             <FormField
               control={form.control}

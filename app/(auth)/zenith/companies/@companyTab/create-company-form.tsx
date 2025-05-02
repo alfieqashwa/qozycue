@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -23,9 +24,12 @@ import {
   createCompanySchema,
   type TCreateCompany,
 } from "@/types/schema/company-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
@@ -57,11 +61,19 @@ export function CreateCompanyForm({
     defaultValues: {
       name: "",
       phone: "",
-      location: "",
       countryCode: "",
+      location: "",
       isPublished: false,
     },
   })
+
+  const { data: hasCompanyName, status: hasCompanyNameStatus } =
+    useTanstackQuery({
+      ...convexQuery(api.companies.findAll, {}),
+      select(data) {
+        return data.some((c) => c.name === form.watch("name").toLowerCase())
+      },
+    })
 
   // 2. Define a submit handler
   function onSubmit(values: TCreateCompany) {
@@ -79,109 +91,137 @@ export function CreateCompanyForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem className="pt-4">
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="name" {...field} className="capitalize" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+    <ScrollArea className="h-[calc(100vh_-_12rem)] lg:h-[calc(100vh_-_35rem)]">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {hasCompanyNameStatus === "success" && (
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="pt-4">
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="name"
+                      {...field}
+                      className="capitalize md:w-[280px]"
+                    />
+                  </FormControl>
+                  <p className="text-destructive text-sm">
+                    {hasCompanyName &&
+                      "Duplicate name! Please add another name."}
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone</FormLabel>
-              <FormControl>
-                <Input type="tel" placeholder="Phone" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          {form.watch("name").length >= 3 && (
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="Phone"
+                      {...field}
+                      className="w-[180px]"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Location"
-                  className="capitalize"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          {form.watch("phone").length >= 11 && (
+            <FormField
+              control={form.control}
+              name="countryCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="w-[280px]">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your country" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {countries?.map((c, i) => (
+                        <SelectItem value={c.code} key={`${c.code}-${i}`}>
+                          <Image
+                            src={c.flag}
+                            alt={c.country}
+                            width={300}
+                            height={150}
+                            className="flex h-4 w-6 items-center"
+                          />
+                          <span className="font-medium">{c.country}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        <FormField
-          control={form.control}
-          name="countryCode"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Country</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl className="w-[280px]">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your country" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {countries?.map((c, i) => (
-                    <SelectItem value={c.code} key={`${c.code}-${i}`}>
-                      <Image
-                        src={c.flag}
-                        alt={c.country}
-                        width={300}
-                        height={150}
-                        className="flex h-4 w-6 items-center"
-                      />
-                      <span className="font-medium">{c.country}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
+          {!!form.watch("countryCode") && (
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Location"
+                      {...field}
+                      className="h-[120px] capitalize"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        <FormField
-          control={form.control}
-          name="isPublished"
-          render={({ field }) => (
-            <FormItem className="flex items-end justify-between">
-              <FormLabel>Published?</FormLabel>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          {form.watch("location").length <= 10 && (
+            <FormField
+              control={form.control}
+              name="isPublished"
+              render={({ field }) => (
+                <FormItem className="flex items-end justify-between">
+                  <FormLabel>Published?</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
-        {isPending ? (
-          <Button disabled size="sm">
-            <Loader2 className="size-4 animate-spin" />
-            Please wait
-          </Button>
-        ) : (
-          <Button disabled={isPending} type="submit" size="sm">
-            Create Company
-          </Button>
-        )}
-      </form>
-    </Form>
+          {isPending ? (
+            <Button disabled size="sm">
+              <Loader2 className="size-4 animate-spin" />
+              Please wait
+            </Button>
+          ) : (
+            <Button disabled={isPending} type="submit" size="sm">
+              Create Company
+            </Button>
+          )}
+        </form>
+      </Form>
+    </ScrollArea>
   )
 }

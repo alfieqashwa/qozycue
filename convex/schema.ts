@@ -38,7 +38,7 @@ export default defineSchema({
     phone: v.string(),
     logo: v.optional(v.string()),
     location: v.string(),
-    countryCode: v.optional(v.string()),
+    countryCode: v.string(),
     isPublished: v.boolean(),
     subscription: v.union(
       v.literal("TRIAL"),

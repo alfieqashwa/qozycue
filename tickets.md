@@ -141,6 +141,8 @@
 ✅ Fix(bug): Runtime Errors
 ✅ Modify Profile Layout
 ✅ Update Package Version from 0.4.10 -> 0.5.0
+✅ Convert CountryCode type from optional to required after manually modified database.
+✅ Fix Company API & modify Create Companies form
 
 ## Backlog (Future Plan)
 
