@@ -115,7 +115,7 @@ const CompanyCard = ({
           width={500}
           height={500}
           alt={country?.country as string}
-          className="h-16 w-28 rounded shadow"
+          className="animate-pulse-slow h-16 w-28 rounded shadow"
         />
         <p className="pt-2 text-2xl capitalize">{user.company?.name}</p>
       </article>
