@@ -33,15 +33,15 @@ export function UserProfile({
     <div className="flex flex-col">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* User Card */}
-        <UserCard user={user} />
+        <UserProfileCard user={user} />
         {/* Company Card */}
-        <CompanyCard user={user} />
+        <CompanyProfileCard user={user} />
       </div>
     </div>
   )
 }
 
-const UserCard = ({
+const UserProfileCard = ({
   user,
 }: {
   user: FunctionReturnType<typeof api.sessions.find>["user"]
@@ -81,7 +81,7 @@ const UserCard = ({
   </section>
 )
 
-const CompanyCard = ({
+const CompanyProfileCard = ({
   user,
 }: {
   user: FunctionReturnType<typeof api.sessions.find>["user"]
