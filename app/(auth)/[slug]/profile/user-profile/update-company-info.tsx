@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -87,17 +87,16 @@ export function UpdateCompanyInfo({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          disabled={isPending || !adminAccessLevel}
-          className={cn(
-            "disabled:pointer-events-auto disabled:cursor-not-allowed",
-            className,
-          )}
-        >
-          <Pencil size={14} />
-          Edit
-        </Button>
+      <DialogTrigger
+        disabled={isPending || !adminAccessLevel}
+        className={cn(
+          buttonVariants(),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
+          className,
+        )}
+      >
+        <Pencil size={14} />
+        Edit
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

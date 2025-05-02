@@ -1,6 +1,5 @@
 "use client"
 
-import { Separator } from "@/components/ui/separator"
 import {
   Tooltip,
   TooltipContent,
@@ -19,7 +18,7 @@ import {
   Phone,
   Utensils,
 } from "lucide-react"
-import Image from "next/image"
+import { ProfileAvatar } from "./profile-avatar"
 import { TogglePublished } from "./toggle-published"
 import { ToggleStockable } from "./toggle-stockable"
 import { UpdateCompanyInfo } from "./update-company-info"
@@ -45,76 +44,66 @@ export function UserProfile({
 
   return (
     <div className="flex flex-col">
-      <div className="px-4">
-        {user.image ? (
-          <Image
-            src={user.image}
-            alt="Profile Image"
-            width={500}
-            height={500}
-            priority
-            className="ring-primary size-32 rounded-full object-cover p-1 ring-4"
-          />
-        ) : (
-          <div className="ring-primary grid size-32 place-items-center rounded-full ring-4">
-            <h1 className="text-primary text-9xl font-bold capitalize">
-              {user.name ? user.name.at(0) : user.email!.at(0)}
-            </h1>
-          </div>
-        )}
-        <section className="mt-6 space-y-2">
-          <article>
-            <h2 className="text-primary">Email</h2>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <section className="bg-card space-y-2 rounded-lg border-2 p-8 shadow-md">
+          <article className="flex justify-center">
+            <ProfileAvatar
+              userImage={user.image}
+              userName={user.name}
+              userEmail={user.email}
+            />
+          </article>
+          <article className="font-medium">
+            <p className="text-primary">Email</p>
             <p className="text-muted-foreground">{user.email}</p>
           </article>
           {user.name && (
-            <article>
-              <h2 className="text-primary">Name</h2>
+            <article className="font-medium">
+              <p className="text-primary">Name</p>
               <p className="text-muted-foreground capitalize">{user.name}</p>
             </article>
           )}
           {/* // Only me can access this! */}
           {user.email !== process.env.NEXT_PUBLIC_SUPER_ADMIN ? (
-            <article>
+            <article className="font-medium">
               <h2 className="text-primary">Role</h2>
               <p className="text-muted-foreground">{user.role}</p>
             </article>
           ) : (
-            <article>
+            <article className="font-medium">
               <UpdateUserRoleForMeOnly
                 id={user._id as Id<"users">}
                 role={user.role}
               />
             </article>
           )}
-          <Separator />
         </section>
-        <section className="mt-8 space-y-4">
-          <div className="flex space-x-1">
-            <Building2 className="text-primary mr-2 shrink-0" />
-            <p className="text-muted-foreground space-x-1 capitalize">
-              <span>{user.company?.name}</span>
+        <section className="bg-card space-y-4 rounded-lg border-2 p-8 font-medium shadow-md">
+          <article className="flex items-center justify-center space-x-4">
+            <Building2 className="text-primary size-10 shrink-0" />
+            <p className="space-x-1 text-2xl capitalize">
+              {user.company?.name}
             </p>
-          </div>
-          <div className="flex space-x-1">
+          </article>
+          <article className="flex space-x-1 pt-4">
             <Phone className="text-primary mr-2 shrink-0" />
             <p className="text-muted-foreground">{user.company?.phone}</p>
-          </div>
-          <div className="flex space-x-1">
+          </article>
+          <article className="flex space-x-1">
             <MapPin className="text-primary mr-2 shrink-0" />
             <p className="text-muted-foreground space-x-1 text-balance capitalize">
               {user.company?.location}
             </p>
-          </div>
-          <div className="flex space-x-1">
+          </article>
+          <article className="flex space-x-1">
             <Layers className="text-primary mr-2 shrink-0" />
             <p className="text-muted-foreground space-x-1 text-balance capitalize">
               {user.company?.subscription} Subscription
             </p>
-          </div>
+          </article>
           {adminAccessLevel && (
-            <section>
-              <div className="flex space-x-1 pb-4">
+            <section className="space-y-4">
+              <article className="flex items-center">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <LayoutTemplate className="text-primary mr-2 shrink-0 animate-pulse" />
@@ -137,8 +126,8 @@ export function UserProfile({
                     countAllBooking={!!bookingOrders.data.length}
                   />
                 )}
-              </div>
-              <div className="flex space-x-1 pb-4">
+              </article>
+              <div className="flex items-center">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Utensils className="text-primary mr-2 shrink-0 animate-pulse" />
@@ -166,7 +155,7 @@ export function UserProfile({
                 companyId={user.companyId as Id<"companies">}
                 phone={user.company?.phone as string}
                 location={user.company?.location as string}
-                className="mt-4"
+                className="mt-4 w-full font-semibold"
               />
             </section>
           )}
