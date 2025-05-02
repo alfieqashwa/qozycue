@@ -9,11 +9,13 @@ import { ConvexError } from "convex/values"
 import { toast } from "sonner"
 
 type ToggleStockableProps = {
+  adminAccessLevel: boolean
   companyId: Id<"companies">
   companyName: string
   isStockable: boolean
 }
 export function ToggleStockable({
+  adminAccessLevel,
   companyId,
   companyName,
   isStockable,
@@ -38,7 +40,7 @@ export function ToggleStockable({
 
   return (
     <Switch
-      disabled={isPending}
+      disabled={!adminAccessLevel || isPending}
       checked={isStockable}
       onCheckedChange={() =>
         mutate({

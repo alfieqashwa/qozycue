@@ -9,12 +9,14 @@ import { ConvexError } from "convex/values"
 import { toast } from "sonner"
 
 type TogglePublishedProps = {
+  adminAccessLevel: boolean
   companyId: Id<"companies">
   companyName: string
   isPublished: boolean
   countAllBooking: boolean
 }
 export function TogglePublished({
+  adminAccessLevel,
   companyId,
   companyName,
   isPublished,
@@ -40,7 +42,7 @@ export function TogglePublished({
 
   return (
     <Switch
-      disabled={countAllBooking || isPending}
+      disabled={!adminAccessLevel || countAllBooking || isPending}
       checked={isPublished}
       onCheckedChange={() =>
         mutate({
@@ -50,6 +52,7 @@ export function TogglePublished({
           },
         })
       }
+      className="disabled:pointer-events-auto disabled:cursor-not-allowed"
     />
   )
 }
