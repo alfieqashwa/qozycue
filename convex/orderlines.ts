@@ -142,6 +142,8 @@ export const findByProductId = query({
   handler: async (ctx, { productId }) => {
     await protectedProcedure(ctx)
 
+    if (!productId) return null
+
     return await ctx.db
       .query("orderlines")
       .withIndex("productId", (q) => q.eq("productId", productId))

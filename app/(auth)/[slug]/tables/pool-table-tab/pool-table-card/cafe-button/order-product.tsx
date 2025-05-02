@@ -133,6 +133,13 @@ export function OrderProduct({
       },
     })
   }
+  const disabled =
+    status !== "success" ||
+    !isCashier ||
+    qty <= 0 ||
+    qty === orderline?.quantity ||
+    isPending
+
   return (
     <div className="mt-3 flex items-center justify-between whitespace-nowrap md:mt-6">
       <section>
@@ -161,9 +168,7 @@ export function OrderProduct({
       <Button
         size="sm"
         variant="secondary"
-        disabled={
-          !isCashier || qty <= 0 || qty === orderline?.quantity || isPending
-        } // avoid user to update the server if qty is equal to current quantity
+        disabled={disabled} // avoid user to update the server if qty is equal to current quantity
         onClick={addOrderline}
         className="font-semibold disabled:pointer-events-auto disabled:cursor-not-allowed"
       >

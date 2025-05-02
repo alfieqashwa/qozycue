@@ -19,9 +19,8 @@ export const findByProductId = query({
   args: { productId: v.id("products") },
   handler: async (ctx, args) => {
     const product = await ctx.db.get(args.productId)
-    if (!product) throw new ConvexError("No Product Found!")
 
-    return ctx.db.get(product?.categoryId)
+    return product ? ctx.db.get(product.categoryId) : null
   },
 })
 

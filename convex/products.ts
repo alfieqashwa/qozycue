@@ -139,6 +139,8 @@ export const remove = zMutation({
   handler: async (ctx, { deleteProductSchema: { id } }) => {
     await adminProcedure(ctx)
 
+    if (!id) return null
+
     return await ctx.db.delete(id)
   },
 })
