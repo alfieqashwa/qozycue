@@ -31,7 +31,9 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
 
   const displayPathname = configureDisplayPathname(pathname, data)
 
-  const country = countries.find((c) => c.code === company?.countryCode)
+  const country = countries.find(
+    (c) => c.code === (company?.countryCode as string),
+  )
   return (
     <div className="flex items-center space-x-3 pl-4">
       <Link href={`/${company?.slug}`}>
@@ -40,7 +42,7 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
           width={500}
           height={500}
           alt={country?.country as string}
-          className="animate-pulse-slow w-12 shadow-md ring hover:cursor-pointer"
+          className="animate-pulse-slow h-8 w-12 rounded shadow-md ring hover:cursor-pointer"
         />
         {/* <Building2 */}
         {/*   className={cn("text-primary mr-2 size-8 hover:cursor-pointer")} */}

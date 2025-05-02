@@ -19,7 +19,7 @@ export function ProfileAvatar({
         width={500}
         height={500}
         priority
-        className="ring-primary size-32 rounded-full object-cover p-1 ring-4"
+        className="ring-primary w-32 rounded-full object-cover p-1 ring-4"
       />
     )
   }

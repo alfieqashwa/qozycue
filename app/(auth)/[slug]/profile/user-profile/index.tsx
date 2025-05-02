@@ -25,6 +25,7 @@ import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
 import { countries } from "@/lib/countries"
 import Image from "next/image"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 
 export function UserProfile({
   preloadedSession,
@@ -84,30 +85,30 @@ export function UserProfile({
             </article>
           )}
         </section>
-        <section className="bg-card space-y-4 rounded-lg border-2 px-8 pt-4 pb-8 font-medium shadow-md">
-          <article className="flex flex-col items-center">
+        <section className="bg-card space-y-4 rounded-lg border-2 p-8 font-medium shadow-md">
+          <article className="flex flex-col items-center space-y-4">
             <Image
               src={country?.flag as string}
               width={500}
               height={500}
               alt={country?.country as string}
-              className="size-24"
+              className="h-16 w-28 rounded shadow"
             />
             {/* <Building2 className="text-primary size-10 shrink-0" /> */}
-            <p className="text-3xl capitalize">{user.company?.name}</p>
+            <p className="text-2xl capitalize">{user.company?.name}</p>
           </article>
-          <article className="flex space-x-1 pt-4">
-            <Phone className="text-primary mr-2 shrink-0" />
+          <article className="flex items-center space-x-1 pt-4">
+            <Phone size={20} className="text-primary mr-2 shrink-0" />
             <p className="text-muted-foreground">{user.company?.phone}</p>
           </article>
-          <article className="flex space-x-1">
-            <MapPin className="text-primary mr-2 shrink-0" />
+          <article className="flex items-center space-x-1">
+            <MapPin size={20} className="text-primary mr-2 shrink-0" />
             <p className="text-muted-foreground space-x-1 text-balance capitalize">
               {user.company?.location}
             </p>
           </article>
-          <article className="flex space-x-1">
-            <Layers className="text-primary mr-2 shrink-0" />
+          <article className="flex items-center space-x-1">
+            <Layers size={20} className="text-primary mr-2 shrink-0" />
             <p className="text-muted-foreground space-x-1 text-balance capitalize">
               {user.company?.subscription} Subscription
             </p>
@@ -115,17 +116,15 @@ export function UserProfile({
           {adminAccessLevel && (
             <section className="space-y-4">
               <article className="flex items-center">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <LayoutTemplate className="text-primary mr-2 shrink-0 animate-pulse" />
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="right"
-                    className="bg-muted text-muted-foreground font-medium"
-                  >
-                    When enabled, it will activate the booking feature
-                  </TooltipContent>
-                </Tooltip>
+                <WrapperTooltip
+                  side="right"
+                  content="When enabled, it will activate the booking feature"
+                >
+                  <LayoutTemplate
+                    size={20}
+                    className="text-primary animate-pulse-slow mr-2 shrink-0"
+                  />
+                </WrapperTooltip>
                 <p className="text-muted-foreground pr-2 text-balance capitalize">
                   Published?
                 </p>
@@ -139,17 +138,15 @@ export function UserProfile({
                 )}
               </article>
               <div className="flex items-center">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Utensils className="text-primary mr-2 shrink-0 animate-pulse" />
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="right"
-                    className="bg-muted text-muted-foreground font-medium"
-                  >
-                    When enabled, it will activate the stockable feature
-                  </TooltipContent>
-                </Tooltip>
+                <WrapperTooltip
+                  side="right"
+                  content="When enabled, it will activate the stockable feature"
+                >
+                  <Utensils
+                    size={20}
+                    className="text-primary animate-pulse-slow mr-2 shrink-0"
+                  />
+                </WrapperTooltip>
                 <p className="text-muted-foreground pr-2 text-balance capitalize">
                   Stockable?
                 </p>
