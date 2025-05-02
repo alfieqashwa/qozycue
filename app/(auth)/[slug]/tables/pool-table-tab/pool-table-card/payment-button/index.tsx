@@ -53,9 +53,9 @@ export function PaymentButton({
         }
         poolTableName={poolTableName}
       >
-        {status === "success" && (
+        {status === "success" && !!orderId && (
           <PaymentForm
-            orderId={orderId!}
+            orderId={orderId}
             poolTableName={poolTableName}
             customerName={customerName}
             customerPhone={customerPhone}
@@ -80,9 +80,9 @@ export function PaymentButton({
         !isCashier || orderlines?.some((o) => o.orderlineStatus === "UNORDERED")
       }
     >
-      {status === "success" && (
+      {status === "success" && !!orderId && (
         <PaymentForm
-          orderId={orderId!}
+          orderId={orderId}
           poolTableName={poolTableName}
           customerName={customerName}
           customerPhone={customerPhone}

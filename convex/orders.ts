@@ -299,13 +299,21 @@ export const findByPoolTableId = query({
     const filteredOrderlist = []
     for (const rental of poolRentals) {
       const order = await ctx.db.get(rental.orderId)
+      // Skip this rental if the order is null
+      if (order === null) continue
+
       const packet = await ctx.db.get(rental.packetId)
-      const customer =
-        order !== null ? await ctx.db.get(order?.customerId!) : null
-      const createdBy = await ctx.db.get(order?.createdBy!)
+      const customer = order.customerId
+        ? await ctx.db.get(order.customerId!)
+        : null
+      // Only try to get createdBy if order exists and has a createdBy field
+      const createdBy = order.createdBy
+        ? await ctx.db.get(order.createdBy)
+        : null
+
       const orderlines = await ctx.db
         .query("orderlines")
-        .withIndex("orderId", (q) => q.eq("orderId", order?._id!))
+        .withIndex("orderId", (q) => q.eq("orderId", order._id))
         .collect()
 
       filteredOrderlist.push({
