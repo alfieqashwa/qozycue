@@ -69,8 +69,8 @@ export function CreateTrialCompanyForm({
     defaultValues: {
       name: "",
       phone: "",
-      location: "",
       countryCode: "",
+      location: "",
     },
   })
 
@@ -89,8 +89,8 @@ export function CreateTrialCompanyForm({
       createTrialCompanySchema: {
         name: name.toLowerCase(),
         phone: phone.trim(),
-        location: location.toLowerCase(),
         countryCode,
+        location: location.toLowerCase(),
       },
     })
   }
@@ -113,81 +113,87 @@ export function CreateTrialCompanyForm({
                   />
                 </FormControl>
                 <p className="text-destructive text-sm">
-                  {hasCompanyName && "Error: duplicate name."}
+                  {hasCompanyName && "Duplicate name! Please add another name."}
                 </p>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input
-                    type="tel"
-                    placeholder="Phone"
-                    {...field}
-                    className="w-[180px]"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Location"
-                    {...field}
-                    className="h-[120px] capitalize"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="countryCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Country</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl className="w-[280px]">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your country" />
-                    </SelectTrigger>
+          {form.watch("name").length >= 3 && (
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="Phone"
+                      {...field}
+                      className="w-[180px]"
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {countries?.map((c, i) => (
-                      <SelectItem value={c.code} key={`${c.code}-${i}`}>
-                        <Image
-                          src={c.flag}
-                          alt={c.country}
-                          width={300}
-                          height={150}
-                          className="flex h-4 w-6 items-center"
-                        />
-                        <span className="font-medium">{c.country}</span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {form.watch("phone").length >= 11 && (
+            <FormField
+              control={form.control}
+              name="countryCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="w-[280px]">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your country" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {countries?.map((c, i) => (
+                        <SelectItem value={c.code} key={`${c.code}-${i}`}>
+                          <Image
+                            src={c.flag}
+                            alt={c.country}
+                            width={300}
+                            height={150}
+                            className="flex h-4 w-6 items-center"
+                          />
+                          <span className="font-medium">{c.country}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {!!form.watch("countryCode") && (
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Location"
+                      {...field}
+                      className="h-[120px] capitalize"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <DialogFooter className="mt-16 flex flex-col-reverse md:flex-row md:items-center md:justify-end md:gap-4">
             <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
