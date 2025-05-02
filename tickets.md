@@ -137,6 +137,10 @@
 ✅ (Style): Fix Booking Sheet UI
 ✅ Transactions & Archives Page on Mobile (Buttons)
 ✅ Reconfig all buttons on Page Settings
+✅ Feat: Countries (South East Asia) Currency, Locale, & Flag Configuration
+✅ Fix(bug): Runtime Errors
+✅ Modify Profile Layout
+✅ Update Package Version from 0.4.10 -> 0.5.0
 
 ## Backlog (Future Plan)
 
