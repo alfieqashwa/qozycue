@@ -170,3 +170,22 @@
     - sudo systcl -p
   - Source:
     - https://chatgpt.com/c/67fce350-7b70-8002-b621-55277015640e
+
+---
+
+On Server CLI:
+
+5/2/2025, 10:15:05 PM [CONVEX Q(companies:find)] Uncaught ConvexError: Pleasesigned in!
+at handler (../convex/companies.ts:59:17)
+
+5/2/2025, 10:15:05 PM [CONVEX Q(products:findAll)] Uncaught ConvexError: Please signed in!
+at handler (../convex/products.ts:24:23)
+
+5/2/2025, 10:15:05 PM [CONVEX Q(poolTables:findAll)] Uncaught ConvexError: Please signed in!
+at handler (../convex/poolTables.ts:38:17)
+
+On Browser:
+
+## Application error: a client-side exception has occurred while loading localhost (see the browser console for more information).
+
+---
