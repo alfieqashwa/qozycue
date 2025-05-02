@@ -18,10 +18,18 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
+import { type ICountry } from "@/types"
 import {
   TUpdateCompanyByAdmin,
   updateCompanyByAdminSchema,
@@ -31,23 +39,30 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import { Loader2, Pencil } from "lucide-react"
+import Image from "next/image"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-export function UpdateCompanyInfo({
-  adminAccessLevel,
-  companyId,
-  phone,
-  location,
-  className,
-}: {
+type UpdateCompanyInfoProps = {
   adminAccessLevel: boolean
+  countries: ICountry[]
   companyId: Id<"companies">
   phone: string
   location: string
+  countryCode: string
   className?: string
-}) {
+}
+
+export function UpdateCompanyInfo({
+  adminAccessLevel,
+  countries,
+  companyId,
+  phone,
+  location,
+  countryCode,
+  className,
+}: UpdateCompanyInfoProps) {
   const [open, setOpen] = useState(false)
 
   const { mutate, isPending } = useMutation({
@@ -70,17 +85,19 @@ export function UpdateCompanyInfo({
       id: companyId,
       phone,
       location,
+      countryCode,
     },
   })
 
   function onSubmit(values: TUpdateCompanyByAdmin) {
-    const { phone, location } = values
+    const { phone, location, countryCode } = values
 
     mutate({
       updateCompanyByAdminSchema: {
         id: companyId,
         phone: phone.trim(),
         location: location.toLowerCase(),
+        countryCode,
       },
     })
   }
@@ -138,6 +155,40 @@ export function UpdateCompanyInfo({
                       className="min-h-32 capitalize"
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="countryCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl className="w-[280px]">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your country" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {countries?.map((c, i) => (
+                        <SelectItem value={c.code} key={`${c.code}-${i}`}>
+                          <Image
+                            src={c.flag}
+                            alt={c.country}
+                            width={300}
+                            height={150}
+                            className="flex h-4 w-6 items-center"
+                          />
+                          <span className="font-medium">{c.country}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

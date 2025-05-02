@@ -23,6 +23,8 @@ import { TogglePublished } from "./toggle-published"
 import { ToggleStockable } from "./toggle-stockable"
 import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
+import { countries } from "@/lib/countries"
+import Image from "next/image"
 
 export function UserProfile({
   preloadedSession,
@@ -34,13 +36,17 @@ export function UserProfile({
 
   const bookingOrders = useTanstackQuery({
     ...convexQuery(api.orders.findAllBookingByCompanyId, {
-      companyId: user.companyId!,
+      companyId: user.companyId as Id<"companies">,
     }),
     enabled: Boolean(user.companyId),
     select(data) {
       return data.filter((order) => order.poolRental)
     },
   })
+
+  const country = countries.find(
+    (c) => c.code === (user.company?.countryCode as string),
+  )
 
   return (
     <div className="flex flex-col">
@@ -78,12 +84,17 @@ export function UserProfile({
             </article>
           )}
         </section>
-        <section className="bg-card space-y-4 rounded-lg border-2 p-8 font-medium shadow-md">
-          <article className="flex items-center justify-center space-x-4">
-            <Building2 className="text-primary size-10 shrink-0" />
-            <p className="space-x-1 text-2xl capitalize">
-              {user.company?.name}
-            </p>
+        <section className="bg-card space-y-4 rounded-lg border-2 px-8 pt-4 pb-8 font-medium shadow-md">
+          <article className="flex flex-col items-center">
+            <Image
+              src={country?.flag as string}
+              width={500}
+              height={500}
+              alt={country?.country as string}
+              className="size-24"
+            />
+            {/* <Building2 className="text-primary size-10 shrink-0" /> */}
+            <p className="text-3xl capitalize">{user.company?.name}</p>
           </article>
           <article className="flex space-x-1 pt-4">
             <Phone className="text-primary mr-2 shrink-0" />
@@ -150,13 +161,17 @@ export function UserProfile({
                   />
                 )}
               </div>
-              <UpdateCompanyInfo
-                adminAccessLevel={adminAccessLevel}
-                companyId={user.companyId as Id<"companies">}
-                phone={user.company?.phone as string}
-                location={user.company?.location as string}
-                className="mt-4 w-full font-semibold"
-              />
+              {user && user.company && (
+                <UpdateCompanyInfo
+                  adminAccessLevel={adminAccessLevel}
+                  countries={countries}
+                  companyId={user.companyId as Id<"companies">}
+                  phone={user.company?.phone}
+                  location={user.company?.location}
+                  countryCode={user.company?.countryCode as string}
+                  className="mt-4 w-full font-semibold"
+                />
+              )}
             </section>
           )}
         </section>

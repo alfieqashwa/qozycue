@@ -160,13 +160,14 @@ export const updateAdminProcedure = zMutation({
   args: { updateCompanyByAdminSchema },
   handler: async (
     ctx,
-    { updateCompanyByAdminSchema: { id, phone, location } },
+    { updateCompanyByAdminSchema: { id, phone, location, countryCode } },
   ) => {
     await adminProcedure(ctx)
 
     return await ctx.db.patch(id, {
       phone,
       location,
+      countryCode,
     })
   },
 })

@@ -65,6 +65,7 @@ export const updateCompanyByAdminSchema = companySchema.pick({
   id: true,
   phone: true,
   location: true,
+  countryCode: true,
 })
 export type TUpdateCompanyByAdmin = z.infer<typeof updateCompanyByAdminSchema>
 
