@@ -1,6 +1,6 @@
 "use client"
 
-import { LoadingSpinner } from "@/components/loading-spinner"
+import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
@@ -28,6 +28,7 @@ export function TeamInfo({
       ),
   })
 
-  if (users.status !== "success") return <LoadingSpinner />
+  if (users.status !== "success")
+    return <SkeletonDashboardCard className="h-[700px]" />
   return <TeamTable data={users.data} columns={columnsTeam} />
 }
