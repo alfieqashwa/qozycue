@@ -1,32 +1,27 @@
 "use client"
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { countries } from "@/lib/countries"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
+import { FunctionReturnType } from "convex/server"
 import {
-  Building2,
+  HandCoins,
   Layers,
   LayoutTemplate,
   MapPin,
   Phone,
   Utensils,
 } from "lucide-react"
+import Image from "next/image"
 import { ProfileAvatar } from "./profile-avatar"
 import { TogglePublished } from "./toggle-published"
 import { ToggleStockable } from "./toggle-stockable"
 import { UpdateCompanyInfo } from "./update-company-info"
 import { UpdateUserRoleForMeOnly } from "./update-user-role-for-me-only"
-import { countries } from "@/lib/countries"
-import Image from "next/image"
-import { WrapperTooltip } from "@/components/wrapper-tooltip"
-import { FunctionReturnType } from "convex/server"
 
 export function UserProfile({
   preloadedSession,
@@ -132,9 +127,9 @@ const CompanyCard = ({
             </p>
           </article>
           <article className="flex items-center space-x-1">
-            <MapPin size={20} className="text-primary mr-2 shrink-0" />
+            <HandCoins size={20} className="text-primary mr-2 shrink-0" />
             <p className="text-muted-foreground space-x-1 text-balance capitalize">
-              {user.company?.location}
+              {country?.currency as string}
             </p>
           </article>
         </section>
@@ -145,53 +140,51 @@ const CompanyCard = ({
               {user.company?.subscription} Subscription
             </p>
           </article>
-          <section className="space-y-4">
-            <article className="flex items-center">
-              <WrapperTooltip
-                side="right"
-                content="When enabled, it will activate the booking feature"
-              >
-                <LayoutTemplate
-                  size={20}
-                  className="text-primary animate-pulse-slow mr-2 shrink-0"
-                />
-              </WrapperTooltip>
-              <p className="text-muted-foreground pr-2 text-balance capitalize">
-                Published?
-              </p>
-              {bookingOrders.status === "success" && (
-                <TogglePublished
-                  adminAccessLevel={adminAccessLevel}
-                  companyId={user.companyId as Id<"companies">}
-                  companyName={user.company?.name as string}
-                  isPublished={user.company?.isPublished as boolean}
-                  countAllBooking={!!bookingOrders.data.length}
-                />
-              )}
-            </article>
-            <div className="flex items-center">
-              <WrapperTooltip
-                side="right"
-                content="When enabled, it will activate the stockable feature"
-              >
-                <Utensils
-                  size={20}
-                  className="text-primary animate-pulse-slow mr-2 shrink-0"
-                />
-              </WrapperTooltip>
-              <p className="text-muted-foreground pr-2 text-balance capitalize">
-                Stockable?
-              </p>
-              {bookingOrders.status === "success" && (
-                <ToggleStockable
-                  adminAccessLevel={adminAccessLevel}
-                  companyId={user.companyId as Id<"companies">}
-                  companyName={user.company?.name as string}
-                  isStockable={user.company?.isStockable as boolean}
-                />
-              )}
-            </div>
-          </section>
+          <article className="flex items-center">
+            <WrapperTooltip
+              side="right"
+              content="When enabled, it will activate the booking feature"
+            >
+              <LayoutTemplate
+                size={20}
+                className="text-primary animate-pulse-slow mr-2 shrink-0"
+              />
+            </WrapperTooltip>
+            <p className="text-muted-foreground pr-2 text-balance capitalize">
+              Published?
+            </p>
+            {bookingOrders.status === "success" && (
+              <TogglePublished
+                adminAccessLevel={adminAccessLevel}
+                companyId={user.companyId as Id<"companies">}
+                companyName={user.company?.name as string}
+                isPublished={user.company?.isPublished as boolean}
+                countAllBooking={!!bookingOrders.data.length}
+              />
+            )}
+          </article>
+          <article className="flex items-center">
+            <WrapperTooltip
+              side="right"
+              content="When enabled, it will activate the stockable feature"
+            >
+              <Utensils
+                size={20}
+                className="text-primary animate-pulse-slow mr-2 shrink-0"
+              />
+            </WrapperTooltip>
+            <p className="text-muted-foreground pr-2 text-balance capitalize">
+              Stockable?
+            </p>
+            {bookingOrders.status === "success" && (
+              <ToggleStockable
+                adminAccessLevel={adminAccessLevel}
+                companyId={user.companyId as Id<"companies">}
+                companyName={user.company?.name as string}
+                isStockable={user.company?.isStockable as boolean}
+              />
+            )}
+          </article>
         </section>
       </div>
       {user && user.company && (
