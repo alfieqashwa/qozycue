@@ -1,5 +1,14 @@
-import { Button, buttonVariants } from "@/components/ui/button"
-import { DialogClose, DialogFooter } from "@/components/ui/dialog"
+"use client"
+
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -9,7 +18,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -32,23 +40,18 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2 } from "lucide-react"
+import { Building2, Loader2, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-export function CreateTrialCompanyForm({
-  setOpen,
-}: {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+export function CreateTrialCompanyForm() {
   const router = useRouter()
 
   const { mutate, isPending, variables } = useMutation({
     mutationFn: useConvexMutation(api.companies.createTrial),
     onSuccess: () => {
-      setOpen(false)
       toast.success("Succeed!", {
         description: "Your company / tenant has been created.",
       })
@@ -63,7 +66,6 @@ export function CreateTrialCompanyForm({
       }),
   })
 
-  // 1. Define form.
   const form = useForm<TCreateTrialCompany>({
     resolver: zodResolver(createTrialCompanySchema),
     defaultValues: {
@@ -97,24 +99,42 @@ export function CreateTrialCompanyForm({
   }
 
   return (
-    <ScrollArea className="h-[calc(100vh_-_12rem)] lg:h-[calc(100vh_-_35rem)]">
+    <Card className="bg-card w-full max-w-md border-2 shadow-lg">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">
+          Company Information
+        </CardTitle>
+        <CardDescription className="text-zinc-400">
+          Please enter your company details below
+        </CardDescription>
+      </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-2">
-          {hasCompanyNameStatus === "success" && (
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem className="pt-4">
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="name"
-                      {...field}
-                      className="capitalize md:w-[280px]"
-                    />
+                  <FormLabel>Company Name</FormLabel>
+                  <FormControl className="relative">
+                    <div>
+                      <Building2
+                        className={cn(
+                          "absolute top-1.5 left-3 h-5 w-5",
+                          form.watch("name").length >= 3
+                            ? "text-primary"
+                            : "text-muted-foreground",
+                        )}
+                      />
+                      <Input
+                        placeholder="max 25 chars"
+                        {...field}
+                        className="pl-10 capitalize"
+                      />
+                    </div>
                   </FormControl>
-                  <p className="text-destructive text-sm">
+                  <p className="text-destructive">
                     {hasCompanyName &&
                       "Duplicate name! Please add another name."}
                   </p>
@@ -122,8 +142,6 @@ export function CreateTrialCompanyForm({
                 </FormItem>
               )}
             />
-          )}
-          {form.watch("name").length >= 3 && (
             <FormField
               control={form.control}
               name="phone"
@@ -131,19 +149,28 @@ export function CreateTrialCompanyForm({
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="Phone"
-                      {...field}
-                      className="w-[180px]"
-                    />
+                    <div className="relative">
+                      <Phone
+                        className={cn(
+                          "absolute top-1.5 left-3 h-5 w-5",
+                          form.watch("phone").length === 11
+                            ? "text-primary"
+                            : "text-muted-foreground",
+                        )}
+                      />
+
+                      <Input
+                        type="tel"
+                        placeholder="Phone"
+                        {...field}
+                        className="pl-10"
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          )}
-          {form.watch("phone").length >= 11 && (
             <FormField
               control={form.control}
               name="countryCode"
@@ -154,7 +181,7 @@ export function CreateTrialCompanyForm({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <FormControl className="w-[280px]">
+                    <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select your country" />
                       </SelectTrigger>
@@ -178,8 +205,6 @@ export function CreateTrialCompanyForm({
                 </FormItem>
               )}
             />
-          )}
-          {!!form.watch("countryCode") && (
             <FormField
               control={form.control}
               name="location"
@@ -187,34 +212,45 @@ export function CreateTrialCompanyForm({
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Location"
-                      {...field}
-                      className="h-[120px] capitalize"
-                    />
+                    <div className="relative">
+                      <MapPin
+                        className={cn(
+                          "absolute top-1.5 left-3 h-5 w-5",
+                          form.watch("location").length >= 10
+                            ? "text-primary"
+                            : "text-muted-foreground",
+                        )}
+                      />
+                      <Textarea
+                        placeholder="Location"
+                        {...field}
+                        className="h-[120px] w-[290px] pl-10 capitalize md:w-[390px]"
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          )}
-          <DialogFooter className="mt-16 flex flex-col-reverse md:flex-row md:items-center md:justify-end md:gap-4">
-            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
-              Cancel
-            </DialogClose>
-            {isPending ? (
-              <Button disabled size="sm">
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button disabled={hasCompanyName || isPending} type="submit">
-                Submit
-              </Button>
-            )}
-          </DialogFooter>
+          </CardContent>
+          <CardFooter className="flex flex-col">
+            <Button
+              disabled={hasCompanyName || isPending}
+              type="submit"
+              className="w-full disabled:pointer-events-auto disabled:cursor-not-allowed"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span>Please wait</span>
+                </>
+              ) : (
+                <span>Submit</span>
+              )}
+            </Button>
+          </CardFooter>
         </form>
       </Form>
-    </ScrollArea>
+    </Card>
   )
 }

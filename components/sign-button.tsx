@@ -1,11 +1,11 @@
 "use client"
 
+import { cn } from "@/lib/utils"
 import { useAuthActions } from "@convex-dev/auth/react"
 import { Authenticated, AuthLoading } from "convex/react"
+import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "./ui/button"
-import { Loader2 } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 type SignOutButtonProps = {
   variant?:
