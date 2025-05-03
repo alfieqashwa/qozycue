@@ -16,14 +16,16 @@ import { PrintTransactionPdf } from "./print-transaction-pdf"
 export default function DetailPage() {
   const [date, setDate] = useDateRange()
 
+  const { from, to } = {
+    from: date?.from?.getTime(),
+    to: date?.to?.getTime(),
+  }
+
   const [company, orders] = useTanstackQueries({
     queries: [
       convexQuery(api.companies.find, {}),
       {
-        ...convexQuery(api.orders.printTransaction, {
-          from: date?.from?.getTime(),
-          to: date?.to?.getTime(),
-        }),
+        ...convexQuery(api.orders.printTransaction, { from, to }),
         enabled: !!date?.from && !!date.to,
       },
     ],

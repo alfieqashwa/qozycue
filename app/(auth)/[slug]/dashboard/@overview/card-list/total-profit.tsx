@@ -11,22 +11,21 @@ import { GiMoneyStack } from "react-icons/gi"
 import { type ListProps } from "../page"
 
 export function TotalProfit({ date, country }: ListProps) {
+  const { from, to } = {
+    from: date?.from?.getTime(),
+    to: date?.to?.getTime(),
+  }
+
   const { locale, currency } = country
 
   const [poolRentalRevenue, _calculateProfit] = useQueries({
     queries: [
       {
-        ...convexQuery(api.poolRentals._sumRevenue, {
-          from: date?.from?.getTime(),
-          to: date?.to?.getTime(),
-        }),
+        ...convexQuery(api.poolRentals._sumRevenue, { from, to }),
         enabled: !!date?.from && !!date.to,
       },
       {
-        ...convexQuery(api.orderlines._calculateProfit, {
-          from: date?.from?.getTime(),
-          to: date?.to?.getTime(),
-        }),
+        ...convexQuery(api.orderlines._calculateProfit, { from, to }),
         enabled: !!date?.from && !!date.to,
       },
     ],

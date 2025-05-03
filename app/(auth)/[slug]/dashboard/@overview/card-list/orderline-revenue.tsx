@@ -8,13 +8,16 @@ import { Utensils } from "lucide-react"
 import { type ListProps } from "../page"
 
 export function OrderlineRevenue({ date, country }: ListProps) {
+  const { from, to } = {
+    from: date?.from?.getTime(),
+    to: date?.to?.getTime(),
+  }
+
   const { data: orderlineRevenue, status } = useTanstackQuery({
-    ...convexQuery(api.orderlines._sumRevenue, {
-      from: date?.from?.getTime(),
-      to: date?.to?.getTime(),
-    }),
+    ...convexQuery(api.orderlines._sumRevenue, { from, to }),
     enabled: !!date?.from && !!date.to,
   })
+
   const { locale, currency } = country
 
   if (status !== "success") return <SkeletonDashboardCard className="h-36" />

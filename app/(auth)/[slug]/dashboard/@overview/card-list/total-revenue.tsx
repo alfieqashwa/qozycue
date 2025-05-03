@@ -16,27 +16,34 @@ import { useState } from "react"
 import { type ListProps } from "../page"
 
 export function TotalRevenue({ date, country }: ListProps) {
+  const { from, to } = {
+    from: date?.from?.getTime(),
+    to: date?.to?.getTime(),
+  }
+
   const [isIncludeTaxes, setIsIncludeTaxes] = useState(true)
 
   const { data: totalRevenue, status } = useTanstackQuery({
-    ...convexQuery(api.orders._sumRevenue, {
-      from: date?.from?.getTime(),
-      to: date?.to?.getTime(),
-    }),
+    ...convexQuery(api.orders._sumRevenue, { from, to }),
     enabled: !!date?.from && !!date.to,
   })
+
   const { locale, currency } = country
+
   const revenueIncludeTaxes = formattedPriceBasedOnCountryCode(
     locale,
     currency,
   ).format(Number(totalRevenue?._sum.totalAmount))
+
   const revenueExcludeTaxes = formattedPriceBasedOnCountryCode(
     locale,
     currency,
   ).format(Number(totalRevenue?._sum.revenue))
+
   const totalTransactions = totalRevenue?._count
 
   if (status !== "success") return <SkeletonDashboardCard className="h-36" />
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
