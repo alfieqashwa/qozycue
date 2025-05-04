@@ -8,8 +8,9 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { FunctionReturnType } from "convex/server"
 import { format } from "date-fns"
 import { Building2, Hash, Layers, Phone } from "lucide-react"
-import { CompanyRowActions } from "./company-row-actions"
+import { DeleteCompany } from "./delete-company"
 import { ToggleIsPublished } from "./toggle-is-published"
+import { UpdateCompany } from "./update-company"
 import { UserList } from "./user-list"
 
 export const columnsCompany: ColumnDef<
@@ -149,22 +150,29 @@ export const columnsCompany: ColumnDef<
     },
   },
   {
-    id: "actions",
+    id: "update",
     cell: ({ row }) => {
-      const { _id, name, phone, location, countryCode, subscription } =
+      const { _id, name, phone, countryCode, location, subscription } =
         row.original
       return (
-        <div className="relative">
-          <CompanyRowActions
-            id={_id}
-            name={name}
-            phone={phone}
-            location={location}
-            countryCode={countryCode as string}
-            subscription={subscription}
-          />
-        </div>
+        <UpdateCompany
+          id={_id}
+          name={name}
+          phone={phone}
+          countryCode={countryCode}
+          location={location}
+          subscription={subscription}
+        />
       )
+    },
+  },
+  {
+    id: "delete",
+    cell: ({ row }) => {
+      const {
+        original: { _id, name },
+      } = row
+      return <DeleteCompany id={_id} name={name} />
     },
   },
 ]

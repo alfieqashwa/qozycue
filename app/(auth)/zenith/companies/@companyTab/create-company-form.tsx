@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -16,10 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { SheetClose, SheetFooter } from "@/components/ui/sheet"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { api } from "@/convex/_generated/api"
 import { countries } from "@/lib/countries"
+import { cn } from "@/lib/utils"
 import {
   createCompanySchema,
   type TCreateCompany,
@@ -31,7 +34,6 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2 } from "lucide-react"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -91,7 +93,7 @@ export function CreateCompanyForm({
   }
 
   return (
-    <ScrollArea className="h-[calc(100vh_-_12rem)] lg:h-[calc(100vh_-_35rem)]">
+    <ScrollArea className="thom h-[calc(100vh_-_7rem)] px-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {hasCompanyNameStatus === "success" && (
@@ -210,16 +212,12 @@ export function CreateCompanyForm({
               )}
             />
           )}
-          {isPending ? (
-            <Button disabled size="sm">
-              <Loader2 className="size-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button disabled={isPending} type="submit" size="sm">
-              Create Company
-            </Button>
-          )}
+          <SheetFooter className="mt-16 flex flex-col-reverse md:flex-row md:justify-end md:space-x-2">
+            <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
+              Cancel
+            </SheetClose>
+            <SubmitButton title="Create Company" isPending={isPending} />
+          </SheetFooter>
         </form>
       </Form>
     </ScrollArea>

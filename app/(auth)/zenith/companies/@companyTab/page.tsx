@@ -8,9 +8,11 @@ import { columnsCompany } from "./columns-company"
 import { CompanyTable } from "./company-table"
 
 export default function Page() {
-  const companies = useTanstackQuery(
-    convexQuery(api.companies.findAllSuperAdminProcedure, {}),
-  )
+  const companies = useTanstackQuery({
+    ...convexQuery(api.companies.findAllSuperAdminProcedure, {}),
+    select: (data) =>
+      data.toSorted((p, q) => q._creationTime - p._creationTime),
+  })
 
   if (companies.status !== "success") return <LoadingSpinner />
   return <CompanyTable data={companies.data} columns={columnsCompany} />

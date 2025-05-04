@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Sheet,
   SheetContent,
@@ -7,6 +7,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
+import { Building2 } from "lucide-react"
 import { useState } from "react"
 import { CreateCompanyForm } from "./create-company-form"
 
@@ -15,17 +17,12 @@ export function CreateCompany() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="ml-2 h-8 whitespace-nowrap"
-        >
-          Create Company
-        </Button>
+      <SheetTrigger className={cn(buttonVariants(), "ml-2")}>
+        <Building2 />
+        Create
       </SheetTrigger>
 
-      <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
+      <SheetContent className="bg-card min-w-full px-4 sm:min-w-[480px]">
         <SheetHeader>
           <SheetTitle>Create New Company</SheetTitle>
           <SheetDescription>

@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -10,22 +12,25 @@ import {
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import {
   useMutation,
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2, Trash } from "lucide-react"
+import { Trash } from "lucide-react"
+import { useState } from "react"
 import { toast } from "sonner"
 
 type DeleteCompanyProps = {
   id: Id<"companies">
   name: string
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
+export function DeleteCompany({ id, name }: DeleteCompanyProps) {
+  const [open, setOpen] = useState(false)
+
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.remove),
     onSuccess: () =>
@@ -55,12 +60,15 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
     me.data?.email === process.env.NEXT_PUBLIC_SUPER_ADMIN
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         disabled={!isSuperAdmin}
-        className="disabled:text-muted-foreground flex w-full items-center disabled:pointer-events-auto disabled:cursor-not-allowed"
+        className={cn(
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
+          buttonVariants(),
+        )}
       >
-        <Trash className="text-muted-foreground group-hover:text-primary size-4" />
+        <Trash />
         <span>Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
@@ -75,25 +83,16 @@ export function DeleteCompany({ id, name, setOpen }: DeleteCompanyProps) {
               </span>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setOpen(false)}
-            >
+          <DialogFooter className="mt-4 flex flex-row items-center justify-end">
+            <DialogClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
-            </Button>
-            {isPending ? (
-              <Button disabled variant="destructive" size="sm">
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button type="submit" variant="destructive" size="sm">
-                Delete Company
-              </Button>
-            )}
+            </DialogClose>
+            <SubmitButton
+              title="Delete Company"
+              isPending={isPending}
+              disabled={!isSuperAdmin || isPending}
+              variant="destructive"
+            />
           </DialogFooter>
         </form>
       </DialogContent>
