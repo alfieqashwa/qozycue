@@ -144,19 +144,29 @@
 ✅ Convert CountryCode type from optional to required after manually modified database.
 ✅ Fix Company API & modify Create Companies form
 
+---
+
 ## Backlog (Future Plan)
 
+❌ Dashboard (Display latest Customer)
+❌ Setup Cancelled Feature (Refund use case)
+❌ Membership Configuration
+❌ i18n Configuration
 ❌ Instead of UI, how to stop the timer using Cronjob
+❌ API for IoT (Turn ON/OFF Light)
+
+❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
+❌ "react-to-print" version after learn their recent documentation
+❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
+❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
+
 ✅ Pool Table with the same company must have a unique name
 ✅ Product with the same company must have a unique name
 ✅ Packet with the same company and the same rate must have a unique name
 ✅ Tax with the same company must have a unique name
 ✅ Discount with the same company must have a unique name
-❌ Setup Cancelled Feature (Refund use case)
-❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
-❌ "react-to-print" version after learn their recent documentation
-❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
-❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
+
+---
 
 ## Debugging Helper
 
@@ -176,22 +186,5 @@
     - sudo systcl -p
   - Source:
     - https://chatgpt.com/c/67fce350-7b70-8002-b621-55277015640e
-
----
-
-On Server CLI:
-
-5/2/2025, 10:15:05 PM [CONVEX Q(companies:find)] Uncaught ConvexError: Pleasesigned in!
-at handler (../convex/companies.ts:59:17)
-
-5/2/2025, 10:15:05 PM [CONVEX Q(products:findAll)] Uncaught ConvexError: Please signed in!
-at handler (../convex/products.ts:24:23)
-
-5/2/2025, 10:15:05 PM [CONVEX Q(poolTables:findAll)] Uncaught ConvexError: Please signed in!
-at handler (../convex/poolTables.ts:38:17)
-
-On Browser:
-
-## Application error: a client-side exception has occurred while loading localhost (see the browser console for more information).
 
 ---
