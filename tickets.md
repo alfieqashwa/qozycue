@@ -148,7 +148,13 @@
 
 ## Backlog (Future Plan)
 
-❌ Dashboard (Display latest Customer)
+✅ Pool Table with the same company must have a unique name
+✅ Product with the same company must have a unique name
+✅ Packet with the same company and the same rate must have a unique name
+✅ Tax with the same company must have a unique name
+✅ Discount with the same company must have a unique name
+
+✅ Dashboard (Display latest Customer)
 ❌ Setup Cancelled Feature (Refund use case)
 ❌ Membership Configuration
 ❌ i18n Configuration
@@ -159,12 +165,6 @@
 ❌ "react-to-print" version after learn their recent documentation
 ❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
 ❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
-
-✅ Pool Table with the same company must have a unique name
-✅ Product with the same company must have a unique name
-✅ Packet with the same company and the same rate must have a unique name
-✅ Tax with the same company must have a unique name
-✅ Discount with the same company must have a unique name
 
 ---
 
