@@ -81,7 +81,7 @@ export function PoolTableCard({
           },
         )}
       />
-      <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-black/[94%] via-50% to-black to-70% p-3 shadow-sm">
+      <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-black/[95%] via-50% to-black to-70% p-3 shadow-md">
         <section className="flex justify-between">
           <Timer
             isCashier={cashierAccessLevel}

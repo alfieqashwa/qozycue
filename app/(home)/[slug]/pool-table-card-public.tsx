@@ -47,7 +47,7 @@ export function PoolTableCardPublic({
   const BOOKING = `https://wa.me/${companyPhone}?text=Hi${SPACE}${companyName.toLocaleUpperCase()}.${SPACE}Saya${SPACE}mau${SPACE}pesan${SPACE}meja${SPACE}${poolTableName}.${SPACE}Bagaimana${SPACE}cara${SPACE}pembayarannya?${SPACE}Thanks!${SPACE}${websitelink}`
 
   return (
-    <div className="group/card relative">
+    <div className="group relative">
       <div
         className={cn(
           "group-transition-colors absolute -inset-[1px] h-44 w-full rounded-2xl blur duration-500 ease-in-out group-hover:blur-md",
@@ -60,7 +60,7 @@ export function PoolTableCardPublic({
           },
         )}
       />
-      <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-black/[94%] via-50% to-black to-70% p-3 shadow-sm">
+      <div className="relative h-44 rounded-2xl bg-linear-to-tr from-black from-30% via-black/[95%] via-50% to-black to-70% p-3 shadow-md">
         <section className="flex justify-between">
           <PublicTimer isActive={isActive} hasEndTime={!!poolTableEndTime}>
             {order.status === "success" &&

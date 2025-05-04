@@ -292,7 +292,7 @@ export function PaymentForm({
             size="sm"
             onClick={() => handleBillPrintFn()}
           >
-            <Printer className="size-4" />
+            <Printer className="hover:text-primary size-4" />
             <span>Bill</span>
           </Button>
         </div>
@@ -337,13 +337,13 @@ export function PaymentForm({
                   className="font-mono text-sm placeholder:font-sans md:text-base"
                 />
                 <article className="text-muted-foreground grid grid-cols-2 gap-x-2 py-4 font-mono font-medium">
-                  <p className="text-right">Diterima:</p>
+                  <p className="text-right">Received:</p>
                   <p>
                     {formattedPriceBasedOnCountryCode(locale, currency).format(
                       Number(changeMoney),
                     )}
                   </p>
-                  <p className="text-right">Kembalian:</p>
+                  <p className="text-right">Change:</p>
                   <p className="text-primary">
                     {changeCustomerMoney(changeMoney)}
                   </p>
@@ -361,7 +361,7 @@ export function PaymentForm({
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Catatan sebagai referensi... (optional)"
+                        placeholder="Additional Info... (optional)"
                         className="resize-none"
                         {...field}
                       />

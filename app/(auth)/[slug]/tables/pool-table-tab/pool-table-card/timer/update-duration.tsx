@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
@@ -108,7 +109,7 @@ export function UpdateDuration({
           </Button>
         </DialogTrigger>
       </WrapperTooltip>
-      <DialogContent>
+      <DialogContent onCloseAutoFocus={() => form.reset()}>
         <DialogHeader>
           <DialogTitle>Update Duration</DialogTitle>
           <DialogDescription>
@@ -157,20 +158,11 @@ export function UpdateDuration({
               <DialogClose className={cn(buttonVariants({ variant: "ghost" }))}>
                 Cancel
               </DialogClose>
-              {isPending ? (
-                <Button disabled>
-                  <Loader2 className="size-4 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button
-                  disabled={isPending || duration == updatedDurationWatch} // i'm using "==" instead of "===" is not typo
-                  type="submit"
-                  className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-                >
-                  Update Duration
-                </Button>
-              )}
+              <SubmitButton
+                title="update duration"
+                isPending={isPending}
+                disabled={isPending || duration == updatedDurationWatch} // i'm using "==" instead of "===" is not typo
+              />
             </DialogFooter>
           </form>
         </Form>

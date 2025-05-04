@@ -56,12 +56,6 @@ export function CompanySite({
                             alt={country?.country as string}
                             className="animate-pulse-slow w-12 shadow-md ring hover:cursor-pointer"
                           />
-                          {/* <Building2 */}
-                          {/*   size={32} */}
-                          {/*   className={cn( */}
-                          {/*     "text-foreground mr-4 size-8 hover:cursor-pointer", */}
-                          {/*   )} */}
-                          {/* /> */}
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent className="bg-muted text-muted-foreground">

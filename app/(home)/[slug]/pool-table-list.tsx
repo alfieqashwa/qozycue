@@ -41,7 +41,7 @@ export function PoolTableList({
   ) as ICountry
 
   return (
-    <div className="mb-11 grid w-full grid-cols-1 gap-6 p-2 font-mono sm:gap-8 md:mb-6 md:p-8 lg:grid-cols-2 2xl:grid-cols-3">
+    <div className="mb-11 grid w-full grid-cols-1 gap-6 bg-zinc-950 p-2 font-mono sm:gap-8 md:mb-6 md:p-8 lg:grid-cols-2 2xl:grid-cols-3">
       {poolTables?.map((t) => {
         if (status !== "success" || companyStatus !== "success") {
           return (
