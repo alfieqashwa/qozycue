@@ -9,7 +9,7 @@ import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
 import { ConvexError } from "convex/values"
-import { Coffee, ShoppingBasket, Soup, Trash2 } from "lucide-react"
+import { Coffee, CookingPot, ShoppingBasket, Soup, Trash2 } from "lucide-react"
 import { Fragment } from "react"
 import { toast } from "sonner"
 import { PrintOrder } from "./print-order"
@@ -181,10 +181,7 @@ export function OrderList({
                       }
                       className="bg-muted hover:bg-muted/75 relative min-h-9 min-w-10 rounded-md shadow-md transition-colors hover:cursor-pointer disabled:pointer-events-auto disabled:cursor-not-allowed"
                     >
-                      <Trash2
-                        size={18}
-                        className="text-destructive absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                      />
+                      <CookingPot className="text-destructive absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2" />
                     </Button>
                   </li>
                   <Separator />
