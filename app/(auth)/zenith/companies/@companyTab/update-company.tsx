@@ -1,5 +1,6 @@
 "use client"
 
+import { buttonVariants } from "@/components/ui/button"
 import {
   Sheet,
   SheetContent,
@@ -9,13 +10,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { Subscription } from "@/types"
 import { Pen } from "lucide-react"
 import { useState } from "react"
 import { UpdateCompanyForm } from "./update-company-form"
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { ScrollArea } from "@/components/ui/scroll-area"
 
 type UpdateCompanyProps = {
   id: Id<"companies">
@@ -39,7 +38,7 @@ export function UpdateCompany({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         className={cn(
-          buttonVariants(),
+          buttonVariants({ variant: "secondary" }),
           "diabled:cursor-not-allowed disabled:pointer-events-auto",
         )}
       >

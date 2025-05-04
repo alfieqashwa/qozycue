@@ -1,5 +1,6 @@
 import { roles } from "@/app/constants/options"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -10,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -31,7 +33,6 @@ import {
   useQueries as useTanstackQueries,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -87,112 +88,106 @@ export function CreateUserForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="pt-4">
-              <FormLabel>User Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Email" className="w-[200px]" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem className="pt-4">
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value as Role}
-              >
-                <FormLabel>Role</FormLabel>
-                <FormControl className="w-[200px]">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Role" />
-                  </SelectTrigger>
+    <ScrollArea className="h-[calc(100vh_-_7rem)] px-4">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="pt-4">
+                <FormLabel>User Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="Email" className="w-[200px]" {...field} />
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Role</SelectLabel>
-                    {roles.map((role, i) => (
-                      <SelectItem value={role.value} key={`${role.label}-${i}`}>
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormDescription className="pt-2">
-                Select user&apos;s access level.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="companyId"
-          render={({ field }) => (
-            <FormItem className="pt-4">
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value as Role}
-              >
-                <FormLabel>Company</FormLabel>
-                <FormControl className="w-[200px] capitalize">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Company" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {companies.status === "success" &&
-                      companies.data.map((company) => (
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem className="pt-4">
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value as Role}
+                >
+                  <FormLabel>Role</FormLabel>
+                  <FormControl className="w-[200px]">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Role" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Role</SelectLabel>
+                      {roles.map((role, i) => (
                         <SelectItem
-                          value={company._id}
-                          key={company._id}
-                          className="capitalize"
+                          value={role.value}
+                          key={`${role.label}-${i}`}
                         >
-                          {company.name}
+                          {role.label}
                         </SelectItem>
                       ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormDescription className="pt-2">
-                Select user&apos;s company.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <SheetFooter className="pt-8">
-          <SheetClose
-            className={cn(
-              buttonVariants({ variant: "secondary" }),
-              "mt-1 md:mt-0",
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormDescription className="pt-2">
+                  Select user&apos;s access level.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
             )}
-          >
-            Cancel
-          </SheetClose>
-          {upsertUser.isPending ? (
-            <Button disabled>
-              <Loader2 className="size-4 animate-spin" />
-              Please wait
-            </Button>
-          ) : (
-            <Button disabled={upsertUser.isPending} type="submit">
-              Create User
-            </Button>
-          )}
-        </SheetFooter>
-      </form>
-    </Form>
+          />
+          <FormField
+            control={form.control}
+            name="companyId"
+            render={({ field }) => (
+              <FormItem className="pt-4">
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value as Role}
+                >
+                  <FormLabel>Company</FormLabel>
+                  <FormControl className="w-[200px] capitalize">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Company" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {companies.status === "success" &&
+                        companies.data.map((company) => (
+                          <SelectItem
+                            value={company._id}
+                            key={company._id}
+                            className="capitalize"
+                          >
+                            {company.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormDescription className="pt-2">
+                  Select user&apos;s company.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SheetFooter className="mt-20 flex flex-col-reverse md:flex-row md:justify-end md:space-x-2">
+            <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
+              Cancel
+            </SheetClose>
+            <SubmitButton
+              title="Create User"
+              isPending={upsertUser.isPending}
+            />
+          </SheetFooter>
+        </form>
+      </Form>
+    </ScrollArea>
   )
 }

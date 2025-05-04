@@ -17,9 +17,9 @@ export function CreateCompany() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger className={cn(buttonVariants(), "ml-2")}>
+      <SheetTrigger className={cn(buttonVariants(), "ml-0 md:ml-2")}>
         <Building2 />
-        Create
+        Create Company
       </SheetTrigger>
 
       <SheetContent className="bg-card min-w-full px-4 sm:min-w-[480px]">

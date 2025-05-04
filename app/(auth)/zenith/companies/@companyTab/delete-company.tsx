@@ -19,7 +19,7 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Trash } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -68,7 +68,7 @@ export function DeleteCompany({ id, name }: DeleteCompanyProps) {
           buttonVariants(),
         )}
       >
-        <Trash />
+        <Trash2 />
         <span>Delete</span>
       </DialogTrigger>
       <DialogContent className="bg-card">

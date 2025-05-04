@@ -1,5 +1,4 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Sheet,
   SheetContent,
@@ -8,23 +7,21 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
+import { User2 } from "lucide-react"
+import { useState } from "react"
 import { CreateUserForm } from "./create-user-form"
 
 export function CreateUser() {
   const [open, setOpen] = useState(false)
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="ml-2 h-8 whitespace-nowrap"
-        >
-          Create User
-        </Button>
+      <SheetTrigger className={cn(buttonVariants(), "ml-0 md:ml-2")}>
+        <User2 />
+        Create User
       </SheetTrigger>
 
-      <SheetContent className="min-w-full bg-card sm:min-w-[480px]">
+      <SheetContent className="bg-card min-w-full px-4 sm:min-w-[480px]">
         <SheetHeader>
           <SheetTitle>Create New User</SheetTitle>
           <SheetDescription>

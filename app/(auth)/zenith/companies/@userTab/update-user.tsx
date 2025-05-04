@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
 import { Role } from "@/types"
+import { Pencil } from "lucide-react"
 import { useState } from "react"
 import { UpdateUserForm } from "./update-user-form"
 
@@ -32,21 +33,21 @@ export function UpdateUser({
   const isSuperAdmin = email === process.env.NEXT_PUBLIC_SUPER_ADMIN
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="whitespace-nowrap disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          Edit Role
-        </Button>
+      <DialogTrigger
+        className={cn(
+          buttonVariants({ variant: "secondary" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <Pencil />
+        <span className="whitespace-nowrap">Edit Role</span>
       </DialogTrigger>
-      <DialogContent className="min-w-full bg-card sm:min-w-[480px]">
+      <DialogContent className="bg-card min-w-full sm:min-w-[480px]">
         <DialogHeader>
           <DialogTitle>
             Edit
             <span
-              className={cn("px-1 capitalize text-amber-300", {
+              className={cn("px-1 text-amber-300 capitalize", {
                 lowercase: name == null,
               })}
             >

@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -10,13 +12,14 @@ import {
 } from "@/components/ui/dialog"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import {
   useMutation,
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2 } from "lucide-react"
+import { RefreshCw } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -56,15 +59,15 @@ export function ResetSession({
     email === process.env.NEXT_PUBLIC_SUPER_ADMIN || email === me.data?.email
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          disabled={disabled}
-          variant="secondary"
-          size="sm"
-          className="disabled:pointer-events-auto disabled:cursor-not-allowed"
-        >
-          Reset
-        </Button>
+      <DialogTrigger
+        disabled={disabled}
+        className={cn(
+          buttonVariants({ variant: "secondary" }),
+          "disabled:pointer-events-auto disabled:cursor-not-allowed",
+        )}
+      >
+        <RefreshCw />
+        <span className="whitespace-nowrap">Reset</span>
       </DialogTrigger>
       <DialogContent className="bg-card">
         <form onSubmit={handleSubmit}>
@@ -78,29 +81,13 @@ export function ResetSession({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex flex-row items-center justify-end space-x-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            {isPending ? (
-              <Button disabled variant="destructive" size="sm">
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button
-                disabled={disabled || isPending}
-                type="submit"
-                variant="destructive"
-                size="sm"
-              >
-                Reset Session
-              </Button>
-            )}
+            <DialogClose>Cancel</DialogClose>
+            <SubmitButton
+              title="Reset Session"
+              isPending={isPending}
+              disabled={disabled || isPending}
+              variant="destructive"
+            />
           </DialogFooter>
         </form>
       </DialogContent>
