@@ -201,7 +201,9 @@ export const columnsOrderline = (
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceBasedOnCountryCode(locale, currency).format(
+            {formattedPriceBasedOnCountryCode(
+              locale,
+              currency,
               Number(productPrice),
             )}
           </span>
@@ -243,7 +245,9 @@ export const columnsOrderline = (
                   isFree && "text-muted-foreground line-through",
                 )}
               >
-                {formattedPriceBasedOnCountryCode(locale, currency).format(
+                {formattedPriceBasedOnCountryCode(
+                  locale,
+                  currency,
                   Number(costPrice),
                 )}
               </span>

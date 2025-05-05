@@ -68,14 +68,16 @@ export function TotalProfit({ date, country }: ListProps) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
-          {formattedPriceBasedOnCountryCode(locale, currency).format(
+          {formattedPriceBasedOnCountryCode(
+            locale,
+            currency,
             Number(totalProfit),
           )}
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Profit Cafe{" "}
           <span className="text-primary">
-            {formattedPrice(locale).format(Number(totalOrderlineProfit))}
+            {formattedPrice(locale, Number(totalOrderlineProfit))}
           </span>
         </p>
       </CardContent>

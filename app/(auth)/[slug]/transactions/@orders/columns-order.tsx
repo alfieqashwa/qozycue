@@ -127,12 +127,16 @@ export const columnsOrder = (
         <Badge variant="secondary" className="px-3 py-1.5">
           {!!costPrice ? (
             <span className="max-w-[500px] truncate capitalize">
-              {formattedPriceBasedOnCountryCode(locale, currency).format(
+              {formattedPriceBasedOnCountryCode(
+                locale,
+                currency,
                 Number(costPrice),
               )}
             </span>
           ) : (
-            <span className="text-muted-foreground">Rp</span>
+            <span className="text-muted-foreground">
+              {formattedPriceBasedOnCountryCode(locale, currency, 0)}
+            </span>
           )}
         </Badge>
       )

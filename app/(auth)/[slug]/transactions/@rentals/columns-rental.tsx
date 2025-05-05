@@ -129,7 +129,9 @@ export const columnsRental = (
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceBasedOnCountryCode(locale, currency).format(
+            {formattedPriceBasedOnCountryCode(
+              locale,
+              currency,
               Number(costPrice),
             )}
           </span>
@@ -170,7 +172,9 @@ export const columnsRental = (
       return (
         <Badge variant="secondary" className="px-3 py-1.5">
           <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceBasedOnCountryCode(locale, currency).format(
+            {formattedPriceBasedOnCountryCode(
+              locale,
+              currency,
               Number(costPrice),
             )}
           </span>

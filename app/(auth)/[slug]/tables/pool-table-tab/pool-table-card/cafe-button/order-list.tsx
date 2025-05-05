@@ -138,7 +138,8 @@ export function OrderList({
                         </h3>
                         <p className="text-muted-foreground text-sm">
                           <span>
-                            {formattedPrice(locale).format(
+                            {formattedPrice(
+                              locale,
                               Number(orderline.product.salePrice),
                             )}
                             /{orderline.product.unitOfMeasure?.name}
@@ -159,9 +160,7 @@ export function OrderList({
                             "text-muted-foreground line-through",
                         )}
                       >
-                        {formattedPrice(locale).format(
-                          Number(orderline.amount),
-                        )}
+                        {formattedPrice(locale, Number(orderline.amount))}
                       </p>
                     </div>
                     <Button

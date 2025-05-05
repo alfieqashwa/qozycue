@@ -120,7 +120,9 @@ export function BookingRentalTable({
               <TableCell>
                 <Badge variant="secondary" className="px-3 py-1.5">
                   <span className="max-w-[500px] truncate capitalize">
-                    {formattedPriceBasedOnCountryCode(locale, currency).format(
+                    {formattedPriceBasedOnCountryCode(
+                      locale,
+                      currency,
                       Number(booking.packet?.cost),
                     )}
                   </span>
@@ -144,7 +146,9 @@ export function BookingRentalTable({
               <TableCell>
                 <Badge variant="secondary" className="px-3 py-1.5">
                   <span className="max-w-[500px] truncate capitalize">
-                    {formattedPriceBasedOnCountryCode(locale, currency).format(
+                    {formattedPriceBasedOnCountryCode(
+                      locale,
+                      currency,
                       Number(booking.totalCost),
                     )}
                   </span>

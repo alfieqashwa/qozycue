@@ -82,7 +82,8 @@ export function OrderlineDetail({
                             {orderline.product.name}
                           </h3>
                           <div className="text-muted-foreground text-xs font-medium md:text-sm">
-                            {formattedPrice(locale).format(
+                            {formattedPrice(
+                              locale,
                               Number(orderline.product.salePrice),
                             )}
                             /{orderline.product.unitOfMeasure?.name}
@@ -110,9 +111,7 @@ export function OrderlineDetail({
                               "text-muted-foreground line-through",
                           )}
                         >
-                          {formattedPrice(locale).format(
-                            Number(orderline.amount),
-                          )}
+                          {formattedPrice(locale, Number(orderline.amount))}
                         </p>
                       </div>
                     </li>
@@ -134,13 +133,13 @@ export function OrderlineDetail({
           )}
           <div className="bg-muted relative h-8 w-10 rounded-md border text-sm shadow-md md:h-10 md:w-12 md:text-base">
             <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
-              {formattedPrice(locale).format(Number(totalQty))}
+              {formattedPrice(locale, Number(totalQty))}
             </p>
           </div>
         </div>
         <div className="w-3/12">
           <p className="text-right text-xs font-semibold md:text-sm">
-            {formattedPrice(locale).format(Number(totalAmount))}
+            {formattedPrice(locale, Number(totalAmount))}
           </p>
         </div>
       </div>

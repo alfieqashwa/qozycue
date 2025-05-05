@@ -32,7 +32,9 @@ export function OrderlineRevenue({ date, country }: ListProps) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
-          {formattedPriceBasedOnCountryCode(locale, currency).format(
+          {formattedPriceBasedOnCountryCode(
+            locale,
+            currency,
             Number(orderlineRevenue._sum.amount),
           )}
         </div>

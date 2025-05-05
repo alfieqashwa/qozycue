@@ -96,7 +96,9 @@ export const PrintTransactionPdf = ({
                 {order.paymentMethod}
               </TableCell>
               <TableCell className="text-right text-xs whitespace-nowrap">
-                {formattedPriceBasedOnCountryCode(locale, currency).format(
+                {formattedPriceBasedOnCountryCode(
+                  locale,
+                  currency,
                   Number(order.totalAmount),
                 )}
               </TableCell>
@@ -108,7 +110,9 @@ export const PrintTransactionPdf = ({
         <article className="grid grid-cols-2 gap-x-2">
           <p className="text-right whitespace-nowrap">Total Revenue:</p>
           <p>
-            {formattedPriceBasedOnCountryCode(locale, currency).format(
+            {formattedPriceBasedOnCountryCode(
+              locale,
+              currency,
               Number(orders.totalRevenue),
             )}
           </p>

@@ -80,7 +80,7 @@ export function DescriptionTable({
         <p className="text-right">Cost:</p>
         {orderStatusSucceed && !!packetCost ? (
           <p className="text-foreground tracking-tight">
-            {formattedPrice(locale).format(Number(packetCost))}/
+            {formattedPrice(locale, Number(packetCost))}/
             <span>{formattedRate}</span>
           </p>
         ) : (
@@ -103,11 +103,11 @@ export function DescriptionTable({
         <p className="text-right">Price:</p>
         {orderStatusSucceed && !!totalCost ? (
           <p className="text-foreground tracking-tight">
-            {formattedPrice(locale).format(Number(totalCost))}
+            {formattedPrice(locale, Number(totalCost))}
           </p>
         ) : isActive && !!realtimeDuration ? (
           <p className="text-amber-400">
-            {formattedPrice(locale).format(Number(realtimeTotalCost))}
+            {formattedPrice(locale, Number(realtimeTotalCost))}
           </p>
         ) : (
           <InvisibleParagraph />

@@ -207,20 +207,22 @@ export function PaymentForm({
   )
 
   const formattedTotalCost = useMemo(
-    () => formattedPrice(locale).format(Number(totalCost)),
+    () => formattedPrice(locale, Number(totalCost)),
     [totalCost, locale],
   )
   const formattedTotalOrder = useMemo(
-    () => formattedPrice(locale).format(Number(totalAmount)),
+    () => formattedPrice(locale, Number(totalAmount)),
     [totalAmount, locale],
   )
   const formattedSubTotal = useMemo(
-    () => formattedPrice(locale).format(Number(totalCost + totalAmount)), // subTotal = totalCost + totalAmount
+    () => formattedPrice(locale, Number(totalCost + totalAmount)), // subTotal = totalCost + totalAmount
     [totalAmount, totalCost, locale],
   )
   const formattedFixedGrandTotal = useMemo(
     () =>
-      formattedPriceBasedOnCountryCode(locale, currency).format(
+      formattedPriceBasedOnCountryCode(
+        locale,
+        currency,
         Number(fixedGrandTotal.totalAmount),
       ),
     [fixedGrandTotal.totalAmount, locale, currency],
@@ -240,7 +242,7 @@ export function PaymentForm({
         parseFloat(customerMoney) - fixedGrandTotal.totalAmount
       return isNaN(changeMoney) || changeMoney < 0
         ? undefined
-        : formattedPriceBasedOnCountryCode(locale, currency).format(changeMoney)
+        : formattedPriceBasedOnCountryCode(locale, currency, changeMoney)
     },
     [fixedGrandTotal.totalAmount, locale, currency],
   )
@@ -339,7 +341,9 @@ export function PaymentForm({
                 <article className="text-muted-foreground grid grid-cols-2 gap-x-2 py-4 font-mono font-medium">
                   <p className="text-right">Received:</p>
                   <p>
-                    {formattedPriceBasedOnCountryCode(locale, currency).format(
+                    {formattedPriceBasedOnCountryCode(
+                      locale,
+                      currency,
                       Number(changeMoney),
                     )}
                   </p>

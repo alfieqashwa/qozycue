@@ -53,16 +53,18 @@ export const PrintReceipt = ({
   const totalAmount =
     orderlines?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0
 
-  const formattedPacketCost = formattedPrice(locale).format(
+  const formattedPacketCost = formattedPrice(
+    locale,
     Number(order?.poolRental.packet?.cost),
   )
   const formattedRate = order?.poolRental.packet?.rate === "HOUR" ? "hr" : "min"
-  const formattedTotalCost = formattedPrice(locale).format(
+  const formattedTotalCost = formattedPrice(
+    locale,
     Number(order?.poolRental.totalCost?.toFixed(0)),
   )
-  const formattedTotalOrder = formattedPrice(locale).format(Number(totalAmount))
+  const formattedTotalOrder = formattedPrice(locale, Number(totalAmount))
   const subTotal = totalCost + totalAmount
-  const formattedSubTotal = formattedPrice(locale).format(Number(subTotal))
+  const formattedSubTotal = formattedPrice(locale, Number(subTotal))
 
   const discount = order?.discount
   const tax =
@@ -194,16 +196,15 @@ export const PrintReceipt = ({
                         <p className="capitalize">{orderline.product.name}</p>
                         <p className="italic">
                           <span>@</span>
-                          {formattedPrice(locale).format(
+                          {formattedPrice(
+                            locale,
                             Number(orderline.product.salePrice),
                           )}
                         </p>
                       </div>
                       <div className="w-3/12 text-right">
                         <p>
-                          {formattedPrice(locale).format(
-                            Number(orderline.amount),
-                          )}
+                          {formattedPrice(locale, Number(orderline.amount))}
                         </p>
                       </div>
                     </li>
@@ -237,16 +238,14 @@ export const PrintReceipt = ({
               <div className="flex items-center justify-between">
                 <p>Disc ({discount * 100}%):</p>
                 <p>
-                  {formattedPrice(locale).format(
-                    Number(discount * subTotal * -1),
-                  )}
+                  {formattedPrice(locale, Number(discount * subTotal * -1))}
                 </p>
               </div>
             )}
             {!!tax && tax > 0 && (
               <div className="flex items-center justify-between">
                 <p>PPN ({tax * 100}%):</p>
-                <p>{formattedPrice(locale).format(Number(tax * subTotal))}</p>
+                <p>{formattedPrice(locale, Number(tax * subTotal))}</p>
               </div>
             )}
             {printStatus === "receipt" && (
@@ -264,11 +263,15 @@ export const PrintReceipt = ({
               <p>Grand Total:</p>
               <p>
                 {printStatus === "receipt"
-                  ? formattedPriceBasedOnCountryCode(locale, currency).format(
+                  ? formattedPriceBasedOnCountryCode(
+                      locale,
+                      currency,
                       Number(order.totalAmount),
                     )
                   : !!tax &&
-                    formattedPriceBasedOnCountryCode(locale, currency).format(
+                    formattedPriceBasedOnCountryCode(
+                      locale,
+                      currency,
                       Number(subTotal + tax * subTotal),
                     )}
               </p>

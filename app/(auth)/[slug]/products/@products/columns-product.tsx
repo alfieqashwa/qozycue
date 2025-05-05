@@ -110,7 +110,9 @@ export const columnsProduct = (
           className={cn("px-3 py-1.5", colorBasedOnCategory)}
         >
           <span className="max-w-[500px] truncate font-medium capitalize">
-            {formattedPriceBasedOnCountryCode(locale, currency).format(
+            {formattedPriceBasedOnCountryCode(
+              locale,
+              currency,
               Number(costPrice),
             )}
           </span>
@@ -138,7 +140,9 @@ export const columnsProduct = (
           className={cn("px-3 py-1.5", colorBasedOnCategory)}
         >
           <span className="max-w-[500px] truncate font-medium capitalize">
-            {formattedPriceBasedOnCountryCode(locale, currency).format(
+            {formattedPriceBasedOnCountryCode(
+              locale,
+              currency,
               Number(salePrice),
             )}
           </span>

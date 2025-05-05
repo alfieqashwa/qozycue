@@ -58,9 +58,7 @@ export function PoolRevenue({ date, country }: ListProps) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold tracking-wide">
-          {formattedPriceBasedOnCountryCode(locale, currency).format(
-            totalRevenue,
-          )}
+          {formattedPriceBasedOnCountryCode(locale, currency, totalRevenue)}
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total duration{" "}

@@ -33,12 +33,14 @@ export function TotalRevenue({ date, country }: ListProps) {
   const revenueIncludeTaxes = formattedPriceBasedOnCountryCode(
     locale,
     currency,
-  ).format(Number(totalRevenue?._sum.totalAmount))
+    Number(totalRevenue?._sum.totalAmount),
+  )
 
   const revenueExcludeTaxes = formattedPriceBasedOnCountryCode(
     locale,
     currency,
-  ).format(Number(totalRevenue?._sum.revenue))
+    Number(totalRevenue?._sum.revenue),
+  )
 
   const totalTransactions = totalRevenue?._count
 

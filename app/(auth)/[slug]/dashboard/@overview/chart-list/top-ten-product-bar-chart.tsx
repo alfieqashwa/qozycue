@@ -56,7 +56,9 @@ function CustomTooltip({
       <article className="text-foreground flex flex-col space-y-1 text-sm font-semibold">
         <p className="text-primary capitalize">{label}</p>
         <p>
-          {formattedPriceBasedOnCountryCode(locale, currency).format(
+          {formattedPriceBasedOnCountryCode(
+            locale,
+            currency,
             Number(payload[0]?.value),
           )}
         </p>
@@ -90,9 +92,7 @@ export function TopTenProductBarChart<TData>({
           fontSize={10}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) =>
-            `${formattedPrice(locale).format(Number(value))}`
-          }
+          tickFormatter={(value) => `${formattedPrice(locale, Number(value))}`}
         />
         <Tooltip
           cursor={false}

@@ -110,7 +110,7 @@ export function ProductMenuCard({
             {name}
           </h2>
           <p className="text-sm font-medium md:text-base">
-            {formattedPrice(locale).format(Number(price))}
+            {formattedPrice(locale, Number(price))}
           </p>
         </article>
       </ProductTitleTooltip>

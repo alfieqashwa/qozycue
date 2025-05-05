@@ -117,9 +117,7 @@ export const columnsPacket = (
           className={cn("px-3 py-1.5", colorBasedOnRate)}
         >
           <span className="max-w-[500px] truncate capitalize">
-            {formattedPriceBasedOnCountryCode(locale, currency).format(
-              Number(cost),
-            )}
+            {formattedPriceBasedOnCountryCode(locale, currency, Number(cost))}
           </span>
         </Badge>
       )

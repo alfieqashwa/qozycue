@@ -72,10 +72,11 @@ export function PoolRentalDetail({
     return () => clearInterval(interval)
   }, [isActive, packetCost, setRealtimeDuration, startTime])
 
-  const formattedPacketCost = formattedPrice(locale).format(Number(packetCost))
+  const formattedPacketCost = formattedPrice(locale, Number(packetCost))
   const formattedRate = packetRate === "HOUR" ? "hr" : "min"
-  const formattedTotalCost = formattedPrice(locale).format(Number(totalCost))
-  const formattedRealtimeTotalCost = formattedPrice(locale).format(
+  const formattedTotalCost = formattedPrice(locale, Number(totalCost))
+  const formattedRealtimeTotalCost = formattedPrice(
+    locale,
     Number(realtimeTotalCost),
   )
 

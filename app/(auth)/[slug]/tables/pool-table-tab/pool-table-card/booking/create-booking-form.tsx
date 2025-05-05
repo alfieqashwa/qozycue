@@ -273,7 +273,7 @@ export function CreateBookingForm({
                                 (
                                 {p.cost < 1
                                   ? "free"
-                                  : formattedPrice(locale).format(p.cost)}
+                                  : formattedPrice(locale, p.cost)}
                                 )
                               </span>
                             </SelectItem>
