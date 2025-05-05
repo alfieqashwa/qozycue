@@ -4,7 +4,7 @@ import { useDateRange } from "@/app/hooks/useDateRange"
 import { CustomDatePicker } from "@/components/custom-date-picker"
 import { api } from "@/convex/_generated/api"
 import { countries } from "@/lib/countries"
-import { type ICountry } from "@/types"
+import { countryCodeSchema, type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { DateRange } from "react-day-picker"
@@ -23,9 +23,10 @@ export default function DashboardPage() {
     ...convexQuery(api.companies.find, {}),
   })
 
-  const country = countries.find(
-    (c) => c.code === (data?.countryCode as string),
-  )
+  const countryCodeParse = countryCodeSchema.safeParse(data?.countryCode)
+  const country = countryCodeParse.success
+    ? countries.find((c) => c.code === countryCodeParse.data)
+    : undefined
 
   return (
     <div className="relative">

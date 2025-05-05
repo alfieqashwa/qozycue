@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { countries } from "@/lib/countries"
-import type { ICountry, StatusPayment } from "@/types"
+import { countryCodeSchema, type StatusPayment } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { FunctionReturnType } from "convex/server"
@@ -38,13 +38,18 @@ export function PendingOrderList({
     ],
   })
 
-  const country = countries.find(
-    (c) => c.code === (company.data?.countryCode as string),
-  ) as ICountry
+  const countryCodeParse = countryCodeSchema.safeParse(
+    company.data?.countryCode,
+  )
+
+  const country = countryCodeParse.success
+    ? countries.find((c) => c.code === countryCodeParse.data)
+    : undefined
 
   return (
     <div className="mt-4 grid min-w-max grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-8 xl:grid-cols-3">
       {pendingOrderList.status === "success" &&
+        !!country &&
         pendingOrderList.data.map((order) => (
           <PendingOrderCard
             poolTableName={poolTableName}

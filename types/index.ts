@@ -1,3 +1,6 @@
+import { countries } from "@/lib/countries"
+import { z } from "zod"
+
 export type Role =
   | "ZENITH"
   | "ADMIN"
@@ -56,10 +59,19 @@ export enum StatusPaymentEnum {
 
 export type OrderlineStatus = "ORDERED" | "UNORDERED"
 
-export interface ICountry {
-  code: string
-  country: string
-  currency: string
-  locale: string
-  flag: string
-}
+export const countrySchema = z.object({
+  code: z.string().length(2),
+  country: z.string(),
+  currency: z.string().length(3),
+  locale: z.string(),
+  flag: z.string().url(),
+})
+
+export type ICountry = z.infer<typeof countrySchema>
+
+export const countryCodes = countries.map((c) => c.code) as [
+  string,
+  ...string[],
+]
+export const countryCodeSchema = z.enum(countryCodes)
+export type CountryCode = z.infer<typeof countryCodeSchema>

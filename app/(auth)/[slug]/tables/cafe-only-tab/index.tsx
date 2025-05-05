@@ -1,10 +1,9 @@
 "use client"
 
-import { LoadingSpinner } from "@/components/loading-spinner"
 import { OrderlineDetail } from "@/components/orderline-detail"
 import { api } from "@/convex/_generated/api"
 import { countries } from "@/lib/countries"
-import { type ICountry } from "@/types"
+import { countryCodeSchema } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
@@ -28,7 +27,7 @@ export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
     user.role ?? "",
   )
 
-  const { data: filteredOrders, status } = useTanstackQuery(
+  const filteredOrders = useTanstackQuery(
     convexQuery(api.orders.findAllCafeOnlyByCompanyId, {}),
   )
 
@@ -37,19 +36,21 @@ export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
     enabled: !!user.companyId,
   })
 
-  if (status !== "success" || company.status !== "success")
-    return <LoadingSpinner />
+  const countryCodeParse = countryCodeSchema.safeParse(
+    company.data?.countryCode,
+  )
 
-  const country = countries.find(
-    (c) => c.code === (company.data?.countryCode as string),
-  ) as ICountry
+  const country = countryCodeParse.success
+    ? countries.find((c) => c.code === countryCodeParse.data)
+    : undefined
 
+  const status = filteredOrders.status || company.status
   return (
     <Fragment>
       <CreateOrderForm isCashier={cashierAccessLevel} />
-      {!!filteredOrders.length ? (
+      {status && !!filteredOrders.data?.length && !!country ? (
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 2xl:grid-cols-3">
-          {filteredOrders.map((order) => (
+          {filteredOrders.data.map((order) => (
             <CafeOnlyCard
               managerAccessLevel={managerAccessLevel}
               cashierAccessLevel={cashierAccessLevel}
