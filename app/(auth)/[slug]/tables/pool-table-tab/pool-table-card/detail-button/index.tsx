@@ -152,7 +152,11 @@ export function DetailButton({
             )}
           </TabsContent>
           <TabsContent value="cafe">
-            <OrderlineDetail orderId={order?._id} locale={locale} />
+            <OrderlineDetail
+              orderId={order?._id}
+              locale={locale}
+              isManager={Boolean(isManager)}
+            />
           </TabsContent>
         </Tabs>
         <DrawerFooter>

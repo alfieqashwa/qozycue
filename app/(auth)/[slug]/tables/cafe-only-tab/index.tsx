@@ -96,7 +96,11 @@ const CafeOnlyCard = ({
         statusPayment={order.statusPayment}
       />
     </article>
-    <OrderlineDetail orderId={order._id} locale={locale} />
+    <OrderlineDetail
+      orderId={order._id}
+      locale={locale}
+      isManager={managerAccessLevel}
+    />
     <div className="flex items-center justify-between space-x-2 py-2">
       {!!order.orderlinesLen ? (
         <PaymentButton

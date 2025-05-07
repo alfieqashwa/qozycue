@@ -17,6 +17,7 @@ import { toast } from "sonner"
 import { ConvexError } from "convex/values"
 
 type ToggleFreeProps = {
+  isManager: boolean
   orderlineId: Id<"orderlines">
   isFree: boolean
   icon: React.ReactNode
@@ -25,6 +26,7 @@ type ToggleFreeProps = {
   className?: string
 }
 export function ToggleFree({
+  isManager,
   orderlineId,
   orderlineStatus,
   isFree,
@@ -55,7 +57,9 @@ export function ToggleFree({
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger>{icon}</DialogTrigger>
+      <DialogTrigger disabled={orderlineStatus === "UNORDERED" || !isManager}>
+        {icon}
+      </DialogTrigger>
       <DialogContent className="flex items-center">
         <DialogHeader>
           {productName && (
@@ -66,7 +70,7 @@ export function ToggleFree({
           <DialogDescription />
         </DialogHeader>
         <Switch
-          // disabled
+          disabled={isPending}
           checked={isFree}
           onCheckedChange={() => mutate({ orderlineId, isFree: !isFree })}
         />

@@ -16,9 +16,11 @@ import { ToggleFree } from "./toggle-free"
 export function OrderlineDetail({
   orderId,
   locale,
+  isManager,
 }: {
   orderId: Id<"orders"> | undefined
   locale: string
+  isManager: boolean
 }) {
   const { data: orderlines, status } = useTanstackQuery({
     ...convexQuery(api.orderlines.findAllByOrderId, { orderId }),
@@ -72,6 +74,7 @@ export function OrderlineDetail({
                         </div>
                       )}
                       <ToggleFree
+                        isManager={isManager}
                         orderlineId={orderline._id}
                         orderlineStatus={orderline.orderlineStatus}
                         isFree={orderline.isFree}
