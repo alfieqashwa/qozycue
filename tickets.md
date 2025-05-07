@@ -154,7 +154,11 @@
 ✅ Tax with the same company must have a unique name
 ✅ Discount with the same company must have a unique name
 
-✅ Dashboard (Display latest Customer)
+❌ Customer Received amount and change must be included on receipt (struck)
+❌ Free Product Configuration (Manager)
+❌ Dashboard (Display latest Customer)
+❌ Promo Configuration
+❌ Kitchen Display (Idea:should be public page so people in the kitchen cannot enter to the auth pages. The page can be open with pin code)
 ❌ Setup Cancelled Feature (Refund use case)
 ❌ Membership Configuration
 ❌ i18n Configuration
