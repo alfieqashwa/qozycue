@@ -1,3 +1,4 @@
+import { HoverCopyIcon } from "@/components/hover-copy-icon"
 import { OrderlineDetail } from "@/components/orderline-detail"
 import { PoolRentalDetail } from "@/components/pool-rental-detail"
 import { Button } from "@/components/ui/button"
@@ -75,8 +76,9 @@ export function DetailButton({
               >
                 Table {poolTable?.name}
               </DrawerTitle>
-              <DrawerDescription className="text-xs font-medium">
-                Order ID: {order._id?.slice(-8)}
+              <DrawerDescription className="group flex items-center text-xs font-medium">
+                <span>Order ID: {order._id?.slice(-8)}</span>
+                <HoverCopyIcon id={order._id} />
               </DrawerDescription>
             </div>
           ) : (

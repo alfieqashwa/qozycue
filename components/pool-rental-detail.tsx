@@ -9,6 +9,7 @@ import { Rate } from "@/types"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { useEffect, useState } from "react"
+import { HoverCopyIcon } from "./hover-copy-icon"
 
 type PoolRentalDetailProps = {
   isActive: boolean
@@ -116,7 +117,8 @@ export function PoolRentalDetail({
       <WrapperDiv>
         <p className="text-muted-foreground">Rental ID:</p>
         {poolRentalId && (
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground group flex items-center">
+            <HoverCopyIcon id={poolRentalId} />
             {poolRentalId.slice(-8, poolRentalId.length)}
           </p>
         )}
