@@ -454,6 +454,17 @@ export const updateOrderlineStatusList = mutation({
   },
 })
 
+export const toggleIsFree = mutation({
+  args: { orderlineId: v.id("orderlines"), isFree: v.boolean() },
+  handler: async (ctx, { orderlineId, isFree }) => {
+    await managerProcedure(ctx)
+
+    return ctx.db.patch(orderlineId, {
+      isFree,
+    })
+  },
+})
+
 export const upsert = zMutation({
   args: { upsertOrderlineSchema },
   handler: async (

@@ -11,6 +11,7 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { BaggageClaim, Coffee, ShoppingBasket, Soup } from "lucide-react"
 import { Fragment, useMemo } from "react"
+import { ToggleFree } from "./toggle-free"
 
 export function OrderlineDetail({
   orderId,
@@ -70,7 +71,14 @@ export function OrderlineDetail({
                           </h6>
                         </div>
                       )}
-                      <span>{icon}</span>
+                      <ToggleFree
+                        orderlineId={orderline._id}
+                        orderlineStatus={orderline.orderlineStatus}
+                        isFree={orderline.isFree}
+                        icon={icon}
+                        productName={orderline.product.name}
+                        className={textColor}
+                      />
                       <div className="flex w-9/12 items-center justify-between pl-4">
                         <section>
                           <h3
