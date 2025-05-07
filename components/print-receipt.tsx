@@ -4,6 +4,7 @@ import {
   formattedPrice,
   formattedPriceBasedOnCountryCode,
 } from "@/lib/format-price"
+import { cn } from "@/lib/utils"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { format } from "date-fns"
@@ -51,7 +52,9 @@ export const PrintReceipt = ({
     ? (order.poolRental.totalCost as number)
     : 0
   const totalAmount =
-    orderlines?.reduce((acc, curr) => acc + curr.amount, 0) ?? 0
+    orderlines
+      ?.filter((orderline) => !orderline.isFree)
+      .reduce((acc, curr) => acc + curr.amount, 0) ?? 0
 
   const formattedPacketCost = formattedPrice(
     locale,
@@ -193,7 +196,10 @@ export const PrintReceipt = ({
                         <p>{orderline.quantity}</p>
                       </div>
                       <div className="flex w-7/12 flex-col -space-y-1 py-0.5">
-                        <p className="capitalize">{orderline.product.name}</p>
+                        <p className="capitalize">
+                          {orderline.product.name}{" "}
+                          {orderline.isFree && "(free)"}
+                        </p>
                         <p className="italic">
                           <span>@</span>
                           {formattedPrice(
@@ -203,7 +209,7 @@ export const PrintReceipt = ({
                         </p>
                       </div>
                       <div className="w-3/12 text-right">
-                        <p>
+                        <p className={cn(orderline.isFree && "line-through")}>
                           {formattedPrice(locale, Number(orderline.amount))}
                         </p>
                       </div>
