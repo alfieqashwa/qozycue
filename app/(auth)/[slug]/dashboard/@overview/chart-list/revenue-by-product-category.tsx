@@ -10,10 +10,7 @@ import { type ChartConfig } from "@/components/ui/chart"
 import { api } from "@/convex/_generated/api"
 import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
-import {
-  keepPreviousData,
-  useQueries as useTanstackQueries,
-} from "@tanstack/react-query"
+import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { TrendingUp } from "lucide-react"
 import { PieChartDashboard } from "./pie-chart"
 
@@ -42,7 +39,6 @@ export function RevenueByProductCategory({
           to,
         }),
         enabled: !!from && !!to,
-        placeholderData: keepPreviousData,
       },
       {
         ...convexQuery(api.orderlines._sumByCategory, {
@@ -51,7 +47,6 @@ export function RevenueByProductCategory({
           to,
         }),
         enabled: !!from && !!to,
-        placeholderData: keepPreviousData,
       },
       {
         ...convexQuery(api.orderlines._sumByCategory, {
@@ -60,13 +55,9 @@ export function RevenueByProductCategory({
           to,
         }),
         enabled: !!from && !!to,
-        placeholderData: keepPreviousData,
       },
     ],
   })
-
-  if (sumByFood.isFetching || sumByDrink.isFetching || sumByOthers.isFetching)
-    return <SkeletonDashboardCard className="h-[28.85rem]" />
 
   const dataGroupByCategory: TGroupByCategory[] = [
     {
@@ -103,6 +94,9 @@ export function RevenueByProductCategory({
       color: "rgb(217 249 157)", // lime-200
     },
   } satisfies ChartConfig
+
+  if (sumByFood.isFetching || sumByDrink.isFetching || sumByOthers.isFetching)
+    return <SkeletonDashboardCard className="h-[28.85rem]" />
 
   return (
     <Card className="flex flex-col">
