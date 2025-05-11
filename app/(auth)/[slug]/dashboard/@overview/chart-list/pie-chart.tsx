@@ -6,7 +6,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
+import { formattedPrice } from "@/lib/format-price"
 import { type ICountry } from "@/types"
 import { useMemo } from "react"
 import { Label, Pie, PieChart } from "recharts"
@@ -65,16 +65,12 @@ export function PieChartDashboard({
                       y={viewBox.cy}
                       className="fill-primary text-2xl font-bold"
                     >
-                      {formattedPriceBasedOnCountryCode(
-                        country.locale,
-                        country.currency,
-                        totalProducts,
-                      )}
+                      {formattedPrice(country.locale, totalProducts)}
                     </tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy ?? 0) + 24}
-                      className="fill-muted-foreground text-sm font-medium"
+                      className="fill-foreground text-sm font-medium"
                     >
                       {country.currency}
                     </tspan>

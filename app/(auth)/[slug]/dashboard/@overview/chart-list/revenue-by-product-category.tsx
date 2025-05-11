@@ -10,7 +10,10 @@ import { type ChartConfig } from "@/components/ui/chart"
 import { api } from "@/convex/_generated/api"
 import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
-import { useQueries as useTanstackQueries } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useQueries as useTanstackQueries,
+} from "@tanstack/react-query"
 import { TrendingUp } from "lucide-react"
 import { PieChartDashboard } from "./pie-chart"
 
@@ -39,6 +42,7 @@ export function RevenueByProductCategory({
           to,
         }),
         enabled: !!from && !!to,
+        placeholderData: keepPreviousData,
       },
       {
         ...convexQuery(api.orderlines._sumByCategory, {
@@ -47,6 +51,7 @@ export function RevenueByProductCategory({
           to,
         }),
         enabled: !!from && !!to,
+        placeholderData: keepPreviousData,
       },
       {
         ...convexQuery(api.orderlines._sumByCategory, {
@@ -55,42 +60,34 @@ export function RevenueByProductCategory({
           to,
         }),
         enabled: !!from && !!to,
+        placeholderData: keepPreviousData,
       },
     ],
   })
 
-  if (
-    sumByFood.status !== "success" ||
-    sumByDrink.status !== "success" ||
-    sumByOthers.status !== "success"
-  )
+  if (sumByFood.isFetching || sumByDrink.isFetching || sumByOthers.isFetching)
     return <SkeletonDashboardCard className="h-[28.85rem]" />
 
   const dataGroupByCategory: TGroupByCategory[] = [
     {
       name: "food",
       value: sumByFood.data?._sum.amount as number,
-      qty: sumByFood.data._sum.quantity as number,
+      qty: sumByFood.data?._sum.quantity as number,
       fill: "var(--color-food)",
     },
     {
       name: "drink",
       value: sumByDrink.data?._sum.amount as number,
-      qty: sumByDrink.data._sum.quantity as number,
+      qty: sumByDrink.data?._sum.quantity as number,
       fill: "var(--color-drink)",
     },
     {
       name: "others",
       value: sumByOthers.data?._sum.amount as number,
-      qty: sumByOthers.data._sum.quantity as number,
+      qty: sumByOthers.data?._sum.quantity as number,
       fill: "var(--color-others)",
     },
   ] as const
-
-  console.log(
-    `dataGroupByCategory::: `,
-    JSON.stringify(dataGroupByCategory, null, 2),
-  )
 
   const chartConfig = {
     food: {
