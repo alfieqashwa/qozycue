@@ -28,7 +28,9 @@ import { OrderlineRowActions } from "./orderline-row-actions"
 export const columnsOrderline = (
   locale: string,
   currency: string,
-): ColumnDef<FunctionReturnType<typeof api.orderlines.findAll>[0]>[] => [
+): ColumnDef<
+  FunctionReturnType<typeof api.orderlines.findAllSortedByDate>[0]
+>[] => [
   {
     id: "select",
     header: ({ table }) => (

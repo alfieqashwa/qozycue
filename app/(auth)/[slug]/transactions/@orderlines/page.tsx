@@ -25,7 +25,7 @@ export default function OrderlinePage() {
   const [date, setDate] = useDateRange()
 
   const orderlines = useTanstackQuery({
-    ...convexQuery(api.orderlines.findAll, {
+    ...convexQuery(api.orderlines.findAllSortedByDate, {
       from: date?.from?.getTime(),
       to: date?.to?.getTime(),
     }),
