@@ -6,6 +6,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
+import { type ICountry } from "@/types"
 import { useMemo } from "react"
 import { Label, Pie, PieChart } from "recharts"
 
@@ -17,11 +19,13 @@ type TGroupByCategory = {
 type PieChartDashboardProps = {
   chartData: TGroupByCategory[]
   chartConfig: ChartConfig
+  country: ICountry
 }
 
 export function PieChartDashboard({
   chartData,
   chartConfig,
+  country,
 }: PieChartDashboardProps) {
   const totalProducts = useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.value, 0)
@@ -61,14 +65,18 @@ export function PieChartDashboard({
                       y={viewBox.cy}
                       className="fill-primary text-2xl font-bold"
                     >
-                      {new Intl.NumberFormat("id-ID").format(totalProducts)}
+                      {formattedPriceBasedOnCountryCode(
+                        country.locale,
+                        country.currency,
+                        totalProducts,
+                      )}
                     </tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy ?? 0) + 24}
                       className="fill-muted-foreground text-sm font-medium"
                     >
-                      Rupiahs
+                      {country.currency}
                     </tspan>
                   </text>
                 )

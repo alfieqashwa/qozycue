@@ -1,3 +1,4 @@
+import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 import {
   Card,
   CardContent,
@@ -7,11 +8,11 @@ import {
 } from "@/components/ui/card"
 import { type ChartConfig } from "@/components/ui/chart"
 import { api } from "@/convex/_generated/api"
+import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { TrendingUp } from "lucide-react"
 import { PieChartDashboard } from "./pie-chart"
-import { SkeletonDashboardCard } from "@/components/skeleton-dashboard-card"
 
 export type TGroupByCategory = {
   name: string
@@ -23,9 +24,11 @@ export type TGroupByCategory = {
 export function RevenueByProductCategory({
   from,
   to,
+  country,
 }: {
   from?: number
   to?: number
+  country: ICountry
 }) {
   const [sumByFood, sumByDrink, sumByOthers] = useTanstackQueries({
     queries: [
@@ -108,9 +111,10 @@ export function RevenueByProductCategory({
         <PieChartDashboard
           chartData={dataGroupByCategory}
           chartConfig={chartConfig}
+          country={country}
         />
       </CardContent>
-      <CardFooter className="mx-auto text-sm font-medium text-primary">
+      <CardFooter className="text-primary mx-auto text-sm font-medium">
         Showing total Products{" "}
         <TrendingUp className="ml-2 inline-block h-4 w-4" />
       </CardFooter>
