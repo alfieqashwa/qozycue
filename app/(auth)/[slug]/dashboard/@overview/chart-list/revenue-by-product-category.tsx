@@ -10,7 +10,7 @@ import { type ChartConfig } from "@/components/ui/chart"
 import { api } from "@/convex/_generated/api"
 import { type ICountry } from "@/types"
 import { convexQuery } from "@convex-dev/react-query"
-import { useQueries as useTanstackQueries } from "@tanstack/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { TrendingUp } from "lucide-react"
 import { PieChartDashboard } from "./pie-chart"
 
@@ -30,33 +30,29 @@ export function RevenueByProductCategory({
   to?: number
   country: ICountry
 }) {
-  const [sumByFood, sumByDrink, sumByOthers] = useTanstackQueries({
-    queries: [
-      {
-        ...convexQuery(api.orderlines._sumByCategory, {
-          categoryName: "food",
-          from,
-          to,
-        }),
-        enabled: !!from && !!to,
-      },
-      {
-        ...convexQuery(api.orderlines._sumByCategory, {
-          categoryName: "drink",
-          from,
-          to,
-        }),
-        enabled: !!from && !!to,
-      },
-      {
-        ...convexQuery(api.orderlines._sumByCategory, {
-          categoryName: "others",
-          from,
-          to,
-        }),
-        enabled: !!from && !!to,
-      },
-    ],
+  const sumByFood = useTanstackQuery({
+    ...convexQuery(api.orderlines._sumByCategory, {
+      categoryName: "food",
+      from,
+      to,
+    }),
+    enabled: !!from && !!to,
+  })
+  const sumByDrink = useTanstackQuery({
+    ...convexQuery(api.orderlines._sumByCategory, {
+      categoryName: "drink",
+      from,
+      to,
+    }),
+    enabled: !!from && !!to,
+  })
+  const sumByOthers = useTanstackQuery({
+    ...convexQuery(api.orderlines._sumByCategory, {
+      categoryName: "others",
+      from,
+      to,
+    }),
+    enabled: !!from && !!to,
   })
 
   const dataGroupByCategory: TGroupByCategory[] = [
@@ -95,7 +91,11 @@ export function RevenueByProductCategory({
     },
   } satisfies ChartConfig
 
-  if (sumByFood.isFetching || sumByDrink.isFetching || sumByOthers.isFetching)
+  if (
+    sumByFood.status !== "success" ||
+    sumByDrink.status !== "success" ||
+    sumByOthers.status !== "success"
+  )
     return <SkeletonDashboardCard className="h-[28.85rem]" />
 
   return (
