@@ -87,6 +87,11 @@ export function RevenueByProductCategory({
     },
   ] as const
 
+  console.log(
+    `dataGroupByCategory::: `,
+    JSON.stringify(dataGroupByCategory, null, 2),
+  )
+
   const chartConfig = {
     food: {
       label: "Food",
