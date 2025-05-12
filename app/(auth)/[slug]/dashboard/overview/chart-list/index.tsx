@@ -1,4 +1,4 @@
-import { type ListProps } from "../page"
+import { type ListProps } from ".."
 import { RevenueByPaymentMethod } from "./revenue-by-payment-method"
 import { RevenueByPoolTable } from "./revenue-by-pool-table"
 import { RevenueByProductCategory } from "./revenue-by-product-category"

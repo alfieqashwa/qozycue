@@ -8,7 +8,7 @@ import {
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries } from "@tanstack/react-query"
 import { GiMoneyStack } from "react-icons/gi"
-import { type ListProps } from "../page"
+import { type ListProps } from ".."
 
 export function TotalProfit({ date, country }: ListProps) {
   const { from, to } = {
@@ -76,7 +76,7 @@ export function TotalProfit({ date, country }: ListProps) {
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Profit Cafe{" "}
-          <span className="text-primary">
+          <span className="text-foreground">
             {formattedPrice(locale, Number(totalOrderlineProfit))}
           </span>
         </p>

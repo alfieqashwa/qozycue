@@ -5,7 +5,7 @@ import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Utensils } from "lucide-react"
-import { type ListProps } from "../page"
+import { type ListProps } from ".."
 
 export function OrderlineRevenue({ date, country }: ListProps) {
   const { from, to } = {
@@ -40,7 +40,9 @@ export function OrderlineRevenue({ date, country }: ListProps) {
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total{" "}
-          <span className="text-primary">{orderlineRevenue._sum.quantity}</span>{" "}
+          <span className="text-foreground">
+            {orderlineRevenue._sum.quantity}
+          </span>{" "}
           orders
         </p>
       </CardContent>

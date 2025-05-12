@@ -5,7 +5,7 @@ import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
 import { useQueries as useTanstackQueries } from "@tanstack/react-query"
 import { GiPoolTriangle } from "react-icons/gi"
-import { type ListProps } from "../page"
+import { type ListProps } from ".."
 
 export function PoolRevenue({ date, country }: ListProps) {
   const { from, to } = {
@@ -62,7 +62,8 @@ export function PoolRevenue({ date, country }: ListProps) {
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total duration{" "}
-          <span className="text-primary">{durationHour.toFixed(2)}</span> hours
+          <span className="text-foreground">{durationHour.toFixed(2)}</span>{" "}
+          hours
         </p>
       </CardContent>
     </Card>

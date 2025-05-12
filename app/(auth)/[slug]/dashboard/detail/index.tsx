@@ -13,7 +13,7 @@ import { useRef } from "react"
 import { useReactToPrint } from "react-to-print"
 import { PrintTransactionPdf } from "./print-transaction-pdf"
 
-export default function DetailPage() {
+export default function Detail() {
   const [date, setDate] = useDateRange()
 
   const { from, to } = {

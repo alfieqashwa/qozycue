@@ -13,7 +13,7 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Activity } from "lucide-react"
 import { useState } from "react"
-import { type ListProps } from "../page"
+import { type ListProps } from ".."
 
 export function TotalRevenue({ date, country }: ListProps) {
   const { from, to } = {
@@ -66,7 +66,7 @@ export function TotalRevenue({ date, country }: ListProps) {
           <CardDescription className="text-xs font-medium">{`*${isIncludeTaxes ? "include" : "exclude"} taxes`}</CardDescription>
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
-          Total <span className="text-primary">{totalTransactions}</span>{" "}
+          Total <span className="text-foreground">{totalTransactions}</span>{" "}
           transactions
         </p>
       </CardContent>

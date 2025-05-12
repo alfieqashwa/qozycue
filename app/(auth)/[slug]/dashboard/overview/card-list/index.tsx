@@ -1,4 +1,4 @@
-import { ListProps } from "../page"
+import { ListProps } from ".."
 import { OrderlineRevenue } from "./orderline-revenue"
 import { PoolRevenue } from "./pool-revenue"
 import { TotalProfit } from "./total-profit"

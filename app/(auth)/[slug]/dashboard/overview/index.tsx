@@ -16,7 +16,7 @@ export type ListProps = {
   country: ICountry
 }
 
-export default function DashboardPage() {
+export default function Overview() {
   const [date, setDate] = useDateRange()
 
   const { data, status } = useTanstackQuery({
