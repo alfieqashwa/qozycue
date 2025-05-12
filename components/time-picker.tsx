@@ -1,5 +1,3 @@
-"use client"
-
 import { Label } from "@/components/ui/label"
 import { Clock } from "lucide-react"
 import * as React from "react"
