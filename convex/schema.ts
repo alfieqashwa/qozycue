@@ -143,7 +143,9 @@ export default defineSchema({
   })
     .index("packetId", ["packetId"])
     .index("poolTableId", ["poolTableId"])
-    .index("orderId", ["orderId"]),
+    .index("orderId", ["orderId"])
+    .index("by_order_isbooking", ["orderId", "isBooking"])
+    .index("by_pooltable_isbooking", ["poolTableId", "isBooking"]),
 
   products: defineTable({
     name: v.string(),

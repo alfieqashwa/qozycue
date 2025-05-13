@@ -49,14 +49,13 @@ export const findAllSortedByDate = query({
     // src -> https://docs.convex.dev/database/reading-data#filtering
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .filter((q) =>
-        q.and(
-          q.neq(q.field("statusPayment"), args.notEqual),
-          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+      .withIndex("companyId", (q) =>
+        q
+          .eq("companyId", user?.companyId!)
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
+      .filter((q) => q.neq(q.field("statusPayment"), args.notEqual))
       .order("desc")
       .collect()
 
@@ -138,13 +137,12 @@ export const findAllArchiveOrderSortedByDate = query({
     // src -> https://docs.convex.dev/database/reading-data#filtering
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("statusPayment"), args.equal),
-          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+      .withIndex("by_company_statuspayment", (q) =>
+        q
+          .eq("companyId", user?.companyId!)
+          .eq("statusPayment", args.equal)
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .order("desc")
       .collect()
@@ -155,8 +153,9 @@ export const findAllArchiveOrderSortedByDate = query({
     for (const order of orders) {
       const poolRental = await ctx.db
         .query("poolRentals")
-        .withIndex("orderId", (q) => q.eq("orderId", order._id))
-        .filter((q) => q.eq(q.field("isBooking"), false))
+        .withIndex("by_order_isbooking", (q) =>
+          q.eq("orderId", order._id).eq("isBooking", false),
+        )
         .first()
 
       const poolTable = poolRental
@@ -214,16 +213,18 @@ export const findAllBookingByCompanyId = query({
 
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", args.companyId))
-      .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+      .withIndex("by_company_statuspayment", (q) =>
+        q.eq("companyId", args.companyId).eq("statusPayment", "OPEN"),
+      )
       .collect()
 
     const filteredBookingOrders = []
     for (const order of orders) {
       const poolRental = await ctx.db
         .query("poolRentals")
-        .withIndex("orderId", (q) => q.eq("orderId", order._id))
-        .filter((q) => q.eq(q.field("isBooking"), true))
+        .withIndex("by_order_isbooking", (q) =>
+          q.eq("orderId", order._id).eq("isBooking", true),
+        )
         .first()
       const createdBy = await ctx.db.get(order.createdBy)
       const customer = order.customerId
@@ -292,8 +293,9 @@ export const findByPoolTableId = query({
 
     const poolRentals = await ctx.db
       .query("poolRentals")
-      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
-      .filter((q) => q.eq(q.field("isBooking"), false))
+      .withIndex("by_pooltable_isbooking", (q) =>
+        q.eq("poolTableId", args.poolTableId).eq("isBooking", false),
+      )
       .collect()
 
     const filteredOrderlist = []
@@ -341,8 +343,9 @@ export const findByPoolTableIdPublicProcedure = query({
   handler: async (ctx, args) => {
     const poolRentals = await ctx.db
       .query("poolRentals")
-      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
-      .filter((q) => q.eq(q.field("isBooking"), false))
+      .withIndex("by_pooltable_isbooking", (q) =>
+        q.eq("poolTableId", args.poolTableId).eq("isBooking", false),
+      )
       .collect()
 
     const filteredOrderlist = []
@@ -374,8 +377,9 @@ export const findAllPendingStatusByPoolTableId = query({
 
     const poolRentals = await ctx.db
       .query("poolRentals")
-      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
-      .filter((q) => q.eq(q.field("isBooking"), false))
+      .withIndex("by_pooltable_isbooking", (q) =>
+        q.eq("poolTableId", args.poolTableId).eq("isBooking", false),
+      )
       .collect()
 
     if (poolRentals.length === 0) return []
@@ -385,7 +389,6 @@ export const findAllPendingStatusByPoolTableId = query({
       const order = await ctx.db
         .query("orders")
         .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-        // .filter((q) => q.eq(q.field("statusPayment"), "PENDING"))
         .first()
       const packet = await ctx.db.get(rental.packetId!)
       const customer = await ctx.db.get(order?.customerId!)
@@ -453,8 +456,9 @@ export const findAllCafeOnlyByCompanyId = query({
 
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+      .withIndex("by_company_statuspayment", (q) =>
+        q.eq("companyId", user?.companyId!).eq("statusPayment", "OPEN"),
+      )
       .order("desc")
       .collect()
 
@@ -511,13 +515,11 @@ export const _sumRevenue = query({
     const orders = await ctx.db
       .query("orders")
       .withIndex("by_company_statuspayment", (q) =>
-        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
-      )
-      .filter((q) =>
-        q.and(
-          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+        q
+          .eq("companyId", user.companyId!)
+          .eq("statusPayment", "PAID")
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .collect()
 
@@ -565,7 +567,6 @@ export const _groupByPaymentMethod = query({
           args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
-      .order("desc")
       .collect()
 
     // src -> https://chatgpt.com/c/6745f1d2-bc58-8002-adf2-8257016d66a0
@@ -617,13 +618,11 @@ export const printTransaction = query({
     const orders = await ctx.db
       .query("orders")
       .withIndex("by_company_statuspayment", (q) =>
-        q.eq("companyId", user?.companyId!).eq("statusPayment", "PAID"),
-      )
-      .filter((q) =>
-        q.and(
-          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+        q
+          .eq("companyId", user?.companyId!)
+          .eq("statusPayment", "PAID")
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .order("desc")
       .collect()
@@ -910,8 +909,9 @@ export const updatedDuration = zMutation({
 
     const firstBooking = await ctx.db
       .query("poolRentals")
-      .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
-      .filter((q) => q.and(q.eq(q.field("isBooking"), true)))
+      .withIndex("by_pooltable_isbooking", (q) =>
+        q.eq("poolTableId", poolTableId).eq("isBooking", true),
+      )
       .order("desc")
       .first()
 
