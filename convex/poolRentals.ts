@@ -248,45 +248,75 @@ export const _sumByRate = query({
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
+    if (!user?.companyId) return { _sum: { duration: 0 } }
 
-    const orders =
-      user === null
-        ? []
-        : await ctx.db
-            .query("orders")
-            .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-            .filter((q) =>
-              q.and(
-                q.eq(q.field("statusPayment"), "PAID"),
-                args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-                args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-              ),
-            )
-            .order("desc")
-            .collect()
+    // Get packets with the specified rate for this company
+    const packets = await ctx.db
+      .query("packets")
+      .withIndex("by_company_rate", (q) =>
+        q.eq("companyId", user.companyId!).eq("rate", args.rate),
+      )
+      .collect()
 
-    let totalDuration = 0
-    for (const order of orders) {
-      const packet = await ctx.db
-        .query("packets")
-        .withIndex("companyId", (q) => q.eq("companyId", order.companyId))
-        .filter((q) => q.eq(q.field("rate"), args.rate))
-        .first()
-
-      const poolRental =
-        packet !== null
-          ? await ctx.db
-              .query("poolRentals")
-              .withIndex("orderId", (q) => q.eq("orderId", order._id))
-              .filter((q) => q.eq(q.field("packetId"), packet._id))
-              .first()
-          : null
-
-      totalDuration += poolRental?.duration ?? 0
+    if (packets.length === 0) {
+      return { _sum: { duration: 0 } }
     }
 
+    // Get all paid orders for the company within the date range
+    const paidOrders = await ctx.db
+      .query("orders")
+      .withIndex("by_company_statuspayment", (q) =>
+        q
+          .eq("companyId", user.companyId!)
+          .eq("statusPayment", "PAID")
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
+      )
+      .order("desc")
+      .collect()
+
+    if (paidOrders.length === 0) {
+      return { _sum: { duration: 0 } }
+    }
+
+    const orderIds = paidOrders.map((order) => order._id)
+    const packetIds = new Set(packets.map((packet) => packet._id.toString()))
+
+    // Process in batches of 50
+    const BATCH_SIZE = 50
+    let totalDuration = 0
+
+    for (let i = 0; i < orderIds.length; i += BATCH_SIZE) {
+      const batchOrderIds = orderIds.slice(i, i + BATCH_SIZE)
+
+      // Process each order in the batch
+      const batchResults = await Promise.all(
+        batchOrderIds.map(async (orderId) => {
+          // For each order, get all pool rentals
+          const rentals = await ctx.db
+            .query("poolRentals")
+            .withIndex("orderId", (q) => q.eq("orderId", orderId))
+            .collect()
+
+          // Filter and sum client-side
+          return rentals
+            .filter(
+              (rental) =>
+                rental.packetId && packetIds.has(rental.packetId.toString()),
+            )
+            .reduce((sum, rental) => sum + (rental.duration ?? 0), 0)
+        }),
+      )
+
+      // Sum up the batch results
+      totalDuration += batchResults.reduce((sum, duration) => sum + duration, 0)
+    }
+
+    // Normalize duration if requested in hours
+    const normalizedDuration =
+      args.rate === "MINUTE" ? totalDuration / 60 : totalDuration
     return {
-      _sum: { duration: totalDuration },
+      _sum: { duration: normalizedDuration }, // expecting duration in hours
     }
   },
 })
