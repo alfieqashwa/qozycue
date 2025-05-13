@@ -607,20 +607,17 @@ export const printTransaction = query({
     to: v.optional(v.float64()),
   },
   handler: async (ctx, args) => {
-    // ownerProcedure()
+    // Auth check: ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "OWNER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
+    // Step 1: Fetch all paid orders for the user's company with time filter
     const orders = await ctx.db
       .query("orders")
       .withIndex("by_company_statuspayment", (q) =>
-        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
+        q.eq("companyId", user?.companyId!).eq("statusPayment", "PAID"),
       )
       .filter((q) =>
         q.and(
@@ -631,51 +628,67 @@ export const printTransaction = query({
       .order("desc")
       .collect()
 
-    const orderList = []
-    for (const order of orders) {
-      const poolRental = await ctx.db
-        .query("poolRentals")
-        .withIndex("orderId", (q) => q.eq("orderId", order._id))
-        .first()
-      const poolTable = poolRental
-        ? await ctx.db.get(poolRental?.poolTableId)
-        : null
-
-      const createdBy = await ctx.db.get(order.createdBy)
-      const customer = order.customerId
-        ? await ctx.db.get(order.customerId)
-        : null
-
-      orderList.push({
-        ...order,
-        poolRental: {
-          poolTable: {
-            name: poolTable?.name,
-          },
-        },
-        createdBy: {
-          name: createdBy?.name,
-          role: createdBy?.role,
-        },
-        customer: {
-          name: customer?.name,
-          phone: customer?.phone,
-        },
-      })
+    if (orders.length === 0) {
+      return { orderList: [], totalRevenue: 0, totalTransaction: 0 }
     }
 
-    const totalRevenue = orderList.reduce((acc, curr) => {
-      if (curr.totalAmount != null) {
-        return acc + curr.totalAmount
-      } else {
-        return acc
-      }
-    }, 0)
-    const totalTransaction = orderList.length
+    // Step 2: Process orders in batches
+    const BATCH_SIZE = 50
+    const orderList = []
+    let totalRevenue = 0
+
+    for (let i = 0; i < orders.length; i += BATCH_SIZE) {
+      const batchOrders = orders.slice(i, i + BATCH_SIZE)
+
+      // Process each batch in parallel
+      const batchResults = await Promise.all(
+        batchOrders.map(async (order) => {
+          // Fetch related data in parallel
+          const [poolRental, createdBy, customer] = await Promise.all([
+            ctx.db
+              .query("poolRentals")
+              .withIndex("orderId", (q) => q.eq("orderId", order._id))
+              .first(),
+            ctx.db.get(order.createdBy),
+            order.customerId ? ctx.db.get(order.customerId) : null,
+          ])
+
+          // Fetch pool table if poolRental exists
+          const poolTable = poolRental
+            ? await ctx.db.get(poolRental.poolTableId)
+            : null
+
+          // Calculate running total
+          if (order.totalAmount != null) {
+            totalRevenue += order.totalAmount
+          }
+          // Return enriched order
+          return {
+            ...order,
+            poolRental: {
+              poolTable: {
+                name: poolTable?.name,
+              },
+            },
+            createdBy: {
+              name: createdBy?.name,
+              role: createdBy?.role,
+            },
+            customer: {
+              name: customer?.name,
+              phone: customer?.phone,
+            },
+          }
+        }),
+      )
+      // Add batch results to orderList
+      orderList.push(...batchResults)
+    }
+
     return {
       orderList,
       totalRevenue,
-      totalTransaction,
+      totalTransaction: orders.length,
     }
   },
 })
