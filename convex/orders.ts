@@ -501,14 +501,10 @@ export const _sumRevenue = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "OWNER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
-    if (!user.companyId) {
+    if (!user?.companyId) {
       return { _count: 0, _sum: { totalAmount: 0, revenue: 0 } }
     }
 
@@ -549,17 +545,13 @@ export const _groupByPaymentMethod = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "OWNER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     const orders = await ctx.db
       .query("orders")
       .withIndex("by_company_statuspayment", (q) =>
-        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
+        q.eq("companyId", user?.companyId!).eq("statusPayment", "PAID"),
       )
       .filter((q) =>
         q.and(
@@ -718,13 +710,11 @@ export const startTimer = zMutation({
     // cashierProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "CASHIER"
-    )
+
+    if (!["ZENITH", "ADMIN", "CASHIER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
-    if (!user.companyId) throw new ConvexError("No company provided!")
+
+    if (!user?.companyId) throw new ConvexError("No company provided!")
 
     // === STARTS Config Conflict Validation ===
     const listOfPoolRental = await ctx.db
@@ -978,11 +968,7 @@ export const payment = zMutation({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
 
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "CASHIER"
-    )
+    if (!["ZENITH", "ADMIN", "CASHIER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     const poolRental = await ctx.db
@@ -1003,7 +989,7 @@ export const payment = zMutation({
         discount,
         tax,
         note,
-        updatedBy: user._id,
+        updatedBy: user?._id,
         updatedTime: Date.now(),
       })
       return { updateOrder }
@@ -1017,7 +1003,7 @@ export const payment = zMutation({
       discount,
       tax,
       note,
-      updatedBy: user._id,
+      updatedBy: user?._id,
       updatedTime: Date.now(),
     })
 
