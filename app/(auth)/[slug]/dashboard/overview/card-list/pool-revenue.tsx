@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { api } from "@/convex/_generated/api"
 import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { convexQuery } from "@convex-dev/react-query"
-import { useQueries as useTanstackQueries } from "@tanstack/react-query"
+import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { GiPoolTriangle } from "react-icons/gi"
 import { type ListProps } from ".."
 
@@ -13,25 +13,21 @@ export function PoolRevenue({ date, country }: ListProps) {
     to: date?.to?.getTime(),
   }
 
-  const [revenue, byHourRate, byMinuteRate] = useTanstackQueries({
-    queries: [
-      {
-        ...convexQuery(api.poolRentals._sumRevenue, { from, to }),
-        enabled: !!date?.from && !!date.to,
-      },
-      {
-        ...convexQuery(api.poolRentals._sumByRate, { rate: "HOUR", from, to }),
-        enabled: !!date?.from && !!date.to,
-      },
-      {
-        ...convexQuery(api.poolRentals._sumByRate, {
-          rate: "MINUTE",
-          from,
-          to,
-        }),
-        enabled: !!date?.from && !!date.to,
-      },
-    ],
+  const isEnabled = !!from && !!to
+
+  const revenue = useTanstackQuery({
+    ...convexQuery(api.poolRentals._sumRevenue, { from, to }),
+    enabled: isEnabled,
+  })
+
+  const byHourRate = useTanstackQuery({
+    ...convexQuery(api.poolRentals._sumByRate, { rate: "HOUR", from, to }),
+    enabled: isEnabled,
+  })
+
+  const byMinuteRate = useTanstackQuery({
+    ...convexQuery(api.poolRentals._sumByRate, { rate: "MINUTE", from, to }),
+    enabled: isEnabled,
   })
 
   if (
