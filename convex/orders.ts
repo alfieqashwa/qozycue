@@ -504,18 +504,23 @@ export const _sumRevenue = query({
     )
       throw new ConvexError("You do not have access!")
 
+    if (!user.companyId) {
+      return { _count: 0, _sum: { totalAmount: 0, revenue: 0 } }
+    }
+
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .withIndex("by_company_statuspayment", (q) =>
+        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
+      )
       .filter((q) =>
         q.and(
-          q.eq(q.field("statusPayment"), "PAID"),
           args.from ? q.gt(q.field("_creationTime"), args.from) : true,
           args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
-      .order("desc")
       .collect()
+
     const _count = orders.length
     const totalAmount = orders.reduce(
       (acc, curr) => acc + (curr.totalAmount ?? 0),
@@ -551,10 +556,11 @@ export const _groupByPaymentMethod = query({
 
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .withIndex("by_company_statuspayment", (q) =>
+        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
+      )
       .filter((q) =>
         q.and(
-          q.eq(q.field("statusPayment"), "PAID"),
           args.from ? q.gt(q.field("_creationTime"), args.from) : true,
           args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
@@ -613,10 +619,11 @@ export const printTransaction = query({
 
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .withIndex("by_company_statuspayment", (q) =>
+        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
+      )
       .filter((q) =>
         q.and(
-          q.eq(q.field("statusPayment"), "PAID"),
           args.from ? q.gt(q.field("_creationTime"), args.from) : true,
           args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
