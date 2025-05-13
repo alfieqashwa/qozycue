@@ -158,7 +158,7 @@ export const _sumRevenue = query({
     to: v.optional(v.float64()),
   },
   handler: async (ctx, args) => {
-    // ownerProcedure()
+    //  Auth check: ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
@@ -168,6 +168,11 @@ export const _sumRevenue = query({
     )
       throw new ConvexError("You do not have access!")
 
+    if (!user?.companyId) {
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } }
+    }
+
+    // Get all paid orders within date range
     const orders = await ctx.db
       .query("orders")
       .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
@@ -256,12 +261,29 @@ export const _sumByCategory = query({
     const paidOrders = await ctx.db
       .query("orders")
       .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("statusPayment"), "PAID"),
-          args.from ? q.gte(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+      .filter(
+        (q) => {
+          let filterExpr = q.eq(q.field("statusPayment"), "PAID")
+
+          if (args.from) {
+            filterExpr = q.and(
+              filterExpr,
+              q.gte(q.field("_creationTime"), args.from),
+            )
+          }
+          if (args.to) {
+            filterExpr = q.and(
+              filterExpr,
+              q.lte(q.field("_creationTime"), args.to),
+            )
+          }
+          return filterExpr
+        },
+        // q.and(
+        //   q.eq(q.field("statusPayment"), "PAID"),
+        //   args.from ? q.gte(q.field("_creationTime"), args.from) : true,
+        //   args.to ? q.lte(q.field("_creationTime"), args.to) : true,
+        // ),
       )
       .collect()
 
