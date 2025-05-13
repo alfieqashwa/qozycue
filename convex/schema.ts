@@ -125,7 +125,8 @@ export default defineSchema({
     .index("updatedBy", ["updatedBy"])
     .index("companyId", ["companyId"])
     .index("by_status", ["statusPayment"])
-    .index("active_orders", ["isDeleted", "statusPayment"]),
+    .index("active_orders", ["isDeleted", "statusPayment"])
+    .index("by_company_statuspayment", ["companyId", "statusPayment"]),
 
   // poolRentals is similar to orderlines
   poolRentals: defineTable({
