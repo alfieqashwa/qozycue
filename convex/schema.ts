@@ -92,8 +92,9 @@ export default defineSchema({
     status: v.union(v.literal("disabled"), v.literal("enabled")),
     rate: v.union(v.literal("MINUTE"), v.literal("HOUR")),
     companyId: v.id("companies"),
-  }).index("companyId", ["companyId"]),
-
+  })
+    .index("companyId", ["companyId"])
+    .index("by_company_rate", ["companyId", "rate"]),
   orders: defineTable({
     paymentMethod: v.optional(
       v.union(v.literal("CASH"), v.literal("DEBIT"), v.literal("CREDIT")),
