@@ -175,6 +175,11 @@
 Source -> https://docs.convex.dev/understanding/best-practices/
 
 ❌ Avoid .filter() on database queries. Use .withIndex() instead.
+
+- orders ✅
+- orderlines ❌
+- poolRentals ❌
+
 ❌ Check for redundant indexes.
 ❌ (Optional): Check returns validator
 

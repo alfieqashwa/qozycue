@@ -7,7 +7,12 @@ import {
   startBookingTimerSchema,
 } from "../types/schema/order-schema"
 import { query } from "./_generated/server"
-import { adminProcedure, protectedProcedure, zMutation } from "./helpers"
+import {
+  adminProcedure,
+  BATCH_SIZE,
+  protectedProcedure,
+  zMutation,
+} from "./helpers"
 
 export const findAll = query({
   args: {
@@ -207,7 +212,6 @@ This approach is more efficient than the previous implementations shown in your 
 For more complex aggregation needs, you might consider using Convex's Aggregate component for more scalable solutions with large datasets.
 */
 
-    const BATCH_SIZE = 50
     const aggregation = { _count: 0, _sum: { totalCost: 0 } }
 
     for (let i = 0; i < orderIds.length; i += BATCH_SIZE) {
@@ -283,7 +287,6 @@ export const _sumByRate = query({
     const packetIds = new Set(packets.map((packet) => packet._id.toString()))
 
     // Process in batches of 50
-    const BATCH_SIZE = 50
     let totalDuration = 0
 
     for (let i = 0; i < orderIds.length; i += BATCH_SIZE) {

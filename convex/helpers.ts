@@ -462,3 +462,5 @@ export const normalizeCompanyId = query({
     return ctx.db.normalizeId("companies", args.id)
   },
 })
+
+export const BATCH_SIZE = 50

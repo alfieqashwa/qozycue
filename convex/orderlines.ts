@@ -3,7 +3,12 @@ import { ConvexError, v } from "convex/values"
 import { upsertOrderlineSchema } from "../types/schema/orderline-schema"
 import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
-import { managerProcedure, protectedProcedure, zMutation } from "./helpers"
+import {
+  BATCH_SIZE,
+  managerProcedure,
+  protectedProcedure,
+  zMutation,
+} from "./helpers"
 
 export const findAllSortedByDate = query({
   args: {
@@ -191,7 +196,6 @@ export const _sumRevenue = query({
     }
 
     // Process orders in batches
-    const BATCH_SIZE = 50
     let totalCount = 0
     let totalQuantity = 0
     let totalAmount = 0
@@ -298,7 +302,6 @@ export const _sumByCategory = query({
     const aggregation = { _count: 0, _sum: { quantity: 0, amount: 0 } }
 
     // Process in batches to avoid hitting query limits
-    const BATCH_SIZE = 50
     for (let i = 0; i < productIds.length; i += BATCH_SIZE) {
       const batchProductIds = productIds.slice(i, i + BATCH_SIZE)
 
@@ -377,7 +380,6 @@ export const _calculateProfit = query({
     let totalQuantity = 0
 
     // Process products in batches
-    const BATCH_SIZE = 50
     for (let i = 0; i < products.length; i += BATCH_SIZE) {
       const batchProductIds = productIds.slice(i, i + BATCH_SIZE)
 
@@ -456,7 +458,6 @@ export const _groupByProductId = query({
     const orderIds = paidOrders.map((order) => order._id)
 
     // Step 2: Fetch all orderlines in batches
-    const BATCH_SIZE = 50
 
     // Define the type for orderlines based on your schema
     type Orderline = {

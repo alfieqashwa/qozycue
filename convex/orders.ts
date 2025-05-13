@@ -10,6 +10,7 @@ import { submitPaymentSchema } from "../types/schema/payment-schema"
 import { mutation, query } from "./_generated/server"
 import {
   adminProcedure,
+  BATCH_SIZE,
   cashierProcedure,
   managerProcedure,
   protectedProcedure,
@@ -624,7 +625,6 @@ export const printTransaction = query({
     }
 
     // Step 2: Process orders in batches
-    const BATCH_SIZE = 50
     const orderList = []
     let totalRevenue = 0
 
