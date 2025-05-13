@@ -216,7 +216,7 @@ export const _sumByCategory = query({
     categoryName: v.string(),
   },
   handler: async (ctx, args) => {
-    // ownerProcedure()
+    // Auth check: ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
@@ -226,17 +226,21 @@ export const _sumByCategory = query({
     )
       throw new ConvexError("You do not have access!")
 
-    // Step 1: Get the category ID for the given category name
+    if (!user?.companyId) {
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } }
+    }
+
+    // Step 1: Get the category ID
     const category = await ctx.db
       .query("categories")
-      .filter((q) => q.eq(q.field("name"), args.categoryName))
+      .withIndex("by_name", (q) => q.eq("name", args.categoryName))
       .first()
 
     if (!category) {
-      return { _count: 0, _sum: { quantity: 0, amount: 0 } } // return default if category not found
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } }
     }
 
-    // Step 2: Get all product IDs that belong to the category
+    // Step 2: Get all product IDs in the category for this company
     const products = await ctx.db
       .query("products")
       .withIndex("categoryId", (q) => q.eq("categoryId", category._id))
@@ -244,59 +248,55 @@ export const _sumByCategory = query({
       .collect()
 
     if (products.length === 0) {
-      return { _count: 0, _sum: { quantity: 0, amount: 0 } } // Return default if no products in the category
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } }
     }
-
     const productIds = products.map((product) => product._id)
 
-    // Step 3: Get all orders with statusPayment === "PAID"
+    // Step 3: Get all paid orders within the date range
     const paidOrders = await ctx.db
       .query("orders")
       .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
       .filter((q) =>
         q.and(
           q.eq(q.field("statusPayment"), "PAID"),
-          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.from ? q.gte(q.field("_creationTime"), args.from) : true,
           args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
       .collect()
 
     if (paidOrders.length === 0) {
-      return { _count: 0, _sum: { quantity: 0, amount: 0 } } // Return default if no paid orders
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } }
     }
-
     const orderIds = paidOrders.map((order) => order._id)
 
-    // Step 4: Query matching orderlines for each productId and orderId
-    const orderlines = []
-    for (const productId of productIds) {
-      for (const orderId of orderIds) {
-        const lines = await ctx.db
+    // Step 4: More efficient approach - query by product IDs first, then filter by order IDs
+    const aggregation = { _count: 0, _sum: { quantity: 0, amount: 0 } }
+
+    // Process in batches to avoid hitting query limits
+    const BATCH_SIZE = 50
+    for (let i = 0; i < productIds.length; i += BATCH_SIZE) {
+      const batchProductIds = productIds.slice(i, i + BATCH_SIZE)
+
+      for (const productId of batchProductIds) {
+        const orderlines = await ctx.db
           .query("orderlines")
-          .filter((q) =>
-            q.and(
-              q.eq(q.field("productId"), productId),
-              q.eq(q.field("orderId"), orderId),
-            ),
-          )
+          .withIndex("productId", (q) => q.eq("productId", productId))
           .collect()
-        orderlines.push(...lines)
+
+        const filteredOrderlines = orderlines.filter((line) =>
+          orderIds.includes(line.orderId),
+        )
+
+        for (const orderline of filteredOrderlines) {
+          aggregation._count += 1
+          aggregation._sum.quantity += orderline.quantity
+          aggregation._sum.amount += orderline.amount
+        }
       }
     }
 
-    // Step 5: Aggregate the data
-    const aggreggation = orderlines.reduce(
-      (acc, line) => {
-        acc._count += 1
-        acc._sum.quantity += line.quantity
-        acc._sum.amount += line.amount
-        return acc
-      },
-      { _count: 0, _sum: { quantity: 0, amount: 0 } },
-    )
-
-    return aggreggation
+    return aggregation
   },
 })
 
