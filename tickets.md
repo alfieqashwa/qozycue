@@ -153,7 +153,6 @@
 ✅ Packet with the same company and the same rate must have a unique name
 ✅ Tax with the same company must have a unique name
 ✅ Discount with the same company must have a unique name
-
 ❌ Customer Received amount and change must be included on receipt (struck)
 ❌ Free Product Configuration (Manager)
 ❌ Dashboard (Display latest Customer)
@@ -164,11 +163,20 @@
 ❌ i18n Configuration
 ❌ Instead of UI, how to stop the timer using Cronjob
 ❌ API for IoT (Turn ON/OFF Light)
-
 ❌ Reconfig Sidebar -> https://ui.shadcn.com/blocks
 ❌ "react-to-print" version after learn their recent documentation
 ❌ Relate the Discount Table -> Product Table (So each product can have discount configuration) m2n
 ❌ Learn Convex Ents: https://labs.convex.dev/convex-ents
+
+---
+
+## Optimize FnAPI()
+
+Source -> https://docs.convex.dev/understanding/best-practices/
+
+❌ Avoid .filter() on database queries. Use .withIndex() instead.
+❌ Check for redundant indexes.
+❌ (Optional): Check returns validator
 
 ---
 
