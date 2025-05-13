@@ -185,35 +185,54 @@ export const _sumRevenue = query({
       )
       .order("desc")
       .collect()
-    const orderList = await Promise.all(
-      (orders ?? []).map(async (order) => {
-        const orderlines = await ctx.db
-          .query("orderlines")
-          .withIndex("orderId", (q) => q.eq("orderId", order._id))
-          .collect()
-        return {
-          length: orderlines.length,
-          quantity: orderlines.reduce((acc, curr) => acc + curr.quantity, 0),
-          amount: orderlines.reduce((acc, curr) => acc + curr.amount, 0),
-        }
-      }),
-    )
-    const _count = orderList.reduce((acc, curr) => acc + curr.length, 0)
-    const quantity = orderList.reduce(
-      (acc, curr) => acc + (curr.quantity ?? 0),
-      0,
-    )
-    const amount = orderList.reduce((acc, curr) => acc + (curr.amount ?? 0), 0)
+
+    if (orders.length === 0) {
+      return { _count: 0, _sum: { quantity: 0, amount: 0 } }
+    }
+
+    // Process orders in batches
+    const BATCH_SIZE = 50
+    let totalCount = 0
+    let totalQuantity = 0
+    let totalAmount = 0
+
+    for (let i = 0; i < orders.length; i += BATCH_SIZE) {
+      const batchOrders = orders.slice(i, i + BATCH_SIZE)
+
+      // Process this batch
+      const batchResults = await Promise.all(
+        batchOrders.map(async (order) => {
+          const orderlines = await ctx.db
+            .query("orderlines")
+            .withIndex("orderId", (q) => q.eq("orderId", order._id))
+            .collect()
+
+          return {
+            length: orderlines.length,
+            quantity: orderlines.reduce((acc, curr) => acc + curr.quantity, 0),
+            amount: orderlines.reduce((acc, curr) => acc + curr.amount, 0),
+          }
+        }),
+      )
+
+      // Add batch results to totals
+      for (const result of batchResults) {
+        totalCount += result.length
+        totalQuantity += result.quantity || 0
+        totalAmount += result.amount || 0
+      }
+    }
 
     return {
-      _count,
+      _count: totalCount,
       _sum: {
-        quantity,
-        amount,
+        quantity: totalQuantity,
+        amount: totalAmount,
       },
     }
   },
 })
+
 export const _sumByCategory = query({
   args: {
     from: v.optional(v.float64()),
@@ -261,29 +280,12 @@ export const _sumByCategory = query({
     const paidOrders = await ctx.db
       .query("orders")
       .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-      .filter(
-        (q) => {
-          let filterExpr = q.eq(q.field("statusPayment"), "PAID")
-
-          if (args.from) {
-            filterExpr = q.and(
-              filterExpr,
-              q.gte(q.field("_creationTime"), args.from),
-            )
-          }
-          if (args.to) {
-            filterExpr = q.and(
-              filterExpr,
-              q.lte(q.field("_creationTime"), args.to),
-            )
-          }
-          return filterExpr
-        },
-        // q.and(
-        //   q.eq(q.field("statusPayment"), "PAID"),
-        //   args.from ? q.gte(q.field("_creationTime"), args.from) : true,
-        //   args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        // ),
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("statusPayment"), "PAID"),
+          args.from ? q.gte(q.field("_creationTime"), args.from) : true,
+          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
+        ),
       )
       .collect()
 
@@ -338,33 +340,70 @@ export const _calculateProfit = query({
     )
       throw new ConvexError("You do not have access!")
 
+    // Get all orders matching criteria
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .withIndex("by_company_statuspayment", (q) =>
+        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
+      )
       .filter((q) =>
         q.and(
           q.eq(q.field("statusPayment"), "PAID"),
-          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
+          args.from ? q.gte(q.field("_creationTime"), args.from) : true,
           args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
       )
-      .order("desc")
       .collect()
 
+    // Extract order IDs
+    const orderIds = orders.map((order) => order._id)
+
+    // Fetch all orderlines for these orders
+    const allOrderlines = await ctx.db.query("orderlines").collect()
+
+    // Filter orderlines for our orders
+    const orderlines = allOrderlines.filter((ol) =>
+      orderIds.includes(ol.orderId),
+    )
+
+    // Extract unique product Ids
+    const productIds = [...new Set(orderlines.map((ol) => ol.productId))]
+
+    const products = await Promise.all(productIds.map((id) => ctx.db.get(id)))
+
+    // Initial totals
     let totalAmount = 0
     let totalCost = 0
     let totalQuantity = 0
 
-    for (const order of orders) {
-      const orderlines = await ctx.db
-        .query("orderlines")
-        .withIndex("orderId", (q) => q.eq("orderId", order._id))
-        .collect()
+    // Process products in batches
+    const BATCH_SIZE = 50
+    for (let i = 0; i < products.length; i += BATCH_SIZE) {
+      const batchProductIds = productIds.slice(i, i + BATCH_SIZE)
 
-      for (const ol of orderlines) {
-        const product = await ctx.db.get(ol.productId)
+      // Fetch products in batch
+      const products = await Promise.all(
+        batchProductIds.map((id) => ctx.db.get(id)),
+      )
 
-        if (product) {
+      // Create a map for quick product lookup
+      const productsMap = new Map()
+      products.forEach((product) => {
+        if (product) productsMap.set(product._id, product)
+      })
+
+      // Process orderlines for this batch of products
+      for (const productId of batchProductIds) {
+        const product = productsMap.get(productId)
+        if (!product) continue
+
+        // Find all orderlines for this product
+        const productOrderlines = orderlines.filter(
+          (ol) => ol.productId === productId,
+        )
+
+        // Calculate totals for this product
+        for (const ol of productOrderlines) {
           const { costPrice = 0 } = product
 
           totalAmount += ol.amount
@@ -373,6 +412,7 @@ export const _calculateProfit = query({
         }
       }
     }
+
     return {
       totalAmount, // Total revenue from all orderlines
       totalCost, // Total cost of products sold
@@ -400,10 +440,11 @@ export const _groupByProductId = query({
     // Step 1: Fetch all paid orders for the user's company
     const paidOrders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
+      .withIndex("by_company_statuspayment", (q) =>
+        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
+      )
       .filter((q) =>
         q.and(
-          q.eq(q.field("statusPayment"), "PAID"),
           args.from ? q.gt(q.field("_creationTime"), args.from) : true,
           args.to ? q.lte(q.field("_creationTime"), args.to) : true,
         ),
@@ -414,20 +455,43 @@ export const _groupByProductId = query({
 
     const orderIds = paidOrders.map((order) => order._id)
 
-    // Step 2: Fetch order lines within the time range for these orders
-    const orderlines = []
-    for (const order of orderIds) {
-      const lines = await ctx.db
-        .query("orderlines")
-        .withIndex("orderId", (q) => q.eq("orderId", order))
-        .collect()
-      orderlines.push(...lines)
+    // Step 2: Fetch all orderlines in batches
+    const BATCH_SIZE = 50
+
+    // Define the type for orderlines based on your schema
+    type Orderline = {
+      _id: Id<"orderlines">
+      orderId: Id<"orders">
+      productId: Id<"products">
+      quantity: number
+      amount: number
+      // Add any other fields your orderlines have
+    }
+    let allOrderlines: Orderline[] = []
+
+    for (let i = 0; i < orderIds.length; i += BATCH_SIZE) {
+      const batchOrderIds = orderIds.slice(i, i + BATCH_SIZE)
+
+      // Process each batch of orders
+      const batchOrderlines = await Promise.all(
+        batchOrderIds.map(async (orderId) => {
+          const orderlines = await ctx.db
+            .query("orderlines")
+            .withIndex("orderId", (q) => q.eq("orderId", orderId))
+            .collect()
+
+          return orderlines
+        }),
+      )
+
+      // Fetch all orderlines for this batch in parallel
+      allOrderlines = [...allOrderlines, ...batchOrderlines.flat()]
     }
 
-    if (orderlines.length === 0) return []
+    if (allOrderlines.length === 0) return []
 
-    // Step 3: Group by productId and aggregate
-    const groupedData = orderlines.reduce(
+    // Step 3: Group by productId and aggregate (this is already efficient)
+    const groupedData = allOrderlines.reduce(
       (acc, line) => {
         const productId = line.productId.toString()
 
