@@ -159,7 +159,8 @@ export default defineSchema({
   })
     .index("unitOfMeasureId", ["unitOfMeasureId"])
     .index("categoryId", ["categoryId"])
-    .index("companyId", ["companyId"]),
+    .index("companyId", ["companyId"])
+    .index("by_category_company", ["categoryId", "companyId"]),
 
   orderlines: defineTable({
     description: v.optional(v.string()),

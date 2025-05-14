@@ -23,12 +23,11 @@ export const findAllSortedByDate = query({
 
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .filter((q) =>
-        q.and(
-          q.gt(q.field("_creationTime"), args.from!),
-          q.lte(q.field("_creationTime"), args.to!),
-        ),
+      .withIndex("companyId", (q) =>
+        q
+          .eq("companyId", user?.companyId!)
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .order("desc")
       .collect()
@@ -166,11 +165,7 @@ export const _sumRevenue = query({
     //  Auth check: ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "OWNER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     if (!user?.companyId) {
@@ -180,13 +175,12 @@ export const _sumRevenue = query({
     // Get all paid orders within date range
     const orders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("statusPayment"), "PAID"),
-          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+      .withIndex("by_company_statuspayment", (q) =>
+        q
+          .eq("companyId", user.companyId!)
+          .eq("statusPayment", "PAID")
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .order("desc")
       .collect()
@@ -247,11 +241,7 @@ export const _sumByCategory = query({
     // Auth check: ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "OWNER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     if (!user?.companyId) {
@@ -271,8 +261,9 @@ export const _sumByCategory = query({
     // Step 2: Get all product IDs in the category for this company
     const products = await ctx.db
       .query("products")
-      .withIndex("categoryId", (q) => q.eq("categoryId", category._id))
-      .filter((q) => q.eq(q.field("companyId"), user.companyId))
+      .withIndex("by_category_company", (q) =>
+        q.eq("categoryId", category._id).eq("companyId", user.companyId!),
+      )
       .collect()
 
     if (products.length === 0) {
@@ -283,13 +274,12 @@ export const _sumByCategory = query({
     // Step 3: Get all paid orders within the date range
     const paidOrders = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("statusPayment"), "PAID"),
-          args.from ? q.gte(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+      .withIndex("by_company_statuspayment", (q) =>
+        q
+          .eq("companyId", user.companyId!)
+          .eq("statusPayment", "PAID")
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .collect()
 
@@ -336,25 +326,18 @@ export const _calculateProfit = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "OWNER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     // Get all orders matching criteria
     const orders = await ctx.db
       .query("orders")
       .withIndex("by_company_statuspayment", (q) =>
-        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
-      )
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("statusPayment"), "PAID"),
-          args.from ? q.gte(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+        q
+          .eq("companyId", user?.companyId!)
+          .eq("statusPayment", "PAID")
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .collect()
 
@@ -432,24 +415,18 @@ export const _groupByProductId = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "OWNER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     // Step 1: Fetch all paid orders for the user's company
     const paidOrders = await ctx.db
       .query("orders")
       .withIndex("by_company_statuspayment", (q) =>
-        q.eq("companyId", user.companyId!).eq("statusPayment", "PAID"),
-      )
-      .filter((q) =>
-        q.and(
-          args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-          args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-        ),
+        q
+          .eq("companyId", user?.companyId!)
+          .eq("statusPayment", "PAID")
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .collect()
 
@@ -571,11 +548,7 @@ export const upsert = zMutation({
     // cashierProcedure(ctx, {})
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "CASHIER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
     const updateStock = await ctx.db.patch(productId, {
@@ -622,14 +595,10 @@ export const remove = mutation({
     // cashierProcedure(ctx)
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "CASHIER"
-    )
+    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
-    const company = await ctx.db.get(user.companyId as Id<"companies">)
+    const company = await ctx.db.get(user?.companyId as Id<"companies">)
     if (!company) {
       throw new ConvexError("Company not found!")
     }
