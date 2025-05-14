@@ -71,7 +71,7 @@ export const transferPoolTableList = query({
 
     const poolTableListByCompany = await ctx.db
       .query("poolTables")
-      .withIndex("by_company_pooltable_status_isactive_starttime", (q) =>
+      .withIndex("by_company_status_isactive_starttime", (q) =>
         q
           .eq("companyId", user?.companyId!)
           .eq("status", "enabled")

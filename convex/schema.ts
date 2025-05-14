@@ -84,7 +84,7 @@ export default defineSchema({
     companyId: v.id("companies"),
   })
     .index("companyId", ["companyId"])
-    .index("by_company_pooltable_status_isactive_starttime", [
+    .index("by_company_status_isactive_starttime", [
       "companyId",
       "status",
       "isActive",

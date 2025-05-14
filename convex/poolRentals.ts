@@ -336,46 +336,43 @@ export const _groupByPoolTableId = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
+
     if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
-    // Step 1: Fetch all paid orders for the user's company
-    const paidOrders =
-      user === null
-        ? []
-        : await ctx.db
-            .query("orders")
-            .withIndex("by_company_statuspayment", (q) =>
-              q
-                .eq("companyId", user.companyId!)
-                .eq("statusPayment", "PAID")
-                .gte("_creationTime", args.from ?? 0)
-                .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
-            )
-            .order("desc")
-            .collect()
+    // Step 1: Fetch all PAID orders for within the time range
+    const paidOrders = await ctx.db
+      .query("orders")
+      .withIndex("by_company_statuspayment", (q) =>
+        q
+          .eq("companyId", user?.companyId!)
+          .eq("statusPayment", "PAID")
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
+      )
+      .order("desc")
+      .collect()
 
-    if (paidOrders.length === 0) {
-      return [] // Return empty array if no orders found
-    }
+    if (paidOrders.length === 0) return []
+
     const orderIds = paidOrders.map((order) => order._id)
 
-    // Step 2: Fetch pool rentals in the time range for these orders
-    const poolRentals = []
-    for (const orderId of orderIds) {
-      const rentals = await ctx.db
-        .query("poolRentals")
-        .withIndex("orderId", (q) => q.eq("orderId", orderId))
-        .collect()
-      poolRentals.push(...rentals)
-    }
+    // Step 2: Fetch all pool rentals for those orders
+    const rentals = (
+      await Promise.all(
+        orderIds.map((orderId) =>
+          ctx.db
+            .query("poolRentals")
+            .withIndex("orderId", (q) => q.eq("orderId", orderId))
+            .collect(),
+        ),
+      )
+    ).flat()
 
-    if (poolRentals.length === 0) {
-      return [] // Return empty array if no pool rentals found
-    }
+    if (rentals.length === 0) return []
 
-    // Step 3: Group by poolTableId aggregate
-    const groupedData = poolRentals.reduce(
+    // Step 3: Group  rentals by poolTableId
+    const rentalStats = rentals.reduce(
       (acc, rental) => {
         const poolTableId = rental.poolTableId.toString()
 
@@ -388,7 +385,7 @@ export const _groupByPoolTableId = query({
         }
 
         acc[poolTableId]._count += 1
-        acc[poolTableId]._sum.totalCost += rental.totalCost || 0
+        acc[poolTableId]._sum.totalCost += rental.totalCost ?? 0
 
         return acc
       },
@@ -398,8 +395,22 @@ export const _groupByPoolTableId = query({
       >,
     )
 
-    // Convert grouped data into an array
-    return Object.values(groupedData)
+    const poolTables = await ctx.db
+      .query("poolTables")
+      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
+      .collect()
+
+    // Return enirched and sorted results
+    return Object.values(rentalStats)
+      .map((stat) => ({
+        name: `Table ${poolTables.find((pool) => pool._id === stat.poolTableId)?.name}`,
+        total: stat._sum.totalCost,
+        count: stat._count,
+      }))
+      .filter((p) => !!p.name) // exclude cafe-only
+      .sort((p, q) =>
+        p!.name.localeCompare(q!.name, undefined, { numeric: true }),
+      )
   },
 })
 
