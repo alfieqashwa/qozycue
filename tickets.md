@@ -174,14 +174,22 @@
 
 Source -> https://docs.convex.dev/understanding/best-practices/
 
-❌ Avoid .filter() on database queries. Use .withIndex() instead.
+✅ Avoid .filter() on database queries. Use .withIndex() instead.
 
 - orders ✅
-- orderlines ❌
-- poolRentals ❌
+- orderlines ✅
+- poolRentals ✅
 
+### FYI: Read the explanation about batching to optimization:
+
+- Source -> https://chatgpt.com/share/6824aa52-50e4-8002-9724-402273e11b1c
+
+❌ Add CompanyId in table orderlines and tables poolRentals.
+❌ Add StatusPayment in table orderlines and tables poolRentals.
+❌ Create new index called `by_company_statuspayment` in table orderlines and table poolRentals.
+❌ Write code to keep both the statusPayment of table ordelines & of table poolRentals in sync whenever the statusPayment in tables orders has changes
+❌ Set all new fields to optional first, then update the database manually, and finally set all the fields as required.
 ❌ Check for redundant indexes.
-❌ (Optional): Check returns validator
 
 ---
 
