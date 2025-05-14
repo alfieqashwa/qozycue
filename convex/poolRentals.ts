@@ -358,21 +358,27 @@ export const _groupByPoolTableId = query({
     const orderIds = paidOrders.map((order) => order._id)
 
     // Step 2: Fetch all pool rentals for those orders
-    const rentals = (
-      await Promise.all(
-        orderIds.map((orderId) =>
+    const poolRentals = []
+
+    for (let i = 0; i < orderIds.length; i += BATCH_SIZE) {
+      const batch = orderIds.slice(i, i + BATCH_SIZE)
+
+      const batchRentals = await Promise.all(
+        batch.map((orderId) =>
           ctx.db
             .query("poolRentals")
             .withIndex("orderId", (q) => q.eq("orderId", orderId))
             .collect(),
         ),
       )
-    ).flat()
 
-    if (rentals.length === 0) return []
+      for (const rentals of batchRentals) {
+        poolRentals.push(...rentals)
+      }
+    }
 
     // Step 3: Group  rentals by poolTableId
-    const rentalStats = rentals.reduce(
+    const rentalStats = poolRentals.reduce(
       (acc, rental) => {
         const poolTableId = rental.poolTableId.toString()
 
