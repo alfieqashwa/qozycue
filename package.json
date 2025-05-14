@@ -1,6 +1,6 @@
 {
   "name": "qozycue",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "private": true,
   "scripts": {
     "dev": "npm-run-all --parallel dev:fe dev:be",
