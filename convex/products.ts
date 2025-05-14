@@ -59,13 +59,9 @@ export const create = zMutation({
     //? managerProcedure
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "MANAGER"
-    ) {
+    if (["ZENITH", "ADMIN", "MANAGER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
-    }
+
     if (!user) throw new ConvexError("No user!")
 
     const subs = await subscriptions(ctx, { companyId: user.companyId })
