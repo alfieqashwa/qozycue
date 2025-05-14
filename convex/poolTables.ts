@@ -71,18 +71,28 @@ export const transferPoolTableList = query({
 
     const poolTableListByCompany = await ctx.db
       .query("poolTables")
-      .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
-      .filter((q) =>
-        q.and(
-          q.neq(q.field("_id"), args.poolTableIdFrom),
-          q.neq(q.field("status"), "disabled"),
-          q.eq(q.field("isActive"), false),
-          q.eq(q.field("startTime"), null),
-        ),
+      .withIndex("by_company_pooltable_status_isactive_starttime", (q) =>
+        q
+          .eq("companyId", user?.companyId!)
+          .eq("status", "enabled")
+          .eq("isActive", false)
+          .eq("startTime", null),
       )
+      /* OLD CODE
+       .filter((q) =>
+         q.and(
+           q.neq(q.field("_id"), args.poolTableIdFrom),
+           q.neq(q.field("status"), "disabled"),
+           q.eq(q.field("isActive"), false),
+           q.eq(q.field("startTime"), null),
+         ),
+       ) */
       .collect()
 
-    return poolTableListByCompany.sort((p, q) =>
+    const fileteredPoolTableList = poolTableListByCompany.filter(
+      (poolTable) => poolTable._id !== args.poolTableIdFrom,
+    )
+    return fileteredPoolTableList.sort((p, q) =>
       p.name.localeCompare(q.name, undefined, { numeric: true }),
     )
   },

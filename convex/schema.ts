@@ -82,7 +82,14 @@ export default defineSchema({
     endTime: v.union(v.float64(), v.null()),
     gapDuration: v.number(),
     companyId: v.id("companies"),
-  }).index("companyId", ["companyId"]),
+  })
+    .index("companyId", ["companyId"])
+    .index("by_company_pooltable_status_isactive_starttime", [
+      "companyId",
+      "status",
+      "isActive",
+      "startTime",
+    ]),
 
   // packets is similar to products
   packets: defineTable({
