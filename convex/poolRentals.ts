@@ -27,15 +27,16 @@ export const findAll = query({
 
     const orderListByCompanyId = await ctx.db
       .query("orders")
-      .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-      .filter((q) =>
-        q.and(
-          q.gt(q.field("_creationTime"), args.from!),
-          q.lte(q.field("_creationTime"), args.to!),
-        ),
+      .withIndex("companyId", (q) =>
+        q
+          .eq("companyId", user.companyId!)
+          .gte("_creationTime", args.from ?? 0)
+          .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .order("desc")
       .collect()
+
+    if (orderListByCompanyId.length === 0) return []
 
     const filteredOrders = []
 
@@ -43,7 +44,6 @@ export const findAll = query({
       const poolRental = await ctx.db
         .query("poolRentals")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
-        // .filter((q) => q.eq(q.field("isBooking"), false))
         .first()
       if (poolRental) {
         const packet = await ctx.db.get(poolRental?.packetId)
@@ -69,8 +69,9 @@ export const findAllBookingByPoolTableId = query({
 
     const bookingRentalList = await ctx.db
       .query("poolRentals")
-      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
-      .filter((q) => q.eq(q.field("isBooking"), true))
+      .withIndex("by_pooltable_isbooking", (q) =>
+        q.eq("poolTableId", args.poolTableId).eq("isBooking", true),
+      )
       .collect()
 
     return await Promise.all(
@@ -108,8 +109,9 @@ export const findAllBookingByPoolTableIdPublicProcedure = query({
   handler: async (ctx, args) => {
     const bookingRentalList = await ctx.db
       .query("poolRentals")
-      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
-      .filter((q) => q.eq(q.field("isBooking"), true))
+      .withIndex("by_pooltable_isbooking", (q) =>
+        q.eq("poolTableId", args.poolTableId).eq("isBooking", true),
+      )
       .collect()
 
     return bookingRentalList
@@ -153,8 +155,9 @@ export const countIsBooking = query({
 
     const bookingList = await ctx.db
       .query("poolRentals")
-      .withIndex("poolTableId", (q) => q.eq("poolTableId", args.poolTableId))
-      .filter((q) => q.eq(q.field("isBooking"), true))
+      .withIndex("by_pooltable_isbooking", (q) =>
+        q.eq("poolTableId", args.poolTableId).eq("isBooking", true),
+      )
       .collect()
 
     return bookingList.length
@@ -183,8 +186,8 @@ export const _sumRevenue = query({
               q
                 .eq("companyId", user.companyId!)
                 .eq("statusPayment", "PAID")
-                .gte("_creationTime", args.from!)
-                .lte("_creationTime", args.to!),
+                .gte("_creationTime", args.from ?? 0)
+                .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
             )
             .order("desc")
             .collect()
@@ -342,13 +345,12 @@ export const _groupByPoolTableId = query({
         ? []
         : await ctx.db
             .query("orders")
-            .withIndex("companyId", (q) => q.eq("companyId", user.companyId!))
-            .filter((q) =>
-              q.and(
-                q.eq(q.field("statusPayment"), "PAID"),
-                args.from ? q.gt(q.field("_creationTime"), args.from) : true,
-                args.to ? q.lte(q.field("_creationTime"), args.to) : true,
-              ),
+            .withIndex("by_company_statuspayment", (q) =>
+              q
+                .eq("companyId", user.companyId!)
+                .eq("statusPayment", "PAID")
+                .gte("_creationTime", args.from ?? 0)
+                .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
             )
             .order("desc")
             .collect()
