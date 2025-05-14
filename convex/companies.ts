@@ -177,6 +177,17 @@ export const updateAdminProcedure = zMutation({
   },
 })
 
+/* Also remove relation tables of companies table:
+ * users
+ * taxes
+ * discounts
+ * customers
+ * poolTables
+ * packets
+ * orders
+ * products
+ * src -> note.md
+ */
 export const remove = mutation({
   args: { id: v.id("companies") },
   handler: async (ctx, args) => {

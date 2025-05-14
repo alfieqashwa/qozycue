@@ -102,6 +102,7 @@ export default defineSchema({
   })
     .index("companyId", ["companyId"])
     .index("by_company_rate", ["companyId", "rate"]),
+
   orders: defineTable({
     paymentMethod: v.optional(
       v.union(v.literal("CASH"), v.literal("DEBIT"), v.literal("CREDIT")),
@@ -190,7 +191,6 @@ export default defineSchema({
   unitOfMeasures: defineTable({
     name: v.string(),
     description: v.string(), // required b'coz it's global model
-    // companyId: v.id("companies"),
   }).index("by_name", ["name"]),
 
   memberships: defineTable({
