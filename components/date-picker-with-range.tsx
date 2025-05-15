@@ -1,8 +1,3 @@
-"use client"
-
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { type DateRange } from "react-day-picker"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -11,6 +6,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
+import { type DateRange } from "react-day-picker"
 
 type DatePickerWithRangeProps = {
   date: DateRange | undefined
@@ -52,7 +50,7 @@ export function DatePickerWithRange({
           </Button>
         </PopoverTrigger>
         {/* setup z-index -> z-40 so it will not on top of nav, especially, where it's really annoying on mobile view */}
-        <PopoverContent className="z-40 w-auto p-0" align={align}>
+        <PopoverContent className="z-50 w-auto p-0" align={align}>
           <Calendar
             // initialFocus
             mode="range"

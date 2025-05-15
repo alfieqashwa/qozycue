@@ -29,10 +29,14 @@ export default function Overview() {
     : undefined
 
   return (
-    <div className="relative">
-      <CustomDatePicker date={date} setDate={setDate} />
+    <div>
+      <CustomDatePicker
+        date={date}
+        setDate={setDate}
+        className="absolute -top-14 right-0 z-10"
+      />
       {status === "success" && !!country && (
-        <div className="space-y-4">
+        <div className="relative space-y-4">
           <CardList date={date} country={country} />
           <ChartList date={date} country={country} />
         </div>

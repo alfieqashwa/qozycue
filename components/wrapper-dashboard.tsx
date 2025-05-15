@@ -66,7 +66,7 @@ export function WrapperDashboard({
   )
 
   return (
-    <div className="relative pb-12 sm:pb-0">
+    <div className="relative">
       <div className="bg-background sticky top-0 z-50 flex h-20 items-center justify-between border-b-[3px]">
         <CompanyInfo company={user.company} pathname={pathname} />
         <div className="flex items-center justify-end space-x-0.5 pr-4 md:space-x-2">
@@ -145,7 +145,7 @@ export function WrapperDashboard({
       >
         {children}
       </main>
-      <footer className="fixed bottom-3 left-1/2 -translate-x-1/2 sm:hidden">
+      <footer className="fixed bottom-3 left-1/2 z-50 -translate-x-1/2 sm:hidden">
         <MenuOnMobile
           isOwner={ownerAccessLevel}
           isManager={managerAccessLevel}
