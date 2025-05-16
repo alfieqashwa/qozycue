@@ -15,8 +15,8 @@ export default async function TransactionLayout({
   orderlines: React.ReactNode
 }>) {
   return (
-    <Tabs defaultValue="order" className="mt-2">
-      <TabsList className="mb-3">
+    <Tabs defaultValue="order">
+      <TabsList className="mb-2">
         <TabsTrigger value="order">Orders</TabsTrigger>
         <TabsTrigger value="pool-rental">Pool Rentals</TabsTrigger>
         <TabsTrigger value="orderline">Orderlines</TabsTrigger>

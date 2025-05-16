@@ -145,7 +145,7 @@ export function WrapperDashboard({
       >
         {children}
       </main>
-      <footer className="fixed bottom-3 left-1/2 z-50 -translate-x-1/2 sm:hidden">
+      <footer className="fixed bottom-2 left-1/2 z-50 -translate-x-1/2 sm:hidden">
         <MenuOnMobile
           isOwner={ownerAccessLevel}
           isManager={managerAccessLevel}

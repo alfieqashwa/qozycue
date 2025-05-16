@@ -7,8 +7,8 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <Tabs defaultValue="transactions" className="mt-2">
-      <TabsList className="mb-3">
+    <Tabs defaultValue="transactions">
+      <TabsList className="mb-2">
         <TabsTrigger value="transactions">Transactions</TabsTrigger>
       </TabsList>
       <TabsContent value="transactions">Transactions Content</TabsContent>

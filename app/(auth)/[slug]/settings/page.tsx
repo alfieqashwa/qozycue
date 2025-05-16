@@ -38,11 +38,8 @@ export default async function SettingPage() {
     )
 
   return (
-    <Tabs
-      defaultValue={isSuperAdmin ? "category" : isAdmin ? "pool" : "tax"}
-      className="mt-2"
-    >
-      <TabsList className="mb-3">
+    <Tabs defaultValue={isSuperAdmin ? "category" : isAdmin ? "pool" : "tax"}>
+      <TabsList className="mb-2">
         {isSuperAdmin && (
           <>
             <TabsTrigger

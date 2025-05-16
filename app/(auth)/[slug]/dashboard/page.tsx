@@ -31,7 +31,7 @@ export default async function DashboardPage() {
       `/${encodeURIComponent(session.user.company?.slug as string)}/tables/`,
     )
   return (
-    <Tabs defaultValue="overview" className="relative mt-2">
+    <Tabs defaultValue="overview" className="relative">
       <TabsList className="mb-2">
         <TabsTrigger value="overview">Overview</TabsTrigger>
         <TabsTrigger value="detail">Detail</TabsTrigger>

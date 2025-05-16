@@ -24,8 +24,8 @@ export default async function ProductLayout({
       `/${encodeURIComponent(session.user.company?.slug as string)}/tables/`,
     )
   return (
-    <Tabs defaultValue="product" className="mt-2">
-      <TabsList className="mb-3">
+    <Tabs defaultValue="product">
+      <TabsList className="mb-2">
         <TabsTrigger value="product">Products</TabsTrigger>
         <TabsTrigger value="packet">Packets</TabsTrigger>
       </TabsList>

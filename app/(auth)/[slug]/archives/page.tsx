@@ -13,8 +13,8 @@ export default async function ArchivePage() {
   const token = await convexAuthNextjsToken()
   const preloadSession = await preloadQuery(api.sessions.find, {}, { token })
   return (
-    <Tabs defaultValue="archive" className="mt-2">
-      <TabsList className="mb-3">
+    <Tabs defaultValue="archive">
+      <TabsList className="mb-2">
         <TabsTrigger value="archive">Archives</TabsTrigger>
       </TabsList>
       <TabsContent value="archive">

@@ -21,8 +21,8 @@ export default async function Page() {
   if (!session) redirect("/signin")
 
   return (
-    <Tabs defaultValue="pool" className="mt-2">
-      <TabsList className="mb-3">
+    <Tabs defaultValue="pool">
+      <TabsList className="mb-2">
         <TabsTrigger value="pool">Pools</TabsTrigger>
         <TabsTrigger value="cafe-only" className="relative">
           Cafe Only
