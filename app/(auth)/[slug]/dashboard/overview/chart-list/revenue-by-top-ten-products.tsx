@@ -36,6 +36,9 @@ export default function RevenueByTopTenProducts({
   const isLoading =
     products.status !== "success" || groupByProductId.status !== "success"
 
+  if (isLoading)
+    return <SkeletonDashboardCard className="h-[505px] sm:h-[455px]" />
+
   return (
     <div className="grid grid-cols-1 gap-4">
       <div className="absolute flex w-full flex-col space-y-1.5 p-6">
@@ -50,18 +53,14 @@ export default function RevenueByTopTenProducts({
           </article>
         </div>
       </div>
-      {isLoading ? (
-        <SkeletonDashboardCard className="h-[505px] sm:h-[455px]" />
-      ) : (
-        <Card className="col-span-4">
-          <CardContent className="pt-40 sm:pt-20 sm:pl-6">
-            <TopTenProductBarChart
-              data={groupByProductId.data}
-              country={country}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <Card className="col-span-4">
+        <CardContent className="pt-40 sm:pt-20 sm:pl-6">
+          <TopTenProductBarChart
+            data={groupByProductId.data}
+            country={country}
+          />
+        </CardContent>
+      </Card>
     </div>
   )
 }
