@@ -38,7 +38,7 @@ export default async function DashboardPage() {
       </TabsList>
       <TabsContent value="overview">
         <Suspense fallback={<SkeletonDashboardCard />}>
-          <ScrollArea className="h-[calc(100vh_-_11rem)] scroll-smooth">
+          <ScrollArea className="h-[calc(100vh_-_9.3rem)] scroll-smooth">
             <Overview />
           </ScrollArea>
         </Suspense>
