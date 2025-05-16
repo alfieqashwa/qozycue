@@ -37,7 +37,10 @@ export default function PaymentSheet({
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="bg-card min-w-full sm:min-w-[480px]">
+      <SheetContent
+        className="bg-card min-w-full sm:min-w-[480px]"
+        onOpenAutoFocus={(e) => e.preventDefault()} // 👈 prevents autofocus
+      >
         <SheetHeader>
           <SheetTitle className="whitespace-nowrap">
             {poolTableName ? `Table ${poolTableName}` : "Cafe Only"}

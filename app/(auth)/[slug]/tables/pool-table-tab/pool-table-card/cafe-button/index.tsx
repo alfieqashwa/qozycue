@@ -95,6 +95,7 @@ export function CafeButton({
       <DrawerContent
         className="min-h-[calc(100vh_-_8.5rem)] min-w-full md:min-h-[calc(100vh_-_10rem)]"
         onCloseAutoFocus={() => setSearchTerm("")}
+        onOpenAutoFocus={(e) => e.preventDefault()} // 👈 prevents autofocus
       >
         {/* Title is a must!! Source -> https://github.com/shadcn-ui/ui/issues/4302 */}
         <DrawerTitle className="hidden" />

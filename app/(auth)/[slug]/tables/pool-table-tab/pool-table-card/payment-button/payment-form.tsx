@@ -334,9 +334,9 @@ export function PaymentForm({
               <section className="py-4">
                 <Input
                   type="number"
-                  placeholder="input uang dari customer"
+                  placeholder="input cash from customer"
                   onChange={(e) => handleCustomerMoney(e.target.value)}
-                  className="font-mono text-sm placeholder:font-sans md:text-base"
+                  className="font-mono text-sm placeholder:font-sans"
                 />
                 <article className="text-muted-foreground grid grid-cols-2 gap-x-2 py-4 font-mono font-medium">
                   <p className="text-right">Received:</p>

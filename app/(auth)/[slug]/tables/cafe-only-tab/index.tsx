@@ -8,7 +8,6 @@ import { convexQuery } from "@convex-dev/react-query"
 import { useQuery as useTanstackQuery } from "@tanstack/react-query"
 import { Preloaded, usePreloadedQuery } from "convex/react"
 import { FunctionReturnType } from "convex/server"
-import { Fragment } from "react"
 import { CafeButton } from "../pool-table-tab/pool-table-card/cafe-button"
 import { UpdateCustomerInfo } from "../pool-table-tab/pool-table-card/detail-button/update-customer-info"
 import { PaymentButton } from "../pool-table-tab/pool-table-card/payment-button"
@@ -46,7 +45,7 @@ export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
 
   const status = filteredOrders.status || company.status
   return (
-    <Fragment>
+    <>
       <CreateOrderForm isCashier={cashierAccessLevel} />
       {status && !!filteredOrders.data?.length && !!country ? (
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 2xl:grid-cols-3">
@@ -68,7 +67,7 @@ export default function CafeOnlyTab({ preloadedSession }: CafeOnlyTabProps) {
           </p>
         </div>
       )}
-    </Fragment>
+    </>
   )
 }
 

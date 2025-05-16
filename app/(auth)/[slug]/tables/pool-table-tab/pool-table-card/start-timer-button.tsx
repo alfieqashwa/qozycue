@@ -162,6 +162,7 @@ export function StartTimerButton({
       </DialogTrigger>
       <DialogContent
         onCloseAutoFocus={handleOnCloseAutoFocus}
+        onOpenAutoFocus={(e) => e.preventDefault()} // 👈 prevents autofocus
         className="bg-card"
       >
         <DialogHeader>

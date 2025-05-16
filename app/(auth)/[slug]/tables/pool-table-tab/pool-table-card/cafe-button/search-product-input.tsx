@@ -29,7 +29,7 @@ export function SearchProductInput({
   return (
     <Input
       placeholder={placeholder}
-      className="max-w-[480px]"
+      className="max-w-[480px] text-sm"
       value={searchTerm}
       // onChange={(e) => debounceSearch(e.target.value)}
       onChange={(e) => setSearchTerm(e.target.value)}

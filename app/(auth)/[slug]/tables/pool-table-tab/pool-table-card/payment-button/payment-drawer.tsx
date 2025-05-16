@@ -37,7 +37,10 @@ export default function PaymentDrawer({
         </Button>
       </DrawerTrigger>
 
-      <DrawerContent className="bg-card min-h-[calc(100vh_-_3rem)]">
+      <DrawerContent
+        className="bg-card min-h-[calc(100vh_-_3rem)]"
+        onOpenAutoFocus={(e) => e.preventDefault()} // 👈 prevents autofocus
+      >
         <DrawerHeader className="-mb-2 text-center">
           <DrawerTitle className="whitespace-nowrap">
             {poolTableName ? `Table ${poolTableName}` : "Cafe Only"}
