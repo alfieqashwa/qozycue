@@ -4,7 +4,7 @@ import { z } from "zod"
 const discountSchema = z.object({
   id: zid("discounts"),
   name: z.string().min(1).max(5),
-  value: z.coerce.number().lte(100).positive(),
+  value: z.coerce.number().lte(100).nonnegative(),
   companyId: zid("companies"),
 })
 
