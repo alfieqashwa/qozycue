@@ -69,6 +69,7 @@ export default defineSchema({
     email: v.optional(v.string()),
     gender: v.optional(v.union(v.literal("FEMALE"), v.literal("MALE"))),
     companyId: v.id("companies"),
+    membership: v.optional(v.id("memberships")),
   })
     .index("companyId", ["companyId"])
     .index("by_name", ["name"]),
@@ -148,12 +149,14 @@ export default defineSchema({
     poolTableId: v.id("poolTables"),
     packetId: v.id("packets"),
     orderId: v.id("orders"),
+    companyId: v.optional(v.id("companies")),
   })
     .index("packetId", ["packetId"])
     .index("poolTableId", ["poolTableId"])
     .index("orderId", ["orderId"])
     .index("by_order_isbooking", ["orderId", "isBooking"])
-    .index("by_pooltable_isbooking", ["poolTableId", "isBooking"]),
+    .index("by_pooltable_isbooking", ["poolTableId", "isBooking"])
+    .index("by_company_isbooking", ["companyId", "isBooking"]),
 
   products: defineTable({
     name: v.string(),
@@ -178,9 +181,11 @@ export default defineSchema({
     isFree: v.boolean(),
     productId: v.id("products"),
     orderId: v.id("orders"),
+    companyId: v.optional(v.id("companies")),
   })
     .index("productId", ["productId"])
-    .index("orderId", ["orderId"]),
+    .index("orderId", ["orderId"])
+    .index("companyId", ["companyId"]),
 
   categories: defineTable({
     name: v.string(),
@@ -196,8 +201,9 @@ export default defineSchema({
   memberships: defineTable({
     level: v.string(),
     discountRate: v.float64(),
-    customerId: v.optional(v.id("customers")), // Todos: not required (yet) b'coz have not config the Membership's feature
-  }).index("customerId", ["customerId"]),
+    customerId: v.id("customers"), // Todos: not required (yet) b'coz have not config the Membership's feature
+    companyId: v.id("companies"),
+  }).index("by_customer_company", ["customerId", "companyId"]),
 
   // TODOS: Setup for later
   // payments: defineTable({
