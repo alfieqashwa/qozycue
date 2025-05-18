@@ -1,14 +1,14 @@
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import ConvexClientProvider from "@/components/ConvexClientProvider"
 import { ThemeProvider } from "@/components/providers"
 import { cn } from "@/lib/utils"
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { CircleCheck, CircleX, Info } from "lucide-react"
 import type { Metadata } from "next"
 import { Toaster } from "sonner"
-import "../styles/globals.css"
 import { poppins } from "../styles/font"
+import "../styles/globals.css"
 
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
@@ -48,16 +48,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const classNames = `font-sans antialiased ${poppins.variable}`
   return (
     <ConvexAuthNextjsServerProvider>
       {/* `suppressHydrationWarning` only affects the html tag,
       and is needed by `ThemeProvider` which sets the theme
       class attribute on it */}
-      <html lang="en" suppressHydrationWarning className="dark scroll-smooth">
-        <head />
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={cn("dark scroll-smooth", poppins.variable)}
+      >
+        {/* <head /> */}
         {/* <body className={cn("font-sans antialiased", fontSans.variable)}> */}
-        <body className={classNames}>
+        <body className="antialiased">
           <ConvexClientProvider>
             <ThemeProvider
               attribute="class"
