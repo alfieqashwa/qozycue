@@ -818,13 +818,14 @@ export const stopTimer = zMutation({
     }
 
     //? Calculate duration in minute-rate
-    const ONE_HOUR_IN_MILLISECONDS = 1_000 * 60 * 60
     const elapsedTime = endTime - startTime
     const elapsedInMinutes = Math.floor(elapsedTime / (1000 * 60))
-    const oneHourInMinutes = Math.floor(ONE_HOUR_IN_MILLISECONDS / (1000 * 60))
 
-    //? Calculate totalCost in minute-rate
-    let totalCostInMinutes: number
+    /*
+    Commented out this and keep default calculation until there're request for this implementation
+
+    const ONE_HOUR_IN_MILLISECONDS = 1_000 * 60 * 60
+    const oneHourInMinutes = Math.floor(ONE_HOUR_IN_MILLISECONDS / (1000 * 60))
 
     //? If duration is less than one hour, than cust must pay as 1hr totalCost
     if (elapsedTime < ONE_HOUR_IN_MILLISECONDS) {
@@ -832,6 +833,10 @@ export const stopTimer = zMutation({
     } else {
       totalCostInMinutes = cost * elapsedInMinutes
     }
+    */
+
+    //? Calculate totalCost in minute-rate
+    const totalCostInMinutes = cost * elapsedInMinutes
 
     const totalCost = Math.round(totalCostInMinutes / 100) * 100
 
