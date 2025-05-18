@@ -178,11 +178,19 @@ export function PaymentForm({
   })
 
   const getTotal = useCallback(
-    (subTotal: number, discount: number, tax: number) => {
+    (subTotal: number, discount: number = 0, tax: number) => {
+      /*
       const discountedSubTotal = subTotal * discount
       const taxedSubTotal = subTotal * tax
       const discountAfterSubTotal = subTotal - discountedSubTotal
       const totalAmount = discountAfterSubTotal + taxedSubTotal
+      */
+
+      // Total Amount sohuld be tax after discounted sub total (if no discount, default is 0)
+      const discountedSubTotal = subTotal * discount
+      const discountAfterSubTotal = subTotal - discountedSubTotal
+      const taxedAfterDiscount = discountAfterSubTotal * tax
+      const totalAmount = discountAfterSubTotal + taxedAfterDiscount
       return {
         totalAmount: Math.round(totalAmount / 100) * 100,
         revenue: Math.round(discountAfterSubTotal / 100) * 100,
