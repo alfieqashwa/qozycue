@@ -495,6 +495,8 @@ export const createBooking = zMutation({
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (!user?.companyId) throw new ConvexError("No company provided!")
 
+    const statusPayment = "OPEN"
+
     const listOfPoolRental = await ctx.db
       .query("poolRentals")
       .withIndex("poolTableId", (q) => q.eq("poolTableId", poolTableId))
@@ -506,7 +508,7 @@ export const createBooking = zMutation({
           const order = await ctx.db
             .query("orders")
             .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-            .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+            .filter((q) => q.eq(q.field("statusPayment"), statusPayment))
             .first()
 
           return rental.orderId === order?._id
@@ -541,7 +543,7 @@ export const createBooking = zMutation({
     const orderId = await ctx.db.insert("orders", {
       companyId: user.companyId,
       createdBy: user._id,
-      statusPayment: "OPEN",
+      statusPayment,
       customerId,
       isDeleted: false,
     })
@@ -554,6 +556,7 @@ export const createBooking = zMutation({
       totalCost,
       timeStart: startTime,
       timeEnd: endTime,
+      statusPayment,
     })
 
     return {
@@ -590,22 +593,30 @@ export const updateBooking = zMutation({
       .filter((q) => q.neq(q.field("orderId"), orderId)) // exclude orderId from the args
       .collect()
 
-    const listOfRentalTime = await Promise.all(
-      listOfPoolRental
-        .filter(async (rental) => {
-          const order = await ctx.db
-            .query("orders")
-            .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-            .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-            .first()
-          return rental.orderId === order?._id
-        })
-        .map((rental) => ({
-          timeStart: rental.timeStart,
-          timeEnd: rental.timeEnd,
-        }))
-        .sort((p, q) => p.timeStart! - q.timeStart!),
-    )
+    // const listOfRentalTime = await Promise.all(
+    //   listOfPoolRental
+    //     .filter(async (rental) => {
+    //       const order = await ctx.db
+    //         .query("orders")
+    //         .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
+    //         .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
+    //         .first()
+    //       return rental.orderId === order?._id
+    //     })
+    //     .map((rental) => ({
+    //       timeStart: rental.timeStart,
+    //       timeEnd: rental.timeEnd,
+    //     }))
+    //     .sort((p, q) => p.timeStart! - q.timeStart!),
+    // )
+
+    // find the existing open poolRental within the same poolTable
+    const listOfRentalTime = listOfPoolRental
+      .filter((rental) => rental.statusPayment === "OPEN")
+      .map((rental) => ({
+        timeStart: rental.timeStart,
+        timeEnd: rental.timeEnd,
+      }))
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     const endTime = startTime + duration * HOUR_TO_MILLISECOND

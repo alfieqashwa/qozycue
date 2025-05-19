@@ -574,6 +574,7 @@ export const upsert = zMutation({
       quantity,
       amount,
       isFree: false,
+      statusPayment: "OPEN",
       orderId,
       orderlineStatus: "UNORDERED", // "UNORDERED" is default value
     })
