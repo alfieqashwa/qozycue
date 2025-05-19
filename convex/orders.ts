@@ -993,37 +993,37 @@ export const payment = zMutation({
     if (!["ZENITH", "ADMIN", "CASHIER"].includes(user?.role ?? ""))
       throw new ConvexError("You do not have access!")
 
-    const poolRental = await ctx.db
-      .query("poolRentals")
-      .withIndex("orderId", (q) => q.eq("orderId", orderId))
-      .unique()
-
     const order = await ctx.db.get(orderId)
     if (!order) throw new ConvexError("Order not found!")
+
+    const poolRental = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId", (q) => q.eq("orderId", order._id))
+      .unique()
 
     const statusPayment = "PAID"
 
     const orderlines = await ctx.db
       .query("orderlines")
-      .withIndex("orderId", (q) => q.eq("orderId", orderId))
+      .withIndex("orderId", (q) => q.eq("orderId", order._id))
       .collect()
 
     // Update the status payment of all orderlines by orderId to "PAID"
-    if (orderlines.length === 0) return
-    const orderlineIds = orderlines.map((orderline) => orderline._id)
-    const updateOrderlines = []
 
-    for (const orderlineId of orderlineIds) {
-      const updateStatusPayment = await ctx.db.patch(orderlineId, {
-        statusPayment,
-      })
+    const updateOrderlinesRaw = await Promise.all(
+      orderlines.map(
+        async (orderline) =>
+          await ctx.db.patch(orderline._id, { statusPayment }),
+      ),
+    )
 
-      updateOrderlines.push(updateStatusPayment)
-    }
+    const updateOrderlines = updateOrderlinesRaw.filter(
+      (result) => result !== undefined,
+    )
 
     // No need to update the pool table if the order status payment is "PENDING"
     if (order.statusPayment === "PENDING") {
-      const updateOrder = await ctx.db.patch(orderId, {
+      const updateOrder = await ctx.db.patch(order._id, {
         totalAmount,
         revenue,
         paymentMethod,
@@ -1038,7 +1038,7 @@ export const payment = zMutation({
       return { updateOrder, updateOrderlines }
     }
 
-    const updateOrder = await ctx.db.patch(orderId, {
+    const updateOrder = await ctx.db.patch(order._id, {
       totalAmount,
       revenue,
       paymentMethod,
@@ -1055,7 +1055,7 @@ export const payment = zMutation({
       return { updateOrder, updateOrderlines }
     }
 
-    const updatePoolRental = await ctx.db.patch(poolRental?._id, {
+    const updatePoolRental = await ctx.db.patch(poolRental._id, {
       statusPayment,
     })
 

@@ -53,7 +53,7 @@ export const findAll = query({
           ...poolRental,
           packet,
           poolTable: { name: poolTable?.name },
-          order: { id: order._id, statusPayment: order.statusPayment },
+          order: { id: order._id },
         })
       }
     }

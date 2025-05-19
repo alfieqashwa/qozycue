@@ -184,7 +184,6 @@ export const columnsRental = (
   },
   {
     accessorKey: "statusPayment",
-    accessorFn: (row) => row.order.statusPayment,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status Payment" />
     ),

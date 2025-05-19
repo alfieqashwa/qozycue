@@ -24,21 +24,20 @@ import { RentalTable } from "./rental-table"
 
 export default function RentalPage() {
   const [date, setDate] = useDateRange()
+  const { from, to } = { from: date?.from?.getTime(), to: date?.to?.getTime() }
 
   const poolRentals = useTanstackQuery({
     ...convexQuery(api.poolRentals.findAll, {
-      from: date?.from?.getTime(),
-      to: date?.to?.getTime(),
+      from,
+      to,
     }),
-    enabled: !!date?.from && !!date.to,
+    enabled: !!from && !!to,
     select(data) {
-      return data.filter((rental) => rental.order?.statusPayment !== "ARCHIVE")
+      return data.filter((rental) => rental.statusPayment !== "ARCHIVE")
     },
   })
 
-  const company = useTanstackQuery({
-    ...convexQuery(api.companies.find, {}),
-  })
+  const company = useTanstackQuery(convexQuery(api.companies.find, {}))
 
   const country = countries.find(
     (c) => c.code === (company.data?.countryCode as string),
