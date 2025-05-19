@@ -1003,6 +1003,24 @@ export const payment = zMutation({
 
     const statusPayment = "PAID"
 
+    const orderlines = await ctx.db
+      .query("orderlines")
+      .withIndex("orderId", (q) => q.eq("orderId", orderId))
+      .collect()
+
+    // Update the status payment of all orderlines by orderId to "PAID"
+    if (orderlines.length === 0) return
+    const orderlineIds = orderlines.map((orderline) => orderline._id)
+    const updateOrderlines = []
+
+    for (const orderlineId of orderlineIds) {
+      const updateStatusPayment = await ctx.db.patch(orderlineId, {
+        statusPayment,
+      })
+
+      updateOrderlines.push(updateStatusPayment)
+    }
+
     // No need to update the pool table if the order status payment is "PENDING"
     if (order.statusPayment === "PENDING") {
       const updateOrder = await ctx.db.patch(orderId, {
@@ -1017,7 +1035,7 @@ export const payment = zMutation({
         updatedTime: Date.now(),
       })
 
-      return { updateOrder }
+      return { updateOrder, updateOrderlines }
     }
 
     const updateOrder = await ctx.db.patch(orderId, {
@@ -1034,7 +1052,7 @@ export const payment = zMutation({
 
     // for cafe-only use case
     if (!poolRental) {
-      return { updateOrder }
+      return { updateOrder, updateOrderlines }
     }
 
     const updatePoolRental = await ctx.db.patch(poolRental?._id, {
@@ -1046,10 +1064,15 @@ export const payment = zMutation({
         startTime: null,
         endTime: null,
       })
-      return { updateOrder, updatePoolRental, updatePoolTable }
+      return {
+        updateOrder,
+        updatePoolRental,
+        updateOrderlines,
+        updatePoolTable,
+      }
     }
 
-    return { updateOrder, updatePoolRental }
+    return { updateOrder, updatePoolRental, updateOrderlines }
   },
 })
 
