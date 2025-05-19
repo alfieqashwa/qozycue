@@ -69,10 +69,11 @@ export default defineSchema({
     email: v.optional(v.string()),
     gender: v.optional(v.union(v.literal("FEMALE"), v.literal("MALE"))),
     companyId: v.id("companies"),
-    membership: v.optional(v.id("memberships")),
+    isMember: v.optional(v.boolean()),
   })
     .index("companyId", ["companyId"])
-    .index("by_name", ["name"]),
+    .index("by_name", ["name"])
+    .index("by_company_isMember", ["companyId", "isMember"]),
 
   poolTables: defineTable({
     name: v.string(),
@@ -113,6 +114,7 @@ export default defineSchema({
       v.literal("PENDING"),
       v.literal("PAID"),
       v.literal("CANCELLED"), // new enum
+      v.literal("REFUND"), // new enum
       v.literal("ARCHIVE"),
     ),
     // isBooking: v.boolean(),
@@ -146,6 +148,14 @@ export default defineSchema({
     duration: v.optional(v.number()),
     totalCost: v.optional(v.float64()),
     isBooking: v.boolean(),
+    statusPayment: v.union(
+      v.literal("OPEN"),
+      v.literal("PENDING"),
+      v.literal("PAID"),
+      v.literal("CANCELLED"),
+      v.literal("REFUND"),
+      v.literal("ARCHIVE"),
+    ),
     poolTableId: v.id("poolTables"),
     packetId: v.id("packets"),
     orderId: v.id("orders"),
@@ -179,6 +189,14 @@ export default defineSchema({
     quantity: v.number(),
     amount: v.float64(),
     isFree: v.boolean(),
+    statusPayment: v.union(
+      v.literal("OPEN"),
+      v.literal("PENDING"),
+      v.literal("PAID"),
+      v.literal("CANCELLED"),
+      v.literal("REFUND"),
+      v.literal("ARCHIVE"),
+    ),
     productId: v.id("products"),
     orderId: v.id("orders"),
     companyId: v.optional(v.id("companies")),
@@ -197,13 +215,6 @@ export default defineSchema({
     name: v.string(),
     description: v.string(), // required b'coz it's global model
   }).index("by_name", ["name"]),
-
-  memberships: defineTable({
-    level: v.string(),
-    discountRate: v.float64(),
-    customerId: v.id("customers"), // Todos: not required (yet) b'coz have not config the Membership's feature
-    companyId: v.id("companies"),
-  }).index("by_customer_company", ["customerId", "companyId"]),
 
   // TODOS: Setup for later
   // payments: defineTable({

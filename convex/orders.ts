@@ -761,6 +761,7 @@ export const startTimer = zMutation({
     }
     // === ENDS Config Conflict Validation ===
 
+    const statusPayment = "OPEN"
     const totalCost = Math.round((cost * duration) / 100) * 100
 
     const updatePoolTable = await ctx.db.patch(poolTableId, {
@@ -778,7 +779,7 @@ export const startTimer = zMutation({
     const orderId = await ctx.db.insert("orders", {
       createdBy: user._id,
       companyId: user.companyId,
-      statusPayment: "OPEN",
+      statusPayment,
       customerId,
       isDeleted: false,
     })
@@ -792,6 +793,7 @@ export const startTimer = zMutation({
       timeStart: startTime,
       timeEnd: rate === "HOUR" ? endTime : null,
       isBooking: false,
+      statusPayment,
     })
 
     return { updatePoolTable, createOrder }
@@ -873,17 +875,32 @@ export const resetTimer = mutation({
   handler: async (ctx, args) => {
     await cashierProcedure(ctx)
 
+    const poolRentalByOrderId = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId", (q) => q.eq("orderId", args.orderId))
+      .unique()
+
+    if (!poolRentalByOrderId) {
+      throw new ConvexError("Pool rental not found")
+    }
+
     const updatePoolTable = await ctx.db.patch(args.poolTableId, {
       startTime: null,
       endTime: null,
       isActive: false,
     })
 
+    const statusPayment = "PENDING"
+
     const updateOrder = await ctx.db.patch(args.orderId, {
-      statusPayment: "PENDING",
+      statusPayment,
     })
 
-    return { updatePoolTable, updateOrder }
+    const updatePoolRental = await ctx.db.patch(poolRentalByOrderId._id, {
+      statusPayment,
+    })
+
+    return { updatePoolTable, updateOrder, updatePoolRental }
   },
 })
 
@@ -984,19 +1001,22 @@ export const payment = zMutation({
     const order = await ctx.db.get(orderId)
     if (!order) throw new ConvexError("Order not found!")
 
+    const statusPayment = "PAID"
+
     // No need to update the pool table if the order status payment is "PENDING"
     if (order.statusPayment === "PENDING") {
       const updateOrder = await ctx.db.patch(orderId, {
         totalAmount,
         revenue,
         paymentMethod,
-        statusPayment: "PAID",
+        statusPayment,
         discount,
         tax,
         note,
         updatedBy: user?._id,
         updatedTime: Date.now(),
       })
+
       return { updateOrder }
     }
 
@@ -1004,7 +1024,7 @@ export const payment = zMutation({
       totalAmount,
       revenue,
       paymentMethod,
-      statusPayment: "PAID",
+      statusPayment,
       discount,
       tax,
       note,
@@ -1017,14 +1037,19 @@ export const payment = zMutation({
       return { updateOrder }
     }
 
+    const updatePoolRental = await ctx.db.patch(poolRental?._id, {
+      statusPayment,
+    })
+
     if (order.statusPayment === "OPEN") {
       const updatePoolTable = await ctx.db.patch(poolRental.poolTableId, {
         startTime: null,
         endTime: null,
       })
-      return { updateOrder, updatePoolTable }
+      return { updateOrder, updatePoolRental, updatePoolTable }
     }
-    return { updateOrder }
+
+    return { updateOrder, updatePoolRental }
   },
 })
 
@@ -1036,15 +1061,53 @@ export const updateStatusPaymentTo = mutation({
       v.literal("PENDING"),
       v.literal("PAID"),
       v.literal("CANCELLED"),
+      v.literal("REFUND"),
       v.literal("ARCHIVE"),
     ),
   },
-  handler: async (ctx, args) => {
-    await protectedProcedure(ctx)
+  handler: async (ctx, { orderId, updateTo }) => {
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (!["ZENITH", "ADMIN", "MANAGER", "CASHIER"].includes(user?.role ?? ""))
+      throw new ConvexError("You do not have access!")
 
-    return await ctx.db.patch(args.orderId, {
-      statusPayment: args.updateTo,
+    const statusPayment = updateTo // statusPayment must be the same
+
+    // === PoolRentals ===
+    const poolRentals = await ctx.db
+      .query("poolRentals")
+      .withIndex("orderId", (q) => q.eq("orderId", orderId))
+      .collect()
+    if (poolRentals.length === 0) return
+    const poolRentalIds = poolRentals.map((rental) => rental._id) // just ids to optimizing
+
+    let updatePoolRentals = []
+    for (const rentalId of poolRentalIds) {
+      const updateRental = await ctx.db.patch(rentalId, { statusPayment })
+      updatePoolRentals.push(updateRental)
+    }
+
+    // === Orderlines ===
+    const orderlines = await ctx.db
+      .query("orderlines")
+      .withIndex("orderId", (q) => q.eq("orderId", orderId))
+      .collect()
+    if (orderlines.length === 0) return
+    const orderlineIds = orderlines.map((orderline) => orderline._id) // just ids to optimizing
+
+    let updateOrderlines = []
+    for (const orderlineId of orderlineIds) {
+      const updateOrderline = await ctx.db.patch(orderlineId, {
+        statusPayment,
+      })
+      updateOrderlines.push(updateOrderline)
+    }
+
+    const updateOrder = await ctx.db.patch(orderId, {
+      statusPayment,
     })
+
+    return { updateOrder, updatePoolRentals, updateOrderlines }
   },
 })
 
@@ -1067,9 +1130,43 @@ export const updateSelectedOrders = mutation({
         const order = await ctx.db.get(o.id)
         if (!order) throw new ConvexError("Order not found!")
 
-        return await ctx.db.patch(order._id, {
+        const updatePoolRentals = []
+        const poolRentals = await ctx.db
+          .query("poolRentals")
+          .withIndex("orderId", (q) => q.eq("orderId", o.id))
+          .collect()
+
+        if (poolRentals.length === 0) return
+        const poolRentalIds = poolRentals.map((rental) => rental._id) // just ids to optimizing
+
+        for (const rentalId of poolRentalIds) {
+          const update = await ctx.db.patch(rentalId, {
+            statusPayment: updateTo,
+          })
+          updatePoolRentals.push(update)
+        }
+
+        const updateOrderlines = []
+        const orderlines = await ctx.db
+          .query("orderlines")
+          .withIndex("orderId", (q) => q.eq("orderId", o.id))
+          .collect()
+
+        if (orderlines.length === 0) return
+        const orderlineIds = orderlines.map((orderline) => orderline._id) // just ids to optimizing
+
+        for (const orderlineId of orderlineIds) {
+          const update = await ctx.db.patch(orderlineId, {
+            statusPayment: updateTo,
+          })
+          updateOrderlines.push(update)
+        }
+
+        const updateOrders = await ctx.db.patch(order._id, {
           statusPayment: updateTo,
         })
+
+        return { updateOrders, updatePoolRentals, updateOrderlines }
       }),
     )
 
@@ -1088,12 +1185,13 @@ export const removeCafeOnly = mutation({
     await protectedProcedure(ctx)
 
     const order = await ctx.db.get(id)
-    const removeOrder = await ctx.db.delete(id)
 
     if (!order?.customerId) throw new ConvexError("No customer ID found!!")
     const removeCustomer = await ctx.db.delete(order.customerId)
 
-    return { removeOrder, removeCustomer }
+    const removeOrder = await ctx.db.delete(id) // sequence after removeCustomer
+
+    return { removeCustomer, removeOrder }
   },
 })
 
@@ -1124,6 +1222,7 @@ export const remove = mutation({
           orderlines.map(async (ol) => await ctx.db.delete(ol._id)),
         )
       : null
+
     const deleteOrder = await ctx.db.delete(id)
 
     return {
