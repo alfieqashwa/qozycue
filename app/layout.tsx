@@ -6,9 +6,20 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { CircleCheck, CircleX, Info } from "lucide-react"
 import type { Metadata } from "next"
+import { Poppins } from "next/font/google"
 import { Toaster } from "sonner"
-import { poppins } from "../styles/font"
-import "../styles/globals.css"
+import "../globals.css"
+
+const poppins = Poppins({
+  // subsets: ["latin"],
+  // variable: "--font-sans",
+  subsets: ["latin-ext"],
+  variable: "--font-sans",
+  style: "normal",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+  preload: false,
+})
 
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`

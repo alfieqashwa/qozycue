@@ -44,16 +44,20 @@ export enum RateEnum {
   MINUTE,
   HOUR,
 }
+
 export type StatusPayment =
   | "OPEN"
   | "PENDING"
-  | "CANCELLED"
   | "PAID"
+  | "CANCELLED"
+  | "REFUND"
   | "ARCHIVE"
 export enum StatusPaymentEnum {
   OPEN,
   PENDING,
   PAID,
+  CANCELLED,
+  REFUND,
   ARCHIVE,
 }
 
