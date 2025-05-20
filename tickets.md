@@ -174,7 +174,7 @@
 
 Source -> https://docs.convex.dev/understanding/best-practices/
 
-✅ Avoid .filter() on database queries. Use .withIndex() instead.
+✅ Avoid .filter() on database collection queries. Use .withIndex() instead
 
 - orders ✅
 - orderlines ✅
@@ -184,12 +184,15 @@ Source -> https://docs.convex.dev/understanding/best-practices/
 
 - Source -> https://chatgpt.com/share/6824aa52-50e4-8002-9724-402273e11b1c
 
-❌ Add CompanyId in table orderlines and tables poolRentals.
-❌ Add StatusPayment in table orderlines and tables poolRentals.
-❌ Create new index called `by_company_statuspayment` in table orderlines and table poolRentals.
-❌ Write code to keep both the statusPayment of table ordelines & of table poolRentals in sync whenever the statusPayment in tables orders has changes
-❌ Set all new fields to optional first, then update the database manually, and finally set all the fields as required.
-❌ Check for redundant indexes.
+✅ Add CompanyId in table orderlines and tables poolRentals.
+✅ Add StatusPayment in table orderlines and tables poolRentals.
+✅ Create new index called `by_company_statuspayment` in table orderlines and table poolRentals.
+✅ Write code to keep both the statusPayment of table ordelines & of table poolRentals in sync whenever the statusPayment in tables orders has changes
+✅ Set all new fields to optional first, then update the database manually, and finally set all the fields as required.
+✅ Check for redundant indexes.
+✅ Add new field in table `companies` called `customLossMinute` to set an hour price if customer only play less than an hour for rate Loss (Open) / Minute.
+✅ Currently, only can set manually from database and the default is `unset`, type is `optional boolean`.
+✅ Update Package Version Minor from 0.5.7 -> 0.6.0
 
 ---
 
