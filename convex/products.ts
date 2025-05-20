@@ -72,7 +72,7 @@ export const create = zMutation({
     })
     if (!isValid) throw new ConvexError("Max product limit exceeded!")
 
-    if (!user.companyId || !unitOfMeasureId || !categoryId)
+    if (!user?.companyId || !unitOfMeasureId || !categoryId)
       throw new ConvexError("Company, uom, category are required!")
 
     return await ctx.db.insert("products", {

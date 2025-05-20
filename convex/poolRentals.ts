@@ -18,8 +18,8 @@ export const findAll = query({
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!user || user.companyId)
-      throw new ConvexError("You do not have access!")
+    if (!user) throw new ConvexError("You do not have access!")
+    if (!user?.companyId) return null
 
     const orderListByCompanyId = await ctx.db
       .query("orders")

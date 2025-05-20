@@ -12,8 +12,8 @@ export const create = zMutation({
     // protectedProcedure(ctx)
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!user || !user.companyId)
-      throw new ConvexError("You do not have access!")
+    if (!user) throw new ConvexError("You do not have access!")
+    if (!user.companyId) return null
 
     const customerId = await ctx.db.insert("customers", {
       companyId: user.companyId,
