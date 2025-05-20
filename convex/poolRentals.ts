@@ -18,43 +18,32 @@ export const findAll = query({
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!user) throw new ConvexError("You do not have access!")
-    if (!user?.companyId) return null
 
-    const orderListByCompanyId = await ctx.db
-      .query("orders")
+    const poolRentalsByCompanyId = await ctx.db
+      .query("poolRentals")
       .withIndex("companyId", (q) =>
         q
-          .eq("companyId", user.companyId!)
+          .eq("companyId", user?.companyId!)
           .gte("_creationTime", args.from ?? 0)
           .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
       .order("desc")
       .collect()
 
-    if (orderListByCompanyId.length === 0) return []
+    if (poolRentalsByCompanyId.length === 0) return []
 
-    const filteredOrders = []
+    const poolRentals = await Promise.all(
+      poolRentalsByCompanyId
+        .filter((rental) => rental.statusPayment !== "ARCHIVE")
+        .map(async (rental) => {
+          const packet = await ctx.db.get(rental.packetId)
+          const poolTable = await ctx.db.get(rental.poolTableId)
 
-    for (const order of orderListByCompanyId) {
-      const poolRental = await ctx.db
-        .query("poolRentals")
-        .withIndex("orderId", (q) => q.eq("orderId", order._id))
-        .first()
-      if (poolRental) {
-        const packet = await ctx.db.get(poolRental?.packetId)
-        const poolTable = await ctx.db.get(poolRental?.poolTableId)
+          return { ...rental, packet, poolTable: { name: poolTable?.name } }
+        }),
+    )
 
-        filteredOrders.push({
-          ...poolRental,
-          packet,
-          poolTable: { name: poolTable?.name },
-          order: { id: order._id },
-        })
-      }
-    }
-
-    return filteredOrders
+    return poolRentals
   },
 })
 

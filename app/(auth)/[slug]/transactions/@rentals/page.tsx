@@ -32,9 +32,6 @@ export default function RentalPage() {
       to,
     }),
     enabled: !!from && !!to,
-    select(data) {
-      return data.filter((rental) => rental.statusPayment !== "ARCHIVE")
-    },
   })
 
   const company = useTanstackQuery(convexQuery(api.companies.find, {}))

@@ -39,7 +39,6 @@ export const findAll = query({
     const user = userId !== null ? await ctx.db.get(userId) : null
 
     if (!user) throw new ConvexError("No user!")
-    if (!user?.companyId) return null
 
     const pooltables = await ctx.db
       .query("poolTables")
