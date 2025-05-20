@@ -67,7 +67,11 @@ export function TotalRevenue({ date, country }: ListProps) {
         </div>
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total <span className="text-foreground">{totalTransactions}</span>{" "}
-          transactions
+          <span>
+            {totalTransactions && totalTransactions > 1
+              ? "transactions"
+              : "transaction"}
+          </span>
         </p>
       </CardContent>
     </Card>

@@ -20,7 +20,6 @@ import type * as customers from "../customers.js";
 import type * as discounts from "../discounts.js";
 import type * as helpers from "../helpers.js";
 import type * as http from "../http.js";
-import type * as messages from "../messages.js";
 import type * as orderlines from "../orderlines.js";
 import type * as orders from "../orders.js";
 import type * as packets from "../packets.js";
@@ -48,7 +47,6 @@ declare const fullApi: ApiFromModules<{
   discounts: typeof discounts;
   helpers: typeof helpers;
   http: typeof http;
-  messages: typeof messages;
   orderlines: typeof orderlines;
   orders: typeof orders;
   packets: typeof packets;

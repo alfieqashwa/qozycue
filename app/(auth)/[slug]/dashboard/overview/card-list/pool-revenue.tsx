@@ -59,7 +59,7 @@ export function PoolRevenue({ date, country }: ListProps) {
         <p className="text-muted-foreground pt-1 text-sm font-semibold tracking-wider">
           Total duration{" "}
           <span className="text-foreground">{durationHour.toFixed(2)}</span>{" "}
-          hours
+          <span>{durationHour > 1 ? "hours" : "hour"}</span>
         </p>
       </CardContent>
     </Card>

@@ -43,7 +43,7 @@ export function OrderlineRevenue({ date, country }: ListProps) {
           <span className="text-foreground">
             {orderlineRevenue._sum.quantity}
           </span>{" "}
-          orders
+          <span>{orderlineRevenue._sum.quantity > 1 ? "orders" : "order"}</span>
         </p>
       </CardContent>
     </Card>
