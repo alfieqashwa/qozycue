@@ -159,7 +159,7 @@ export default defineSchema({
     poolTableId: v.id("poolTables"),
     packetId: v.id("packets"),
     orderId: v.id("orders"),
-    companyId: v.optional(v.id("companies")),
+    companyId: v.id("companies"),
   })
     .index("packetId", ["packetId"])
     .index("poolTableId", ["poolTableId"])
@@ -167,8 +167,7 @@ export default defineSchema({
     .index("by_order_isbooking", ["orderId", "isBooking"])
     .index("by_pooltable_isbooking", ["poolTableId", "isBooking"])
     .index("by_company_isbooking", ["companyId", "isBooking"])
-    // .index("by_order_statusPayment", ["orderId", "statusPayment"]),
-    .index("by_company_status-payment", ["companyId", "statusPayment"]),
+    .index("by_company_statuspayment", ["companyId", "statusPayment"]),
 
   products: defineTable({
     name: v.string(),
@@ -201,11 +200,12 @@ export default defineSchema({
     ),
     productId: v.id("products"),
     orderId: v.id("orders"),
-    companyId: v.optional(v.id("companies")),
+    companyId: v.id("companies"),
   })
     .index("productId", ["productId"])
     .index("orderId", ["orderId"])
-    .index("companyId", ["companyId"]),
+    .index("companyId", ["companyId"])
+    .index("by_company_statuspayment", ["companyId", "statusPayment"]),
 
   categories: defineTable({
     name: v.string(),

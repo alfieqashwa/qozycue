@@ -7,12 +7,7 @@ import {
   startBookingTimerSchema,
 } from "../types/schema/order-schema"
 import { query } from "./_generated/server"
-import {
-  adminProcedure,
-  BATCH_SIZE,
-  protectedProcedure,
-  zMutation,
-} from "./helpers"
+import { adminProcedure, protectedProcedure, zMutation } from "./helpers"
 
 export const findAll = query({
   args: {
@@ -182,7 +177,7 @@ export const _sumRevenue = query({
       user !== null
         ? await ctx.db
             .query("poolRentals")
-            .withIndex("by_company_status-payment", (q) =>
+            .withIndex("by_company_statuspayment", (q) =>
               q
                 .eq("companyId", user.companyId!)
                 .eq("statusPayment", "PAID")
@@ -237,10 +232,10 @@ export const _sumByRate = query({
       return { _sum: { duration: 0 } }
     }
 
-    // Get all paid orders for the company within the date range
+    // Get all paid pool rentals  for the company within the date range
     const paidPoolRentals = await ctx.db
       .query("poolRentals")
-      .withIndex("by_company_status-payment", (q) =>
+      .withIndex("by_company_statuspayment", (q) =>
         q
           .eq("companyId", user.companyId!)
           .eq("statusPayment", "PAID")
@@ -286,7 +281,7 @@ export const _groupByPoolTableId = query({
     // Step 1: Fetch all PAID orders for within the time range
     const paidPoolRentals = await ctx.db
       .query("poolRentals")
-      .withIndex("by_company_status-payment", (q) =>
+      .withIndex("by_company_statuspayment", (q) =>
         q
           .eq("companyId", user?.companyId!)
           .eq("statusPayment", "PAID")
@@ -480,6 +475,7 @@ export const createBooking = zMutation({
       timeStart: startTime,
       timeEnd: endTime,
       statusPayment,
+      companyId: user.companyId,
     })
 
     return {

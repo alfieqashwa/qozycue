@@ -794,6 +794,7 @@ export const startTimer = zMutation({
       timeEnd: rate === "HOUR" ? endTime : null,
       isBooking: false,
       statusPayment,
+      companyId: user.companyId,
     })
 
     return { updatePoolTable, createOrder }
