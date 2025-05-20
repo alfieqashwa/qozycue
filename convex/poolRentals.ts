@@ -178,11 +178,11 @@ export const _sumRevenue = query({
       throw new ConvexError("You do not have access!")
     if (!user?.companyId) return null
 
-    const paidOrders =
+    const paidPoolRentals =
       user !== null
         ? await ctx.db
-            .query("orders")
-            .withIndex("by_company_statuspayment", (q) =>
+            .query("poolRentals")
+            .withIndex("by_company_status-payment", (q) =>
               q
                 .eq("companyId", user.companyId!)
                 .eq("statusPayment", "PAID")
@@ -193,53 +193,21 @@ export const _sumRevenue = query({
             .collect()
         : []
 
-    if (paidOrders.length === 0) {
+    if (paidPoolRentals.length === 0) {
       return { _count: 0, _sum: { totalCost: 0 } }
     }
 
-    const orderIds = paidOrders.map((order) => order._id)
-
-    /*
-This implementation:
-  1. Processes orders in batches of 50 to avoid potential performance issues with large datasets
-  2. For each batch, fetches the associated pool rentals using Promise.all for parallel execution
-  3. Filters out null rentals and updates the count and sum accordingly
-  4. Returns the final aggregation object with the total count and sum
-
-This approach is more efficient than the previous implementations shown in your commented code, as it:
-
-  - Processes data in batches to manage memory usage
-  - Uses Promise.all for parallel database queries within each batch
-  - Avoids redundant processing by directly aggregating the results
-
-For more complex aggregation needs, you might consider using Convex's Aggregate component for more scalable solutions with large datasets.
-*/
-
-    const aggregation = { _count: 0, _sum: { totalCost: 0 } }
-
-    for (let i = 0; i < orderIds.length; i += BATCH_SIZE) {
-      const batchOrderIds = orderIds.slice(i, i + BATCH_SIZE)
-
-      const batchPoolRentals = await Promise.all(
-        batchOrderIds.map(async (orderId) => {
-          const poolRental = await ctx.db
-            .query("poolRentals")
-            .withIndex("orderId", (q) => q.eq("orderId", orderId))
-            .first()
-          return poolRental
-        }),
-      )
-
-      // Filter out null values and update aggregation
-      const validRentals = batchPoolRentals.filter((rental) => rental !== null)
-      aggregation._count += validRentals.length
-
-      // Sum up the totalCost from valid rentals
-      for (const rental of validRentals) {
-        aggregation._sum.totalCost += rental?.totalCost ?? 0
-      }
-    }
-    return aggregation
+    return paidPoolRentals.reduce(
+      (acc, rental) => {
+        acc._count += 1
+        acc._sum.totalCost += rental.totalCost ?? 0
+        return acc
+      },
+      {
+        _count: 0,
+        _sum: { totalCost: 0 },
+      },
+    )
   },
 })
 

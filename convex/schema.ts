@@ -167,7 +167,8 @@ export default defineSchema({
     .index("by_order_isbooking", ["orderId", "isBooking"])
     .index("by_pooltable_isbooking", ["poolTableId", "isBooking"])
     .index("by_company_isbooking", ["companyId", "isBooking"])
-    .index("by_order_statusPayment", ["orderId", "statusPayment"]),
+    // .index("by_order_statusPayment", ["orderId", "statusPayment"]),
+    .index("by_company_status-payment", ["companyId", "statusPayment"]),
 
   products: defineTable({
     name: v.string(),
