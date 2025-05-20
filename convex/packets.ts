@@ -1,12 +1,12 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { ConvexError, v } from "convex/values"
+import { ConvexError } from "convex/values"
 import {
   createPacketSchema,
   deletePacketSchema,
   togglePacketSchema,
   updatePacketSchema,
 } from "../types/schema/packet-schema"
-import { mutation, query } from "./_generated/server"
+import { query } from "./_generated/server"
 import {
   adminProcedure,
   managerProcedure,
@@ -31,6 +31,7 @@ export const findAll = query({
       .collect()
   },
 })
+
 export const create = zMutation({
   args: { createPacketSchema },
   handler: async (
@@ -41,13 +42,11 @@ export const create = zMutation({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
     if (
-      user?.role !== "ZENITH" &&
-      user?.role !== "ADMIN" &&
-      user?.role !== "MANAGER"
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "MANAGER"].includes(user?.role ?? "")
     ) {
       throw new ConvexError("You do not have access!")
     }
-    if (!user) throw new ConvexError("No user!")
 
     const subs = await subscriptions(ctx, { companyId: user.companyId })
     const isValid = validateSubscriptionLimits({
@@ -66,6 +65,7 @@ export const create = zMutation({
     })
   },
 })
+
 export const update = zMutation({
   args: { updatePacketSchema },
   handler: async (

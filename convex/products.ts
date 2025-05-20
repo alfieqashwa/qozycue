@@ -59,10 +59,11 @@ export const create = zMutation({
     //? managerProcedure
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (["ZENITH", "ADMIN", "MANAGER"].includes(user?.role ?? ""))
+    if (
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "MANAGER"].includes(user?.role ?? "")
+    )
       throw new ConvexError("You do not have access!")
-
-    if (!user) throw new ConvexError("No user!")
 
     const subs = await subscriptions(ctx, { companyId: user.companyId })
     const isValid = validateSubscriptionLimits({
@@ -86,6 +87,7 @@ export const create = zMutation({
     })
   },
 })
+
 export const update = zMutation({
   args: { updateProductSchema },
   handler: async (
@@ -127,8 +129,9 @@ export const toggle = zMutation({
     })
   },
 })
+
 /**
- * remove && removeSelected is AdminProcedure.
+ * remove && removeSelected ACL -> AdminProcedure.
  */
 export const remove = zMutation({
   args: { deleteProductSchema },

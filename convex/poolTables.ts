@@ -38,6 +38,8 @@ export const findAll = query({
     if (!userId) throw new ConvexError("Please signed in!")
     const user = userId !== null ? await ctx.db.get(userId) : null
 
+    if (!user || !user.companyId) throw new ConvexError("No user!")
+
     const pooltables = await ctx.db
       .query("poolTables")
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
@@ -68,6 +70,8 @@ export const transferPoolTableList = query({
     // protectedProcedure
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
+
+    if (!user || !user?.companyId) throw new ConvexError("No user!")
 
     const poolTableListByCompany = await ctx.db
       .query("poolTables")

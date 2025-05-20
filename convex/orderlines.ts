@@ -3,12 +3,7 @@ import { ConvexError, v } from "convex/values"
 import { upsertOrderlineSchema } from "../types/schema/orderline-schema"
 import { Id } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
-import {
-  BATCH_SIZE,
-  managerProcedure,
-  protectedProcedure,
-  zMutation,
-} from "./helpers"
+import { managerProcedure, protectedProcedure, zMutation } from "./helpers"
 
 export const findAllSortedByDate = query({
   args: {
@@ -165,12 +160,11 @@ export const _sumRevenue = query({
     //  Auth check: ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? "")
+    )
       throw new ConvexError("You do not have access!")
-
-    if (!user?.companyId) {
-      return { _count: 0, _sum: { quantity: 0, amount: 0 } }
-    }
 
     // Get all paid orderlines within date range
     const paidOrderlines = await ctx.db
@@ -214,10 +208,11 @@ export const _sumByCategory = query({
     // Auth check: ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? "")
+    )
       throw new ConvexError("You do not have access!")
-
-    if (!user?.companyId) return null
 
     // Step 1: Get the category ID
     const category = await ctx.db
@@ -441,10 +436,11 @@ export const upsert = zMutation({
     // cashierProcedure(ctx, {})
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? "")
+    )
       throw new ConvexError("You do not have access!")
-
-    if (!user?.companyId) throw new ConvexError("No company provided!")
 
     const updateStock = await ctx.db.patch(productId, {
       countInStock,
@@ -492,7 +488,10 @@ export const remove = mutation({
     // cashierProcedure(ctx)
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? "")
+    )
       throw new ConvexError("You do not have access!")
 
     const company = await ctx.db.get(user?.companyId as Id<"companies">)

@@ -18,7 +18,8 @@ export const findAll = query({
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!user) throw new ConvexError("You do not have access!")
+    if (!user || user.companyId)
+      throw new ConvexError("You do not have access!")
 
     const orderListByCompanyId = await ctx.db
       .query("orders")
@@ -169,9 +170,11 @@ export const _sumRevenue = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? "")
+    )
       throw new ConvexError("You do not have access!")
-    if (!user?.companyId) return null
 
     const paidPoolRentals =
       user !== null
@@ -216,9 +219,11 @@ export const _sumByRate = query({
     // ownerProcedure()
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
-    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? "")
+    )
       throw new ConvexError("You do not have access!")
-    if (!user?.companyId) return { _sum: { duration: 0 } }
 
     // Get packets with the specified rate for this company
     const packets = await ctx.db
@@ -275,7 +280,10 @@ export const _groupByPoolTableId = query({
     const userId = await getAuthUserId(ctx)
     const user = userId !== null ? await ctx.db.get(userId) : null
 
-    if (!["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? ""))
+    if (
+      !user?.companyId ||
+      !["ZENITH", "ADMIN", "OWNER"].includes(user?.role ?? "")
+    )
       throw new ConvexError("You do not have access!")
 
     // Step 1: Fetch all PAID orders for within the time range
@@ -283,7 +291,7 @@ export const _groupByPoolTableId = query({
       .query("poolRentals")
       .withIndex("by_company_statuspayment", (q) =>
         q
-          .eq("companyId", user?.companyId!)
+          .eq("companyId", user.companyId!)
           .eq("statusPayment", "PAID")
           .gte("_creationTime", args.from ?? 0)
           .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
@@ -407,7 +415,6 @@ export const createBooking = zMutation({
       },
     },
   ) => {
-    await protectedProcedure(ctx)
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
     const user = userId !== null ? await ctx.db.get(userId) : null
@@ -512,23 +519,6 @@ export const updateBooking = zMutation({
       .filter((q) => q.neq(q.field("orderId"), orderId)) // exclude orderId from the args
       .collect()
 
-    // const listOfRentalTime = await Promise.all(
-    //   listOfPoolRental
-    //     .filter(async (rental) => {
-    //       const order = await ctx.db
-    //         .query("orders")
-    //         .withIndex("by_id", (q) => q.eq("_id", rental.orderId))
-    //         .filter((q) => q.eq(q.field("statusPayment"), "OPEN"))
-    //         .first()
-    //       return rental.orderId === order?._id
-    //     })
-    //     .map((rental) => ({
-    //       timeStart: rental.timeStart,
-    //       timeEnd: rental.timeEnd,
-    //     }))
-    //     .sort((p, q) => p.timeStart! - q.timeStart!),
-    // )
-
     // find the existing open poolRental within the same poolTable
     const listOfRentalTime = listOfPoolRental
       .filter((rental) => rental.statusPayment === "OPEN")
@@ -536,6 +526,7 @@ export const updateBooking = zMutation({
         timeStart: rental.timeStart,
         timeEnd: rental.timeEnd,
       }))
+      .sort((p, q) => p.timeStart! - q.timeStart!)
 
     const HOUR_TO_MILLISECOND = 60 * 60 * 1000
     const endTime = startTime + duration * HOUR_TO_MILLISECOND
