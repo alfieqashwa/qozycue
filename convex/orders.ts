@@ -822,7 +822,14 @@ export const stopTimer = zMutation({
       },
     },
   ) => {
-    await cashierProcedure(ctx)
+    // await cashierProcedure(ctx)
+    const userId = await getAuthUserId(ctx)
+    const user = userId !== null ? await ctx.db.get(userId) : null
+    if (!["ZENITH", "ADMIN", "CASHIER"].includes(user?.role ?? ""))
+      throw new ConvexError("You do not have access!")
+
+    const company = await ctx.db.get(user?.companyId!)
+
     if (!startTime || !endTime || startTime >= endTime) {
       throw new ConvexError("Invalid startTime and endTime")
     }
@@ -831,22 +838,23 @@ export const stopTimer = zMutation({
     const elapsedTime = endTime - startTime
     const elapsedInMinutes = Math.floor(elapsedTime / (1000 * 60))
 
-    /*
-    Commented out this and keep default calculation until there're request for this implementation
+    let totalCostInMinutes
 
     const ONE_HOUR_IN_MILLISECONDS = 1_000 * 60 * 60
     const oneHourInMinutes = Math.floor(ONE_HOUR_IN_MILLISECONDS / (1000 * 60))
 
-    //? If duration is less than one hour, than cust must pay as 1hr totalCost
-    if (elapsedTime < ONE_HOUR_IN_MILLISECONDS) {
+    /*
+     * If duration is less than one hour, than cust must pay as 1hr totalCost
+     * Only if the company has activate customLossMinute
+     * Currently it can only set manually from database
+     */
+    if (company?.customLossMinute && elapsedTime < ONE_HOUR_IN_MILLISECONDS) {
       totalCostInMinutes = cost * oneHourInMinutes
     } else {
       totalCostInMinutes = cost * elapsedInMinutes
     }
-    */
 
     //? Calculate totalCost in minute-rate
-    const totalCostInMinutes = cost * elapsedInMinutes
 
     const totalCost = Math.round(totalCostInMinutes / 100) * 100
 
