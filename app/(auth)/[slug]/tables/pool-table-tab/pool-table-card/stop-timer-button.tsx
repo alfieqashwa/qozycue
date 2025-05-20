@@ -1,3 +1,4 @@
+import { SubmitButton } from "@/components/submit-button"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -14,7 +15,7 @@ import { Rate } from "@/types"
 import { useConvexMutation } from "@convex-dev/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Loader2, TimerOff } from "lucide-react"
+import { TimerOff } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -39,16 +40,17 @@ export function StopTimerButton({
 
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.orders.stopTimer),
-    onSuccess: () =>
+    onSuccess: () => {
+      setOpen(false)
       toast.success("Succeed!", {
         description: `Table ${poolTableName} has been stopped.`,
-      }),
+      })
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
           err instanceof ConvexError ? err.data : "Unexpected error occurred",
       }),
-    onSettled: () => setOpen(false),
   })
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -95,16 +97,7 @@ export function StopTimerButton({
             >
               Cancel
             </Button>
-            {isPending ? (
-              <Button disabled>
-                <Loader2 className="size-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button disabled={isPending} type="submit">
-                Stop Timer
-              </Button>
-            )}
+            <SubmitButton isPending={isPending} title="Stop Timer" />
           </DialogFooter>
         </form>
       </DialogContent>
