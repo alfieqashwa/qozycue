@@ -238,9 +238,9 @@ export const _sumByRate = query({
     }
 
     // Get all paid orders for the company within the date range
-    const paidOrders = await ctx.db
-      .query("orders")
-      .withIndex("by_company_statuspayment", (q) =>
+    const paidPoolRentals = await ctx.db
+      .query("poolRentals")
+      .withIndex("by_company_status-payment", (q) =>
         q
           .eq("companyId", user.companyId!)
           .eq("statusPayment", "PAID")
@@ -250,45 +250,20 @@ export const _sumByRate = query({
       .order("desc")
       .collect()
 
-    if (paidOrders.length === 0) {
+    if (paidPoolRentals.length === 0) {
       return { _sum: { duration: 0 } }
     }
 
-    const orderIds = paidOrders.map((order) => order._id)
-    const packetIds = new Set(packets.map((packet) => packet._id.toString()))
+    const packetIds = new Set(packets.map((packet) => packet._id))
 
-    // Process in batches of 50
-    let totalDuration = 0
-
-    for (let i = 0; i < orderIds.length; i += BATCH_SIZE) {
-      const batchOrderIds = orderIds.slice(i, i + BATCH_SIZE)
-
-      // Process each order in the batch
-      const batchResults = await Promise.all(
-        batchOrderIds.map(async (orderId) => {
-          // For each order, get all pool rentals
-          const rentals = await ctx.db
-            .query("poolRentals")
-            .withIndex("orderId", (q) => q.eq("orderId", orderId))
-            .collect()
-
-          // Filter and sum client-side
-          return rentals
-            .filter(
-              (rental) =>
-                rental.packetId && packetIds.has(rental.packetId.toString()),
-            )
-            .reduce((sum, rental) => sum + (rental.duration ?? 0), 0)
-        }),
-      )
-
-      // Sum up the batch results
-      totalDuration += batchResults.reduce((sum, duration) => sum + duration, 0)
-    }
+    const totalDuration = paidPoolRentals
+      .filter((rental) => rental.packetId && packetIds.has(rental.packetId))
+      .reduce((sum, rental) => sum + (rental.duration ?? 0), 0)
 
     // Normalize duration if requested in hours
     const normalizedDuration =
       args.rate === "MINUTE" ? totalDuration / 60 : totalDuration
+
     return {
       _sum: { duration: normalizedDuration }, // expecting duration in hours
     }
@@ -309,9 +284,9 @@ export const _groupByPoolTableId = query({
       throw new ConvexError("You do not have access!")
 
     // Step 1: Fetch all PAID orders for within the time range
-    const paidOrders = await ctx.db
-      .query("orders")
-      .withIndex("by_company_statuspayment", (q) =>
+    const paidPoolRentals = await ctx.db
+      .query("poolRentals")
+      .withIndex("by_company_status-payment", (q) =>
         q
           .eq("companyId", user?.companyId!)
           .eq("statusPayment", "PAID")
@@ -321,32 +296,12 @@ export const _groupByPoolTableId = query({
       .order("desc")
       .collect()
 
-    if (paidOrders.length === 0) return []
-
-    const orderIds = paidOrders.map((order) => order._id)
+    if (paidPoolRentals.length === 0) return []
 
     // Step 2: Fetch all pool rentals for those orders
-    const poolRentals = []
-
-    for (let i = 0; i < orderIds.length; i += BATCH_SIZE) {
-      const batch = orderIds.slice(i, i + BATCH_SIZE)
-
-      const batchRentals = await Promise.all(
-        batch.map((orderId) =>
-          ctx.db
-            .query("poolRentals")
-            .withIndex("orderId", (q) => q.eq("orderId", orderId))
-            .collect(),
-        ),
-      )
-
-      for (const rentals of batchRentals) {
-        poolRentals.push(...rentals)
-      }
-    }
 
     // Step 3: Group  rentals by poolTableId
-    const rentalStats = poolRentals.reduce(
+    const rentalStats = paidPoolRentals.reduce(
       (acc, rental) => {
         const poolTableId = rental.poolTableId.toString()
 
