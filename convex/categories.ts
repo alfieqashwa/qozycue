@@ -1,4 +1,4 @@
-import { ConvexError, v } from "convex/values"
+import { v } from "convex/values"
 import {
   categorySchema,
   createCategorySchema,
@@ -10,7 +10,6 @@ export const findAll = query({
   args: {},
   handler: async (ctx) => {
     await protectedProcedure(ctx)
-
     return await ctx.db.query("categories").collect()
   },
 })
@@ -18,8 +17,8 @@ export const findAll = query({
 export const findByProductId = query({
   args: { productId: v.id("products") },
   handler: async (ctx, args) => {
+    await protectedProcedure(ctx)
     const product = await ctx.db.get(args.productId)
-
     return product ? ctx.db.get(product.categoryId) : null
   },
 })
@@ -28,10 +27,10 @@ export const create = zMutation({
   args: { createCategorySchema },
   handler: async (ctx, { createCategorySchema: { name, description } }) => {
     await superAdminProcedure(ctx)
-
     return await ctx.db.insert("categories", { name, description })
   },
 })
+
 export const update = zMutation({
   args: { categorySchema },
   handler: async (ctx, { categorySchema: { id, name, description } }) => {

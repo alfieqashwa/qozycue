@@ -51,11 +51,7 @@ export const adminProcedure = async (ctx: QueryCtx) => {
 export const managerProcedure = async (ctx: QueryCtx) => {
   const userId = await getAuthUserId(ctx)
   const user = userId !== null ? await ctx.db.get(userId) : null
-  if (
-    user?.role !== "ZENITH" &&
-    user?.role !== "ADMIN" &&
-    user?.role !== "MANAGER"
-  )
+  if (!["ZENITH", "ADMIN", "MANAGER"].includes(user?.role ?? ""))
     throw new ConvexError("You do not have access!")
   return userId
 }
@@ -63,11 +59,7 @@ export const managerProcedure = async (ctx: QueryCtx) => {
 export const cashierProcedure = async (ctx: QueryCtx) => {
   const userId = await getAuthUserId(ctx)
   const user = userId !== null ? await ctx.db.get(userId) : null
-  if (
-    user?.role !== "ZENITH" &&
-    user?.role !== "ADMIN" &&
-    user?.role !== "CASHIER"
-  )
+  if (!["ZENITH", "ADMIN", "CASHIER"].includes(user?.role ?? ""))
     throw new ConvexError("You do not have access!")
   return userId
 }

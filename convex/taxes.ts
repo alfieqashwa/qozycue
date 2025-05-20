@@ -12,6 +12,7 @@ import {
 export const findAll = query({
   args: {},
   handler: async (ctx) => {
+    // protectedProcedure
     const userId = await getAuthUserId(ctx)
     if (!userId) throw new ConvexError("Please signed in!")
     const user = await ctx.db.get(userId)
@@ -20,8 +21,8 @@ export const findAll = query({
       .query("taxes")
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
       .collect()
-    const sortedByValue = taxes.sort((p, q) => p.value - q.value)
 
+    const sortedByValue = taxes.sort((p, q) => p.value - q.value)
     return sortedByValue
   },
 })
@@ -40,6 +41,7 @@ export const create = zMutation({
     })
   },
 })
+
 export const update = zMutation({
   args: { updateTaxSchema },
   handler: async (ctx, { updateTaxSchema: { id, value, companyId } }) => {
@@ -54,6 +56,7 @@ export const update = zMutation({
     })
   },
 })
+
 export const findDefaultValue = query({
   args: {},
   handler: async (ctx) => {
@@ -68,6 +71,7 @@ export const findDefaultValue = query({
       .first()
   },
 })
+
 export const toggle = mutation({
   args: { id: v.id("taxes"), isDefaultValue: v.boolean() },
   handler: async (ctx, args) => {
@@ -75,11 +79,11 @@ export const toggle = mutation({
     return await ctx.db.patch(args.id, { isDefaultValue: !args.isDefaultValue })
   },
 })
+
 export const remove = mutation({
   args: { id: v.id("taxes") },
   handler: async (ctx, args) => {
     await managerProcedure(ctx)
-
     return await ctx.db.delete(args.id)
   },
 })

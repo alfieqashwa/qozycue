@@ -19,7 +19,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
 
       const existingUser = await findUserByEmail(ctx, args.profile.email)
 
-      if (existingUser) {
+      if (!!existingUser) {
         if (
           existingUser.name === undefined &&
           existingUser.image === undefined

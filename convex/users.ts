@@ -21,7 +21,7 @@ export const me = query({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
-    const user = userId !== null ? await ctx.db.get(userId) : undefined
+    const user = userId !== null ? await ctx.db.get(userId) : null
     return user
   },
 })
@@ -70,6 +70,7 @@ export const findAllByCompanyId = query({
       .query("users")
       .withIndex("companyId", (q) => q.eq("companyId", args.companyId))
       .collect()
+
     const usersIncludeCompanyName = Promise.all(
       usersByCompanyId.map(async (user) => {
         const company = !!user.companyId
@@ -89,13 +90,13 @@ export const updateRoleAndCompanyId = zMutation({
   args: { updateUserSchema },
   handler: async (ctx, { updateUserSchema: { id, role, companyId } }) => {
     await superAdminProcedure(ctx)
-
     return await ctx.db.patch(id, {
       role,
       companyId,
     })
   },
 })
+
 export const updateRoleByIdOnlyForSuperAmin = zMutation({
   args: { updateRoleByIdOnlyForSuperAminSchema },
   handler: async (
@@ -204,6 +205,7 @@ export const remove = mutation({
     return await ctx.db.delete(args.id)
   },
 })
+
 export const removeAdminProcedure = mutation({
   args: { id: v.id("users") },
   handler: async (ctx, args) => {

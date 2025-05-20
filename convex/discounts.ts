@@ -24,11 +24,13 @@ export const findAll = query({
       .query("discounts")
       .withIndex("companyId", (q) => q.eq("companyId", user?.companyId!))
       .collect()
-    const sortedByValue = discounts.sort((p, q) => p.value - q.value)
 
+    const sortedByValue = discounts.sort((p, q) => p.value - q.value)
     return sortedByValue
   },
 })
+
+// === MUTATIONS ===
 export const create = zMutation({
   args: { createDiscountSchema },
   handler: async (ctx, { createDiscountSchema: { value, companyId } }) => {
@@ -44,6 +46,7 @@ export const create = zMutation({
     })
   },
 })
+
 export const update = zMutation({
   args: { updateDiscountSchema },
   handler: async (ctx, { updateDiscountSchema: { id, value, companyId } }) => {
@@ -59,11 +62,11 @@ export const update = zMutation({
     })
   },
 })
+
 export const remove = mutation({
   args: { id: v.id("discounts") },
   handler: async (ctx, args) => {
     await managerProcedure(ctx)
-
     return await ctx.db.delete(args.id)
   },
 })

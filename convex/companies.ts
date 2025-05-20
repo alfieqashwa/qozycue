@@ -33,7 +33,6 @@ export const findAllSuperAdminProcedure = query({
   args: {},
   handler: async (ctx) => {
     await superAdminProcedure(ctx)
-
     return await ctx.db.query("companies").collect()
   },
 })
@@ -73,11 +72,9 @@ export const slug = query({
   handler: async (ctx) => {
     try {
       const userId = await getAuthUserId(ctx)
-
       if (!userId) return null
 
       const user = await ctx.db.get(userId)
-
       if (!user) {
         return null
       }
@@ -94,13 +91,13 @@ export const slug = query({
 })
 
 // === MUTATIONS ===
-
 export const createTrial = zMutation({
   args: { createTrialCompanySchema },
   handler: async (
     ctx,
     { createTrialCompanySchema: { name, phone, countryCode, location } },
   ) => {
+    // protectedProcedure
     const userId = await getAuthUserId(ctx)
     if (!userId) {
       throw new ConvexError("Not signed in")
@@ -177,7 +174,7 @@ export const updateAdminProcedure = zMutation({
   },
 })
 
-/* Also remove relation tables of companies table:
+/* Remove comapny including its relation tables:
  * users
  * taxes
  * discounts
@@ -188,11 +185,11 @@ export const updateAdminProcedure = zMutation({
  * products
  * src -> note.md
  */
+// For now, remove a company manually from db to avoid lack of over consupmption limits database usage
 export const remove = mutation({
   args: { id: v.id("companies") },
   handler: async (ctx, args) => {
     await superAdminProcedure(ctx)
-
     return await ctx.db.delete(args.id)
   },
 })
