@@ -51,7 +51,7 @@ export function CompanySite({
                           width={500}
                           height={500}
                           alt={country?.country as string}
-                          className="animate-pulse-slow w-12 shadow-md ring hover:cursor-pointer"
+                          className="animate-pulse-slow h-8 w-12 rounded shadow-md ring hover:cursor-pointer"
                         />
                       </Link>
                     </WrapperTooltip>
