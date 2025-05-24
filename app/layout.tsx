@@ -42,12 +42,11 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase: new URL(baseUrl),
   openGraph: {
-    url: new URL(baseUrl),
-    // images:
-    //   "https://images.unsplash.com/photo-1584161786791-1657f4409456?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    images: "/opengraph-image.png",
-    authors: "alfieqashwa",
+    title: "Qozy Cue",
     description: "Billiard & Cafe Real Time Application.",
+    authors: "alfieqashwa",
+    url: new URL(baseUrl),
+    images: "https://www.qozycue.com/opengraph-image.png",
     // "https://raw.githubusercontent.com/alfieqashwa/me/main/public/img/cover.webp",
   },
 }
