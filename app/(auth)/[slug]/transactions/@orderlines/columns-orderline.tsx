@@ -3,11 +3,7 @@
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { formattedPriceBasedOnCountryCode } from "@/lib/format-price"
 import { cn } from "@/lib/utils"
@@ -238,33 +234,26 @@ export const columnsOrderline = (
       const isFree = row.original.isFree
 
       return (
-        <Tooltip>
-          <TooltipTrigger>
-            <Badge variant="secondary" className="px-3 py-1.5">
-              <span
-                className={cn(
-                  "max-w-[500px] truncate capitalize",
-                  isFree && "text-muted-foreground line-through",
-                )}
-              >
-                {formattedPriceBasedOnCountryCode(
-                  locale,
-                  currency,
-                  Number(costPrice),
-                )}
-              </span>
-            </Badge>
-          </TooltipTrigger>
-          <TooltipContent
-            side="left"
-            className={cn(
-              "bg-muted text-muted-foreground capitalize",
-              isFree ? "visible" : "invisible",
-            )}
-          >
-            free order
-          </TooltipContent>
-        </Tooltip>
+        <WrapperTooltip
+          className={cn(isFree ? "visible" : "invisible")}
+          content="free order"
+          side="left"
+        >
+          <Badge variant="secondary" className="px-3 py-1.5">
+            <span
+              className={cn(
+                "max-w-[500px] truncate capitalize",
+                isFree && "text-muted-foreground line-through",
+              )}
+            >
+              {formattedPriceBasedOnCountryCode(
+                locale,
+                currency,
+                Number(costPrice),
+              )}
+            </span>
+          </Badge>
+        </WrapperTooltip>
       )
     },
   },

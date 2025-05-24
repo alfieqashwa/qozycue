@@ -1,28 +1,17 @@
-import { GripVertical } from "lucide-react"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { useToggleStore } from "@/store/toggle-store"
+import { GripVertical } from "lucide-react"
+import { WrapperTooltip } from "./wrapper-tooltip"
 
 export function ToggleGrip() {
   const store = useToggleStore()
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          onClick={store.onToggle}
-          className="absolute -right-4 top-[10.20rem] z-50 text-muted-foreground transition-colors duration-500 ease-in-out hover:text-primary"
-        >
-          <GripVertical size={28} />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent side="left" className="flex items-center gap-4 bg-muted">
-        <span className="text-sm capitalize text-muted-foreground">
-          {store.toggle ? "Open" : "Close"}
-        </span>
-      </TooltipContent>
-    </Tooltip>
+    <WrapperTooltip content={store.toggle ? "Open" : "Close"} side="left">
+      <button
+        onClick={store.onToggle}
+        className="text-muted-foreground hover:text-primary absolute top-[10.20rem] -right-4 z-50 transition-colors duration-500 ease-in-out"
+      >
+        <GripVertical size={28} />
+      </button>
+    </WrapperTooltip>
   )
 }

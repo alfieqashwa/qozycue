@@ -1,8 +1,4 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { convexQuery } from "@convex-dev/react-query"
@@ -25,21 +21,22 @@ export function PendingStatusCounter({
           ...convexQuery(api.orders.countPendingStatus, { poolTableId }),
           enabled: !!poolTableId,
         },
-        {
-          ...convexQuery(api.companies.find, { id: companyId }),
-          // enabled: Boolean(companyId), SHIT BUG
-          /*
+        convexQuery(api.companies.find, { id: companyId }),
+        // enabled: Boolean(companyId), SHIT BUG
+        /*
             if uncommented-out companyId, then the countPendingStatus will not show up whenever the table is not being used.
             But it still will show wheneever the table is starting. 
           */
-        },
       ],
     })
 
   return (
     <pre>
       {countStatus === "success" && !!countPendingStatus && (
-        <TooltipPendingNotification count={countPendingStatus}>
+        <WrapperTooltip
+          content={`${countPendingStatus} Pending Payment`}
+          side="left"
+        >
           {company.status === "success" && !!company.data?.slug && (
             <Link
               href={{
@@ -55,28 +52,8 @@ export function PendingStatusCounter({
               </span>
             </Link>
           )}
-        </TooltipPendingNotification>
+        </WrapperTooltip>
       )}
     </pre>
-  )
-}
-
-const TooltipPendingNotification = ({
-  count,
-  children,
-}: {
-  count: number
-  children: React.ReactNode
-}) => {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent side="left" className="bg-muted">
-        <p className="text-muted-foreground space-x-1 font-sans text-xs font-medium">
-          <span>{count}</span>
-          <span>Pending Payment</span>
-        </p>
-      </TooltipContent>
-    </Tooltip>
   )
 }

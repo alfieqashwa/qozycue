@@ -4,11 +4,6 @@ import { type TLinkList } from "@/app/constants/link-list"
 import { buttonVariants } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
 import { useToggleStore } from "@/store/toggle-store"
@@ -24,6 +19,7 @@ import { MenuOnMobile } from "./menu-on-mobile"
 import { Nav } from "./nav"
 import { ToggleGrip } from "./toggle-grip"
 import { UserAvatar } from "./user-avatar"
+import { WrapperTooltip } from "./wrapper-tooltip"
 
 //? https://nextjs.org/docs/messages/react-hydration-error
 const ToggleThemes = dynamic(() => import("./toggle-themes"), {
@@ -65,6 +61,10 @@ export function WrapperDashboard({
     user.role ?? "",
   )
 
+  const contentTooltip = pathname.includes("zenith")
+    ? (user.company?.name ?? "")
+    : "zenith"
+
   return (
     <div className="relative">
       <div className="bg-background sticky top-0 z-50 flex h-20 items-center justify-between border-b-[3px]">
@@ -104,34 +104,28 @@ export function WrapperDashboard({
           />
           {/* //? set padding-bottom so the sidebar can be fully-scrolled on mobile-view's landscape */}
           <nav className="pb-24 pl-3.5">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href={
-                    pathname.includes("zenith")
-                      ? `/${encodeURIComponent(user.company?.slug as string)}/dashboard`
-                      : `/zenith`
-                  }
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "icon" }),
-                    "relative size-12",
-                    user.role === "ZENITH" ? "block" : "hidden",
-                  )}
-                >
-                  <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <GiFrozenOrb className={cn(classNames)} />
-                  </span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent
-                side="right"
-                className="bg-muted flex items-center gap-4"
+            <WrapperTooltip
+              content={contentTooltip}
+              side="right"
+              className="capitalize"
+            >
+              <Link
+                href={
+                  pathname.includes("zenith")
+                    ? `/${encodeURIComponent(user.company?.slug as string)}/dashboard`
+                    : `/zenith`
+                }
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "icon" }),
+                  "relative size-12",
+                  user.role === "ZENITH" ? "block" : "hidden",
+                )}
               >
-                <span className="text-primary text-sm tracking-wider capitalize">
-                  {pathname.includes("zenith") ? user.company?.name : "zenith"}
+                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <GiFrozenOrb className={cn(classNames)} />
                 </span>
-              </TooltipContent>
-            </Tooltip>
+              </Link>
+            </WrapperTooltip>
           </nav>
         </ScrollArea>
       </div>

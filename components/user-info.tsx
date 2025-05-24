@@ -1,13 +1,9 @@
 import { MenubarItem, MenubarShortcut } from "@/components/ui/menubar"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 import { Role } from "@/types"
 import { Key } from "lucide-react"
 import Link from "next/link"
+import { WrapperTooltip } from "./wrapper-tooltip"
 
 export const UserInfo = ({
   userAccount,
@@ -20,28 +16,9 @@ export const UserInfo = ({
   pathname: string
   href: string
 }) => (
-  <Tooltip>
-    <TooltipTrigger asChild>
-      <Link href={href}>
-        <MenubarItem
-          className={cn(
-            "text-muted-foreground hover:cursor-pointer",
-            pathname === href && "bg-muted",
-          )}
-        >
-          Profile
-          <MenubarShortcut
-            className={cn(
-              "capitalize",
-              pathname === href ? "text-primary" : "text-muted-foreground",
-            )}
-          >
-            {userAccount}
-          </MenubarShortcut>
-        </MenubarItem>
-      </Link>
-    </TooltipTrigger>
-    <TooltipContent side="left" className="bg-muted flex items-center">
+  <WrapperTooltip
+    side="left"
+    icon={
       <Key
         size={16}
         className={cn(
@@ -49,7 +26,26 @@ export const UserInfo = ({
           pathname === href ? "text-primary" : "text-muted-foreground",
         )}
       />
-      <span className="text-muted-foreground text-xs">{userRole}</span>
-    </TooltipContent>
-  </Tooltip>
+    }
+    content={userRole!}
+  >
+    <Link href={href}>
+      <MenubarItem
+        className={cn(
+          "text-muted-foreground hover:cursor-pointer",
+          pathname === href && "bg-muted",
+        )}
+      >
+        Profile
+        <MenubarShortcut
+          className={cn(
+            "capitalize",
+            pathname === href ? "text-primary" : "text-muted-foreground",
+          )}
+        >
+          {userAccount}
+        </MenubarShortcut>
+      </MenubarItem>
+    </Link>
+  </WrapperTooltip>
 )

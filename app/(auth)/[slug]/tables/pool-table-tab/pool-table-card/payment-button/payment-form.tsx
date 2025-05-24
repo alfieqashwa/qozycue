@@ -26,11 +26,7 @@ import {
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import {
@@ -570,23 +566,15 @@ const DefaultTaxTooltip = ({
   return (
     <div className="relative">
       {isDesktop ? (
-        <Tooltip>
-          <TooltipTrigger
-            asChild
-            className="absolute -top-1 -right-4.5 hover:cursor-help"
-          >
-            <CircleHelp
-              size={15}
-              className="animate-pulse-slow text-amber-300"
-            />
-          </TooltipTrigger>
-          <TooltipContent
-            side="right"
-            className="bg-muted text-xs tracking-wider text-amber-300"
-          >
-            Default Tax {defaultValue * 100}%
-          </TooltipContent>
-        </Tooltip>
+        <WrapperTooltip
+          content={`Default Tax ${defaultValue * 100}%`}
+          side="right"
+        >
+          <CircleHelp
+            size={15}
+            className="animate-pulse-slow absolute -top-1 -right-4.5 text-amber-300 hover:cursor-help"
+          />
+        </WrapperTooltip>
       ) : (
         <Popover>
           <PopoverTrigger

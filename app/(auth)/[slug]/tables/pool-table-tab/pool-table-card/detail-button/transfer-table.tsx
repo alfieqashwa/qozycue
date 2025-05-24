@@ -16,11 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
@@ -111,22 +107,11 @@ export function TransferTable({
           pathname.includes("transactions") && "invisible",
         )}
       >
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Move size={24} />
-          </TooltipTrigger>
-          <TooltipContent
-            side="left"
-            className="bg-muted text-muted-foreground"
-          >
-            Transfer Table ?
-          </TooltipContent>
-        </Tooltip>
+        <WrapperTooltip content="Transfer Table ?" side="left">
+          <Move size={24} />
+        </WrapperTooltip>
       </SheetTrigger>
       <SheetContent className="bg-card min-w-full p-2 sm:min-w-[480px]">
-        {/* {status === "success" && (
-          <pre>{JSON.stringify(transferPoolTableList, null, 2)}</pre>
-        )} */}
         <SheetHeader className="text-center md:text-left">
           <SheetTitle>Transfer Table {poolTableName}</SheetTitle>
           <SheetDescription>

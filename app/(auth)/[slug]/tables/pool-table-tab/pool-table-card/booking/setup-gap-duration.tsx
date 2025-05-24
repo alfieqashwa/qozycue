@@ -8,11 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
@@ -90,7 +86,7 @@ export function SetupGapDuration({
                     min={5}
                     max={15}
                     placeholder="Gap Duration..."
-                    className="w-[80px] font-medium capitalize text-amber-300"
+                    className="w-[80px] font-medium text-amber-300 capitalize"
                     {...field}
                   />
                 </FormControl>
@@ -98,26 +94,21 @@ export function SetupGapDuration({
               </FormItem>
             )}
           />
-          <DialogFooter className="">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  // use "==" instead of "===" b'coz I'm too lazy to convert the type.
-                  disabled={isPending || gapDuration == gapDurationWatch}
-                  variant="secondary"
-                  size="icon"
-                  className="text-amber-300 disabled:pointer-events-auto disabled:cursor-not-allowed"
-                >
-                  <Pencil size={20} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="bottom"
-                className="bg-muted text-muted-foreground"
+          <DialogFooter>
+            <WrapperTooltip
+              content="Click it first if you want to update"
+              side="right"
+            >
+              <Button
+                // use "==" instead of "===" b'coz I'm too lazy to convert the type.
+                disabled={isPending || gapDuration == gapDurationWatch}
+                variant="secondary"
+                size="icon"
+                className="text-amber-300 disabled:pointer-events-auto disabled:cursor-not-allowed"
               >
-                Click it first if you want to update
-              </TooltipContent>
-            </Tooltip>
+                <Pencil size={20} />
+              </Button>
+            </WrapperTooltip>
           </DialogFooter>
         </form>
       </Form>

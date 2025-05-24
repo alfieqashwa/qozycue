@@ -1,11 +1,7 @@
 "use client"
 
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { countries } from "@/lib/countries"
 import { cn } from "@/lib/utils"
@@ -46,23 +42,19 @@ export function CompanySite({
                       buttonVariants({ variant: "ghost", size: "default" }),
                     )}
                   >
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link href={user ? `/${slug}/tables` : "/"}>
-                          <Image
-                            src={country?.flag as string}
-                            width={500}
-                            height={500}
-                            alt={country?.country as string}
-                            className="animate-pulse-slow w-12 shadow-md ring hover:cursor-pointer"
-                          />
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-muted text-muted-foreground">
-                        {user ? "Go to Page Tables" : " Go to Home Page"}
-                      </TooltipContent>
-                    </Tooltip>
-
+                    <WrapperTooltip
+                      content={`${user ? "Go to Page Tables" : " Go to Home Page"}`}
+                    >
+                      <Link href={user ? `/${slug}/tables` : "/"}>
+                        <Image
+                          src={country?.flag as string}
+                          width={500}
+                          height={500}
+                          alt={country?.country as string}
+                          className="animate-pulse-slow w-12 shadow-md ring hover:cursor-pointer"
+                        />
+                      </Link>
+                    </WrapperTooltip>
                     <p className="text-muted-foreground flex items-center font-semibold capitalize">
                       <span className="text-lg">{company?.name}</span>
                     </p>

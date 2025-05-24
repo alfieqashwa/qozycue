@@ -8,11 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { WrapperTooltip } from "@/components/wrapper-tooltip"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import { cn } from "@/lib/utils"
@@ -53,7 +49,10 @@ export function ResetButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger disabled={disabled} className="text-primary">
-        <TooltipReset disabled={disabled}>
+        <WrapperTooltip
+          content="Reset Table"
+          className={cn(disabled && "sr-only")}
+        >
           <TimerReset
             aria-disabled={disabled}
             size={32}
@@ -63,7 +62,7 @@ export function ResetButton({
                 "text-primary/50 aria-disabled:pointer-events-auto aria-disabled:cursor-not-allowed",
             )}
           />
-        </TooltipReset>
+        </WrapperTooltip>
       </DialogTrigger>
       <DialogContent className="bg-card sm:max-w-[425px]">
         <DialogHeader>
@@ -103,20 +102,3 @@ export function ResetButton({
     </Dialog>
   )
 }
-
-const TooltipReset = ({
-  disabled,
-  children,
-}: {
-  disabled: boolean
-  children: React.ReactNode
-}) => (
-  <Tooltip>
-    <TooltipTrigger asChild>{children}</TooltipTrigger>
-    <TooltipContent className={cn("bg-muted", disabled && "sr-only")}>
-      <p className="text-muted-foreground font-sans text-sm capitalize">
-        Reset Table
-      </p>
-    </TooltipContent>
-  </Tooltip>
-)
