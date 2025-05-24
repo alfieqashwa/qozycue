@@ -1,3 +1,4 @@
+import "../globals.css"
 import ConvexClientProvider from "@/components/ConvexClientProvider"
 import { ThemeProvider } from "@/components/providers"
 import { cn } from "@/lib/utils"
@@ -8,17 +9,14 @@ import { CircleCheck, CircleX, Info } from "lucide-react"
 import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import { Toaster } from "sonner"
-import "../globals.css"
 
 const poppins = Poppins({
-  // subsets: ["latin"],
-  // variable: "--font-sans",
   subsets: ["latin-ext"],
   variable: "--font-sans",
   style: "normal",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
-  preload: false,
+  preload: true,
 })
 
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
@@ -47,7 +45,7 @@ export const metadata: Metadata = {
     url: new URL(baseUrl),
     // images:
     //   "https://images.unsplash.com/photo-1584161786791-1657f4409456?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    images: "/images/qozy-que.webp",
+    images: "/images/qozycue-sc-desktop.png",
     authors: "alfieqashwa",
     description: "Billiard & Cafe Real Time Application.",
     // "https://raw.githubusercontent.com/alfieqashwa/me/main/public/img/cover.webp",
@@ -67,11 +65,9 @@ export default function RootLayout({
       <html
         lang="en"
         suppressHydrationWarning
-        className={cn("dark scroll-smooth", poppins.variable)}
+        className={cn("scroll-smooth", poppins.variable)}
       >
-        {/* <head /> */}
-        {/* <body className={cn("font-sans antialiased", fontSans.variable)}> */}
-        <body className="antialiased">
+        <body className="font-sans antialiased">
           <ConvexClientProvider>
             <ThemeProvider
               attribute="class"
@@ -83,12 +79,7 @@ export default function RootLayout({
               <main className="mx-auto min-h-screen max-w-[2048px] min-w-[360px] bg-black">
                 {children}
               </main>
-              {/* // Todos
-               <Analytics/ >
-               <SpeedInsights /> */}
               <Toaster
-                // richColors
-                // bg-linear-to-tr from-black from-30% via-zinc-900 via-50% to-black to-70%
                 position="top-right"
                 toastOptions={{
                   unstyled: true,
@@ -132,7 +123,6 @@ export default function RootLayout({
                       className="ml-2.5 animate-pulse rounded-full text-red-600 ring-4 ring-red-900"
                     />
                   ),
-                  // loading: <LoadingIcon />,
                 }}
               />
             </ThemeProvider>
