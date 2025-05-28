@@ -10,9 +10,9 @@ export const Hero = () => (
       {QOZY_CUE.map((q, i) => (
         <span
           className={cn(
-            "bg-linear-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-transparent shadow-lg",
+            "from-foreground/50 to-foreground bg-linear-to-t from-20% to-50% bg-clip-text text-transparent shadow-lg",
             q === "z" &&
-              "from-pink-700 from-20% to-fuchsia-600 to-50% motion-safe:animate-pulse-slow",
+              "motion-safe:animate-pulse-slow from-pink-700 from-20% to-fuchsia-600 to-50%",
           )}
           key={i}
         >
@@ -21,20 +21,20 @@ export const Hero = () => (
       ))}
     </p>
     <section className="mt-8 flex w-full items-center justify-center space-x-1.5 sm:space-x-12 md:space-x-24 lg:space-x-32">
-      <GiPoolTriangle className="hidden size-14 animate-pulse-slow text-fuchsia-600 sm:block sm:size-16 lg:size-24" />
+      <GiPoolTriangle className="animate-pulse-slow hidden size-14 text-fuchsia-600 sm:block sm:size-16 lg:size-24" />
       <article className="text-center">
-        <p className="whitespace-nowrap bg-linear-to-t from-foreground/50 from-20% to-foreground to-50% bg-clip-text text-2xl font-black tracking-widest text-transparent lg:text-4xl">
+        <p className="from-foreground/50 to-foreground bg-linear-to-t from-20% to-50% bg-clip-text text-2xl font-black tracking-widest whitespace-nowrap text-transparent lg:text-4xl">
           Billiard & Cafe
         </p>
-        <p className="mt-1 whitespace-nowrap bg-linear-to-t from-foreground/80 to-foreground bg-clip-text font-bold tracking-widest text-transparent lg:text-xl">
+        <p className="from-foreground/80 to-foreground mt-1 bg-linear-to-t bg-clip-text font-bold tracking-widest whitespace-nowrap text-transparent lg:text-xl">
           Online and{" "}
-          <span className="bg-linear-to-t from-pink-700 from-20% to-fuchsia-600 to-50% bg-clip-text text-transparent shadow-lg motion-safe:animate-pulse-slow">
+          <span className="motion-safe:animate-pulse-slow bg-linear-to-t from-pink-700 from-20% to-fuchsia-600 to-50% bg-clip-text text-transparent shadow-lg">
             Real Time
           </span>{" "}
           Application
         </p>
       </article>
-      <Utensils className="hidden size-12 animate-pulse-slow text-fuchsia-600 sm:block sm:size-14 lg:size-[5rem]" />
+      <Utensils className="animate-pulse-slow hidden size-12 text-fuchsia-600 sm:block sm:size-14 lg:size-[5rem]" />
     </section>
   </div>
 )
