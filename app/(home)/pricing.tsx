@@ -47,11 +47,11 @@ const PricingHeader = ({
 
 const PricingSwitch = ({ onSwitch }: PricingSwitchProps) => (
   <Tabs defaultValue="0" className="mx-auto w-40" onValueChange={onSwitch}>
-    <TabsList className="px-2 py-6">
-      <TabsTrigger value="0" className="text-base">
+    <TabsList className="px-2">
+      <TabsTrigger value="0" className="text-base font-medium">
         Monthly
       </TabsTrigger>
-      <TabsTrigger value="1" className="text-base">
+      <TabsTrigger value="1" className="text-base font-medium">
         Yearly
       </TabsTrigger>
     </TabsList>
