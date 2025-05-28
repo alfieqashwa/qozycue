@@ -25,7 +25,7 @@ export function Features() {
     {
       title: "Real Time Dashboard",
       description:
-        "Platform kami berbasis Cloud System sehingga Owner dapat melihat setiap proses transaksi secara real-time; kapan pun dan dimana pun melalui device mobile, tablet, ataupun desktop.",
+        "Dengan sistem berbasis cloud, pemilik usaha dapat memantau seluruh transaksi secara real-time, dari mana saja dan kapan saja, menggunakan perangkat mobile, tablet, atau desktop.",
       content: (
         <div className="text-foreground flex h-full w-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--zinc-900),var(--black))] text-xl font-semibold">
           <PoolTableBarChartDashboard
@@ -39,13 +39,13 @@ export function Features() {
     {
       title: "Intuitive Design",
       description:
-        "Desain tampilan intuitif dan mudah digunakan. Tersedia 5 theme warna pilihan, paket berdasarkan rate (minute & hourly), transfer meja, pending-payment, dan fitur-fitur lainnya.",
+        "Desain antarmuka yang intuitif dan user-friendly, dengan lima pilihan tema warna, paket berbasis durasi (menit & jam), fitur transfer meja, pending payment, dan lainnya.",
       content: <SamplePoolTableCard locale={country?.locale as string} />,
     },
     {
       title: "Sustainable Maintenance",
       description:
-        "Platform ini diciptakan sebagai jembatan agar kami dapat memberikan pelayanan secara berkesinambungan dalam membantu para pengusaha billiard.",
+        "Platform ini hadir sebagai solusi berkelanjutan untuk membantu para pengusaha biliar berkembang dan beradaptasi di era digital.",
       content: (
         <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-[linear-gradient(to_bottom_right,var(--black),var(--zinc-950))]">
           <Cog size={80} className="text-rose-600 motion-safe:animate-spin" />
@@ -58,7 +58,7 @@ export function Features() {
     {
       title: "Integrated System",
       description:
-        "Perpaduan sistem rental dan kasir yang terintegrasi, memudahkan para pengusaha billiard untuk mengetahui omzet dalam rentang waktu yang dapat di atur sendiri sesuai kebutuhan.",
+        "Sistem rental dan kasir terintegrasi ini memudahkan pengusaha biliar melacak omzet berdasarkan periode waktu yang fleksibel.",
       content: (
         <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--black),var(--zinc-900))] text-white">
           <SampleDateRangePicker />
@@ -68,7 +68,7 @@ export function Features() {
     {
       title: "Secure",
       description:
-        "Kami mengandalkan protokol Google OAuth 2.0 untuk autentikasi - yang bukan hanya aman bagi sistem kami, namun juga bagi para pengguna.",
+        "Autentikasi pada platform ini didukung oleh protokol Google OAuth 2.0, yang memastikan tingkat keamanan tinggi bagi sistem dan pengguna.",
       content: (
         <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(to_bottom_right,var(--black),var(--zinc-900))]">
           <p className="text-foreground px-8 text-center text-xl font-medium text-balance">
