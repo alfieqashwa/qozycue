@@ -56,14 +56,17 @@ export const findAllSortedByDate = query({
           .gte("_creationTime", args.from ?? 0)
           .lte("_creationTime", args.to ?? Number.MAX_SAFE_INTEGER),
       )
-      .filter((q) => q.neq(q.field("statusPayment"), args.notEqual))
       .order("desc")
       .collect()
 
-    if (orders.length === 0) return []
+    const filteredOrders = orders.filter(
+      (order) => order.statusPayment !== args.notEqual,
+    )
 
-    const filteredOrders = []
-    for (const order of orders) {
+    if (filteredOrders.length === 0) return []
+
+    const filteredOrdersByStatusPayment = []
+    for (const order of filteredOrders) {
       const poolRental = await ctx.db
         .query("poolRentals")
         .withIndex("orderId", (q) => q.eq("orderId", order._id))
@@ -88,7 +91,7 @@ export const findAllSortedByDate = query({
         ? await ctx.db.get(order.updatedBy)
         : undefined
 
-      filteredOrders.push({
+      filteredOrdersByStatusPayment.push({
         ...order,
         poolRental: {
           isBooking: poolRental?.isBooking,
@@ -113,7 +116,7 @@ export const findAllSortedByDate = query({
       })
     }
 
-    return filteredOrders
+    return filteredOrdersByStatusPayment
   },
 })
 
