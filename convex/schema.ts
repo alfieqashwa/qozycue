@@ -2,6 +2,21 @@ import { authTables } from "@convex-dev/auth/server"
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
 
+// Reusable enums and helpers
+const paymentMethodEnum = v.union(
+  v.literal("CASH"),
+  v.literal("DEBIT"),
+  v.literal("CREDIT"),
+)
+const statusPaymentEnum = v.union(
+  v.literal("OPEN"),
+  v.literal("PENDING"),
+  v.literal("PAID"),
+  v.literal("CANCELLED"),
+  v.literal("REFUND"),
+  v.literal("ARCHIVE"),
+)
+
 // The schema is normally optional, but Convex Auth
 // requires indexes defined on `authTables`.
 export default defineSchema({
@@ -103,30 +118,19 @@ export default defineSchema({
     .index("by_company_rate", ["companyId", "rate"]),
 
   orders: defineTable({
-    paymentMethod: v.optional(
-      v.union(v.literal("CASH"), v.literal("DEBIT"), v.literal("CREDIT")),
-    ),
-    statusPayment: v.union(
-      v.literal("OPEN"),
-      v.literal("PENDING"),
-      v.literal("PAID"),
-      v.literal("CANCELLED"), // new enum
-      v.literal("REFUND"), // new enum
-      v.literal("ARCHIVE"),
-    ),
-    // isBooking: v.boolean(),
-    // Todos: totalAmount, revenue, tax, disc, note, dueDate, should be on Model Payments (note: createdBy has both in Model Orders & Payments)
+    paymentMethod: v.optional(paymentMethodEnum),
+    statusPayment: statusPaymentEnum,
     totalAmount: v.optional(v.float64()),
     revenue: v.optional(v.float64()),
     tax: v.optional(v.float64()),
     discount: v.optional(v.float64()),
     note: v.optional(v.string()),
     customerId: v.optional(v.id("customers")),
-    dueDate: v.optional(v.float64()), // new field
+    dueDate: v.optional(v.float64()),
     createdBy: v.id("users"),
     updatedBy: v.optional(v.id("users")),
     companyId: v.id("companies"),
-    updatedTime: v.optional(v.number()), // add for tracking updates
+    updatedTime: v.optional(v.number()),
     isDeleted: v.optional(v.boolean()),
   })
     .index("customerId", ["customerId"])
@@ -145,14 +149,7 @@ export default defineSchema({
     duration: v.optional(v.number()),
     totalCost: v.optional(v.float64()),
     isBooking: v.boolean(),
-    statusPayment: v.union(
-      v.literal("OPEN"),
-      v.literal("PENDING"),
-      v.literal("PAID"),
-      v.literal("CANCELLED"),
-      v.literal("REFUND"),
-      v.literal("ARCHIVE"),
-    ),
+    statusPayment: statusPaymentEnum,
     poolTableId: v.id("poolTables"),
     packetId: v.id("packets"),
     orderId: v.id("orders"),
@@ -188,14 +185,7 @@ export default defineSchema({
     quantity: v.number(),
     amount: v.float64(),
     isFree: v.boolean(),
-    statusPayment: v.union(
-      v.literal("OPEN"),
-      v.literal("PENDING"),
-      v.literal("PAID"),
-      v.literal("CANCELLED"),
-      v.literal("REFUND"),
-      v.literal("ARCHIVE"),
-    ),
+    statusPayment: statusPaymentEnum,
     productId: v.id("products"),
     orderId: v.id("orders"),
     companyId: v.id("companies"),
