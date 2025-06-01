@@ -1,5 +1,5 @@
-import "../globals.css"
 import ConvexClientProvider from "@/components/ConvexClientProvider"
+import { Globe } from "@/components/magicui/globe"
 import { ThemeProvider } from "@/components/providers"
 import { cn } from "@/lib/utils"
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server"
@@ -9,6 +9,7 @@ import { CircleCheck, CircleX, Info } from "lucide-react"
 import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import { Toaster } from "sonner"
+import "../styles/globals.css"
 
 const poppins = Poppins({
   subsets: ["latin-ext"],

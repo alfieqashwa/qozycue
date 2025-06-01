@@ -1,10 +1,10 @@
-import { ShimmerButton } from "@/components/shimmer-button"
 import { TabsContent } from "@/components/ui/tabs"
 import { Tv, Utensils } from "lucide-react"
 import { GiPoolTriangle } from "react-icons/gi"
 import { AuthButtons } from "./auth-buttons"
 import { DocumentationButton } from "./documentation-button"
 import { Hero } from "./hero"
+import { ShimmerButton } from "@/components/magicui/shimmer-button"
 
 export const HomeContent = ({ slug }: { slug: string | null }) => (
   <TabsContent value="home">
@@ -23,7 +23,7 @@ export const HomeContent = ({ slug }: { slug: string | null }) => (
         }
         title="Documentation"
       />
-      <ShimmerButton>
+      <ShimmerButton className="h-11">
         <a
           // href="https://www.youtube.com/playlist?list=PLnWWQuvB-wxg2PHPh4aybEZaqREqcrVuN"
           href="https://docs.qozycue.com"
