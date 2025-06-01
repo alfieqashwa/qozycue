@@ -28,7 +28,7 @@ export const Hero = () => (
         </p>
         <p className="from-foreground/80 to-foreground mt-1 bg-linear-to-t bg-clip-text font-bold tracking-widest whitespace-nowrap text-transparent lg:text-xl">
           Online and{" "}
-          <span className="motion-safe:animate-pulse-slow bg-linear-to-t from-pink-700 from-20% to-fuchsia-600 to-50% bg-clip-text text-transparent shadow-lg">
+          <span className="motion-safe:animate-pulse-slow bg-linear-to-t from-pink-600 from-20% to-fuchsia-500 to-50% bg-clip-text text-transparent shadow-lg">
             Real Time
           </span>{" "}
           Application
