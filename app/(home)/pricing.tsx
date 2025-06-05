@@ -85,7 +85,7 @@ const PricingCard = ({
             <CardTitle className="text-lg text-zinc-300">{title}</CardTitle>
             <div
               className={cn(
-                "h-fit rounded-xl bg-zinc-200 px-2.5 py-1 text-xs text-black dark:bg-zinc-800 dark:text-white",
+                "h-fit rounded-xl bg-zinc-200 px-2.5 py-1 text-xs font-medium text-black dark:bg-zinc-800 dark:text-white",
                 {
                   "bg-gradient-to-r from-orange-400 to-rose-400 dark:text-black":
                     popular,
@@ -166,8 +166,8 @@ export function Pricing() {
     },
     {
       title: "Pro",
-      monthlyPrice: 500_000 / 1000,
-      yearlyPrice: 5_000_000 / 1000,
+      monthlyPrice: 450_000 / 1000,
+      yearlyPrice: 4_400_000 / 1000,
       description: "Perfect for owners of small & medium businessess",
       features: [
         "Max 40 pool tables",
