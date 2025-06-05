@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils"
 import { Utensils } from "lucide-react"
+import { motion } from "motion/react"
 import { GiPoolTriangle } from "react-icons/gi"
 
 const QOZY_CUE = ["Q", "o", "z", "y", " ", "C", "u", "e"]
@@ -8,7 +9,14 @@ export const Hero = () => (
   <div>
     <p className="text-center text-6xl font-black tracking-wider text-white sm:text-7xl lg:text-8xl">
       {QOZY_CUE.map((q, i) => (
-        <span
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            delay: i * 0.15,
+            duration: 1,
+            ease: "easeOut",
+          }}
           className={cn(
             "from-foreground/50 to-foreground bg-linear-to-t from-20% to-50% bg-clip-text text-transparent shadow-lg",
             q === "z" &&
@@ -17,12 +25,17 @@ export const Hero = () => (
           key={i}
         >
           {q}
-        </span>
+        </motion.span>
       ))}
     </p>
     <section className="mt-8 flex w-full items-center justify-center space-x-1.5 sm:space-x-12 md:space-x-24 lg:space-x-32">
       <GiPoolTriangle className="animate-pulse-slow hidden size-14 text-fuchsia-600 sm:block sm:size-16 lg:size-24" />
-      <article className="text-center">
+      <motion.article
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
+        className="text-center"
+      >
         <p className="from-foreground/50 to-foreground bg-linear-to-t from-20% to-50% bg-clip-text text-2xl font-black tracking-widest whitespace-nowrap text-transparent lg:text-4xl">
           Billiard & Cafe
         </p>
@@ -33,7 +46,7 @@ export const Hero = () => (
           </span>{" "}
           Application
         </p>
-      </article>
+      </motion.article>
       <Utensils className="animate-pulse-slow hidden size-12 text-fuchsia-600 sm:block sm:size-14 lg:size-[5rem]" />
     </section>
   </div>
