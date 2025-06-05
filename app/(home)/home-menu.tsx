@@ -7,7 +7,7 @@ import { Hero } from "./hero"
 import { ShimmerButton } from "@/components/magicui/shimmer-button"
 
 export const HomeContent = ({ slug }: { slug: string | null }) => (
-  <TabsContent value="home">
+  <TabsContent value="home" className="mt-12">
     <Hero />
     <section className="flex w-full items-center justify-between px-6 py-6 sm:hidden">
       <GiPoolTriangle className="animate-pulse-slow size-14 text-fuchsia-600 sm:size-16 lg:size-24" />

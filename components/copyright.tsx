@@ -2,8 +2,8 @@ import { Heart } from "lucide-react"
 import packageJson from "../package.json"
 
 export const Copyright = () => (
-  <div className="fixed bottom-0 w-full">
-    <footer className="to-foreground flex h-6 items-center justify-center bg-linear-to-t from-white bg-clip-text text-xs font-medium tracking-widest text-zinc-400">
+  <div className="fixed bottom-0 z-50 w-full bg-black font-mono">
+    <footer className="to-foreground flex h-6 items-center justify-center bg-linear-to-t from-white bg-clip-text text-xs font-medium tracking-wider text-zinc-400">
       <p className="whitespace-nowrap">
         © {new Date().getFullYear()} Made with{" "}
       </p>
@@ -21,7 +21,7 @@ export const Copyright = () => (
         Alfie Qashwa
       </a>
     </footer>
-    <p className="pb-1 text-center text-xs font-semibold tracking-widest">
+    <p className="pb-0.5 text-center text-xs font-semibold tracking-wider">
       Version: {packageJson.version}
     </p>
   </div>
