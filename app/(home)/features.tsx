@@ -87,7 +87,7 @@ export function Features() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
-              "By utilizing the
+              &quot;By utilizing the
             </motion.span>
             <motion.a
               initial={{ opacity: 0, y: 20 }}
@@ -106,7 +106,7 @@ export function Features() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9, duration: 0.5 }}
             >
-              , we eliminate the need to store any passwords."
+              , we eliminate the need to store any passwords.&quote;
             </motion.span>
           </motion.p>
         </div>
