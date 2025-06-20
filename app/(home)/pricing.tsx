@@ -32,28 +32,105 @@ type PricingCardProps = {
   exclusive?: boolean
 }
 
-const variants = {
-  fadeUp: {
-    initial: { opacity: 0, y: 20 },
-    aimate: { opacity: 1, y: 0 },
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2,
+    },
   },
-  fadeDown: {
-    initial: { opacity: 0, y: -20 },
-    animate: { opacity: 1, y: 0 },
+}
+
+const cardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+    scale: 0.95,
   },
-  fadeLeft: {
-    initial: { opacity: 0, x: -20 },
-    animate: { opacity: 1, x: 0 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 80,
+      damping: 15,
+      duration: 0.8,
+    },
   },
-  fadeRight: {
-    initial: { opacity: 0, x: 20 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: 20 },
+}
+
+const featureVariants = {
+  hidden: {
+    opacity: 0,
+    x: -20,
+    scale: 0.9,
   },
-  fadeIn: {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
+  visible: (index: number) => ({
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 12,
+      delay: index * 0.1,
+    },
+  }),
+}
+
+const priceChangeVariants = {
+  initial: {
+    opacity: 0,
+    y: 20,
+    scale: 0.8,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 120,
+      damping: 15,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
+    scale: 0.8,
+    transition: {
+      duration: 0.2,
+    },
+  },
+}
+
+const badgeVariants = {
+  initial: {
+    opacity: 0,
+    x: 30,
+    scale: 0.8,
+  },
+  animate: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 150,
+      damping: 12,
+      delay: 0.3,
+    },
+  },
+  exit: {
+    opacity: 0,
+    x: 30,
+    scale: 0.8,
+    transition: {
+      duration: 0.2,
+    },
   },
 }
 
@@ -65,36 +142,64 @@ const PricingHeader = ({
   subtitle: string
 }) => (
   <motion.section
-    initial={{ opacity: 0, y: -20 }}
+    initial={{ opacity: 0, y: -30 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-    className="text-center"
+    transition={{
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+      duration: 0.8,
+    }}
+    className="overflow-hidden text-center"
   >
-    <h2 className="text-3xl font-bold">{title}</h2>
-    <p className="pt-1 font-semibold text-zinc-400 md:text-lg">{subtitle}</p>
+    <motion.h2
+      className="text-3xl font-bold"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2, duration: 0.6 }}
+    >
+      {title}
+    </motion.h2>
+    <motion.p
+      className="pt-1 font-semibold text-zinc-400 md:text-lg"
+      initial={{ opacity: 0, y: -15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, duration: 0.6 }}
+    >
+      {subtitle}
+    </motion.p>
     <br />
   </motion.section>
 )
 
-const MotionTabs = motion(Tabs)
+const MotionTabs = motion.create(Tabs)
 
 const PricingSwitch = ({ onSwitch }: PricingSwitchProps) => (
   <MotionTabs
     defaultValue="0"
     onValueChange={onSwitch}
-    variants={variants.fadeIn}
-    initial="initial"
-    animate="animate"
-    transition={{ delay: 0.5, duration: 0.5 }}
-    className="mx-auto w-40"
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{
+      delay: 0.6,
+      duration: 0.5,
+      type: "spring",
+      stiffness: 120,
+      damping: 15,
+    }}
+    className="mx-auto w-40 overflow-hidden"
   >
     <TabsList className="space-x-1">
-      <TabsTrigger value="0" className="font-medium">
-        Monthly
-      </TabsTrigger>
-      <TabsTrigger value="1" className="font-medium">
-        Yearly
-      </TabsTrigger>
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <TabsTrigger value="0" className="font-medium">
+          Monthly
+        </TabsTrigger>
+      </motion.div>
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <TabsTrigger value="1" className="font-medium">
+          Yearly
+        </TabsTrigger>
+      </motion.div>
     </TabsList>
   </MotionTabs>
 )
@@ -113,12 +218,21 @@ const PricingCard = ({
   exclusive,
 }: PricingCardProps) => (
   <MotionCard
-    variants={variants.fadeIn}
-    initial="initial"
-    animate="animate"
-    transition={{ delay: 0.3, duration: 0.8 }}
+    variants={cardVariants}
+    initial="hidden"
+    animate="visible"
+    whileHover={{
+      y: -8,
+      scale: 1.02,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+      },
+    }}
+    whileTap={{ scale: 0.98 }}
     className={cn(
-      `flex w-72 flex-col justify-between py-1 ${popular ? "border-rose-400" : "border-zinc-700"} mx-auto border-[3px] shadow-lg sm:mx-0`,
+      `flex w-72 flex-col justify-between py-1 ${popular ? "border-rose-400" : "border-zinc-700"} mx-auto overflow-hidden border-[3px] shadow-lg will-change-transform sm:mx-0`,
       {
         "animate-shimmer bg-black bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] transition-colors":
           exclusive,
@@ -128,22 +242,20 @@ const PricingCard = ({
     <AnimatePresence mode="wait">
       <motion.div
         key={isYearly ? "yearly" : "monthly"}
-        variants={variants.fadeIn}
+        variants={priceChangeVariants}
         initial="initial"
         animate="animate"
         exit="exit"
-        transition={{ delay: 0.2, duration: 0.5 }}
       >
         <CardHeader className="pt-4 pb-8">
           {isYearly && yearlyPrice && monthlyPrice ? (
             <div className="flex justify-between">
               <CardTitle className="text-lg text-zinc-300">{title}</CardTitle>
               <motion.div
-                variants={variants.fadeRight}
+                variants={badgeVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                transition={{ delay: 0.2, duration: 0.5 }}
                 className={cn(
                   "h-fit rounded-xl bg-zinc-200 px-2.5 py-1 text-xs font-medium text-black dark:bg-zinc-800 dark:text-white",
                   {
@@ -161,73 +273,121 @@ const PricingCard = ({
             <CardTitle className="py-1">{title}</CardTitle>
           )}
           <motion.div
-            key={isYearly && yearlyPrice ? "yearly" : "monthly"} // This makes AnimatePresence work
-            variants={variants.fadeIn}
+            key={isYearly && yearlyPrice ? "yearly" : "monthly"}
+            variants={priceChangeVariants}
             initial="initial"
             animate="animate"
             exit="exit"
-            transition={{ delay: 0.2, duration: 0.5, ease: "easeInOut" }}
             className="flex gap-0.5"
           >
-            <h3 className="text-3xl font-bold">
+            <motion.h3
+              className="text-3xl font-bold"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 15,
+                delay: 0.1,
+              }}
+            >
               {yearlyPrice && isYearly
                 ? yearlyPrice / 1000 + "jt"
                 : monthlyPrice
                   ? monthlyPrice + "rb"
                   : "Custom"}
-            </h3>
-            <span className="mb-1 flex flex-col justify-end text-sm">
+            </motion.h3>
+            <motion.span
+              className="mb-1 flex flex-col justify-end text-sm"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+            >
               {yearlyPrice && isYearly
                 ? "/year"
                 : monthlyPrice
                   ? "/month"
                   : null}
-            </span>
+            </motion.span>
           </motion.div>
-          <CardDescription className="h-12 pt-1.5">
-            {description}
-          </CardDescription>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <CardDescription className="h-12 pt-1.5">
+              {description}
+            </CardDescription>
+          </motion.div>
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
           {features.map((feature: string, idx) => (
-            <CheckItem key={idx} text={feature} />
+            <CheckItem key={idx} text={feature} index={idx} />
           ))}
         </CardContent>
       </motion.div>
     </AnimatePresence>
     <CardFooter className="mt-2">
-      {title === "Enterprise" ? (
-        <a
-          href={`https://wa.me/${PHONE}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-foreground text-muted hover:bg-foreground/75 inline-flex w-full items-center justify-center rounded-md px-6 py-2 font-medium transition-colors focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none"
-        >
-          {actionLabel}
-        </a>
-      ) : (
-        <Link
-          href="/portal"
-          className="bg-foreground text-muted hover:bg-foreground/75 relative inline-flex w-full items-center justify-center rounded-md px-6 py-2 font-medium transition-colors focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none"
-        >
-          <div className="rounded-lg" />
-          {actionLabel}
-        </Link>
-      )}
+      <motion.div
+        className="w-full"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        {title === "Enterprise" ? (
+          <a
+            href={`https://wa.me/${PHONE}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-foreground text-muted hover:bg-foreground/75 inline-flex w-full items-center justify-center rounded-md px-6 py-2 font-medium transition-colors focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none"
+          >
+            {actionLabel}
+          </a>
+        ) : (
+          <Link
+            href="/portal"
+            className="bg-foreground text-muted hover:bg-foreground/75 relative inline-flex w-full items-center justify-center rounded-md px-6 py-2 font-medium transition-colors focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 focus:outline-none"
+          >
+            <div className="rounded-lg" />
+            {actionLabel}
+          </Link>
+        )}
+      </motion.div>
     </CardFooter>
   </MotionCard>
 )
 
-const CheckItem = ({ text }: { text: string }) => (
+const CheckItem = ({ text, index }: { text: string; index: number }) => (
   <motion.div
-    variants={variants.fadeLeft}
-    initial="initial"
-    animate="animate"
-    transition={{ delay: 0.2, duration: 0.8 }}
-    className="flex gap-2"
+    custom={index}
+    variants={featureVariants}
+    initial="hidden"
+    animate="visible"
+    whileHover={{
+      x: 5,
+      transition: { type: "spring", stiffness: 300, damping: 20 },
+    }}
+    className="flex gap-2 will-change-transform"
   >
-    <CheckCircle2 size={18} className="my-auto shrink-0 text-green-400" />
-    <p className="pt-0.5 text-sm text-zinc-300">{text}</p>
+    <motion.div
+      initial={{ scale: 0, rotate: -180 }}
+      animate={{ scale: 1, rotate: 0 }}
+      transition={{
+        delay: index * 0.1 + 0.5,
+        type: "spring",
+        stiffness: 200,
+        damping: 15,
+      }}
+    >
+      <CheckCircle2 size={18} className="my-auto shrink-0 text-green-400" />
+    </motion.div>
+    <motion.p
+      className="pt-0.5 text-sm text-zinc-300"
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.1 + 0.6 }}
+    >
+      {text}
+    </motion.p>
   </motion.div>
 )
 
@@ -272,18 +432,24 @@ export function Pricing() {
       exclusive: true,
     },
   ]
+
   return (
-    <div className="py-20 lg:py-12">
+    <div className="overflow-hidden py-20 lg:py-12">
       <PricingHeader
         title="Pricing Plans"
         subtitle="Choose the plan that's right for you"
       />
       <PricingSwitch onSwitch={togglePricingPeriod} />
-      <section className="mt-8 flex flex-col justify-center gap-8 sm:flex-row sm:flex-wrap">
+      <motion.section
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="mt-8 flex flex-col justify-center gap-8 sm:flex-row sm:flex-wrap"
+      >
         {plans.map((plan) => {
           return <PricingCard key={plan.title} {...plan} isYearly={isYearly} />
         })}
-      </section>
+      </motion.section>
     </div>
   )
 }

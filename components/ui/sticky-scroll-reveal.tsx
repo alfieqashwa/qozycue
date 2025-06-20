@@ -1,8 +1,8 @@
 "use client"
 
+import { cn } from "@/lib/utils"
 import { motion, useMotionValueEvent, useScroll } from "motion/react"
 import React, { useEffect, useRef, useState } from "react"
-import { cn } from "@/lib/utils"
 
 export const StickyScrollDesktopView = ({
   content,
@@ -41,15 +41,16 @@ export const StickyScrollDesktopView = ({
   })
 
   const backgroundColors = [
-    "var(--zinc-950)",
-    "var(--black)",
-    "var(--neutral-900)",
+    "rgba(9,9,11,0.5)", // zinc-950 with 50% transparency
+    "rgba(0,0,0,0.5)", // black with 50% transparency
+    "rgba(23,23,23,0.5)", // neutral-900 with 50% transparency
   ]
+
   const linearGradients = [
-    "linear-gradient(to bottom right, var(--black, var(--black))",
-    "linear-gradient(to bottom right, var(--black, var(--black))",
-    "linear-gradient(to bottom right, var(--orange-500), var(--yellow-500))",
-    "linear-gradient(to bottom right, var(--cyan-500), var(--emerald-500))",
+    "linear-gradient(to bottom right, rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
+    "linear-gradient(to bottom right, rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
+    "linear-gradient(to bottom right, rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
+    "linear-gradient(to bottom right, rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
   ]
 
   const [backgroundGradient, setBackgroundGradient] = useState(
@@ -91,7 +92,7 @@ export const StickyScrollDesktopView = ({
                 animate={{
                   opacity: activeCard === index ? 1 : 0.3,
                 }}
-                className="mt-10 max-w-sm text-lg text-slate-300"
+                className="mt-10 max-w-sm bg-zinc-950 text-lg text-slate-300"
               >
                 {item.description}
               </motion.p>
