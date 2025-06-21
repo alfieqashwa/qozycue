@@ -106,7 +106,7 @@ export function Features() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9, duration: 0.5 }}
             >
-              , we eliminate the need to store any passwords.&quote;
+              , we eliminate the need to store any passwords.&quot;
             </motion.span>
           </motion.p>
         </div>
