@@ -53,10 +53,11 @@ export function Features() {
         "Platform ini hadir sebagai solusi berkelanjutan untuk membantu para pengusaha biliar berkembang dan beradaptasi di era digital.",
       content: (
         <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-zinc-900 to-black">
-          <Cog size={80} className="text-rose-600 motion-safe:animate-spin" />
           <p className="text-foreground text-xl font-medium">
             We Do Not Sell Product
           </p>
+          <Cog size={80} className="text-rose-600 motion-safe:animate-spin" />
+          <p className="text-foreground text-xl font-medium">We Sell Service</p>
         </div>
       ),
     },
