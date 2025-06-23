@@ -113,7 +113,7 @@ export function PoolRentalDetail({
   )
 
   return (
-    <ScrollArea className="h-[calc(100vh_-_26rem)] px-4">
+    <ScrollArea className="h-[calc(100vh_-_26.75rem)] px-2">
       <WrapperDiv>
         <p className="text-muted-foreground">Rental ID:</p>
         {poolRentalId && (

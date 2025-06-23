@@ -38,8 +38,8 @@ export function OrderlineDetail({
 
   return (
     <section className="relative">
-      <ScrollArea className="h-[calc(100vh_-_30rem)] border-b">
-        <ul className="px-4">
+      <ScrollArea className="h-[calc(100vh_-_30rem)] border-b px-2">
+        <ul className="px-0">
           {status === "success" &&
             orderlines
               ?.sort((p, q) =>
