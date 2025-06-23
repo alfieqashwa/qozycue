@@ -9,8 +9,8 @@ const QOZY_CUE = ["Q", "o", "z", "y", " ", "C", "u", "e"]
 export const Hero = () => {
   const { ref, replay } = useScramble({
     text: "Billiard & Cafe",
-    speed: 0.2,
-    step: 0.5,
+    speed: 0.3,
+    // step: 0.5,
   })
   return (
     <div>
