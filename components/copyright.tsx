@@ -11,7 +11,7 @@ export const Copyright = () => {
   })
 
   return (
-    <div className="fixed bottom-0 z-50 w-full bg-black pt-1 font-mono">
+    <div className="fixed bottom-0 z-50 w-full bg-gradient-to-b from-black/60 to-black pt-1 font-mono">
       <footer className="text-center text-xs leading-tight font-semibold tracking-wider text-zinc-400">
         <p className="whitespace-nowrap">
           <span>© {new Date().getFullYear()} Made with</span>
