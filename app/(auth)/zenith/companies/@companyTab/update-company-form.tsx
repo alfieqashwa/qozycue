@@ -95,7 +95,7 @@ export function UpdateCompanyForm({
       },
     })
   }
-
+  // TODO: configure `hasCompanyName` as like as createTrialCompany to make sure the companyName has unique name.
   return (
     <ScrollArea className="h-[calc(100vh_-_9rem)] lg:px-4">
       <Form {...form}>
