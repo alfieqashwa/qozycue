@@ -225,42 +225,47 @@ export const remove = mutation({
       .withIndex("companyId", (q) => q.eq("companyId", args.id))
       .collect()
 
-    const removeAllOrders = await Promise.all(
-      orders.map((order) => ctx.db.delete(order._id)),
-    )
-    const removeAllTaxes = await Promise.all(
-      taxes.map((tax) => ctx.db.delete(tax._id)),
-    )
-    const removeAllDiscounts = await Promise.all(
-      discounts.map((discount) => ctx.db.delete(discount._id)),
-    )
-    const removeAllCustomers = await Promise.all(
-      customers.map((customer) => ctx.db.delete(customer._id)),
-    )
-    const removeAllPoolTables = await Promise.all(
+    await Promise.all(orders.map((order) => ctx.db.delete(order._id)))
+    await Promise.all(taxes.map((tax) => ctx.db.delete(tax._id)))
+    await Promise.all(discounts.map((discount) => ctx.db.delete(discount._id)))
+    await Promise.all(customers.map((customer) => ctx.db.delete(customer._id)))
+    await Promise.all(
       poolTables.map((poolTable) => ctx.db.delete(poolTable._id)),
     )
-    const removeAllPackets = await Promise.all(
-      packets.map((packet) => ctx.db.delete(packet._id)),
+    await Promise.all(packets.map((packet) => ctx.db.delete(packet._id)))
+    await Promise.all(products.map((product) => ctx.db.delete(product._id)))
+    await Promise.all(
+      users.map(async (user) => {
+        const authAccounts = await ctx.db
+          .query("authAccounts")
+          .withIndex("userIdAndProvider", (q) => q.eq("userId", user._id))
+          .collect()
+        const authSessions = await ctx.db
+          .query("authSessions")
+          .withIndex("userId", (q) => q.eq("userId", user._id))
+          .collect()
+
+        await Promise.all(
+          authAccounts.map((account) => ctx.db.delete(account._id)),
+        )
+        await Promise.all(
+          authSessions.map((session) => ctx.db.delete(session._id)),
+        )
+        await ctx.db.delete(user._id)
+      }),
     )
-    const removeAllProducts = await Promise.all(
-      products.map((product) => ctx.db.delete(product._id)),
-    )
-    const removeAllusers = await Promise.all(
-      users.map((user) => ctx.db.delete(user._id)),
-    )
-    const removeCompany = await ctx.db.delete(args.id)
+    await ctx.db.delete(args.id)
 
     return {
-      removeAllOrders,
-      removeAllTaxes,
-      removeAllDiscounts,
-      removeAllCustomers,
-      removeAllPoolTables,
-      removeAllPackets,
-      removeAllProducts,
-      removeAllusers,
-      removeCompany,
+      removeOrders: orders.length,
+      removeTaxes: taxes.length,
+      removeDiscounts: discounts.length,
+      removeCustomers: customers.length,
+      removePoolTables: poolTables.length,
+      removePackets: packets.length,
+      removeProducts: products.length,
+      removeusers: users.length,
+      removeCompany: true,
     }
   },
 })
