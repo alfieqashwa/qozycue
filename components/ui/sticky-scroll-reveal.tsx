@@ -104,7 +104,7 @@ export const StickyScrollDesktopView = ({
       <div
         style={{ background: backgroundGradient }}
         className={cn(
-          "sticky top-10 hidden h-80 w-[26rem] overflow-hidden rounded-3xl bg-white md:block",
+          "sticky top-10 hidden h-80 w-[28rem] overflow-hidden rounded-3xl bg-white md:block",
           contentClassName,
         )}
       >

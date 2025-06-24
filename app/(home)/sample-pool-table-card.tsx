@@ -4,9 +4,9 @@ import { ScrollText, TimerOff, UtensilsCrossed } from "lucide-react"
 import { motion } from "motion/react"
 
 export const SamplePoolTableCard = ({ locale }: { locale: string }) => (
-  <div className="font-mono">
+  <div className="mx-1.5 w-full font-mono lg:mx-2.5">
     <motion.div
-      className="group relative px-1 pt-16"
+      className="group relative"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -16,7 +16,7 @@ export const SamplePoolTableCard = ({ locale }: { locale: string }) => (
       }}
     >
       <motion.div
-        className="absolute -inset-[3px] top-16 h-44 w-full rounded-2xl bg-sky-400 blur-md"
+        className="absolute -inset-[3px] h-44 w-full rounded-2xl bg-sky-400 blur-md"
         animate={{
           scale: [1, 1.02, 1],
           opacity: [0.6, 0.8, 0.6],
@@ -39,7 +39,7 @@ export const SamplePoolTableCard = ({ locale }: { locale: string }) => (
             className="p-2"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
           >
             <motion.div
               className="relative mr-3 size-[6rem] shrink-0 rounded-full bg-zinc-900 shadow-md ring-4 ring-sky-400 ring-offset-4 ring-offset-black"
