@@ -175,14 +175,15 @@ export const updateAdminProcedure = zMutation({
 })
 
 /* Remove comapny including its relation tables:
- * users
+ * orders
  * taxes
  * discounts
  * customers
  * poolTables
  * packets
- * orders
  * products
+ * users
+ * company
  * src -> note.md
  */
 // For now, remove a company manually from db to avoid lack of over consupmption limits database usage
@@ -190,7 +191,77 @@ export const remove = mutation({
   args: { id: v.id("companies") },
   handler: async (ctx, args) => {
     await superAdminProcedure(ctx)
-    return await ctx.db.delete(args.id)
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("companyId", (q) => q.eq("companyId", args.id))
+      .collect()
+    const taxes = await ctx.db
+      .query("taxes")
+      .withIndex("companyId", (q) => q.eq("companyId", args.id))
+      .collect()
+    const discounts = await ctx.db
+      .query("discounts")
+      .withIndex("companyId", (q) => q.eq("companyId", args.id))
+      .collect()
+    const customers = await ctx.db
+      .query("customers")
+      .withIndex("companyId", (q) => q.eq("companyId", args.id))
+      .collect()
+    const poolTables = await ctx.db
+      .query("poolTables")
+      .withIndex("companyId", (q) => q.eq("companyId", args.id))
+      .collect()
+    const packets = await ctx.db
+      .query("packets")
+      .withIndex("companyId", (q) => q.eq("companyId", args.id))
+      .collect()
+    const products = await ctx.db
+      .query("products")
+      .withIndex("companyId", (q) => q.eq("companyId", args.id))
+      .collect()
+    const users = await ctx.db
+      .query("users")
+      .withIndex("companyId", (q) => q.eq("companyId", args.id))
+      .collect()
+
+    const removeAllOrders = await Promise.all(
+      orders.map((order) => ctx.db.delete(order._id)),
+    )
+    const removeAllTaxes = await Promise.all(
+      taxes.map((tax) => ctx.db.delete(tax._id)),
+    )
+    const removeAllDiscounts = await Promise.all(
+      discounts.map((discount) => ctx.db.delete(discount._id)),
+    )
+    const removeAllCustomers = await Promise.all(
+      customers.map((customer) => ctx.db.delete(customer._id)),
+    )
+    const removeAllPoolTables = await Promise.all(
+      poolTables.map((poolTable) => ctx.db.delete(poolTable._id)),
+    )
+    const removeAllPackets = await Promise.all(
+      packets.map((packet) => ctx.db.delete(packet._id)),
+    )
+    const removeAllProducts = await Promise.all(
+      products.map((product) => ctx.db.delete(product._id)),
+    )
+    const removeAllusers = await Promise.all(
+      users.map((user) => ctx.db.delete(user._id)),
+    )
+    const removeCompany = await ctx.db.delete(args.id)
+
+    return {
+      removeAllOrders,
+      removeAllTaxes,
+      removeAllDiscounts,
+      removeAllCustomers,
+      removeAllPoolTables,
+      removeAllPackets,
+      removeAllProducts,
+      removeAllusers,
+      removeCompany,
+    }
   },
 })
 
