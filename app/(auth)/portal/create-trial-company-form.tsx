@@ -55,6 +55,7 @@ export function CreateTrialCompanyForm() {
       toast.success("Succeed!", {
         description: "Your company / tenant has been created.",
       })
+      form.reset() // <-- fix(bug): the `hasCompanyName` will not show in submitting process.
       router.push(
         `/${variables?.createTrialCompanySchema.name.replace(/ /g, "-")}/dashboard/`,
       )
@@ -76,13 +77,12 @@ export function CreateTrialCompanyForm() {
     },
   })
 
-  const { data: hasCompanyName, status: hasCompanyNameStatus } =
-    useTanstackQuery({
-      ...convexQuery(api.companies.findAll, {}),
-      select(data) {
-        return data.some((c) => c.name === form.watch("name").toLowerCase())
-      },
-    })
+  const { data: hasCompanyName } = useTanstackQuery({
+    ...convexQuery(api.companies.findAll, {}),
+    select(data) {
+      return data.some((c) => c.name === form.watch("name").toLowerCase())
+    },
+  })
 
   // 2. Define a submit handler
   function onSubmit(values: TCreateTrialCompany) {
