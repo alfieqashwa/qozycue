@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { Loader2 } from "lucide-react"
 
 export const SubmitButton = ({
@@ -6,6 +7,7 @@ export const SubmitButton = ({
   isPending,
   disabled = false,
   variant = "default",
+  className,
 }: {
   title: string
   isPending: boolean
@@ -19,12 +21,16 @@ export const SubmitButton = ({
     | "ghost"
     | null
     | undefined
+  className?: string
 }) => (
   <Button
     disabled={disabled || isPending}
     type="submit"
     variant={variant}
-    className="disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto"
+    className={cn(
+      "disabled:pointer-events-auto disabled:cursor-not-allowed md:w-auto",
+      className,
+    )}
   >
     {isPending ? (
       <>
