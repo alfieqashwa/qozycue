@@ -150,6 +150,7 @@
 
 ✅ Add Subscription Info on Profile Page
 ✅ Add Toggle CustomLossMinute on Profile Page (SuperAdmin Only)
+✅ Changed field customLossMinute from optional to required after manually modified database
 
 ## Backlog (Future Plan)
 
