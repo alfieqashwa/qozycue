@@ -93,7 +93,7 @@ export function CreateCompanyForm({
   }
 
   return (
-    <ScrollArea className="thom h-[calc(100vh_-_7rem)] px-4">
+    <ScrollArea className="h-[calc(100vh_-_7rem)] px-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {hasCompanyNameStatus === "success" && (
@@ -216,7 +216,11 @@ export function CreateCompanyForm({
             <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </SheetClose>
-            <SubmitButton title="Create Company" isPending={isPending} />
+            <SubmitButton
+              title="Create Company"
+              isPending={isPending}
+              disabled={hasCompanyName}
+            />
           </SheetFooter>
         </form>
       </Form>

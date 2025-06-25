@@ -28,9 +28,12 @@ import {
   updateCompanyZenithSchema,
   type TUpdateCompanyZenith,
 } from "@/types/schema/company-schema"
-import { useConvexMutation } from "@convex-dev/react-query"
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery as useTanstackQuery,
+} from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
@@ -80,6 +83,15 @@ export function UpdateCompanyForm({
     },
   })
 
+  const { data: hasCompanyName, status: hasCompanyNameStatus } =
+    useTanstackQuery({
+      ...convexQuery(api.companies.findAll, {}),
+      select: (data) =>
+        data
+          .filter((c) => c._id !== id)
+          .some((c) => c.name === form.watch("name").toLowerCase()),
+    })
+
   // 2. Define a submit handler.
   function onSubmit(values: TUpdateCompanyZenith) {
     const { name, phone, location, subscription, countryCode } = values
@@ -101,19 +113,29 @@ export function UpdateCompanyForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
           {/* Name */}
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="name" {...field} className="capitalize" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {hasCompanyNameStatus === "success" && (
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="name"
+                      {...field}
+                      className="capitalize"
+                    />
+                  </FormControl>
+                  <p className="text-destructive text-sm">
+                    {hasCompanyName &&
+                      "Duplicate name! Please add another name."}
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
             name="phone"
@@ -209,7 +231,11 @@ export function UpdateCompanyForm({
             <SheetClose className={cn(buttonVariants({ variant: "outline" }))}>
               Cancel
             </SheetClose>
-            <SubmitButton title="Update Company" isPending={isPending} />
+            <SubmitButton
+              title="Update Company"
+              isPending={isPending}
+              disabled={hasCompanyName}
+            />
           </SheetFooter>
         </form>
       </Form>
