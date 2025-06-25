@@ -5,6 +5,7 @@ import {
   createTrialCompanySchema,
   toggleIsPublishedSchema,
   toggleIsStockableSchema,
+  toggleCustomLossMinuteSchema,
   updateCompanyByAdminSchema,
   updateCompanyZenithSchema,
 } from "../types/schema/company-schema"
@@ -283,5 +284,16 @@ export const toggleIsStockable = zMutation({
   handler: async (ctx, { toggleIsStockableSchema: { id, isStockable } }) => {
     await adminProcedure(ctx)
     return await ctx.db.patch(id, { isStockable: !isStockable })
+  },
+})
+
+export const toggleCustomLossMinute = zMutation({
+  args: { toggleCustomLossMinuteSchema },
+  handler: async (
+    ctx,
+    { toggleCustomLossMinuteSchema: { id, customLossMinute } },
+  ) => {
+    await adminProcedure(ctx)
+    return await ctx.db.patch(id, { customLossMinute: !customLossMinute })
   },
 })

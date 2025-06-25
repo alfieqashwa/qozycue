@@ -13,6 +13,7 @@ import { z } from "zod"
 export const companySchema = z
   .object({
     id: zid("companies"),
+    customLossMinute: z.boolean().optional(),
     isPublished: z.boolean(),
     isStockable: z.boolean(),
     name: z
@@ -80,3 +81,11 @@ export const toggleIsStockableSchema = companySchema.pick({
   isStockable: true,
 })
 export type TToggleIsStockable = z.infer<typeof toggleIsStockableSchema>
+
+export const toggleCustomLossMinuteSchema = companySchema.pick({
+  id: true,
+  customLossMinute: true,
+})
+export type TToggleCustomLossMinute = z.infer<
+  typeof toggleCustomLossMinuteSchema
+>

@@ -146,6 +146,11 @@
 
 ---
 
+## Version 0.6.9
+
+✅ Add Subscription Info on Profile Page
+❌ Add Toggle CustomLossMinute on Profile Page (SuperAdmin Only)
+
 ## Backlog (Future Plan)
 
 ✅ Pool Table with the same company must have a unique name
