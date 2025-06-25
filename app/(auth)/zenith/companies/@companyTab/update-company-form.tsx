@@ -58,10 +58,12 @@ export function UpdateCompanyForm({
 }) {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.update),
-    onSuccess: () =>
+    onSuccess: () => {
       toast.success("Succeed!", {
         description: "The company has been updated.",
-      }),
+      })
+      form.reset() // <-- fix(bug): the `hasCompanyName` will not show in submitting process.
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:

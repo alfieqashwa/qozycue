@@ -45,10 +45,12 @@ export function CreateCompanyForm({
 }) {
   const { mutate, isPending } = useMutation({
     mutationFn: useConvexMutation(api.companies.create),
-    onSuccess: () =>
+    onSuccess: () => {
       toast.success("Succeed!", {
         description: "Your new company has been created.",
-      }),
+      })
+      form.reset() // <-- fix(bug): the `hasCompanyName` will not show in submitting process.
+    },
     onError: (err) =>
       toast.error("Something went wrong.", {
         description:
