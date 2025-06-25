@@ -35,10 +35,16 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
     (c) => c.code === (company?.countryCode as string),
   )
   return (
-    <div className="flex items-center space-x-3 pl-4">
+    <div className="flex items-center space-x-4 pl-3">
       <Link href={`/${company?.slug}`}>
         {country?.flag && (
-          <Image src={country.flag} width={500} height={500} alt="flag" />
+          <Image
+            src={country.flag}
+            width={500}
+            height={500}
+            alt="flag"
+            className="animate-pulse-slow h-8 max-w-14 rounded shadow-md ring hover:cursor-pointer"
+          />
         )}
         {/* <Building2 */}
         {/*   className={cn("text-primary mr-2 size-8 hover:cursor-pointer")} */}

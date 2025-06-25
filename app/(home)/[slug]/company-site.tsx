@@ -36,9 +36,10 @@ export function CompanySite({
             <div className="flex items-center justify-end space-x-2 pr-4">
               {/* Starts Company Name */}
               <div className="group flex items-center gap-4 py-2">
-                <section className="grid gap-1 px-2">
+                <section className="grid">
                   <div
                     className={cn(
+                      "space-x-3",
                       buttonVariants({ variant: "ghost", size: "default" }),
                     )}
                   >
@@ -52,7 +53,7 @@ export function CompanySite({
                             width={500}
                             height={500}
                             alt="Flag"
-                            className="animate-pulse-slow h-8 w-12 rounded shadow-md ring hover:cursor-pointer"
+                            className="animate-pulse-slow h-8 w-14 rounded shadow-md ring hover:cursor-pointer"
                           />
                         )}
                       </Link>
