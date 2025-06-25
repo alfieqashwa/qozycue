@@ -3,9 +3,9 @@ import { ConvexError, v } from "convex/values"
 import {
   createCompanySchema,
   createTrialCompanySchema,
+  toggleCustomLossMinuteSchema,
   toggleIsPublishedSchema,
   toggleIsStockableSchema,
-  toggleCustomLossMinuteSchema,
   updateCompanyByAdminSchema,
   updateCompanyZenithSchema,
 } from "../types/schema/company-schema"
@@ -293,7 +293,7 @@ export const toggleCustomLossMinute = zMutation({
     ctx,
     { toggleCustomLossMinuteSchema: { id, customLossMinute } },
   ) => {
-    await adminProcedure(ctx)
+    await superAdminProcedure(ctx)
     return await ctx.db.patch(id, { customLossMinute: !customLossMinute })
   },
 })

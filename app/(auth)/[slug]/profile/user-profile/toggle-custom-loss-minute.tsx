@@ -14,7 +14,7 @@ type ToggleCustomLossMinuteProps = {
   companyName: string
   customLossMinute?: boolean
 }
-export function ToggleCustomToggleMinute({
+export function ToggleCustomLossMinute({
   superAdminAccessLevel,
   companyId,
   companyName,
@@ -26,7 +26,7 @@ export function ToggleCustomToggleMinute({
       toast.success("Succeed!", {
         description: (
           <p className="capitalize">
-            {customLossMinute
+            {!customLossMinute
               ? "Enabled Custom Loss Minute"
               : "Disabled Custom Loss Minute"}{" "}
             <span className="text-primary">{companyName}</span>

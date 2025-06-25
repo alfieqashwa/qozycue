@@ -25,10 +25,13 @@ import {
   LayoutTemplate,
   MapPin,
   Phone,
+  Timer,
+  TimerOff,
   Utensils,
 } from "lucide-react"
 import Image from "next/image"
 import { ProfileAvatar } from "./profile-avatar"
+import { ToggleCustomLossMinute } from "./toggle-custom-loss-minute"
 import { TogglePublished } from "./toggle-published"
 import { ToggleStockable } from "./toggle-stockable"
 import { UpdateCompanyInfo } from "./update-company-info"
@@ -97,6 +100,7 @@ const CompanyProfileCard = ({
 }: {
   user: FunctionReturnType<typeof api.sessions.find>["user"]
 }) => {
+  const superAdminAccessLevel = ["ZENITH"].includes(user.role ?? "")
   const adminAccessLevel = ["ZENITH", "ADMIN"].includes(user.role ?? "")
 
   const country = countries.find(
@@ -193,15 +197,42 @@ const CompanyProfileCard = ({
             <p className="text-muted-foreground pr-2 text-balance capitalize">
               Stockable?
             </p>
-            {bookingOrders.status === "success" && (
-              <ToggleStockable
-                adminAccessLevel={adminAccessLevel}
+            <ToggleStockable
+              adminAccessLevel={adminAccessLevel}
+              companyId={user.companyId as Id<"companies">}
+              companyName={user.company?.name as string}
+              isStockable={user.company?.isStockable as boolean}
+            />
+          </article>
+          {superAdminAccessLevel && (
+            <article className="flex items-center">
+              <WrapperTooltip
+                side="right"
+                content="When enabled, it will activate the custom loss minute feature"
+              >
+                {user.company?.customLossMinute ? (
+                  <Timer
+                    size={20}
+                    className="text-primary animate-pulse-slow mr-2 shrink-0"
+                  />
+                ) : (
+                  <TimerOff
+                    size={20}
+                    className="text-muted-foreground animate-pulse-slow mr-2 shrink-0"
+                  />
+                )}
+              </WrapperTooltip>
+              <p className="text-muted-foreground pr-2 text-balance capitalize">
+                Custom Loss Minute?
+              </p>
+              <ToggleCustomLossMinute
+                superAdminAccessLevel={superAdminAccessLevel}
                 companyId={user.companyId as Id<"companies">}
                 companyName={user.company?.name as string}
-                isStockable={user.company?.isStockable as boolean}
+                customLossMinute={user.company?.customLossMinute as boolean}
               />
-            )}
-          </article>
+            </article>
+          )}
         </section>
       </div>
       {user && user.company && (
