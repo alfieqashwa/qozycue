@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/submit-button"
 import {
   Card,
   CardContent,
@@ -40,7 +40,7 @@ import {
   useQuery as useTanstackQuery,
 } from "@tanstack/react-query"
 import { ConvexError } from "convex/values"
-import { Building2, Loader2, MapPin, Phone } from "lucide-react"
+import { Building2, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
@@ -77,12 +77,13 @@ export function CreateTrialCompanyForm() {
     },
   })
 
-  const { data: hasCompanyName } = useTanstackQuery({
-    ...convexQuery(api.companies.findAll, {}),
-    select(data) {
-      return data.some((c) => c.name === form.watch("name").toLowerCase())
-    },
-  })
+  const { data: hasCompanyName, status: hasCompanyNameStatus } =
+    useTanstackQuery({
+      ...convexQuery(api.companies.findAll, {}),
+      select(data) {
+        return data.some((c) => c.name === form.watch("name").toLowerCase())
+      },
+    })
 
   // 2. Define a submit handler
   function onSubmit(values: TCreateTrialCompany) {
@@ -111,37 +112,39 @@ export function CreateTrialCompanyForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="pt-4">
-                  <FormLabel>Company Name</FormLabel>
-                  <FormControl className="relative">
-                    <div>
-                      <Building2
-                        className={cn(
-                          "absolute top-1.5 left-3 h-5 w-5",
-                          form.watch("name").length >= 3
-                            ? "text-primary"
-                            : "text-muted-foreground",
-                        )}
-                      />
-                      <Input
-                        placeholder="max 25 chars"
-                        {...field}
-                        className="pl-10 capitalize"
-                      />
-                    </div>
-                  </FormControl>
-                  <p className="text-destructive">
-                    {hasCompanyName &&
-                      "Duplicate name! Please add another name."}
-                  </p>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {hasCompanyNameStatus === "success" && (
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="pt-4">
+                    <FormLabel>Company Name</FormLabel>
+                    <FormControl className="relative">
+                      <div>
+                        <Building2
+                          className={cn(
+                            "absolute top-1.5 left-3 h-5 w-5",
+                            form.watch("name").length >= 3
+                              ? "text-primary"
+                              : "text-muted-foreground",
+                          )}
+                        />
+                        <Input
+                          placeholder="max 25 chars"
+                          {...field}
+                          className="pl-10 capitalize"
+                        />
+                      </div>
+                    </FormControl>
+                    <p className="text-destructive text-sm">
+                      {hasCompanyName &&
+                        "Duplicate name! Please add another name."}
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="phone"
@@ -234,20 +237,12 @@ export function CreateTrialCompanyForm() {
             />
           </CardContent>
           <CardFooter className="flex flex-col">
-            <Button
-              disabled={hasCompanyName || isPending}
-              type="submit"
-              className="w-full disabled:pointer-events-auto disabled:cursor-not-allowed"
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  <span>Please wait</span>
-                </>
-              ) : (
-                <span>Submit</span>
-              )}
-            </Button>
+            <SubmitButton
+              title="Submit"
+              isPending={isPending}
+              disabled={hasCompanyName}
+              className="md:w-full"
+            />
           </CardFooter>
         </form>
       </Form>
