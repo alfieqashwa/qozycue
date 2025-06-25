@@ -9,8 +9,15 @@ const QOZY_CUE = ["Q", "o", "z", "y", " ", "C", "u", "e"]
 export const Hero = () => {
   const { ref, replay } = useScramble({
     text: "Billiard & Cafe",
-    speed: 0.3,
-    // step: 0.5,
+    range: [65, 125],
+    speed: 0.7,
+    tick: 1,
+    step: 1,
+    scramble: 21,
+    seed: 0,
+    chance: 1,
+    overdrive: false,
+    overflow: true,
   })
   return (
     <div>

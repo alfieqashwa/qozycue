@@ -1,13 +1,21 @@
 "use client"
 
 import { Heart } from "lucide-react"
-import packageJson from "../package.json"
 import { useScramble } from "use-scramble"
+import packageJson from "../package.json"
 
 export const Copyright = () => {
   const { ref, replay } = useScramble({
     text: "Alfie Qashwa",
-    speed: 0.3,
+    range: [65, 125],
+    speed: 0.7,
+    tick: 1,
+    step: 1,
+    scramble: 21,
+    seed: 0,
+    chance: 1,
+    overdrive: false,
+    overflow: true,
   })
 
   return (
