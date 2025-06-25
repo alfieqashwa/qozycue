@@ -234,7 +234,7 @@ const PricingCard = ({
     className={cn(
       `flex w-72 flex-col justify-between py-1 ${popular ? "border-rose-400" : "border-zinc-700"} mx-auto overflow-hidden border-[3px] shadow-lg will-change-transform sm:mx-0`,
       {
-        "animate-shimmer bg-black bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] transition-colors":
+        "bg-black bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] transition-colors":
           exclusive,
       },
     )}

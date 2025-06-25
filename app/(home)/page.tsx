@@ -17,7 +17,7 @@ export default async function HomePage() {
   return (
     <Vortex rangeY={400} className="z-50">
       <Tabs defaultValue="home" className="w-full">
-        <TabsList className="animate-shimmer text-foreground fixed top-1 left-1/2 z-10 inline-flex h-11 w-[300px] -translate-x-1/2 items-center justify-center rounded-full border-2 border-zinc-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] transition-colors focus:ring-1 focus:ring-zinc-400 focus:ring-offset-1 focus:ring-offset-zinc-50 focus:outline-hidden lg:top-10">
+        <TabsList className="text-foreground fixed top-1 left-1/2 z-10 inline-flex h-11 w-[300px] -translate-x-1/2 items-center justify-center rounded-full border-2 border-zinc-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] transition-colors focus:ring-1 focus:ring-zinc-400 focus:ring-offset-1 focus:ring-offset-zinc-50 focus:outline-hidden lg:top-10">
           <TabsTrigger
             value="home"
             className="rounded-l-full rounded-r-md font-semibold"
