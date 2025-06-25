@@ -12,7 +12,7 @@ type ToggleCustomLossMinuteProps = {
   superAdminAccessLevel: boolean
   companyId: Id<"companies">
   companyName: string
-  customLossMinute?: boolean
+  customLossMinute: boolean
 }
 export function ToggleCustomLossMinute({
   superAdminAccessLevel,
@@ -48,7 +48,7 @@ export function ToggleCustomLossMinute({
         mutate({
           toggleCustomLossMinuteSchema: {
             id: companyId,
-            customLossMinute: Boolean(customLossMinute),
+            customLossMinute,
           },
         })
       }

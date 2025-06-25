@@ -58,7 +58,7 @@ export default defineSchema({
       v.literal("ENTERPRISE"),
     ),
     isStockable: v.boolean(),
-    customLossMinute: v.optional(v.boolean()),
+    customLossMinute: v.boolean(),
   }).index("by_slug", ["slug"]),
 
   taxes: defineTable({

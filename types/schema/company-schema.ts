@@ -13,7 +13,7 @@ import { z } from "zod"
 export const companySchema = z
   .object({
     id: zid("companies"),
-    customLossMinute: z.boolean().optional(),
+    customLossMinute: z.boolean(),
     isPublished: z.boolean(),
     isStockable: z.boolean(),
     name: z
@@ -52,6 +52,7 @@ export const createCompanySchema = companySchema.omit({
   logo: true,
   subscription: true,
   isStockable: true,
+  customLossMinute: true,
 })
 export type TCreateCompany = z.infer<typeof createCompanySchema>
 
@@ -59,6 +60,7 @@ export const updateCompanyZenithSchema = companySchema.omit({
   logo: true,
   isPublished: true,
   isStockable: true,
+  customLossMinute: true,
 })
 export type TUpdateCompanyZenith = z.infer<typeof updateCompanyZenithSchema>
 
