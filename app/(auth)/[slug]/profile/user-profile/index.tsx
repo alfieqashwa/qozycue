@@ -105,13 +105,15 @@ const CompanyProfileCard = ({
   return (
     <section className="bg-card rounded-lg border-2 p-8 font-medium shadow-md">
       <article className="flex flex-col items-center">
-        <Image
-          src={country?.flag as string}
-          width={500}
-          height={500}
-          alt={country?.country as string}
-          className="animate-pulse-slow h-16 w-28 rounded shadow"
-        />
+        {country?.flag && (
+          <Image
+            src={country.flag}
+            width={500}
+            height={500}
+            alt="Flag"
+            className="animate-pulse-slow h-16 w-28 rounded shadow"
+          />
+        )}
         <p className="pt-2 text-2xl capitalize">{user.company?.name}</p>
       </article>
       <div className="grid-clos-1 grid gap-8 pt-8 lg:grid-cols-2">

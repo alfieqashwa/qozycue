@@ -186,7 +186,7 @@ export function UpdateCompanyForm({
                       <SelectItem value={c.code} key={`${c.code}-${i}`}>
                         <Image
                           src={c.flag}
-                          alt={c.country}
+                          alt={c.country ?? "Flag"}
                           width={300}
                           height={150}
                           className="flex h-4 w-6 items-center"

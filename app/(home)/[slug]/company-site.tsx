@@ -46,13 +46,15 @@ export function CompanySite({
                       content={`${user ? "Go to Page Tables" : " Go to Home Page"}`}
                     >
                       <Link href={user ? `/${slug}/tables` : "/"}>
-                        <Image
-                          src={country?.flag as string}
-                          width={500}
-                          height={500}
-                          alt={country?.country as string}
-                          className="animate-pulse-slow h-8 w-12 rounded shadow-md ring hover:cursor-pointer"
-                        />
+                        {country?.flag && (
+                          <Image
+                            src={country.flag}
+                            width={500}
+                            height={500}
+                            alt="Flag"
+                            className="animate-pulse-slow h-8 w-12 rounded shadow-md ring hover:cursor-pointer"
+                          />
+                        )}
                       </Link>
                     </WrapperTooltip>
                     <p className="text-muted-foreground flex items-center font-semibold capitalize">

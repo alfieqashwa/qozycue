@@ -38,12 +38,7 @@ export function CompanyInfo({ pathname, company }: CompanyInfoProps) {
     <div className="flex items-center space-x-3 pl-4">
       <Link href={`/${company?.slug}`}>
         {country?.flag && (
-          <Image
-            src={country.flag}
-            width={500}
-            height={500}
-            alt={`${country.country} flag`}
-          />
+          <Image src={country.flag} width={500} height={500} alt="flag" />
         )}
         {/* <Building2 */}
         {/*   className={cn("text-primary mr-2 size-8 hover:cursor-pointer")} */}
