@@ -148,9 +148,10 @@
 
 ## Version 0.6.9
 
-✅ Add Subscription Info on Profile Page
-✅ Add Toggle CustomLossMinute on Profile Page (SuperAdmin Only)
+✅ Add Subscription Info in Profile Page
+✅ Add ToggleCustomLossMinute on Profile Page (SuperAdmin Only)
 ✅ Changed field customLossMinute from optional to required after manually modified database
+❌ Add `Custom Loss Minute` Info in Profile Page
 
 ## Backlog (Future Plan)
 
