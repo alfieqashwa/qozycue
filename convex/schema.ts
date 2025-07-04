@@ -36,7 +36,7 @@ export default defineSchema({
         v.literal("USER"),
       ),
     ),
-    pinCode: v.optional(v.number()),
+    pinCode: v.optional(v.number()), // hashing would be better
     companyId: v.optional(v.id("companies")), // exception set this to optional
   })
     .index("email", ["email"])
