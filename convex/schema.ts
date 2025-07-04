@@ -130,7 +130,7 @@ export default defineSchema({
     createdBy: v.id("users"),
     updatedBy: v.optional(v.id("users")),
     companyId: v.id("companies"),
-    updatedTime: v.optional(v.number()),
+    updatedTime: v.optional(v.float64()),
     isDeleted: v.optional(v.boolean()),
   })
     .index("customerId", ["customerId"])
