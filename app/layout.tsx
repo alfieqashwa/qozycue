@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     description: "Billiard & Cafe Real Time Application.",
     authors: "alfieqashwa",
     url: new URL(baseUrl),
-    images: "https://www.qozycue.com/opengraph-image.png",
+    images: "https://qozycue.vercel.app/opengraph-image.png",
     // "https://raw.githubusercontent.com/alfieqashwa/me/main/public/img/cover.webp",
   },
 }

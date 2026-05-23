@@ -55,7 +55,7 @@ export const SubscriptionInfo = ({
       <DialogFooter className="mt-2 border-t pt-4 text-end">
         <p className="text-muted-foreground text-xs">
           <a
-            href="https://docs.qozycue.com/guides/subscriptions"
+            href="https://docs-qozycue.vercel.app/guides/subscriptions"
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:text-primary/80 inline-flex items-center gap-1 underline-offset-4 transition-colors hover:underline"

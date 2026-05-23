@@ -9,7 +9,7 @@ type Props = {
 export function DocumentationButton({ icon, title }: Props) {
   return (
     <a
-      href="https://docs.qozycue.com/"
+      href="https://docs-qozycue.vercel.app/"
       target="_blank"
       rel="noopener noreferrer"
       className="flex justify-center text-center"
@@ -20,7 +20,7 @@ export function DocumentationButton({ icon, title }: Props) {
         className="flex items-center space-x-2 bg-black text-white"
       >
         {icon}
-        <span className="whitespace-nowrap font-semibold">{title}</span>
+        <span className="font-semibold whitespace-nowrap">{title}</span>
       </HoverBorderGradient>
     </a>
   )

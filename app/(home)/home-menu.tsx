@@ -145,7 +145,7 @@ export const HomeContent = ({ slug }: { slug: string | null }) => (
       >
         <ShimmerButton className="h-11 overflow-hidden">
           <a
-            href="https://docs.qozycue.com"
+            href="https://docs-qozycue.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex justify-center text-center font-semibold"

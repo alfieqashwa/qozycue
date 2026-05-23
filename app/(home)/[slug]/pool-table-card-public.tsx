@@ -42,7 +42,7 @@ export function PoolTableCardPublic({
     enabled: Boolean(poolTableId),
   })
 
-  const websitelink = `https://qozycue.com${pathname}` // pathname has included the "/"
+  const websitelink = `https://qozycue.vercel.app{pathname}` // pathname has included the "/"
   const SPACE = "%20"
   const BOOKING = `https://wa.me/${companyPhone}?text=Hi${SPACE}${companyName.toLocaleUpperCase()}.${SPACE}Saya${SPACE}mau${SPACE}pesan${SPACE}meja${SPACE}${poolTableName}.${SPACE}Bagaimana${SPACE}cara${SPACE}pembayarannya?${SPACE}Thanks!${SPACE}${websitelink}`
 
